@@ -1,0 +1,31 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>cn.forest</groupId>
+    <artifactId>forest</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+  <artifactId>forest-search</artifactId>
+  <packaging>pom</packaging>
+  
+  
+  <dependencies>
+     <dependency>  
+        <groupId>org.elasticsearch</groupId>  
+        <artifactId>elasticsearch</artifactId>  
+        <version>${elasticsearch.version}</version>
+      </dependency>
+      <dependency>  
+          <groupId>org.elasticsearch.client</groupId>  
+          <artifactId>transport</artifactId>  
+          <version>${elasticsearch.version}</version>
+      </dependency>
+  </dependencies>
+  
+  
+  <modules>
+    <module>forest-search-service</module>
+    <module>forest-search-server</module>
+  </modules>
+  
+</project>

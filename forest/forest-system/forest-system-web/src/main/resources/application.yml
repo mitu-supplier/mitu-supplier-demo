@@ -1,0 +1,40 @@
+server:
+  port: 8202
+ 
+spring:  application:    name: forest-system-web
+eureka:
+  instance:
+    prefer-ip-address: true
+    instance-id: localhost:${server.port}
+    lease-renewal-interval-in-seconds: 10
+    health-check-url-path: /actuator/health
+  client:
+    service-url:
+      defaultZone: http://localhost:5555/eureka/
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
+feign:
+  hystrix:
+    enabled: true
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      

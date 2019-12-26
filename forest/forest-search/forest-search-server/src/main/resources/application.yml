@@ -1,0 +1,60 @@
+server:
+  port: 8901
+  
+eureka:
+  instance:
+    prefer-ip-address: true
+    instance-id: localhost:${server.port}
+    lease-renewal-interval-in-seconds: 10
+    health-check-url-path: /actuator/health
+  client:
+    service-url:
+      defaultZone: http://localhost:5555/eureka/
+
+
+
+
+
+spring:
+  application:
+    name: forest-system-server
+  es:
+    host: localhost
+    port: 9300
+    clusterName: elasticsearch
+    enable: true
+      
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
+
+
+    
+
+
+
+
+      
+      
+
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      

@@ -46,7 +46,8 @@ import baseURL_ from '@/utils/baseUrl.js';
                   this.$router.push('/');
               }else{
                   localStorage.removeItem('forestToken');
-                  alert(login.data.data)
+                  alert(login.data.data);
+				  
               }
                     
             }

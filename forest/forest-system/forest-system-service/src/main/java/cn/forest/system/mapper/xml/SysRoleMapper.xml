@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.forest.system.mapper.SysRoleMapper">
+
+
+<select id="getRoleByUserId" parameterType="Map" resultType="cn.forest.system.entity.SysRole">
+
+   SELECT
+		sr.role_name roleName,
+		sr.id,
+		( SELECT count( * ) FROM sys_user_role sur WHERE sur.user_id = #{userId} AND sur.role_id = sr.id ) AS checked 
+	FROM
+		sys_role sr 
+	WHERE
+	sr.is_delete =0
+</select>
+   
+
+</mapper>
