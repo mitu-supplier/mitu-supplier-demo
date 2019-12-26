@@ -7,7 +7,6 @@
         </div>
         <div class="container">
             <div class="handle-box">
-                <el-button type="primary" icon="el-icon-delete" class="handle-del mr10">批量删除</el-button>
                 <el-input placeholder="筛选关键词" class="handle-input mr10"></el-input>
                 <el-button type="primary" icon="el-icon-search" >搜索</el-button>
             </div>

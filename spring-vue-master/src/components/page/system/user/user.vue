@@ -7,8 +7,7 @@
         </div>
         <div class="container">
             <div class="handle-box">
-                <el-button type="primary" icon="el-icon-delete" class="handle-del mr10">批量删除</el-button>
-                <el-button type="primary" icon="el-icon-delete" class="handle-del mr10" @click="add">添加</el-button>
+                <el-button type="primary" icon="el-icon-plus" class="handle-del mr10" @click="add">添加</el-button>
                 <el-input placeholder="用户名或登录名" v-model="name"  class="handle-input mr10"></el-input>
                 <el-button type="primary" icon="el-icon-search" >搜索</el-button>
             </div>
@@ -21,12 +20,14 @@
                 <el-table-column prop="email" label="邮箱" align="center" width="150"> </el-table-column>
                 <el-table-column prop="createTime" label="创建时间" align="center"  width="150"></el-table-column>
                 <el-table-column prop="isStatus" label="是否有效" align="center" width="100"></el-table-column>
-                <el-table-column prop="loginTime" label="登录时间"  align="center" width="150"></el-table-column>
-                <el-table-column prop="ip" label="登录ip"  align="center" width="150"></el-table-column>
+                <el-table-column prop="loginTime" label="登录时间"  align="center" width="130"></el-table-column>
+                <el-table-column prop="ip" label="登录ip"  align="center" width="100"></el-table-column>
                 <el-table-column label="操作" width="" align="center">
                     <template slot-scope="scope">
+                        <el-button type="text" icon="el-icon-setting" @click="ztreeEdit(scope.$index, scope.row)">设置角色</el-button>
                         <el-button type="text" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
                         <el-button type="text" icon="el-icon-delete" class="red" @click="handleDelete(scope.$index, scope.row)" >删除</el-button>
+                        
                     </template>
                 </el-table-column>
             </el-table>
@@ -65,6 +66,14 @@
             </span>
         </el-dialog>
 
+        <!-- 编辑弹出框 添加 修改-->
+        <el-dialog :title="ztreeTitleName" class="dialog-ztree"  :visible.sync="ztreeEditVisible" width="25%">
+             <ul id="ztree" class="ztree"></ul>
+             <span slot="footer" class="dialog-footer">
+                <el-button @click="ztreeEditVisible = false">取 消</el-button>
+                <el-button type="primary" @click="saveRole">确 定</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 
@@ -82,12 +91,35 @@
                 tableData: [],
                 multipleSelection: [],
                 titleName:'',
+                ztreeEditVisible:false,
+                ztreeTitleName:'',
+                user_id:'',
                 form:{
                    id:'',
                    name:'',
                    loginName:'',
                    phone:'',
                    email:''
+                },
+                 setting:{
+                    data: {
+                        simpleData: {
+                            enable: true,
+                            idKey: "id",
+                            pIdKey: "parentId"
+                        },
+                        key: {
+                            name: "roleName"
+                        }
+                    },
+                    callback: {
+                        
+                    },
+                    check: {
+                        enable: true,
+                        chkStyle: "checkbox",
+                        chkboxType: { Y: "ps", N: "ps" }
+                    },
                 },
                 name:''
             }
@@ -172,6 +204,36 @@
                   this.page=user.data.data.page;
                 }
             },
+            async ztreeEdit(index, row){
+                this.ztreeTitleName="角色";
+                this.ztreeEditVisible=true;
+                const permiss = await this.$http.get(baseURL_.sysUrl+'/sysUser/getRoleByUserId',{ 
+                    params: {'userId':row.id}
+                });
+                this.user_id=row.id;
+                $.fn.zTree.init($("#ztree"), this.setting, permiss.data.data);
+            },
+            async saveRole(){
+               var treeObj = $.fn.zTree.getZTreeObj("ztree");
+               var nodes = treeObj.getCheckedNodes(true);
+               if(nodes.length==0){
+                 this.$message("请选择角色！");
+                 return;
+               }
+               var permissArr=[];
+               for(var i=0;i<nodes.length;i++){
+                  permissArr.push(nodes[i].id);
+               }
+               var obj={};
+               obj.userId=this.user_id;
+               obj.roleIds=permissArr.join(",");
+               var result= await this.$http.post(baseURL_.sysUrl+'/sysUser/saveRole',this.$qs.stringify(obj));
+               this.$message(result.data.data);
+               if(result.data.statusCode==200){
+                 this.ztreeEditVisible=false;
+                 this.role_id="";
+               }
+            }
             
         }
     }
@@ -212,5 +274,15 @@
     .input{
         width:300px;
     }
-   
+   ul.ztree{
+        margin-top: 10px;
+        border: 1px solid #617775;
+        background: #f0f6e4;
+        width: 250px;
+        height: 180px;
+        overflow-y: scroll;
+        overflow-x: auto;
+        margin:auto;
+        
+    }
 </style>

@@ -7,7 +7,6 @@
         </div>
         <div class="container">
             <div class="handle-box">
-                <el-button type="primary" icon="el-icon-delete" class="handle-del mr10">批量删除</el-button>
                 <el-button type="primary" icon="el-icon-plus" class="handle-del mr10" @click="add">添加</el-button>
                 <el-input placeholder="筛选关键词" class="handle-input mr10"></el-input>
                 <el-button type="primary" icon="el-icon-search" >搜索</el-button>
@@ -32,8 +31,8 @@
                 </el-table-column>
                 <el-table-column label="操作" width="" align="center">
                     <template slot-scope="scope">
-                        <el-button type="text" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
                         <el-button type="text" icon="el-icon-setting" @click="ztreeEdit(scope.$index, scope.row)">设置权限</el-button>
+                        <el-button type="text" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
                         <el-button type="text" icon="el-icon-delete" class="red" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
@@ -82,7 +81,7 @@
              <ul id="ztree" class="ztree"></ul>
              <span slot="footer" class="dialog-footer">
                 <el-button @click="ztreeEditVisible = false">取 消</el-button>
-                <el-button type="primary" @click="saveEdit">确 定</el-button>
+                <el-button type="primary" @click="saveRolePermiss">确 定</el-button>
             </span>
         </el-dialog>
     </div>
@@ -104,6 +103,7 @@
                 titleName:'',
                 ztreeTitleName:'',
                 ztreeEditVisible:false,
+                role_id:'',
                 form:{
                    id:'',
                    roleName:'',
@@ -221,13 +221,32 @@
             async ztreeEdit(index, row){
                 this.ztreeTitleName="权限菜单";
                 this.ztreeEditVisible=true;
-                this.agreeTreeShow = true;
                 const permiss = await this.$http.get(baseURL_.sysUrl+'/sysRole/getRolePermiss',{ 
-                    params: {'id':row.id}
+                    params: {'roleId':row.id}
                 });
+                this.role_id=row.id;
                 $.fn.zTree.init($("#ztree"), this.setting, permiss.data.data);
-
-
+            },
+            async saveRolePermiss(){
+               var treeObj = $.fn.zTree.getZTreeObj("ztree");
+               var nodes = treeObj.getCheckedNodes(true);
+               if(nodes.length==0){
+                 this.$message("请选择权限菜单！");
+                 return;
+               }
+               var permissArr=[];
+               for(var i=0;i<nodes.length;i++){
+                  permissArr.push(nodes[i].id);
+               }
+               var obj={};
+               obj.roleId=this.role_id;
+               obj.permissionsIds=permissArr.join(",");
+               var result= await this.$http.post(baseURL_.sysUrl+'/sysRole/saveRolePermiss',this.$qs.stringify(obj));
+               this.$message(result.data.data);
+               if(result.data.statusCode==200){
+                 this.ztreeEditVisible=false;
+                 this.role_id="";
+               }
             }
             
         }
