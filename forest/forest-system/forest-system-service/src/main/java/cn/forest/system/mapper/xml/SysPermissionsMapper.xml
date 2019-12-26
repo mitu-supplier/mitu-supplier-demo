@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.forest.system.mapper.SysPermissionsMapper">
+
+
+
+<select id="getPermissionByRoleId" parameterType="Map" resultType="cn.forest.system.entity.SysPermissions">
+  SELECT
+	sp.name,
+	sp.id,
+	sp.parent_id AS parentId,
+	sp.is_parent AS isParent,
+	( SELECT count( * ) FROM sys_role_permissions srp WHERE srp.role_id = #{roleId} AND srp.permissions_id = sp.id ) AS checked 
+	FROM
+		sys_permissions sp 
+    where sp.is_delete=0 
+	ORDER BY
+		sp.tree_depth,
+		sp.priority
+	
+</select>
+
+
+</mapper>
