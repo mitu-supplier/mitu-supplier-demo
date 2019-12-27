@@ -1,11 +1,10 @@
 package cn.forest.login.service;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 
+import cn.forest.login.remote.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,19 +15,25 @@ import cn.forest.common.util.DateUtil;
 import cn.forest.common.util.JsonUtil;
 import cn.forest.common.util.ResultMessage;
 import cn.forest.common.util.StringUtil;
-import cn.forest.login.remote.LoginRemote;
-import cn.forest.login.remote.SysLoginLogsRemote;
-import cn.forest.login.remote.SysUserRemote;
 
 @Service("loginService")
 public class LoginService {
 
   @Autowired
   private LoginRemote loginRemote;
+
   @Autowired
   private SysLoginLogsRemote sysLoginLogsRemote;
+
   @Autowired
   private SysUserRemote sysUserRemote;
+
+  @Autowired
+  private SysRoleRemote sysRoleRemote;
+
+  @Autowired
+  private SysPermissionsRemote sysPermissionsRemote;
+
   @Autowired
   private RedisDao redisDao;
 
@@ -44,7 +49,9 @@ public class LoginService {
         String token = TokenAuthenticationService.addAuthentication(StringUtil.toString(object.get("loginName")));
         addSysLoginLogs(object, request);
         updateUser(object, request);
-        redisDao.setKey(token, user);
+        // 查询当前用户的角色权限
+        HashMap userInfoMap = selectUserRoles(object);
+        redisDao.setKey(token, userInfoMap, TokenAuthenticationService.EXPIRATIONTIME);
         return ResultMessage.success(token);
       } else {
         return ResultMessage.error("用户或密码错误");
@@ -69,4 +76,15 @@ public class LoginService {
     return sysLoginLogsRemote.add(logsMap);
   }
 
+  public HashMap selectUserRoles(HashMap map){
+    Object id = map.get("id");
+    if(id != null){
+      Long userId = Long.valueOf(String.valueOf(id));
+      List sysRoleList = (List)sysRoleRemote.getRoleByUserId(userId);
+      map.put("roles", sysRoleList);
+      Object permissionsList = sysPermissionsRemote.getPermissionByUserId(userId);
+      map.put("permissions", permissionsList);
+    }
+    return map;
+  }
 }

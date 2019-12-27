@@ -4,6 +4,7 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
+import cn.forest.common.Constant;
 import org.json.JSONException;
 import org.springframework.util.StringUtils;
 
@@ -14,9 +15,8 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 public class TokenAuthenticationService {
-  static final long EXPIRATIONTIME = 600000; // 5天
+  public static final long EXPIRATIONTIME = 1*24*60*60*1000; // 5天
   static final String SECRET = "278U@#$%^ki0op23lwe"; // JWT密码
-  static final String HEADER_STRING = "authorization";// 存放Token的Header Key
 
   // JWT生成方法
   public static String addAuthentication(String username) throws JSONException {
@@ -33,7 +33,7 @@ public class TokenAuthenticationService {
   }
 
   public static boolean getAuthenticationUser(HttpServletRequest request) {
-    String token = request.getHeader(HEADER_STRING);
+    String token = request.getHeader(Constant.HEADER_TOKEN_STRING);
 
     if (token != null) {
       Claims claims = claims = Jwts.parser()

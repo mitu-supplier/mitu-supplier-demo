@@ -93,4 +93,9 @@ public class SysPermissionsAction {
     return sysPermissionsMapper.getPermissionByRoleId(map);
   }
 
+  @RequestMapping("/getPermissionByUserId")
+  public Object getPermissionByUserId(Long userId){
+    return sysPermissionsMapper.getPermissionByUserId(userId);
+  }
+
 }

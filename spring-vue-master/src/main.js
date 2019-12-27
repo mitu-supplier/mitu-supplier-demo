@@ -36,10 +36,10 @@ const i18n = new VueI18n({
 axios.interceptors.request.use(
     config => {
       let url = config.url;
-      if(url.indexOf("login")==-1){
+      if(url.indexOf("/login")==-1){
         const token = localStorage.getItem('forestToken');
         if(token){
-            config.headers.authorization = token;
+            config.headers.token = token;
         }
       }
       return config;

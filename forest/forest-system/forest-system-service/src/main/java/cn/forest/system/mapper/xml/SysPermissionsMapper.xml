@@ -21,4 +21,33 @@
 </select>
 
 
+<select id="getPermissionByUserId" parameterType="Long" resultType="cn.forest.system.entity.SysPermissions">
+	SELECT
+		sp.id,
+		sp.name,
+		sp.parent_id AS parentId,
+		sp.is_parent AS isParent,
+		sp.url,
+		sp.icon_name AS iconName,
+		sp.tree_depth AS treeDepth
+	FROM
+		sys_user_role sur
+		LEFT JOIN sys_role_permissions srp ON sur.role_id = srp.role_id
+		INNER JOIN sys_permissions sp ON srp.permissions_id = sp.id
+	WHERE
+		sur.user_id = #{userId}
+		AND sp.is_delete = 0
+	GROUP BY
+		sp.id,
+		sp.NAME,
+		sp.parent_id,
+		sp.is_parent,
+		sp.url,
+		sp.icon_name,
+		sp.tree_depth
+	ORDER BY
+		sp.tree_depth,
+		sp.priority
+</select>
+
 </mapper>

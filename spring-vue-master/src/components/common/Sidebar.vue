@@ -55,7 +55,7 @@
         },
         methods:{
             async loadData(){
-                const sysPermissions = await this.$http.get(baseURL_.sysUrl+'/sysPermissions/list');
+                const sysPermissions = await this.$http.get(baseURL_.loginUrl+'/permission/list');
                 if(sysPermissions.data.statusCode == 200){
                   var datas = sysPermissions.data.data;
                   var len = datas.length;

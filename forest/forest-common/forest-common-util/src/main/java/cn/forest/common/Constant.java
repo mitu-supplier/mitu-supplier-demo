@@ -8,4 +8,6 @@ public class Constant {
    */
   public static final String REQUEST_POST_PARAMS = "params";
 
+  public static final String HEADER_TOKEN_STRING = "token";// 存放Token的Header Key
+
 }

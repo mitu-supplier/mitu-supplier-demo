@@ -3,6 +3,7 @@ package cn.forest.gateway;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import cn.forest.common.Constant;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -31,9 +32,9 @@ public class AccessFilter extends ZuulFilter {
     RequestContext ctx = RequestContext.getCurrentContext();
     HttpServletRequest request = ctx.getRequest();
     HttpServletResponse response = ctx.getResponse();
-    String pathName = request.getServletPath();
-    if(pathName.indexOf("login")==-1) {
-      String authorization = request.getHeader("authorization");
+    String pathName = request.getServletPath ();
+    if(pathName.indexOf("/login")==-1) {
+      String authorization = request.getHeader(Constant.HEADER_TOKEN_STRING);
       if(StringUtils.isEmpty(authorization)) {
         ctx.getResponse().setContentType("text/html;charset=UTF-8");
         ctx.setSendZuulResponse(false);
@@ -55,7 +56,6 @@ public class AccessFilter extends ZuulFilter {
         
       }
     }
-    
     return null;
   }
 
