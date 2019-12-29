@@ -3,7 +3,9 @@ package cn.forest.common.web;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -19,6 +21,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import cn.forest.commom.redis.RedisDao;
+import cn.forest.common.Constant;
 import cn.forest.common.util.AddressIpUtil;
 import cn.forest.common.util.JsonUtil;
 import cn.forest.common.util.RequestMap;
@@ -34,7 +38,8 @@ public class SystemLogAspect {
   private SysLogsRemote  sysLogsRemote;
   @Autowired
   private SysExceptionLogsRemote sysExceptionLogsRemote;
-  
+  @Autowired
+  private RedisDao redisDao;
   
   
   @Before("@annotation(cn.forest.common.web.util.SysLogs)")
@@ -62,11 +67,17 @@ public class SystemLogAspect {
 
   private Map<String, Object> params(JoinPoint joinPoint, HttpServletRequest request, Map<String, String> joinPointMap,
       String classDesc, String desc) {
+    HashMap userInfoMap = (HashMap)redisDao.getValue(request.getHeader(Constant.HEADER_TOKEN_STRING));
+    List<Map<String, Object>> roles = (List) userInfoMap.get("roles");
+    String roleName="";
+    if(roles!=null) {
+      roleName= roles.stream().map(e ->e.get("roleName").toString()).collect(Collectors.joining(","));
+    }
     Map<String, Object> map=new HashMap<String, Object>();
-    map.put("roleName", "管理员");
-    map.put("userId", 1);
-    map.put("userName", "王二小");
-    map.put("loginName", "admin");
+    map.put("roleName", roleName);
+    map.put("userId", Long.parseLong(userInfoMap.get("id").toString()));
+    map.put("userName", userInfoMap.get("name").toString());
+    map.put("loginName", userInfoMap.get("loginName").toString());
     map.put("modelName", classDesc);
     map.put("ip", AddressIpUtil.getIpAddr(request));
     map.put("url", request.getRequestURI());

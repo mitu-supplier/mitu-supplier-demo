@@ -1,6 +1,7 @@
 package cn.forest.login.service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import cn.forest.commom.jwt.TokenAuthenticationService;
 import cn.forest.commom.redis.RedisDao;
+import cn.forest.common.Constant;
 import cn.forest.common.util.AddressIpUtil;
 import cn.forest.common.util.DateUtil;
 import cn.forest.common.util.JsonUtil;
@@ -47,10 +49,10 @@ public class LoginService {
       String pass = StringUtil.toString(object.get("password"));
       if (pass != null && pass.equals(password.trim())) {
         String token = TokenAuthenticationService.addAuthentication(StringUtil.toString(object.get("loginName")));
-        addSysLoginLogs(object, request);
+        HashMap userInfoMap = selectUserRoles(object);
+        addSysLoginLogs(object, request,userInfoMap);
         updateUser(object, request);
         // 查询当前用户的角色权限
-        HashMap userInfoMap = selectUserRoles(object);
         redisDao.setKey(token, userInfoMap, TokenAuthenticationService.EXPIRATIONTIME);
         return ResultMessage.success(token);
       } else {
@@ -67,12 +69,18 @@ public class LoginService {
     return sysUserRemote.update(map);
   }
 
-  public int addSysLoginLogs(Map map, HttpServletRequest request) {
+  public int addSysLoginLogs(Map map, HttpServletRequest request,HashMap hashMap) {
+    List<Map<String, Object>> roles = (List) hashMap.get("roles");
+    String roleName="";
+    if(roles!=null) {
+      roleName= roles.stream().map(e ->e.get("roleName").toString()).collect(Collectors.joining(","));
+    }
     Map<String, Object> logsMap = new HashMap<String, Object>();
     logsMap.put("userId", map.get("id"));
     logsMap.put("ip", AddressIpUtil.getIpAddr(request));
     logsMap.put("loginName", map.get("loginName"));
     logsMap.put("userName", map.get("name"));
+    logsMap.put("roleName", roleName);
     return sysLoginLogsRemote.add(logsMap);
   }
 
@@ -86,5 +94,30 @@ public class LoginService {
       map.put("permissions", permissionsList);
     }
     return map;
+  }
+  
+  public Map<String, Object> loginOut(HttpServletRequest request) {
+    boolean bool = redisDao.isNotKey(request.getHeader(Constant.HEADER_TOKEN_STRING));
+    if(bool) {
+      redisDao.deleteKey(request.getHeader(Constant.HEADER_TOKEN_STRING));
+    }
+    return ResultMessage.success("注销成功");
+  }
+  
+  public Map<String, Object> editPass(String oldPass,String newPass, HttpServletRequest request){
+    HashMap userInfoMap = (HashMap)redisDao.getValue(request.getHeader(Constant.HEADER_TOKEN_STRING));
+    Object userId = userInfoMap.get("id");
+    Map user = (Map) sysUserRemote.getById(Long.parseLong(userId.toString()));
+    if(oldPass.equals(user.get("password").toString())) {
+      user.put("password", newPass);
+      int update=sysUserRemote.update(user);
+      if(update>0) {
+        return ResultMessage.success("密码修改成功！");
+      }
+      return ResultMessage.error("密码修改失败！");
+    }else {
+      return ResultMessage.error("旧密码不正确！");
+    }
+    
   }
 }

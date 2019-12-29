@@ -1,7 +1,7 @@
 <template>
     <div class="login-wrap">
         <div class="ms-login">
-            <div class="ms-title">大杂烩系统</div>
+            <div class="ms-title">商户系统</div>
             <el-form :model="ruleForm"  ref="ruleForm" label-width="0px" class="ms-content">
                 <el-form-item prop="username">
                     <el-input v-model="ruleForm.username" placeholder="username">
@@ -30,14 +30,14 @@ import baseURL_ from '@/utils/baseUrl.js';
             return {
                 ruleForm: {
                     username: 'admin',
-                    password: '123123'
+                    password: 'admin'
                 },
                
             }
         },
         methods: {
            async submitForm() {
-              const login = await this.$http.get(baseURL_.loginUrl+'/login/', {
+              const login = await this.$http.get(baseURL_.loginUrl+'/login/do', {
                     params: {'loginName':this.ruleForm.username,'password':this.ruleForm.password}
               });
               if(login.data.statusCode==200){

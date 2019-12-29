@@ -36,7 +36,7 @@ const i18n = new VueI18n({
 axios.interceptors.request.use(
     config => {
       let url = config.url;
-      if(url.indexOf("/login")==-1){
+      if(url.indexOf("login/do")==-1){
         const token = localStorage.getItem('forestToken');
         if(token){
             config.headers.token = token;
@@ -69,15 +69,15 @@ axios.interceptors.response.use( response => {
 )
 
 //使用钩子函数对路由进行权限跳转
-// router.beforeEach((to, from, next) => {
-//     const role = localStorage.getItem('forestToken');
-//     if (!role && to.path !== '/login') {
-//         next('/login');
-//     } else {
-//         next();
-//     }
+ router.beforeEach((to, from, next) => {
+     const role = localStorage.getItem('forestToken');
+     if (!role && to.path.indexOf("/login") ==-1) {
+         next('/login');
+     } else {
+         next();
+     }
     
-// })
+ })
 
 
 new Vue({

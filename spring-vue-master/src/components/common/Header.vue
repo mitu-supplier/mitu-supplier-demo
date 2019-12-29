@@ -4,7 +4,7 @@
         <div class="collapse-btn" @click="collapseChage">
             <i class="el-icon-menu"></i>
         </div>
-        <div class="logo">biubiubiu</div>
+        <div class="logo">积分时代</div>
         <div class="header-right">
             <div class="header-user-con">
                 <!-- 全屏显示 -->
@@ -31,23 +31,52 @@
                         {{username}} <i class="el-icon-caret-bottom"></i>
                     </span>
                     <el-dropdown-menu slot="dropdown">
-                       
                         <el-dropdown-item divided  command="loginout">退出登录</el-dropdown-item>
+                        <el-dropdown-item divided  command="pass">修改密码</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
             </div>
         </div>
+        <!-- 编辑弹出框 -->
+        <el-dialog title="修改密码"  :visible.sync="editVisible" width="30%">
+            <el-form ref="form" :model="form" label-width="70px">
+                <el-form-item label="旧密码">
+                <el-input v-model="form.oldPass" class="input" type="password"></el-input>
+                </el-form-item>
+                <el-form-item label="新密码">
+                    <el-input v-model="form.newPass" class="input" type="password"></el-input>
+                </el-form-item>
+                <el-form-item label="重新密码">
+                <el-input v-model="form.passTow" class="input" type="password"></el-input>
+                </el-form-item>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="editVisible = false">取 消</el-button>
+                <el-button type="primary" @click="saveEdit">确 定</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 <script>
     import bus from '../common/bus';
+    import baseURL_ from '@/utils/baseUrl.js';
+    import axios from 'axios'
+    import router from './../../router'
     export default {
         data() {
             return {
                 collapse: false,
                 fullscreen: false,
                 name: 'linxin',
-                message: 0
+                message: 0,
+                editVisible:false,
+                form:{
+                  oldPass:'',
+                  newPass:'',
+                  passTow:''
+
+                }
+
             }
         },
         computed:{
@@ -60,9 +89,56 @@
             // 用户名下拉菜单选择事件
             handleCommand(command) {
                 if(command == 'loginout'){
-                    localStorage.removeItem('ms_username')
-                    this.$router.push('/login');
+                   this.loginout();
+                }if(command == 'pass'){
+                   this.editPass();
+                   
                 }
+            },
+            editPass(){
+               this.form.oldPass='';
+               this.form.newPass='';
+               this.form.passTow='';
+               this.editVisible=true;
+            },
+           saveEdit(){
+                if(this.form.newPass!=this.form.passTow){
+                    this.$message("两次密码输入不一致！");
+                    return;
+                }
+                var that = this;
+                var ress=axios.post(baseURL_.loginUrl+'/login/edit_pass',this.$qs.stringify(this.form)).then(function (res) {
+                   that.$message(res.data.data);
+                        if(res.data.statusCode=='200'){
+                            localStorage.removeItem('forestToken');
+                            localStorage.removeItem('ms_username');
+                            router.replace({                   
+                                path: "/login",                    
+                                query: {                
+                                redirect: router.currentRoute.fullPath               
+                                }                    
+                            });
+                        }
+                  });
+
+            },
+           loginout(){
+                this.$confirm('确认退出？')
+                .then( e=> {
+                    var res=axios.get(baseURL_.loginUrl+'/login/login_out').then(function (res) {
+                        if(res.data.statusCode=='200'){
+                            localStorage.removeItem('forestToken');
+                            localStorage.removeItem('ms_username');
+                            router.replace({                   
+                                path: "/login",                    
+                                query: {                
+                                redirect: router.currentRoute.fullPath               
+                                }                    
+                            });
+                        }
+                  });
+                }).catch(_ => {});
+                 
             },
             // 侧边栏折叠
             collapseChage(){
