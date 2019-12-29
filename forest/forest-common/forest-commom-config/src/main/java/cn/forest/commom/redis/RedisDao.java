@@ -45,6 +45,7 @@ public class RedisDao {
         redisTemplate.getKeySerializer().serialize(object));
   }
 
+  @SuppressWarnings("unchecked")
   public void deleteKey(String key) {
     boolean hasKey = isNotKey(key);
     if (hasKey) {
