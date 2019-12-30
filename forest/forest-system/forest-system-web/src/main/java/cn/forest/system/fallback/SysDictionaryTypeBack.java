@@ -8,10 +8,6 @@ import java.util.Map;
 @Component
 public class SysDictionaryTypeBack implements SysDictionaryTypeRemote {
 
-    @Override
-    public Object list() {
-        return null;
-    }
 
     @Override
     public Object getById(Long id) {
@@ -31,5 +27,15 @@ public class SysDictionaryTypeBack implements SysDictionaryTypeRemote {
     @Override
     public int delete(Long id) {
         return 0;
+    }
+
+    @Override
+    public Object list(Long page, Long pageSize) {
+      return null;
+    }
+
+    @Override
+    public Object getAll() {
+      return null;
     }
 }

@@ -62,7 +62,16 @@ export default new Router({
                     component: resolve => require(['../components/page/system/sysExceptionLogs/sysExceptionLogs.vue'], resolve),
                     meta: { title: '异常日志' }
                 },
-                
+                {
+                    path: '/dict_type',
+                    component: resolve => require(['../components/page/system/dict_type/dict_type.vue'], resolve),
+                    meta: { title: '字典类型' }
+                },
+                {
+                    path: '/dict_data',
+                    component: resolve => require(['../components/page/system/dict_data/dict_data.vue'], resolve),
+                    meta: { title: '字典数据' }
+                },
                 {
                     path: '/404',
                     component: resolve => require(['../components/page/404.vue'], resolve),
@@ -72,12 +81,8 @@ export default new Router({
                     path: '/403',
                     component: resolve => require(['../components/page/403.vue'], resolve),
                     meta: { title: '403' }
-                },
-                {
-                    path: '/donate',
-                    component: resolve => require(['../components/page/Donate.vue'], resolve),
-                    meta: { title: '支持作者' }
                 }
+               
             ]
         },
         {

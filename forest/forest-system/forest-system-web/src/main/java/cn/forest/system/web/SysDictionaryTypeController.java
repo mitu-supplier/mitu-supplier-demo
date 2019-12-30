@@ -18,8 +18,8 @@ public class SysDictionaryTypeController {
     private SysDictionaryTypeService sysDictionaryTypeService;
 
     @RequestMapping(value = "/list")
-    public Map<String, Object> list(){
-        return sysDictionaryTypeService.list();
+    public Map<String, Object> list(Long page, Long pageSize){
+        return sysDictionaryTypeService.list(page, pageSize);
     }
 
     @RequestMapping(value = "/getById")

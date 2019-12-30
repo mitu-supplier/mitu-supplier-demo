@@ -14,8 +14,8 @@ public class SysDictionaryTypeService {
     @Autowired
     private SysDictionaryTypeRemote sysDictionaryTypeRemote;
 
-    public Map<String, Object> list() {
-        Object list = sysDictionaryTypeRemote.list();
+    public Map<String, Object> list(Long page, Long pageSize) {
+        Object list = sysDictionaryTypeRemote.list(page,pageSize);
         if (list != null) {
             return ResultMessage.success(list);
         }
@@ -44,4 +44,12 @@ public class SysDictionaryTypeService {
         int delete = sysDictionaryTypeRemote.delete(id);
         return ResultMessage.result(delete, "删除成功", "删除失败");
     }
+    
+    public Map<String, Object> getAll() {
+      Object all = sysDictionaryTypeRemote.getAll();
+      if (all != null) {
+        return ResultMessage.success(all);
+    }
+    return null;
+  }
 }

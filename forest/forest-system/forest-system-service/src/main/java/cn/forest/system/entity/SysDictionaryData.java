@@ -2,6 +2,7 @@ package cn.forest.system.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 /**
@@ -26,6 +27,7 @@ public class SysDictionaryData {
     private Long type;
 
     @TableField(value = "is_delete")
+    @TableLogic
     private Integer isDelete;
 
     @TableField(value = "created_at", fill = FieldFill.INSERT)
