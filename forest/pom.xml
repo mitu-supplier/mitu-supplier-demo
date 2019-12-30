@@ -53,7 +53,8 @@
 		<module>forest-login-web</module>
 		<module>forest-admin</module>
 		<module>forest-search</module>
-	</modules>
+        <module>forest-mall</module>
+    </modules>
 
 	<build>
 		<plugins>
