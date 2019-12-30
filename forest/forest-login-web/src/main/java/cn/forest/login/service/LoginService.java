@@ -5,18 +5,15 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
+import cn.forest.common.util.*;
 import cn.forest.login.remote.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import cn.forest.commom.jwt.TokenAuthenticationService;
 import cn.forest.commom.redis.RedisDao;
 import cn.forest.common.Constant;
-import cn.forest.common.util.AddressIpUtil;
-import cn.forest.common.util.DateUtil;
-import cn.forest.common.util.JsonUtil;
-import cn.forest.common.util.ResultMessage;
-import cn.forest.common.util.StringUtil;
 
 @Service("loginService")
 public class LoginService {
@@ -39,6 +36,9 @@ public class LoginService {
   @Autowired
   private RedisDao redisDao;
 
+  @Value("${login-private-key}")
+  private String privateKey;
+
   public Map<String, Object> getUser(String loginName, String password, HttpServletRequest request) {
     if (StringUtil.isBlank(loginName) || StringUtil.isBlank(password)) {
       return ResultMessage.error("用户或密码不能为空");
@@ -47,7 +47,12 @@ public class LoginService {
     if (user != null) {
       HashMap object = JsonUtil.toObject(JsonUtil.toJson(user), HashMap.class);
       String pass = StringUtil.toString(object.get("password"));
-      if (pass != null && pass.equals(password.trim())) {
+      try {
+        password = RSAEncrypt.decrypt(privateKey, password.trim());
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+      if (pass != null && BCrypt.checkpw(password, pass)) {
         String token = TokenAuthenticationService.addAuthentication(StringUtil.toString(object.get("loginName")));
         HashMap userInfoMap = selectUserRoles(object);
         addSysLoginLogs(object, request,userInfoMap);

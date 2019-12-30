@@ -7,8 +7,15 @@ spring:
     host: localhost
     port: 6379
     password: forest
-    timeout: 2000    jedis:      pool:        max-idle: 8000        max-wait: -1
-        max-active: -1        min-idle: 200  application:    name: forest-login-web
+    timeout: 2000
+    jedis:
+      pool:
+        max-idle: 8000
+        max-wait: -1
+        max-active: -1
+        min-idle: 200
+  application:
+    name: forest-login-web
     
 eureka:
   instance:
@@ -23,11 +30,16 @@ management:
   endpoint:
     health:
       show-details: always
-  endpoints:    web:      exposure:        include: '*'      
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+      
 feign:
   hystrix:
-    enabled: true        
-
+    enabled: true  
+      
+login-private-key: MIIBVAIBADANBgkqhkiG9w0BAQEFAASCAT4wggE6AgEAAkEAtMppEBldu28G7PZcDMQFmtiyQdN76Qi0bWITgHsHuT4OTR/Mz+LTmowvzWWsO/AxhgK7Z+B8/qwM34ktPygiqwIDAQABAkADnSAogDlNa9S5m9sPLkPmanp1smKBr/jbTuCQ6uSmoTxNXozzYWeyMBQHoX7QgkbDOdjiuqN+yec7SRAP6wwhAiEA5dk6X9gbhhVZlV/yvo/SxyIfsmKOQTiz1Bzm5XDFwEMCIQDJXEd2wJnBSdWKdb/WOJqgbF28scZE3+HwnQ5HnVABeQIgIHDynkiASgKFbGHofyEJnPWiB6mFbos0RoH1zPiH0MUCIBiZI0nIgX/xSxrdA5Bh3dHXKyRP+06SowFHzmTFPO7RAiEAm+HiRxmEKI6frQjKOmcymO99EUsAXwhBqEmXVJJs+cg=
   
 
       
