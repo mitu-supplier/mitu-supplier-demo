@@ -74,9 +74,10 @@ export default new Router({
                 },
                 {
                     path: '/supplierList',
-                    component: resolve => require(['../components/page/system/supplier/supplierList.vue'], resolve),
+                    component: resolve => require(['../components/page/supplier/supplierList.vue'], resolve),
                     meta: { title: '供应商列表' }
                 },
+               
                 {
                     path: '/404',
                     component: resolve => require(['../components/page/404.vue'], resolve),
@@ -93,6 +94,11 @@ export default new Router({
         {
             path: '/login',
             component: resolve => require(['../components/page/login/login.vue'], resolve)
+        },
+        {
+            path: '/registed',
+            component: resolve => require(['../components/page/supplier/registed.vue'], resolve),
+            meta: { title: '供应注册' }
         },
         {
             path: '*',

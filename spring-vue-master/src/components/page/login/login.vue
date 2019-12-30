@@ -16,7 +16,7 @@
                 <div class="login-btn">
                     <el-button type="primary" @click="submitForm()">登录</el-button>
                 </div>
-                <p class="login-tips">供应商入驻</p>
+                <p class="login-tips right-supplier" style="text-align:right;"  @click="registed()">供应商入驻</p>
             </el-form>
         </div>
     </div>
@@ -55,6 +55,9 @@ Vue.prototype.$jsEncrypt=JsEncrypt;
                     alert(login.data.data);
                     
                 }
+            },
+            registed(){
+                this.$router.push('/registed');
             }
         }
     }
@@ -102,4 +105,5 @@ Vue.prototype.$jsEncrypt=JsEncrypt;
         line-height:30px;
         color:#fff;
     }
+
 </style>

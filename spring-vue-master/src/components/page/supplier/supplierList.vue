@@ -40,7 +40,7 @@
 </template>
   
 <script>
-    import { fetchData } from '../../../../api/index';
+    import { fetchData } from '../../../api/index';
     import baseURL_ from '@/utils/baseUrl.js';
     export default {
         name: 'basetable',
