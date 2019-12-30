@@ -45,7 +45,7 @@
         </div>
 
         <!-- 编辑弹出框 -->
-        <el-dialog :title="titleName"  :visible.sync="editVisible" width="30%">
+        <el-dialog :title="titleName"  :visible.sync="editVisible" width="26%">
             <el-form ref="form" :model="form" label-width="70px">
                 <el-form-item label="姓名">
                 <el-input v-model="form.name" class="input"></el-input>
@@ -67,11 +67,11 @@
         </el-dialog>
 
         <!-- 编辑弹出框 添加 修改-->
-        <el-dialog :title="ztreeTitleName" class="dialog-ztree"  :visible.sync="ztreeEditVisible" width="25%">
+        <el-dialog :title="ztreeTitleName" class="dialog-ztree dialogBox" :visible.sync="ztreeEditVisible" width="25%">
              <ul id="ztree" class="ztree"></ul>
              <span slot="footer" class="dialog-footer">
                 <el-button @click="ztreeEditVisible = false">取 消</el-button>
-                <el-button type="primary" @click="saveRole">确 定</el-button>
+                <el-button type="primary" @click="saveRole" class="m_rt">确 定</el-button>
             </span>
         </el-dialog>
     </div>
@@ -272,7 +272,7 @@
         min-height:500px;
     }
     .input{
-        width:300px;
+        width:90%;
     }
    ul.ztree{
         margin-top: 10px;
