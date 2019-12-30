@@ -73,6 +73,11 @@ export default new Router({
                     meta: { title: '字典数据' }
                 },
                 {
+                    path: '/supplierList',
+                    component: resolve => require(['../components/page/system/supplier/supplierList.vue'], resolve),
+                    meta: { title: '供应商列表' }
+                },
+                {
                     path: '/404',
                     component: resolve => require(['../components/page/404.vue'], resolve),
                     meta: { title: '404' }
