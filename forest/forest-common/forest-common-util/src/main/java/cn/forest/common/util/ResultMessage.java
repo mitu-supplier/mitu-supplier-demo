@@ -34,11 +34,11 @@ public class ResultMessage {
     return map;
   }
 
-  public static Map<String, Object> result(int num, String message) {
+  public static Map<String, Object> result(int num, String successMessage, String errorMessage) {
     if (num > 0) {
-      return success("");
+      return success(successMessage);
     } else {
-      return error("");
+      return error(errorMessage);
     }
   }
 
