@@ -24,7 +24,10 @@
 </template>
 
 <script>
+import Vue from "vue";
 import baseURL_ from '@/utils/baseUrl.js';
+import JsEncrypt from 'jsencrypt/bin/jsencrypt';
+Vue.prototype.$jsEncrypt=JsEncrypt;
     export default {
         data: function(){
             return {
@@ -32,24 +35,26 @@ import baseURL_ from '@/utils/baseUrl.js';
                     username: 'admin',
                     password: 'admin'
                 },
-               
+                
             }
         },
         methods: {
-           async submitForm() {
-              const login = await this.$http.get(baseURL_.loginUrl+'/login/do', {
-                    params: {'loginName':this.ruleForm.username,'password':this.ruleForm.password}
-              });
-              if(login.data.statusCode==200){
-                  localStorage.setItem('forestToken',login.data.data);
-                  localStorage.setItem('ms_username',this.ruleForm.username);
-                  this.$router.push('/');
-              }else{
-                  localStorage.removeItem('forestToken');
-                  alert(login.data.data);
-				  
-              }
+            async submitForm() {
+                let jse=this.$jsEncrypt;
+                jse.prototype.setPublicKey(baseURL_.public_key);
+                let passwordDeg = jse.prototype.encrypt(this.ruleForm.password);
+                const login = await this.$http.get(baseURL_.loginUrl+'/login/do', {
+                        params: {'loginName':this.ruleForm.username,'password':passwordDeg}
+                });
+                if(login.data.statusCode==200){
+                    localStorage.setItem('forestToken',login.data.data);
+                    localStorage.setItem('ms_username',this.ruleForm.username);
+                    this.$router.push('/');
+                }else{
+                    localStorage.removeItem('forestToken');
+                    alert(login.data.data);
                     
+                }
             }
         }
     }
