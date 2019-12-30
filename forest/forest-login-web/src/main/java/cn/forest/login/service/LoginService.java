@@ -113,8 +113,9 @@ public class LoginService {
     HashMap userInfoMap = (HashMap)redisDao.getValue(request.getHeader(Constant.HEADER_TOKEN_STRING));
     Object userId = userInfoMap.get("id");
     Map user = (Map) sysUserRemote.getById(Long.parseLong(userId.toString()));
-    if(oldPass.equals(user.get("password").toString())) {
-      user.put("password", newPass);
+    String pwd = user.get("password").toString();
+    if(BCrypt.checkpw(oldPass, pwd)) {
+      user.put("password", BCrypt.hashpw(newPass, BCrypt.gensalt()));
       int update=sysUserRemote.update(user);
       if(update>0) {
         return ResultMessage.success("密码修改成功！");
