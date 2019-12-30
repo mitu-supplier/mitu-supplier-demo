@@ -20,6 +20,11 @@
 	<dependencies>
 	    <dependency>
 	      <groupId>cn.forest</groupId>
+		  <artifactId>forest-commom-config</artifactId>
+		  <version>0.0.1-SNAPSHOT</version>
+	    </dependency>
+	    <dependency>
+	      <groupId>cn.forest</groupId>
 		  <artifactId>forest-common-util</artifactId>
 		  <version>0.0.1-SNAPSHOT</version>
 	    </dependency>
@@ -40,12 +45,5 @@
 		</dependencies>
 	</dependencyManagement>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
+
 </project>

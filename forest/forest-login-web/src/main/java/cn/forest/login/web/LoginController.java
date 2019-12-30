@@ -17,9 +17,19 @@ public class LoginController {
   @Autowired
   private LoginService loginService;
 
-  @RequestMapping("/")
+  @RequestMapping("/do")
   public Map<String, Object> getUser(String loginName, String password, HttpServletRequest request) {
     return loginService.getUser(loginName, password, request);
   }
 
+  @RequestMapping("/login_out")
+  public Map<String, Object> loginOut(HttpServletRequest request) {
+    return loginService.loginOut(request);
+  }
+  
+  @RequestMapping("/edit_pass")
+  public Map<String, Object> editPass(HttpServletRequest request,String oldPass,String newPass) {
+    return loginService.editPass(oldPass,newPass,request);
+  }
+  
 }

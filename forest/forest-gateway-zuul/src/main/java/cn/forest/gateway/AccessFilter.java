@@ -44,6 +44,13 @@ public class AccessFilter extends ZuulFilter {
         try {
           boolean authenticationUser = TokenAuthenticationService
               .getAuthenticationUser(request);
+          if(!authenticationUser) {
+            ctx.setSendZuulResponse(false);
+            ctx.getResponse().setContentType(
+                "text/html;charset=UTF-8");
+            ctx.setResponseStatusCode(ResultMessage.ERROR_CODE_503);
+            ctx.setResponseBody(ResultMessage.RESULT_TOKEN);
+          }
         }catch (Exception e) {
             ctx.setSendZuulResponse(false);
             ctx.getResponse().setContentType(

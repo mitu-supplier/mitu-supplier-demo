@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import cn.forest.login.fallback.SysUserBack;
 
@@ -12,5 +13,8 @@ public interface SysUserRemote {
 
   @RequestMapping("/sys_user/update")
   public int update(Map<String, ?> map);
+  
+  @RequestMapping("/sys_user/getById")
+  public Object getById(@RequestParam(value = "id") Long id);
 
 }
