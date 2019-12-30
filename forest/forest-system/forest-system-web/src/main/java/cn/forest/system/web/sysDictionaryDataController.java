@@ -2,6 +2,8 @@ package cn.forest.system.web;
 
 import cn.forest.common.util.RequestMap;
 import cn.forest.system.service.SysDictionaryDataService;
+import cn.forest.system.service.SysDictionaryTypeService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,6 +18,9 @@ public class sysDictionaryDataController {
 
     @Autowired
     private SysDictionaryDataService sysDictionaryDataService;
+    
+    @Autowired
+    private SysDictionaryTypeService sysDictionaryTypeService;
 
     @RequestMapping(value = "/list")
     public Map<String, Object> list(@RequestParam("page") Long page, @RequestParam("pageSize") Long pageSize, @RequestParam("type") Long type) {
@@ -40,5 +45,10 @@ public class sysDictionaryDataController {
     @RequestMapping(value = "/delete")
     public Map<String, Object> delete(@RequestParam("id") Long id) {
         return sysDictionaryDataService.delete(id);
+    }
+    
+    @RequestMapping(value = "/getDataType")
+    public Map<String, Object> getDataType() {
+        return sysDictionaryTypeService.getAll();
     }
 }

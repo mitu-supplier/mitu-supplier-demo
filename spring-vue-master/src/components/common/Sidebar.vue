@@ -65,6 +65,8 @@
                         var obj = new Object();
                         obj.title = datas[i].name;
                         obj.icon = datas[i].iconName;
+                        obj.id =  datas[i].id;
+                        obj.index = i+1;
                         var subs=[];
                         if(datas[i].isParent == "false"){
                             obj.index = datas[i].url;
@@ -76,6 +78,8 @@
                                  chil.title = datas[j].name;
                                  chil.icon = datas[j].iconName;
                                  chil.index = datas[j].url;
+                                 chil.id =  datas[j].id;
+                                 chil.id = (i+1)*(j+1);
                                  subs.push(chil);
                                 }
                             }
