@@ -2,8 +2,6 @@ package cn.forest.server;
 
 import cn.forest.mall.entity.Suppliers;
 import cn.forest.service.SuppliersService;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

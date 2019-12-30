@@ -4,6 +4,18 @@ server:
 spring:
   application:
     name: forest-mall-web
+  redis:
+    database: 0
+    host: localhost
+    port: 6379
+    password: forest
+    timeout: 2000
+    jedis:
+      pool:
+        max-idle: 8000
+        max-wait: -1
+        max-active: -1
+        min-idle: 200
 eureka:
   instance:
     prefer-ip-address: true

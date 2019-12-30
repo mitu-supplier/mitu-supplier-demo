@@ -26,5 +26,5 @@ public interface SuppliersRemote {
     Object getById(@RequestParam("id") Long id);
 
     @RequestMapping("/suppliers/updateStatus")
-    int updateStatus(Long id, Integer status);
+    int updateStatus(@RequestParam("id")Long id, @RequestParam("status")Integer status);
 }
