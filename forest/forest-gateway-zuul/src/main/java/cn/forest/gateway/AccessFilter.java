@@ -33,7 +33,7 @@ public class AccessFilter extends ZuulFilter {
     HttpServletRequest request = ctx.getRequest();
     HttpServletResponse response = ctx.getResponse();
     String pathName = request.getServletPath ();
-    if(pathName.indexOf("/login/do")==-1) {
+    if(pathName.indexOf("/login")==-1 && pathName.indexOf("/file/upload")==-1) {
       String authorization = request.getHeader(Constant.HEADER_TOKEN_STRING);
       if(StringUtils.isEmpty(authorization)) {
         ctx.getResponse().setContentType("text/html;charset=UTF-8");

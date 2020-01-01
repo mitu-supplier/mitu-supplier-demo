@@ -77,7 +77,6 @@ export default new Router({
                     component: resolve => require(['../components/page/supplier/supplierList.vue'], resolve),
                     meta: { title: '供应商列表' }
                 },
-               
                 {
                     path: '/404',
                     component: resolve => require(['../components/page/404.vue'], resolve),
