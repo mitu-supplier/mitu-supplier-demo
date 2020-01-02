@@ -29,7 +29,7 @@ public class AuditRecode {
     private String auditReason;
 
     /**
-     * 审核类型  1供应商
+     * 审核类型  1供应商  2商品
      */
     @TableField(value = "audit_type")
     private Integer auditType;

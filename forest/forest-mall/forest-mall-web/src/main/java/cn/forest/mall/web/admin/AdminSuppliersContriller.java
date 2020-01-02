@@ -1,7 +1,6 @@
-package cn.forest.mall.web;
+package cn.forest.mall.web.admin;
 
 import cn.forest.common.util.RequestMap;
-import cn.forest.mall.remote.SuppliersRemote;
 import cn.forest.mall.service.SuppliersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,8 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/supplier")
-public class SuppliersController {
+@RequestMapping("/admin/supplier")
+public class AdminSuppliersContriller {
 
     @Autowired
     private SuppliersService suppliersService;
@@ -21,12 +20,12 @@ public class SuppliersController {
     /**
      * 查看商户列表
      *
-     * @param map
+     * @param request
      * @return
      */
     @RequestMapping("/list")
-    public Map<String, Object> list(Map<String, Object> map) {
-        return suppliersService.list(map);
+    public Map<String, Object> list(HttpServletRequest request) {
+        return suppliersService.list(RequestMap.requestToMap(request));
     }
 
     /**
@@ -41,14 +40,25 @@ public class SuppliersController {
     }
 
     /**
-     * 注册
+     * 修改
      *
      * @param request
      * @return
      */
-    @RequestMapping("/register")
-    public Map<String, Object> register(HttpServletRequest request) {
-        return suppliersService.register(RequestMap.requestToMap(request));
+    @RequestMapping("/update")
+    public Map<String, Object> update(HttpServletRequest request) {
+        return suppliersService.update(RequestMap.requestToMap(request));
+    }
+
+    /**
+     * 删除
+     *
+     * @param id
+     * @return
+     */
+    @RequestMapping("/delete")
+    public Map<String, Object> delete(@RequestParam("id") Long id) {
+        return suppliersService.delete(id);
     }
 
     /**
@@ -73,5 +83,16 @@ public class SuppliersController {
     @RequestMapping("/getAuditList")
     public Map<String, Object> getAuditList(@RequestParam("page") Long page, @RequestParam("pageSize") Long pageSize, @RequestParam("businessId") Long businessId) {
         return suppliersService.getAuditList(page, pageSize, businessId);
+    }
+
+    /**
+     * 根据code获取字典表数据
+     *
+     * @param code
+     * @return
+     */
+    @RequestMapping("/getDictionaryData")
+    public Map<String, Object> getDictionaryData(@RequestParam("code") String code) {
+        return suppliersService.getDictionaryData(code);
     }
 }

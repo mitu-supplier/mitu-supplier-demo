@@ -18,8 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/sysDictionaryData")
 public class SysDictionaryDataAction {
 
-    
-    
     @Autowired
     private SysDictionaryDataMapper sysDictionaryDataMapper;
 
@@ -60,6 +58,11 @@ public class SysDictionaryDataAction {
     @RequestMapping("/delete")
     public int delete(@RequestParam("id") Long id) {
         return sysDictionaryDataMapper.deleteById(id);
+    }
+
+    @RequestMapping("/selectByDateTypeCode")
+    public Object selectByDateTypeCode(@RequestParam("code") String code){
+        return sysDictionaryDataMapper.selectByDateTypeCode(code);
     }
 
 }

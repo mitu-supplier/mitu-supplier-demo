@@ -1,4 +1,4 @@
-package cn.forest.mall.web;
+package cn.forest.mall.web.admin;
 
 import cn.forest.common.util.RequestMap;
 import cn.forest.common.web.util.SysLogs;

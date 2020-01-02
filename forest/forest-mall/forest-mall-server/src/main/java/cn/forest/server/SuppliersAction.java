@@ -1,7 +1,9 @@
 package cn.forest.server;
 
 import cn.forest.mall.entity.Suppliers;
-import cn.forest.service.SuppliersService;
+import cn.forest.mall.mapper.SuppliersMapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,44 +17,55 @@ import java.util.Map;
 public class SuppliersAction {
 
     @Autowired
-    private SuppliersService suppliersService;
+    private SuppliersMapper suppliersMapper;
 
     @RequestMapping("/list")
     public Object list(Map<String, Object> map) {
-        return suppliersService.list(map);
+        Long page = Long.parseLong(map.get("page").toString());
+        Long pageSize = Long.parseLong(map.get("pageSize").toString());
+        Page<Suppliers> pages = new Page<Suppliers>(page, pageSize);
+        QueryWrapper<Suppliers> queryWrapper = new QueryWrapper<Suppliers>();
+        if(map.get("status") != null){
+            queryWrapper.eq("status", map.get("status"));
+        }
+        if (map.get("name") != null) {
+            queryWrapper.like("name", map.get("name"));
+        }
+        queryWrapper.orderByDesc("created_at");
+        return suppliersMapper.selectPage(pages, queryWrapper);
     }
 
     @RequestMapping("/save")
-    public int save(@RequestBody Suppliers suppliers) {
-        suppliers.setIsDelete(0);
-        boolean save = suppliersService.save(suppliers);
-        if (save) {
-            return 1;
+    public Object save(@RequestBody Suppliers suppliers) {
+        int insert = suppliersMapper.insert(suppliers);
+        if(insert > 0){
+            return suppliers.getId();
         }
-        return 0;
+        return null;
     }
 
     @RequestMapping("/update")
     public int update(@RequestBody Suppliers suppliers) {
-        boolean update = suppliersService.updateById(suppliers);
-        if (update) {
-            return 1;
-        }
-        return 0;
+        return suppliersMapper.updateById(suppliers);
     }
 
     @RequestMapping("/delete")
     public int delete(@RequestParam("id") Long id) {
-        return suppliersService.delete(id);
+        return suppliersMapper.deleteById(id);
     }
 
     @RequestMapping("/getById")
     public Object getById(@RequestParam("id") Long id) {
-        return suppliersService.getById(id);
+        return suppliersMapper.selectById(id);
     }
 
     @RequestMapping("/updateStatus")
     public int updateStatus(@RequestParam("id") Long id, @RequestParam("status") Integer status) {
-        return suppliersService.updateStatus(id, status);
+        Suppliers suppliers = suppliersMapper.selectById(id);
+        if(suppliers != null){
+            suppliers.setStatus(status);
+            return suppliersMapper.updateById(suppliers);
+        }
+        return 0;
     }
 }

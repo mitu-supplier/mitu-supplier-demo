@@ -2,5 +2,16 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.forest.system.mapper.SysDictionaryDataMapper">
 
-
+    <!--  根据类型code查询字典数据  -->
+    <select id="selectByDateTypeCode" parameterType="String" resultType="cn.forest.system.entity.SysDictionaryData">
+        SELECT
+            sdd.id,
+            sdd.name
+        FROM
+            sys_dictionary_type sdt
+            INNER JOIN sys_dictionary_data sdd ON sdd.type = sdt.id
+        WHERE
+            sdt.code = #{code}
+            AND sdd.is_delete = 0
+    </select>
 </mapper>

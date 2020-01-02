@@ -1,15 +1,15 @@
 package cn.forest.mall.fallback;
 
-import cn.forest.mall.remote.SuppliersRemote;
+import cn.forest.mall.remote.ProductsRemote;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
 @Component
-public class SuppliersBack implements SuppliersRemote {
+public class ProductsBack implements ProductsRemote {
 
     @Override
-    public Object list(Map<String, Object> map) {
+    public Object list(Long page, Long pageSize) {
         return null;
     }
 
@@ -34,7 +34,7 @@ public class SuppliersBack implements SuppliersRemote {
     }
 
     @Override
-    public int updateStatus(Long id, Integer status) {
+    public int batchAudit(Long ids, Integer auditStatus) {
         return 0;
     }
 }

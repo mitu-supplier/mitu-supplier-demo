@@ -2,11 +2,14 @@ package cn.forest.mall.service;
 
 import cn.forest.commom.redis.RedisDao;
 import cn.forest.common.Constant;
+import cn.forest.common.util.JsonUtil;
 import cn.forest.common.util.RequestMap;
 import cn.forest.common.util.ResultMessage;
 import cn.forest.mall.remote.AuditRecodeRemote;
 import cn.forest.mall.remote.SuppliersRemote;
+import cn.forest.mall.remote.SysDictionaryDataRemote;
 import cn.forest.mall.remote.SysUserRemote;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +30,9 @@ public class SuppliersService {
     private AuditRecodeRemote auditRecodeRemote;
 
     @Autowired
+    private SysDictionaryDataRemote sysDictionaryDataRemote;
+
+    @Autowired
     private RedisDao redisDao;
 
     /**
@@ -36,7 +42,6 @@ public class SuppliersService {
      * @return
      */
     public Map<String, Object> list(Map<String, Object> map) {
-        map.put("isDelete", 0);
         Object list = suppliersRemote.list(map);
         if (list != null) {
             return ResultMessage.success(list);
@@ -44,6 +49,12 @@ public class SuppliersService {
         return null;
     }
 
+    /**
+     * 根据id查询
+     *
+     * @param id
+     * @return
+     */
     public Map<String, Object> getById(Long id) {
         Object obj = suppliersRemote.getById(id);
         if (obj != null) {
@@ -53,25 +64,42 @@ public class SuppliersService {
     }
 
     /**
+     * 商户注册  保存用户信息
+     * @param map
+     * @return
+     */
+    public Map<String, Object> saveStepOneTwo(Map<String, Object> map){
+        Object userId = map.get("id");
+        if(userId == null){
+            int add = sysUserRemote.add(map);
+            return ResultMessage.result(add, "保存成功", "保存失败");
+        }else{
+            Map<String, Object> supplierInfo = new HashMap<>();
+            String code = "1000001";
+            supplierInfo.put("code", code);
+            Object supplierId = suppliersRemote.save(supplierInfo);
+            if(supplierId != null){
+                supplierInfo.put("id", Long.parseLong(supplierId.toString()));
+                map.put("type", 1);
+                map.put("typeId", Long.parseLong(supplierId.toString()));
+                int update = sysUserRemote.update(map);
+                if(update > 0){
+                    return ResultMessage.success(supplierInfo);
+                }
+            }
+            return ResultMessage.error("保存失败");
+        }
+    }
+
+    /**
      * 注册
      *
      * @param map
      * @return
      */
-    public Map<String, Object> register(Map<String, Object> map) {
-        // 用户信息
-        Map userInfoMap = new HashMap();
-        userInfoMap.put("loginName", map.get("loginName"));
-        userInfoMap.put("password", map.get("password"));
-        userInfoMap.put("isDelete", 0);
-        userInfoMap.put("isStatus", 0);
-        userInfoMap.put("name", map.get("name"));
-        sysUserRemote.add(userInfoMap);
-        // 商户信息
-        map.put("isDelete", 0);
-        map.put("status", 0);
-        int save = suppliersRemote.save(map);
-        return ResultMessage.result(save, "提交成功", "提交失败");
+    public Map<String, Object> update(Map<String, Object> map) {
+        int update = suppliersRemote.update(map);
+        return ResultMessage.result(update, "保存成功", "保存失败");
     }
 
     /**
@@ -87,8 +115,8 @@ public class SuppliersService {
         suppliersRemote.updateStatus(supplierId, status);
         // 保存审核记录
         String header = request.getHeader(Constant.HEADER_TOKEN_STRING);
-        HashMap userInfoMap = (HashMap)redisDao.getValue(header);
-        if(userInfoMap != null){
+        HashMap userInfoMap = (HashMap) redisDao.getValue(header);
+        if (userInfoMap != null) {
             map.put("auditUserId", userInfoMap.get("id"));
             map.put("auditUserName", userInfoMap.get("name"));
         }
@@ -111,5 +139,29 @@ public class SuppliersService {
             return ResultMessage.success(obj);
         }
         return null;
+    }
+
+    /**
+     * 根据code获取字典表数据
+     *
+     * @param code
+     * @return
+     */
+    public Map<String, Object> getDictionaryData(String code) {
+        Object obj = sysDictionaryDataRemote.selectByDateTypeCode(code);
+        if (obj != null) {
+            return ResultMessage.success(obj);
+        }
+        return null;
+    }
+
+    /**
+     * 删除
+     * @param id
+     * @return
+     */
+    public Map<String, Object> delete(Long id){
+        int delete = suppliersRemote.delete(id);
+        return ResultMessage.result(delete, "删除成功", "删除失败");
     }
 }

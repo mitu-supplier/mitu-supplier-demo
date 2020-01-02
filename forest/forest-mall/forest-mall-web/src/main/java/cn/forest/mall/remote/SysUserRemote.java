@@ -13,6 +13,9 @@ public interface SysUserRemote {
     @RequestMapping("/sys_user/add")
     public int add(Map<String, ?> map);
 
+    @RequestMapping("/sys_user/update")
+    public int update(Map<String, ?> map);
+
     @RequestMapping("/sys_user/getById")
     public Object getById(@RequestParam(value = "id") Long id);
 

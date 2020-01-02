@@ -14,7 +14,7 @@ public interface SuppliersRemote {
     Object list(Map<String, Object> map);
 
     @RequestMapping("/suppliers/save")
-    int save(Map<String, ?> map);
+    Object save(Map<String, ?> map);
 
     @RequestMapping("/suppliers/update")
     int update(Map<String, ?> map);

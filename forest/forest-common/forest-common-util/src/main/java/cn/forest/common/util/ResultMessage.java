@@ -25,16 +25,6 @@ public class ResultMessage {
   
   public final static String RESULT_TOKEN = "登录失效，请重新登录";
 
-
-
-  public static Map<String, Object> result(int num, String successMessage, String errorMessage) {
-    if (num > 0) {
-      return success(successMessage);
-    } else {
-      return error(errorMessage);
-    }
-  }
-  
   public static Map<String, Object> result(Object message, String statusCode) {
     Map<String, Object> map = new HashMap<String, Object>();
     map.put(STATUSCODE, statusCode);
