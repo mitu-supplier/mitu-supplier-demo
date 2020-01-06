@@ -20,11 +20,10 @@ public class PermissionService {
     public Map<String, Object> getUserPermissionList(HttpServletRequest request){
         String authorization = request.getHeader(Constant.HEADER_TOKEN_STRING);
         if(authorization != null){
-
-        }
-        HashMap userInfoMap = (HashMap)redisDao.getValue(authorization);
-        if(userInfoMap != null){
-            return ResultMessage.success(userInfoMap.get("permissions"));
+            HashMap userInfoMap = (HashMap)redisDao.getValue(authorization);
+            if(userInfoMap != null){
+                return ResultMessage.success(userInfoMap.get("permissions"));
+            }
         }
         return ResultMessage.error("未获取到用户数据");
     }

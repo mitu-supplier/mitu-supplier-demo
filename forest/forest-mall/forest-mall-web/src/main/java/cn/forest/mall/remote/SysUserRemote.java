@@ -11,14 +11,14 @@ import java.util.Map;
 public interface SysUserRemote {
 
     @RequestMapping("/sys_user/add")
-    public int add(Map<String, ?> map);
+    Object add(Map<String, ?> map);
 
     @RequestMapping("/sys_user/update")
-    public int update(Map<String, ?> map);
+    int update(Map<String, ?> map);
 
     @RequestMapping("/sys_user/getById")
-    public Object getById(@RequestParam(value = "id") Long id);
+    Object getById(@RequestParam(value = "id") Long id);
 
     @RequestMapping("/sys_user/saveRole")
-    public int saveRole(Map<String, ?> map);
+    int saveRole(Map<String, ?> map);
 }

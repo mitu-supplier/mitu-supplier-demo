@@ -34,6 +34,7 @@ public class SuppliersController {
      * @param request
      * @return
      */
+    @RequestMapping("/saveStepOneTwo")
     public Map<String, Object> saveStepOneTwo(HttpServletRequest request) {
         return suppliersService.saveStepOneTwo(RequestMap.requestToMap(request));
     }
@@ -52,11 +53,20 @@ public class SuppliersController {
     /**
      * 根据code获取字典表数据
      *
-     * @param code
      * @return
      */
     @RequestMapping("/getDictionaryData")
-    public Map<String, Object> getDictionaryData(@RequestParam("code") String code) {
-        return suppliersService.getDictionaryData(code);
+    public Map<String, Object> getDictionaryData() {
+        return suppliersService.getDictionaryData();
+    }
+
+    /**
+     * 获取当前注册人信息
+     * @param request
+     * @return
+     */
+    @RequestMapping("/getUserInfo")
+    public Map<String, Object> getUserInfo(HttpServletRequest request){
+        return suppliersService.getUserInfo(request);
     }
 }

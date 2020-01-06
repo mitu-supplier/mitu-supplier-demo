@@ -5,10 +5,13 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 @TableName("suppliers")
-public class Suppliers {
+public class Suppliers implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @TableField(value = "id")
     private Long id;
@@ -188,6 +191,12 @@ public class Suppliers {
     private Long productEnterType;
 
     /**
+     * 签约公司
+     */
+    @TableField(value = "sign_company")
+    private Long signCompany;
+
+    /**
      * 商标注册证
      */
     @TableField(value = "trademark_registration")
@@ -217,7 +226,7 @@ public class Suppliers {
     private String investmentPerson;
 
     /**
-     * 状态 0待审核  1审核通过 2审核不通过
+     * 状态 -1未提交 0待审核  1审核通过 2审核不通过
      */
     @TableField(value = "status")
     private Integer status;
@@ -543,5 +552,13 @@ public class Suppliers {
 
     public void setInvestmentPerson(String investmentPerson) {
         this.investmentPerson = investmentPerson;
+    }
+
+    public Long getSignCompany() {
+        return signCompany;
+    }
+
+    public void setSignCompany(Long signCompany) {
+        this.signCompany = signCompany;
     }
 }

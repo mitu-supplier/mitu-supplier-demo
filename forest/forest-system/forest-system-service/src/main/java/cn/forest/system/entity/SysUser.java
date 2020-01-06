@@ -47,6 +47,12 @@ public class SysUser implements Serializable {
   @TableField(value = "ip")
   private String ip;
 
+  @TableField(value = "type")
+  private Integer type;
+
+  @TableField(value = "type_id")
+  private Long typeId;
+
   public Long getId() {
     return id;
   }
@@ -143,4 +149,19 @@ public class SysUser implements Serializable {
     this.ip = ip;
   }
 
+  public Integer getType() {
+    return type;
+  }
+
+  public void setType(Integer type) {
+    this.type = type;
+  }
+
+  public Long getTypeId() {
+    return typeId;
+  }
+
+  public void setTypeId(Long typeId) {
+    this.typeId = typeId;
+  }
 }

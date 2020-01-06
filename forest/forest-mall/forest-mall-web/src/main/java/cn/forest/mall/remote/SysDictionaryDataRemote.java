@@ -13,4 +13,7 @@ public interface SysDictionaryDataRemote {
 
     @RequestMapping("/sysDictionaryData/getById")
     Object getById(@RequestParam("id") Long id);
+
+    @RequestMapping("/sysDictionaryData/selectByDateTypeId")
+    Object selectByDateTypeId(@RequestParam("id") Long id);
 }

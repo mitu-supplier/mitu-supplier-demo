@@ -78,6 +78,11 @@ export default new Router({
                     meta: { title: '供应商列表' }
                 },
                 {
+                    path: '/productList',
+                    component: resolve => require(['../components/page/product/productList.vue'], resolve),
+                    meta: { title: '商品列表' }
+                },
+                {
                     path: '/404',
                     component: resolve => require(['../components/page/404.vue'], resolve),
                     meta: { title: '404' }

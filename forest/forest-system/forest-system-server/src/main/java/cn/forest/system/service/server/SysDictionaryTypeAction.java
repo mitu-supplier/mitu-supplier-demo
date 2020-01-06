@@ -57,6 +57,6 @@ public class SysDictionaryTypeAction {
       QueryWrapper<SysDictionaryType> queryWrapper = new QueryWrapper<SysDictionaryType>();
       queryWrapper.orderByAsc("id");
       return sysDictionaryTypeMapper.selectList(queryWrapper);
-     }
+    }
 
 }

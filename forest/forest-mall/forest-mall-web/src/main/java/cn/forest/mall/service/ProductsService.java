@@ -2,20 +2,20 @@ package cn.forest.mall.service;
 
 import cn.forest.commom.redis.RedisDao;
 import cn.forest.common.Constant;
+import cn.forest.common.util.JsonUtil;
 import cn.forest.common.util.RequestMap;
 import cn.forest.common.util.ResultMessage;
+import cn.forest.common.util.StringUtil;
 import cn.forest.mall.remote.AuditRecodeRemote;
+import cn.forest.mall.remote.CatalogsRemote;
 import cn.forest.mall.remote.ProductsRemote;
-import com.sun.xml.internal.ws.resources.HttpserverMessages;
-import org.omg.PortableInterceptor.SUCCESSFUL;
+import cn.forest.mall.remote.SysDictionaryDataRemote;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service("productsSercie")
@@ -28,12 +28,41 @@ public class ProductsService {
     private AuditRecodeRemote auditRecodeRemote;
 
     @Autowired
+    private SysDictionaryDataRemote sysDictionaryDataRemote;
+
+    @Autowired
+    private CatalogsRemote catalogsRemote;
+
+    @Autowired
     private RedisDao redisDao;
 
-    public Map<String, Object> list(Long page, Long pageSize) {
-        Object list = productsRemote.list(page, pageSize);
-        if (list != null) {
-            return ResultMessage.success(list);
+    public Map<String, Object> list(Map<String, Object> map) {
+        Object obj = productsRemote.list(map);
+        if (obj != null) {
+            Map pMap = (Map) obj;
+            Object list = pMap.get("list");
+            if(list != null){
+                List<Map<String, Object>> productList = (List<Map<String, Object>>) list;
+                for (Map<String, Object> product : productList){
+                    // 品目名称
+                    if(StringUtil.toString(product.get("catalogId")) != null){
+                        Long catalogId = Long.parseLong(StringUtil.toString(product.get("catalogId")));
+                        Object catalogs = catalogsRemote.getById(catalogId);
+                        if(catalogs != null){
+                            product.put("catalogName", JsonUtil.readTree(catalogs).path("name").asText());
+                        }
+                    }
+                    // 发货类型
+                    if(StringUtil.toString(product.get("deliveryType")) != null){
+                        Long deliveryType = Long.parseLong(StringUtil.toString(product.get("deliveryType")));
+                        Object delivery = sysDictionaryDataRemote.getById(deliveryType);
+                        if(delivery != null){
+                            product.put("deliveryName", JsonUtil.readTree(delivery).path("name").asText());
+                        }
+                    }
+                }
+            }
+            return ResultMessage.success(obj);
         }
         return null;
     }
@@ -47,6 +76,16 @@ public class ProductsService {
     }
 
     public Map<String, Object> save(Map<String, Object> map) {
+        Object code = map.get("code");
+        if (code != null) {
+            Object o = productsRemote.selectByCode(code.toString());
+            if (o != null) {
+                List pList = (List) o;
+                if (pList.size() > 0) {
+                    return ResultMessage.error("保存失败，商品编码已存在");
+                }
+            }
+        }
         Object save = productsRemote.save(map);
         if (save != null) {
             return ResultMessage.success("保存成功");
@@ -119,5 +158,10 @@ public class ProductsService {
             return ResultMessage.error("审核成功");
         }
         return ResultMessage.error("审核失败");
+    }
+
+    public Map<String, Object> batchDelete(String ids){
+        int i = productsRemote.batchDelete(ids);
+        return ResultMessage.result(i, "删除成功", "删除失败");
     }
 }

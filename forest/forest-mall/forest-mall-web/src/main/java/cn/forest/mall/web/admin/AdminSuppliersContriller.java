@@ -75,24 +75,21 @@ public class AdminSuppliersContriller {
     /**
      * 查看审核记录
      *
-     * @param page
-     * @param pageSize
-     * @param businessId
+     * @param request
      * @return
      */
     @RequestMapping("/getAuditList")
-    public Map<String, Object> getAuditList(@RequestParam("page") Long page, @RequestParam("pageSize") Long pageSize, @RequestParam("businessId") Long businessId) {
-        return suppliersService.getAuditList(page, pageSize, businessId);
+    public Map<String, Object> getAuditList(HttpServletRequest request) {
+        return suppliersService.getAuditList(RequestMap.requestToMap(request));
     }
 
     /**
      * 根据code获取字典表数据
      *
-     * @param code
      * @return
      */
     @RequestMapping("/getDictionaryData")
-    public Map<String, Object> getDictionaryData(@RequestParam("code") String code) {
-        return suppliersService.getDictionaryData(code);
+    public Map<String, Object> getDictionaryData() {
+        return suppliersService.getDictionaryData();
     }
 }

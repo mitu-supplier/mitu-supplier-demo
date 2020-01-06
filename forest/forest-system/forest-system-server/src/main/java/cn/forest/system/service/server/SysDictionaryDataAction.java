@@ -65,4 +65,9 @@ public class SysDictionaryDataAction {
         return sysDictionaryDataMapper.selectByDateTypeCode(code);
     }
 
+    @RequestMapping("/selectByDateTypeId")
+    public Object selectByDateTypeId(@RequestParam("id") Long id){
+        return sysDictionaryDataMapper.selectByDateTypeId(id);
+    }
+
 }

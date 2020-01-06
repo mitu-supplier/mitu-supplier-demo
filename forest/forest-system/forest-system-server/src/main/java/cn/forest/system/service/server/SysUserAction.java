@@ -3,6 +3,7 @@ package cn.forest.system.service.server;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.forest.common.service.utils.ResultSave;
 import cn.forest.common.util.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
@@ -55,11 +56,12 @@ public class SysUserAction {
   }
 
   @RequestMapping("/add")
-  public int save(@RequestBody SysUser user) {
+  public Object save(@RequestBody SysUser user) {
     if(user.getPassword() != null){
       user.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
     }
-    return sysUserMapper.insert(user);
+    int insert = sysUserMapper.insert(user);
+    return ResultSave.resultSave(insert, user);
   }
 
   @RequestMapping("/update")

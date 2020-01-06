@@ -5,10 +5,13 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 @TableName(value = "products")
-public class Products {
+public class Products implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @TableField(value = "id")
     private Long id;
@@ -90,6 +93,9 @@ public class Products {
      */
     @TableField(value = "delivery_type_code")
     private String deliveryTypeCode;
+
+    @TableField(value = "inventory_alert_num")
+    private Integer inventoryAlertNum;
 
     /**
      * 添加时间
@@ -244,5 +250,13 @@ public class Products {
 
     public void setIsDelete(Integer isDelete) {
         this.isDelete = isDelete;
+    }
+
+    public Integer getInventoryAlertNum() {
+        return inventoryAlertNum;
+    }
+
+    public void setInventoryAlertNum(Integer inventoryAlertNum) {
+        this.inventoryAlertNum = inventoryAlertNum;
     }
 }

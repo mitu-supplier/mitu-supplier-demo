@@ -18,7 +18,7 @@ public interface SysUserRemote {
   public int delete(@RequestParam(value = "id") Long id);
 
   @RequestMapping("/sys_user/add")
-  public int add(Map<String, ?> map);
+  public Object add(Map<String, ?> map);
 
   @RequestMapping("/sys_user/update")
   public int update(Map<String, ?> map);

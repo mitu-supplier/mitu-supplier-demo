@@ -11,7 +11,7 @@ import java.util.Map;
 public interface ProductsRemote {
 
     @RequestMapping("/products/list")
-    Object list(@RequestParam("page") Long page, @RequestParam("pageSize") Long pageSize);
+    Object list(Map<String, ?> map);
 
     @RequestMapping("/products/save")
     Object save(Map<String, ?> map);
@@ -27,4 +27,10 @@ public interface ProductsRemote {
 
     @RequestMapping("/products/batchAudit")
     int batchAudit(@RequestParam("ids")String ids, @RequestParam("auditStatus")Integer auditStatus);
+
+    @RequestMapping("/products/selectByCode")
+    public Object selectByCode(@RequestParam("code") String code);
+
+    @RequestMapping("/products/batchDelete")
+    int batchDelete(@RequestParam("ids") String ids);
 }

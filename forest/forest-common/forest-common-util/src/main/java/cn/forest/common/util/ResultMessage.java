@@ -52,6 +52,10 @@ public class ResultMessage {
     return result(message, SUCCESS_CODE_204);
   }
 
+  public static Map<String, Object> error(Object message) {
+    return result(message, SUCCESS_CODE_204);
+  }
+
   public static Map<String, Object> result(String result) {
     if (!StringUtil.isBlank(result)) {
       if (ResultMessage.ERROR_CODE.equals(result)) {

@@ -2,6 +2,7 @@ package cn.forest.system.service;
 
 import java.util.Map;
 
+import cn.forest.common.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,9 +32,13 @@ public class SysUserService {
   }
 
   public Map<String, Object> add(Map<String, ?> map) {
-    int add = sysUserRemote.add(map);
-    if (add > 0) {
-      return ResultMessage.result("添加成功");
+    Object add = sysUserRemote.add(map);
+    if(add != null){
+      Map result = (Map) add;
+      int num = Integer.parseInt(result.get(Constant.RESULT_NUM).toString());
+      if(num > 0){
+        return ResultMessage.result("添加成功");
+      }
     }
     return ResultMessage.error("添加失败");
   }

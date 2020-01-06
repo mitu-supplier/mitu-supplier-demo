@@ -4,8 +4,10 @@ import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import java.io.Serializable;
+
 @TableName("audit_recode")
-public class AuditRecode {
+public class AuditRecode implements Serializable {
 
     @TableField(value = "id")
     private Long id;

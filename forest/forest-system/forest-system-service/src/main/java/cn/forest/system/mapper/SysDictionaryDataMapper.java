@@ -15,4 +15,12 @@ public interface SysDictionaryDataMapper extends BaseMapper<SysDictionaryData> {
      * @return
      */
     List<SysDictionaryData> selectByDateTypeCode(@Param("code") String code);
+
+    /**
+     * 根据类型id查询字典数据
+     *
+     * @param id
+     * @return
+     */
+    List<SysDictionaryData> selectByDateTypeId(@Param("id") Long id);
 }

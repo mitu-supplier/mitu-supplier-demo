@@ -47,7 +47,7 @@ Vue.prototype.$jsEncrypt=JsEncrypt;
                         params: {'loginName':this.ruleForm.username,'password':passwordDeg}
                 });
                 if(login.data.statusCode==200){
-                    localStorage.setItem('forestToken',login.data.data);
+                    localStorage.setItem('forestToken',login.data.data.token);
                     localStorage.setItem('ms_username',this.ruleForm.username);
                     this.$router.push('/');
                 }else{

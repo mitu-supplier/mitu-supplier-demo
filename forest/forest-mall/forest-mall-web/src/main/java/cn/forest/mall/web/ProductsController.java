@@ -22,13 +22,12 @@ public class ProductsController {
     /**
      * 列表查询
      *
-     * @param page
-     * @param pageSize
+     * @param request
      * @return
      */
     @RequestMapping("/list")
-    public Map<String, Object> list(@RequestParam("page") Long page, @RequestParam("pageSize") Long pageSize) {
-        return productsService.list(page, pageSize);
+    public Map<String, Object> list(HttpServletRequest request) {
+        return productsService.list(RequestMap.requestToMap(request));
     }
 
     /**
@@ -86,4 +85,14 @@ public class ProductsController {
         return productsService.batchAudit(request);
     }
 
+    /**
+     * 批量删除
+     *
+     * @param ids
+     * @return
+     */
+    @RequestMapping("/batchDelete")
+    public Map<String, Object> batchDelete(@RequestParam("ids") String ids) {
+        return productsService.batchDelete(ids);
+    }
 }

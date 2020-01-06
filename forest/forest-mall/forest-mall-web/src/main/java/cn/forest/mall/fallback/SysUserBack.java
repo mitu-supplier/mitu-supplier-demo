@@ -9,8 +9,8 @@ import java.util.Map;
 public class SysUserBack implements SysUserRemote {
 
     @Override
-    public int add(Map<String, ?> map) {
-        return 0;
+    public Object add(Map<String, ?> map) {
+        return null;
     }
 
     @Override

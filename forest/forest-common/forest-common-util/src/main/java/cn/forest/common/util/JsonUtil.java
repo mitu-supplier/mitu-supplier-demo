@@ -126,4 +126,15 @@ public class JsonUtil {
     }
   }
 
+  public static JsonNode readTree(Object obj) {
+    try {
+      return mapper.readTree(mapper.writeValueAsString(obj));
+    } catch (JsonProcessingException e) {
+      e.printStackTrace();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
 }

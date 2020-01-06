@@ -9,7 +9,7 @@ import java.util.Map;
 public class AuditRecodeBack implements AuditRecodeRemote {
 
     @Override
-    public Object list(Long page, Long pageSize, Long businessId, Integer auditType) {
+    public Object list(Map<String, ?> map) {
         return null;
     }
 

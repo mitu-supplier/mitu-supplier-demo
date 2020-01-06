@@ -1,17 +1,13 @@
 package cn.forest.mall.fallback;
 
-import cn.forest.mall.remote.ProductsRemote;
+import cn.forest.mall.remote.CamiloRemote;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Map;
 
 @Component
-public class ProductsBack implements ProductsRemote {
-
-    @Override
-    public Object list(Map<String, ?> map) {
-        return null;
-    }
+public class CamiloBack implements CamiloRemote {
 
     @Override
     public Object save(Map<String, ?> map) {
@@ -29,22 +25,17 @@ public class ProductsBack implements ProductsRemote {
     }
 
     @Override
-    public Object getById(Long id) {
-        return null;
-    }
-
-    @Override
-    public int batchAudit(String ids, Integer auditStatus) {
+    public int batchSave(List<Map<String, ?>> mapList) {
         return 0;
     }
 
     @Override
-    public Object selectByCode(String code) {
+    public Object selectByProductId(Long productId) {
         return null;
     }
 
     @Override
-    public int batchDelete(String ids) {
+    public int countByProductId(Long productId) {
         return 0;
     }
 }

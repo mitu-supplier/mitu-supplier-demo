@@ -12,7 +12,7 @@ import java.util.Map;
 public interface AuditRecodeRemote {
 
     @RequestMapping("/auditRecode/list")
-    Object list(@RequestParam("page") Long page, @RequestParam("pageSize") Long pageSize, @RequestParam("businessId") Long businessId, @RequestParam("auditType") Integer auditType);
+    Object list(Map<String, ?> map);
 
     @RequestMapping("/auditRecode/save")
     int save(Map<String, ?> map);

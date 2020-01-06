@@ -4,8 +4,12 @@ import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import java.io.Serializable;
+
 @TableName("catalogs")
-public class Catalogs {
+public class Catalogs implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @TableField(value = "id")
     private Long id;

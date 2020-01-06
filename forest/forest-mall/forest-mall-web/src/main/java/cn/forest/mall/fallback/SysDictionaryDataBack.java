@@ -15,4 +15,9 @@ public class SysDictionaryDataBack implements SysDictionaryDataRemote {
     public Object getById(Long id) {
         return null;
     }
+
+    @Override
+    public Object selectByDateTypeId(Long id) {
+        return null;
+    }
 }
