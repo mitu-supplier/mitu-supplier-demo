@@ -1,4 +1,4 @@
-package cn.forest.mall.web.supplier;
+package cn.forest.mall.web;
 
 import cn.forest.common.util.RequestMap;
 import cn.forest.mall.service.SuppliersService;

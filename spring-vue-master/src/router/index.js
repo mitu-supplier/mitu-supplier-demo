@@ -83,6 +83,11 @@ export default new Router({
                     meta: { title: '商品列表' }
                 },
                 {
+                    path: '/productAuditList',
+                    component: resolve => require(['../components/page/product/productAuditList.vue'], resolve),
+                    meta: { title: '商品审核' }
+                },
+                {
                     path: '/404',
                     component: resolve => require(['../components/page/404.vue'], resolve),
                     meta: { title: '404' }

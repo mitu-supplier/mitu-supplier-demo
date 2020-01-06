@@ -8,6 +8,7 @@ import cn.forest.mall.mapper.SuppliersMapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.sun.org.apache.xpath.internal.operations.String;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,6 +46,7 @@ public class SuppliersAction {
         if (StringUtil.toString(map.get("contactMobile")) != null) {
             queryWrapper.like("contact_mobile", map.get("contactMobile"));
         }
+        queryWrapper.in("status", new Integer[]{0,1,2});
         queryWrapper.orderByDesc("created_at");
         if (StringUtil.toString(map.get("page")) != null && StringUtil.toString(map.get("pageSize")) != null) {
             Long page = Long.parseLong(map.get("page").toString());

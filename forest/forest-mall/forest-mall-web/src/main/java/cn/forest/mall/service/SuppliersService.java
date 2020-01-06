@@ -5,6 +5,7 @@ import cn.forest.common.Constant;
 import cn.forest.common.util.JsonUtil;
 import cn.forest.common.util.RequestMap;
 import cn.forest.common.util.ResultMessage;
+import cn.forest.common.util.StringUtil;
 import cn.forest.mall.remote.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,9 +50,24 @@ public class SuppliersService {
      * @return
      */
     public Map<String, Object> list(Map<String, Object> map) {
-        Object list = suppliersRemote.list(map);
-        if (list != null) {
-            return ResultMessage.success(list);
+        Object obj = suppliersRemote.list(map);
+        if (obj != null) {
+            Map pMap = (Map) obj;
+            Object list = pMap.get("list");
+            if(list != null){
+                List<Map<String, Object>> supplierList = (List<Map<String, Object>>) list;
+                for (Map<String, Object> supplier : supplierList){
+                    // 入驻类型
+                    if(StringUtil.toString(supplier.get("enterType")) != null){
+                        Long deliveryType = Long.parseLong(StringUtil.toString(supplier.get("enterType")));
+                        Object delivery = sysDictionaryDataRemote.getById(deliveryType);
+                        if(delivery != null){
+                            supplier.put("enterTypeName", JsonUtil.readTree(delivery).path("name").asText());
+                        }
+                    }
+                }
+            }
+            return ResultMessage.success(obj);
         }
         return null;
     }

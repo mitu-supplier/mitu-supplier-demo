@@ -1,4 +1,4 @@
-package cn.forest.mall.web.admin;
+package cn.forest.mall.web;
 
 import cn.forest.common.util.RequestMap;
 import cn.forest.mall.service.SuppliersService;
@@ -11,8 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/admin/supplier")
-public class AdminSuppliersContriller {
+@RequestMapping("/supplier_audit")
+public class SuppliersAuditController {
 
     @Autowired
     private SuppliersService suppliersService;

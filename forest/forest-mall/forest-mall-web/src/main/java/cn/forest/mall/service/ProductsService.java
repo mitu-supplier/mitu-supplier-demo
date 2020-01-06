@@ -6,10 +6,7 @@ import cn.forest.common.util.JsonUtil;
 import cn.forest.common.util.RequestMap;
 import cn.forest.common.util.ResultMessage;
 import cn.forest.common.util.StringUtil;
-import cn.forest.mall.remote.AuditRecodeRemote;
-import cn.forest.mall.remote.CatalogsRemote;
-import cn.forest.mall.remote.ProductsRemote;
-import cn.forest.mall.remote.SysDictionaryDataRemote;
+import cn.forest.mall.remote.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +29,9 @@ public class ProductsService {
 
     @Autowired
     private CatalogsRemote catalogsRemote;
+
+    @Autowired
+    private SuppliersRemote suppliersRemote;
 
     @Autowired
     private RedisDao redisDao;
@@ -58,6 +58,14 @@ public class ProductsService {
                         Object delivery = sysDictionaryDataRemote.getById(deliveryType);
                         if(delivery != null){
                             product.put("deliveryName", JsonUtil.readTree(delivery).path("name").asText());
+                        }
+                    }
+                    // 商户名称
+                    if(StringUtil.toString(product.get("supplierId")) != null){
+                        Long supplierId = Long.parseLong(StringUtil.toString(product.get("supplierId")));
+                        Object suppliers = suppliersRemote.getById(supplierId);
+                        if(suppliers != null){
+                            product.put("supplierName", JsonUtil.readTree(suppliers).path("name").asText());
                         }
                     }
                 }
@@ -140,14 +148,15 @@ public class ProductsService {
         if (auditStatus > 0) {
             // 保存修改记录
             if (ids != null) {
-                Map<String, Object> auditMap = new HashMap<>();
+                Map<String, Object> auditMap = null;
                 String header = request.getHeader(Constant.HEADER_TOKEN_STRING);
                 HashMap userInfoMap = (HashMap) redisDao.getValue(header);
-                if (userInfoMap != null) {
-                    auditMap.put("auditUserId", userInfoMap.get("id"));
-                    auditMap.put("auditUserName", userInfoMap.get("name"));
-                }
                 for (String str : ids.split(",")) {
+                    auditMap = new HashMap<>();
+                    if (userInfoMap != null) {
+                        auditMap.put("auditUserId", userInfoMap.get("id"));
+                        auditMap.put("auditUserName", userInfoMap.get("name"));
+                    }
                     auditMap.put("auditResult", paramMap.get("auditStatus"));
                     auditMap.put("businessId", Long.parseLong(str));
                     auditMap.put("auditType", 2);
@@ -155,9 +164,9 @@ public class ProductsService {
                 }
 
             }
-            return ResultMessage.error("审核成功");
+            return ResultMessage.success("操作成功");
         }
-        return ResultMessage.error("审核失败");
+        return ResultMessage.error("操作失败");
     }
 
     public Map<String, Object> batchDelete(String ids){

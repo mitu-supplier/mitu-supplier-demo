@@ -64,28 +64,6 @@ public class ProductsController {
     }
 
     /**
-     * 审核
-     *
-     * @param request
-     * @return
-     */
-    @RequestMapping("/audit")
-    public Map<String, Object> audit(HttpServletRequest request) {
-        return productsService.audit(request);
-    }
-
-    /**
-     * 批量审核
-     *
-     * @param request
-     * @return
-     */
-    @RequestMapping("/batchAudit")
-    public Map<String, Object> batchAudit(HttpServletRequest request) {
-        return productsService.batchAudit(request);
-    }
-
-    /**
      * 批量删除
      *
      * @param ids
