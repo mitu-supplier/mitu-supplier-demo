@@ -32,4 +32,14 @@ public class CatalogsFallBack implements CatalogsRemote {
     public int disable(Long id) {
         return 0;
     }
+
+    @Override
+    public Object getAll() {
+      return null;
+    }
+
+    @Override
+    public int delete(Long id) {
+      return 0;
+    }
 }

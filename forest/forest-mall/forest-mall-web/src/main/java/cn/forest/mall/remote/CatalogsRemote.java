@@ -22,7 +22,13 @@ public interface CatalogsRemote {
 
     @RequestMapping("/catalogs/getById")
     Object getById(@RequestParam(value = "id") Long id);
-
+    
     @RequestMapping("/catalogs/disable")
     int disable(@RequestParam(value = "id") Long id);
+    
+    @RequestMapping("/catalogs/delete")
+    int delete(@RequestParam(value = "id") Long id);
+    
+    @RequestMapping("/catalogs/getAll")
+    Object getAll();
 }

@@ -39,8 +39,21 @@ public class CatalogsService {
         return ResultMessage.result(update, "修改成功", "修改失败");
     }
 
+    public Map<String, Object> delete(Long id) {
+      int delete = catalogsRemote.delete(id);
+      return ResultMessage.result(delete, "删除成功", "删除失败");
+    }
+    
     public Map<String, Object> disable(Long id) {
         int disable = catalogsRemote.disable(id);
         return ResultMessage.result(disable, "操作成功", "操作失败");
     }
+    
+    public Map<String, Object> getAll() {
+      Object  list = catalogsRemote.getAll();
+       if (list != null) {
+          return ResultMessage.success(list);
+       }
+       return ResultMessage.error("");
+  }
 }

@@ -33,9 +33,27 @@ public class CatalogsController {
     }
 
     @SysLogs(desc = "修改品目信息")
-    @RequestMapping(value = "/update", method = RequestMethod.PUT)
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
     public Map<String, Object> update(HttpServletRequest request) {
         return catalogsService.update(RequestMap.requestToMap(request));
+    }
+    
+    @SysLogs(desc = "获取所有品目")
+    @RequestMapping(value = "/getAll", method = RequestMethod.GET)
+    public Map<String, Object> getAll() {
+        return catalogsService.getAll();
+    }
+    
+    @SysLogs(desc = "获取一个品目")
+    @RequestMapping(value = "/getById", method = RequestMethod.GET)
+    public Map<String, Object> getById(Long id) {
+        return catalogsService.getById(id);
+    }
+    
+    @SysLogs(desc = "删除一个品目")
+    @RequestMapping(value = "/delete", method = RequestMethod.GET)
+    public Map<String, Object> delete(Long id) {
+        return catalogsService.delete(id);
     }
 
     @SysLogs(desc = "禁用品目")

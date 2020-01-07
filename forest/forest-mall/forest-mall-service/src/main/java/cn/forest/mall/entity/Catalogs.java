@@ -2,6 +2,7 @@ package cn.forest.mall.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
@@ -80,9 +81,15 @@ public class Catalogs implements Serializable {
     @TableField(value = "is_parent")
     private String isParent;
 
-    @TableField(exist = false)
-    private Catalogs parent;
-
+    
+    @TableField(value = "is_delete")
+    @TableLogic
+    private Integer isDelete;
+    
+    @TableField(value = "code")
+    private String code;
+    
+ 
     public Long getId() {
         return id;
     }
@@ -179,11 +186,23 @@ public class Catalogs implements Serializable {
         this.isParent = isParent;
     }
 
-    public Catalogs getParent() {
-        return parent;
+
+    public Integer getIsDelete() {
+      return isDelete;
     }
 
-    public void setParent(Catalogs parent) {
-        this.parent = parent;
+    public void setIsDelete(Integer isDelete) {
+      this.isDelete = isDelete;
     }
+
+    public String getCode() {
+      return code;
+    }
+
+    public void setCode(String code) {
+      this.code = code;
+    }
+    
+    
+    
 }

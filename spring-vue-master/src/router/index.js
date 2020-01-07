@@ -93,6 +93,11 @@ export default new Router({
                     meta: { title: '商品审核' }
                 },
                 {
+                    path: '/catalogs',
+                    component: resolve => require(['../components/page/catalog/catalogs.vue'], resolve),
+                    meta: { title: '品目管理' }
+                },
+                {
                     path: '/404',
                     component: resolve => require(['../components/page/404.vue'], resolve),
                     meta: { title: '404' }
