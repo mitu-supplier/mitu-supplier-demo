@@ -16,7 +16,7 @@
                 <div class="login-btn">
                     <el-button type="primary" @click="submitForm()">登录</el-button>
                 </div>
-                <p class="login-tips right-supplier" style="text-align:right;"  @click="registed()">供应商入驻</p>
+                <p class="login-tips right-supplier" style="text-align:right;"  @click="registed()"><span style="cursor: pointer;">供应商入驻</span></p>
             </el-form>
         </div>
     </div>
@@ -49,7 +49,29 @@ Vue.prototype.$jsEncrypt=JsEncrypt;
                 if(login.data.statusCode==200){
                     localStorage.setItem('forestToken',login.data.data.token);
                     localStorage.setItem('ms_username',this.ruleForm.username);
-                    this.$router.push('/');
+                    if(login.data.data.isSupplier == 1){
+                        if(login.data.data.status == '-1'){
+                            // 未提交  跳转继续填写
+                            // activeId
+                            this.$router.push({
+                                path: '/registed',
+                                query: {
+                                    activeId: 2
+                                }
+                            });
+                            // this.$router.push('/registed');
+                        } else if(login.data.data.status == '0'){
+                            // 待审核
+                        } else if(login.data.data.status == '1'){
+                            // 审核通过   
+                            this.$router.push('/');
+                        } else if(login.data.data.status == '2'){
+                            // 审核退回  
+                        }
+                    }else{
+                        this.$router.push('/');
+                    }
+                    
                 }else{
                     localStorage.removeItem('forestToken');
                     alert(login.data.data);

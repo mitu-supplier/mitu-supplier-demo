@@ -6,9 +6,25 @@
             </el-breadcrumb>
         </div>
         <div class="container">
+            <div style="background:#f6f6f6;padding:20px 10px 0;margin-bottom:20px;">
+                <el-form :inline="true" :model="formInline" class="demo-form-inline">
+                    <el-form-item label="审批人">
+                        <el-input v-model="formInline.user" placeholder="审批人"></el-input>
+                    </el-form-item>
+                    <el-form-item label="活动区域">
+                        <el-select v-model="formInline.region" placeholder="活动区域">
+                            <el-option label="区域一" value="shanghai"></el-option>
+                            <el-option label="区域二" value="beijing"></el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" @click="onSubmit">查询</el-button>
+                    </el-form-item>
+                </el-form>
+            </div>
             <div class="handle-box">
-                <el-input placeholder="筛选关键词" class="handle-input mr10"></el-input>
-                <el-button type="primary" icon="el-icon-search" >搜索</el-button>
+                <!-- <el-input placeholder="筛选关键词" class="handle-input mr10"></el-input> -->
+                <el-button type="primary" @click="aaa = true" icon="el-icon-search" >新增</el-button>
             </div>
             <el-table :data="tableData" border class="table" ref="multipleTable">
                 <el-table-column type="index" label="序号" width="55" align="center" ></el-table-column>
@@ -35,6 +51,7 @@
                     :total="total" >
                  </el-pagination>
             </div>
+            <!-- <loding v-if="aaa"></loding> -->
         </div>
     </div>
 </template>
@@ -42,10 +59,20 @@
 <script>
     import { fetchData } from '../../../api/index';
     import baseURL_ from '@/utils/baseUrl.js';
+    // import loding from './loding.vue';
     export default {
+        // components:{
+        //     loding
+        // },
         name: 'basetable',
         data() {
             return {
+                // data:["用户名","密码","确认密码"],
+                // data:[
+                //     {"name":"用户名","type":"text"},
+                //     {"name":"密码","type":"password"},
+                // ],
+                aaa:false,
                 page:1,
                 total:1000,
                 pageSize:10,
@@ -80,13 +107,20 @@
                         chkboxType: { Y: "ps", N: "ps" }
                     },
                 },
-                suppids: ''
+                suppids: '',
+                formInline:{
+                    region:'',
+                    user:''
+                }   
             }
         },
         created() {
             this.getData();
         },
         methods: {
+            onSubmit(){
+
+            },
             //改变每页页数
             handleSizeChange(val){
                 this.pageSize=val;

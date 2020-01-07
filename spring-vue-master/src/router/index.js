@@ -53,6 +53,11 @@ export default new Router({
                     meta: { title: '系统监控' }
                 },
                 {
+                    path: '/commodityAdd',
+                    component: resolve => require(['../components/page/commodity/commodityAdd.vue'], resolve),
+                    meta: { title: '新增商品' }
+                },
+                {
                     path: '/sys_logs',
                     component: resolve => require(['../components/page/system/sysLogs/sysLogs.vue'], resolve),
                     meta: { title: '操作日志' }
