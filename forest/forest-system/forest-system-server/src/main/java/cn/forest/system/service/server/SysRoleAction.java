@@ -76,6 +76,13 @@ public class SysRoleAction {
   }
   
   
+  @RequestMapping("/getUserRole")
+  public Object getUserRole(Long userId) {
+    Map<String, Object> map=new HashMap<String, Object>();
+    map.put("userId",userId);
+    return sysRoleMapper.getUserRole(map);
+  }
+  
   @RequestMapping("/saveRolePermiss")
   public int saveRolePermiss(@RequestBody SysRolePermissions sysRolePermissions) {
     int result=0;

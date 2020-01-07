@@ -13,4 +13,9 @@ public class SysRoleBack implements SysRoleRemote {
     return null;
   }
 
+  @Override
+  public Object getUserRole(Long userId) {
+    return null;
+  }
+
 }

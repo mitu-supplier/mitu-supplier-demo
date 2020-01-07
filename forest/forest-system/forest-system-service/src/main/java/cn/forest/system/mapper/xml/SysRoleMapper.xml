@@ -15,5 +15,15 @@
 	sr.is_delete =0
 </select>
    
-
+<select id="getUserRole" parameterType="Map" resultType="cn.forest.system.entity.SysRole">
+	   SELECT
+		sr.id,
+		sr.role_name as roleName,
+		sr.role_code as roleCode 
+	FROM
+		sys_user_role sur
+		INNER JOIN sys_role sr ON sur.role_id = sr.id 
+	WHERE
+	  sur.user_id=#{userId}
+</select>
 </mapper>
