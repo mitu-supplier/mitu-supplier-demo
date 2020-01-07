@@ -7,26 +7,34 @@
         </div>
         <div class="container">
             <div class="handle-box">
-                <el-button type="primary" icon="el-icon-plus" class="handle-del mr10" @click="add">添加</el-button>
+                <el-button type="primary" icon="el-icon-plus" class="handle-del mr10" v-if="button_role&&button_role.add"    @click="add">添加</el-button>
                 <el-input placeholder="用户名或登录名" v-model="name"  class="handle-input mr10"></el-input>
-                <el-button type="primary" icon="el-icon-search" >搜索</el-button>
+                <el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button>
+                <el-button type="primary" icon="el-icon-search" @click="rest">重置</el-button>
             </div>
             <el-table  :data="tableData" border class="table" ref="multipleTable"  @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55" align="center" ></el-table-column>
                 <el-table-column type="index" label="序号" width="55" align="center" ></el-table-column>
-                <el-table-column prop="loginName" label="登录名"  align="center" width="100"></el-table-column>
-                <el-table-column prop="name" label="姓名"  align="center" width="100"></el-table-column>
+                <el-table-column prop="loginName" label="登录名"  align="center" width="80"></el-table-column>
+                <el-table-column prop="name" label="姓名"  align="center" width="80"></el-table-column>
                 <el-table-column prop="phone" label="手机"  align="center" width="100"></el-table-column>
                 <el-table-column prop="email" label="邮箱" align="center" width="150"> </el-table-column>
                 <el-table-column prop="createTime" label="创建时间" align="center"  width="150"></el-table-column>
-                <el-table-column prop="isStatus" label="是否有效" align="center" width="100"></el-table-column>
+                <el-table-column prop="typeName" label="所属科室" show-overflow-tooltip align="center"  width="100"></el-table-column>
+                <el-table-column prop="roleNames" label="角色" show-overflow-tooltip align="center"  width="100"></el-table-column>
+                <el-table-column prop="isStatus" label="是否启用" align="center" width="70">
+                  <template slot-scope="scope">
+                         <span v-if="scope.row.isStatus=='0'">启用</span>
+                         <span v-if="scope.row.isStatus=='1'">禁用</span>
+                    </template>
+                </el-table-column>
                 <el-table-column prop="loginTime" label="登录时间"  align="center" width="130"></el-table-column>
-                <el-table-column prop="ip" label="登录ip"  align="center" width="100"></el-table-column>
-                <el-table-column label="操作" width="" align="center">
+                <el-table-column prop="ip" label="登录ip"  align="center" ></el-table-column>
+                <el-table-column label="操作" width="" align="center"  v-if="button_role&&(button_role.delete||button_role.edit)">
                     <template slot-scope="scope">
-                        <el-button type="text" icon="el-icon-setting" @click="ztreeEdit(scope.$index, scope.row)">设置角色</el-button>
-                        <el-button type="text" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                        <el-button type="text" icon="el-icon-delete" class="red" @click="handleDelete(scope.$index, scope.row)" >删除</el-button>
+                        <!-- <el-button type="text" icon="el-icon-setting" @click="ztreeEdit(scope.$index, scope.row)">设置角色</el-button>  -->
+                        <el-button type="text" icon="el-icon-edit"  v-if="button_role&&button_role.edit" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                        <el-button type="text" icon="el-icon-delete" class="red"  v-if="button_role&&button_role.delete"   @click="handleDelete(scope.$index, scope.row)" >删除</el-button>
                         
                     </template>
                 </el-table-column>
@@ -53,11 +61,39 @@
                 <el-form-item label="登录名">
                     <el-input v-model="form.loginName" class="input"></el-input>
                 </el-form-item>
+                <el-form-item label="密码"  v-show="show_password">
+                    <el-input v-model="form.password" type="password" class="input"></el-input>
+                </el-form-item>
                 <el-form-item label="手机号">
                 <el-input v-model="form.phone" class="input"></el-input>
                 </el-form-item>
                 <el-form-item label="邮箱">
                     <el-input v-model="form.email" class="input"></el-input>
+                </el-form-item>
+                <el-form-item label="所属科室">
+                   <el-select v-model="options_value" filterable placeholder="请选择所属科室">
+                        <el-option
+                        v-for="item in options_org"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.id+'@'+item.name">
+                        </el-option>
+                   </el-select>
+                </el-form-item>
+                <el-form-item label="角色">
+                   <el-select v-model="roles_value" filterable placeholder="请选择角色">
+                        <el-option
+                        v-for="item in options_role"
+                        :key="item.id"
+                        :label="item.roleName"
+                        :value="item.id+'@'+item.roleName">
+                        </el-option>
+                   </el-select>
+                </el-form-item>
+                
+                <el-form-item label="是否启用">
+                   <el-radio v-model="form.isStatus" label="0">启用</el-radio>
+                   <el-radio v-model="form.isStatus" label="1">禁用</el-radio>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
@@ -94,13 +130,23 @@
                 ztreeEditVisible:false,
                 ztreeTitleName:'',
                 user_id:'',
+                show_password:false,
+                button_role:{},
                 form:{
                    id:'',
                    name:'',
                    loginName:'',
                    phone:'',
-                   email:''
+                   email:'',
+                   isStatus:'',
+                   type:'',
+                   typeId:'',
+                   typeName:''
                 },
+                options_org:[],
+                options_value:'',
+                options_role:[],
+                roles_value:'',
                  setting:{
                     data: {
                         simpleData: {
@@ -125,6 +171,7 @@
             }
         },
         created() {
+            this.button();
             this.getData();
         },
         computed: {
@@ -151,8 +198,29 @@
                 }).catch(_ => {});
                  
             },
+            search(){
+                this.getData();
+            },
+            rest(){
+               this.name="";
+               this.getData();
+            },
+            async button(){
+                var but=await this.$http.get(baseURL_.loginUrl+'/permission/button',{ 
+                    params: {'code':this.$route.path}
+                });
+                this.button_role=but.data.data;
+            },
             async saveEdit(){
                 var addOrEdit={};
+                if(this.options_value){
+                    this.form.type=0;
+                    this.form.typeId=this.options_value.split("@")[0];
+                    this.form.typeName=this.options_value.split("@")[1];
+                }
+                if(this.roles_value){
+                    this.form.roleIds=this.roles_value.split("@")[0];
+                }
                 if(this.form.id!=null){
                    addOrEdit= await this.$http.post(baseURL_.sysUrl+'/sysUser/update',this.$qs.stringify(this.form));
                 }else{
@@ -175,7 +243,10 @@
                   
             },
             async handleEdit(index, row) {
-                this.titleName="修改";
+                this.titleName="修改";  
+                this.options_value='';
+                this.getOrg();
+                this.getRole();
                 const user = await this.$http.get(baseURL_.sysUrl+'/sysUser/getById',{ 
                     params: {'id':row.id}
                 });
@@ -185,18 +256,41 @@
                     this.form.loginName=user.data.data.loginName;
                     this.form.phone=user.data.data.phone;
                     this.form.email=user.data.data.email;
+                    this.form.isStatus=user.data.data.isStatus+'';
+                    if(user.data.data.typeId){
+                        this.options_value=user.data.data.typeId+'@'+user.data.data.typeName;
+                    }
+                   if(user.data.data.sysRoleList){
+                     var role = user.data.data.sysRoleList[0];
+                     this.roles_value=user.data.data.sysRoleList[0].id+'@'+user.data.data.sysRoleList[0].roleName;
+                   }
+                    
                 }
                  this.editVisible=true;
+                 this.show_password=false;
             },
             add(){
                this.form={};
+               this.options_value='';
+               this.roles_value='';
+               this.getRole();
+               this.getOrg();
                this.editVisible=true;
+               this.show_password=true;
                this.titleName="添加";
+            },
+            async getRole(){
+                const role = await this.$http.get(baseURL_.sysUrl+'/sysUser/getRoleAll');
+                this.options_role=role.data.data;
+            },
+            async getOrg(){
+               const org = await this.$http.get(baseURL_.sysUrl+'/sysUser/getOrgAll');
+               this.options_org=org.data.data;
             },
             // 获取 easy-mock 的模拟数据
             async getData() {
                 const user = await this.$http.get(baseURL_.sysUrl+'/sysUser/list',{ 
-                    params: {'page':this.page,'pageSize':this.pageSize}
+                    params: {'page':this.page,'pageSize':this.pageSize,'name':this.name}
                     });
                 if(user.data.statusCode==200){
                   this.tableData=user.data.data.list;
@@ -232,6 +326,7 @@
                if(result.data.statusCode==200){
                  this.ztreeEditVisible=false;
                  this.role_id="";
+                 this.getData();
                }
             }
             

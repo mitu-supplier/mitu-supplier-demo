@@ -22,8 +22,8 @@ public class SysRoleService {
   @Autowired
   private SysPermissionsRemote sysPermissionsRemote;
 
-  public Map<String, Object> getList(Long page, Long pageSize) {
-    Object sysRole = sysRoleRemote.getSysRoleList(page, pageSize);
+  public Map<String, Object> getList(Long page, Long pageSize,String name) {
+    Object sysRole = sysRoleRemote.getSysRoleList(page, pageSize,name);
     if (sysRole != null) {
       return ResultMessage.success(sysRole);
     }

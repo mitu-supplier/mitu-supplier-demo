@@ -16,4 +16,10 @@ public interface SysPermissionsRemote {
 
   @RequestMapping("/sys_permissions/getPermissionByUserId")
   public Object getPermissionByUserId(@RequestParam(value = "userId") Long userId);
+  
+  @RequestMapping("/sys_permissions/getRoleButton")
+  public Object getRoleButton(@RequestParam(value = "userId") Long userId,@RequestParam(value = "parentId") Long parentId);
+
+  @RequestMapping("/sys_permissions/getpermissionByCode")
+  public Object getpermissionByCode(@RequestParam(value = "code") String code);
 }

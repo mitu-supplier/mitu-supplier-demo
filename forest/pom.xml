@@ -53,6 +53,7 @@
 		<module>forest-login-web</module>
 		<module>forest-admin</module>
 		<module>forest-search</module>
+		<module>forest-lyj</module>
 	</modules>
 
 	<build>

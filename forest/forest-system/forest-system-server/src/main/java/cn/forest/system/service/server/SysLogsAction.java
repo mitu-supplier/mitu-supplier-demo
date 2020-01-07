@@ -1,6 +1,7 @@
 package cn.forest.system.service.server;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,9 +23,12 @@ public class SysLogsAction {
   
   
   @RequestMapping("list")
-  public Object getList(Long page,Long pageSize) {
+  public Object getList(Long page,Long pageSize,String name) {
     Page<SysLogs> pages=new Page<SysLogs>(page,pageSize);
     QueryWrapper<SysLogs> queryWrapper=new QueryWrapper<SysLogs>();
+    if(!StringUtils.isEmpty(name)) {
+      queryWrapper.like("user_name", name).or().like("login_name", name);
+    }
     queryWrapper.orderByDesc("create_time");
     IPage<SysLogs> selectPage = sysLogsMapper.selectPage(pages, queryWrapper);
     return new ResultPage<SysLogs>(selectPage);

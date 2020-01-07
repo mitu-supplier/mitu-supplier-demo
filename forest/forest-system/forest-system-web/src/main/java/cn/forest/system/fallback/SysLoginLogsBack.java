@@ -8,7 +8,7 @@ import cn.forest.system.remote.SysLoginLogsRemote;
 public class SysLoginLogsBack implements SysLoginLogsRemote {
 
   @Override
-  public Object getList(Long page, Long pageSize) {
+  public Object getList(Long page, Long pageSize,String name) {
     return null;
   }
 

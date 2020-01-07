@@ -7,8 +7,9 @@
         </div>
         <div class="container">
             <div class="handle-box">
-                <el-input placeholder="筛选关键词" class="handle-input mr10"></el-input>
-                <el-button type="primary" icon="el-icon-search" >搜索</el-button>
+                <el-input placeholder="用户名或登录名" v-model="name" class="handle-input mr10"></el-input>
+                <el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button>
+                <el-button type="primary" icon="el-icon-search" @click="rest">重置</el-button>
             </div>
             <el-table  :data="tableData"  border class="table" ref="multipleTable"  @selection-change="handleSelectionChange">
                 <el-table-column type="index" label="序号" width="55" align="center" ></el-table-column>
@@ -55,6 +56,7 @@
                 pageSize:10,
                 tableData: [],
                 multipleSelection: [],
+                name:''
             }
         },
         created() {
@@ -74,10 +76,17 @@
              handleSelectionChange(val) {
                 this.multipleSelection = val;
             },
+            search(){
+                this.getData();
+            },
+            rest(){
+               this.name="";
+               this.getData();
+            },
             // 初始化数据
             async getData() {
                 const sysLogs = await this.$http.get(baseURL_.sysUrl+'/sysLogs/list',{ 
-                    params: {'page':this.page,'pageSize':this.pageSize}
+                    params: {'page':this.page,'pageSize':this.pageSize,'name':this.name}
                     });
                 if(sysLogs.data.statusCode==200){
                   this.tableData=sysLogs.data.data.list;    

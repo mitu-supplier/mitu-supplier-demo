@@ -1,6 +1,7 @@
 package cn.forest.system.entity;
 
 import java.io.Serializable;
+import java.util.List;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -46,7 +47,25 @@ public class SysUser implements Serializable {
 
   @TableField(value = "ip")
   private String ip;
+  
+  @TableField(value = "type")
+  private Integer type;
+  
+  @TableField(value = "type_id")
+  private Long typeId;
+  
+  @TableField(value = "type_name")
+  private String typeName;
 
+  @TableField(exist = false)
+  private String roleIds;
+  
+  @TableField(exist = false)
+  private String roleNames;
+  
+  @TableField(exist = false)
+  private List<SysRole> sysRoleList;
+  
   public Long getId() {
     return id;
   }
@@ -143,4 +162,52 @@ public class SysUser implements Serializable {
     this.ip = ip;
   }
 
+  public Integer getType() {
+    return type;
+  }
+
+  public void setType(Integer type) {
+    this.type = type;
+  }
+
+  public Long getTypeId() {
+    return typeId;
+  }
+
+  public void setTypeId(Long typeId) {
+    this.typeId = typeId;
+  }
+
+  public String getTypeName() {
+    return typeName;
+  }
+
+  public void setTypeName(String typeName) {
+    this.typeName = typeName;
+  }
+
+  public String getRoleIds() {
+    return roleIds;
+  }
+
+  public void setRoleIds(String roleIds) {
+    this.roleIds = roleIds;
+  }
+
+  public String getRoleNames() {
+    return roleNames;
+  }
+
+  public void setRoleNames(String roleNames) {
+    this.roleNames = roleNames;
+  }
+
+  public List<SysRole> getSysRoleList() {
+    return sysRoleList;
+  }
+
+  public void setSysRoleList(List<SysRole> sysRoleList) {
+    this.sysRoleList = sysRoleList;
+  }
+  
 }

@@ -14,4 +14,6 @@ public interface SysPermissionsMapper extends BaseMapper<SysPermissions> {
   public List<SysPermissions> getPermissionByRoleId(Map<String, Object> map);
 
   public List<SysPermissions> getPermissionByUserId(@Param("userId") Long userId);
+  
+  public List<SysPermissions> getRoleButton(Map<String, Object> map);
 }

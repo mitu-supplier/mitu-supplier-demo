@@ -10,7 +10,7 @@ import cn.forest.system.remote.SysRoleRemote;
 public class SysRoleBack implements SysRoleRemote {
 
   @Override
-  public Object getSysRoleList(Long page, Long pageSize) {
+  public Object getSysRoleList(Long page, Long pageSize,String name) {
     return null;
   }
 
@@ -41,6 +41,11 @@ public class SysRoleBack implements SysRoleRemote {
 
   @Override
   public Object getRoleByUserId(Long userId) {
+    return null;
+  }
+
+  @Override
+  public Object listAll() {
     return null;
   }
 

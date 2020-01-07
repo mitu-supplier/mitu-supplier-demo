@@ -13,4 +13,7 @@ public interface SysRoleRemote {
   @RequestMapping("/sys_role/getRoleByUserId")
   public Object getRoleByUserId(@RequestParam(value = "userId") Long userId);
   
+  @RequestMapping("/sys_role/getUserRole")
+  public Object getUserRole(@RequestParam(value = "userId") Long userId);
+  
 }

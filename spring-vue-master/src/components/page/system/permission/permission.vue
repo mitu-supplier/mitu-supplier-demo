@@ -8,9 +8,10 @@
         <div class="container">
             <div class="handle-box">
                 <!-- <el-button type="primary" icon="el-icon-delete" class="handle-del mr10">批量删除</el-button> -->
-                <el-button type="primary" icon="el-icon-plus" class="handle-del mr10" @click="add">添加</el-button>
-                <el-input placeholder="筛选关键词" class="handle-input mr10"></el-input>
-                <el-button type="primary" icon="el-icon-search" >搜索</el-button>
+                <el-button type="primary" icon="el-icon-plus" class="handle-del mr10" v-if="button_role&&button_role.add" @click="add">添加</el-button>
+                <el-input placeholder="菜单名称"  v-model="name" class="handle-input mr10"></el-input>
+                <el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button>
+                <el-button type="primary" icon="el-icon-search" @click="rest">重置</el-button>
             </div>
             <el-table  row-key="id" lazy :data="tableData" :load="load" :tree-props="{children: 'children', hasChildren: 'hasChildren'}" border id="table_id" ref="multipleTable"  @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55" align="center" ></el-table-column>
@@ -25,11 +26,11 @@
                 <el-table-column prop="createTime" label="创建时间" align="center"  width="200"></el-table-column>
                 <el-table-column prop="url" label="地址" align="center" width="150"></el-table-column>
                 <el-table-column prop="priority" label="排序"  align="center" width="150"></el-table-column>
-                <el-table-column prop="iconName" label="图标"  align="center" width="150"></el-table-column>
-                <el-table-column label="操作" width="" align="center">
+                <el-table-column prop="iconName" label="图标"  align="center" ></el-table-column>
+                <el-table-column label="操作" width="" align="center" v-if="button_role&&(button_role.delete||button_role.edit)">
                     <template slot-scope="scope">
-                        <el-button type="text" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                        <el-button type="text" icon="el-icon-delete" class="red" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                        <el-button type="text" icon="el-icon-edit" v-if="button_role&&button_role.edit" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                        <el-button type="text" icon="el-icon-delete" class="red"  v-if="button_role&&button_role.delete" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -98,6 +99,7 @@
                 editVisible:false,
                 titleName:'',
                 parentNameShow:false,
+                button_role:{},
                 form:{
                    id:'',
                    name:'',
@@ -109,10 +111,12 @@
                    iconName:'',
                    parentName:'',
                    isParent:''
-                }
+                },
+                name:''
             }
         },
         created() {
+            this.button();
             this.getData();
         },
         methods: {
@@ -130,10 +134,23 @@
                 this.multipleSelection = val;
                
             },
+            search(){
+                this.getData();
+            },
+            rest(){
+               this.name="";
+               this.getData();
+            },
+             async button(){
+                var but=await this.$http.get(baseURL_.loginUrl+'/permission/button',{ 
+                    params: {'code':this.$route.path}
+                });
+                this.button_role=but.data.data;
+            },
             // 初始化数据
             async getData() {
                 const permissions = await this.$http.get(baseURL_.sysUrl+'/sysPermissions/getlistfirstLevel',{ 
-                    params: {'page':this.page,'pageSize':this.pageSize}
+                    params: {'page':this.page,'pageSize':this.pageSize,'name':this.name}
                     });
                 if(permissions.data.statusCode==200){
                   this.tableData=permissions.data.data.list;

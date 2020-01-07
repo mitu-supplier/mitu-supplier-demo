@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.forest.lyj.mapper.ExpenditureMapper">
+
+  <select id="getExpenditureList" parameterType="Map" resultType="cn.forest.lyj.entity.Expenditure">
+  
+     SELECT
+		 e.id,
+		 o.name as orgName,
+		 p.project_name as projectName,
+		 e.expenditure_time as expenditureTime,
+		 e.expenditure_total as expenditureTotal,
+		 e.expenditure_using as expenditureUsing,
+		 e.expenditure_attachment as expenditureAttachment,
+		 e.other_attachment as otherAttachment,
+		 e.expenditure_attachment_name as expenditureAttachmentName,
+		 e.other_attachment_name as otherAttachmentName
+	FROM
+		expenditure e
+		INNER JOIN organization o ON o.id = e.org_id
+		INNER JOIN projects p ON p.id = e.project_id
+	where e.is_delete=0 
+    <if test="userId!=null">
+	    and e.user_id=#{userId} 
+	  </if>
+	  <if test="orgId!=null">
+	    and e.org_id=#{orgId} 
+	  </if>
+	  <if test="projectName!=null and projectName!=''">
+	    and p.project_name like CONCAT('%',#{projectName},'%')
+	  </if>
+	  <if test="orgName!=null and orgName!=''">
+	    and o.`name` like CONCAT('%',#{orgName},'%') 
+	  </if>
+	  order by e.id desc
+  </select>
+  
+  <select id="getExpenditureById" parameterType="Long" resultType="cn.forest.lyj.entity.Expenditure">
+     SELECT
+		 e.id,
+		 e.org_id as orgId,
+		 o.name as orgName,
+		 p.project_name as projectName,
+		 e.project_id as projectId,
+		 e.expenditure_time as expenditureTime,
+		 e.expenditure_total as expenditureTotal,
+		 e.expenditure_using as expenditureUsing,
+		 e.expenditure_attachment as expenditureAttachment,
+		 e.other_attachment as otherAttachment,
+		 e.expenditure_attachment_name as expenditureAttachmentName,
+		 e.other_attachment_name as otherAttachmentName
+	FROM
+		expenditure e
+		INNER JOIN organization o ON o.id = e.org_id
+		INNER JOIN projects p ON p.id = e.project_id
+	where e.is_delete=0 and e.id=#{id}
+  
+  </select>
+  
+  <select id="getExpenditureCount" parameterType="Map" resultType="cn.forest.lyj.entity.ExpenditureVo">
+      SELECT
+		count( * ) as number,
+		IFNULL( sum( e.expenditure_total ), 0 ) as total 
+	FROM
+		expenditure e 
+	WHERE
+		1 = 1 
+		AND e.is_delete = 0 
+		<if test="orgId!=null">
+		  AND e.org_id =#{orgId}
+		</if>
+		<if test="userId!=null">
+		  AND e.user_id = #{userId} 
+		</if>
+		<if test="projectId!=null">
+		  AND e.project_id = #{projectId}
+		</if>
+		
+		
+  
+  </select>
+</mapper>

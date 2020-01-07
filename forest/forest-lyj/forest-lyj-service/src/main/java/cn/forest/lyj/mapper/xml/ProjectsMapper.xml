@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.forest.lyj.mapper.ProjectsMapper">
+
+  <select id="getProjectsList" parameterType="Map" resultType="cn.forest.lyj.entity.Projects">
+      SELECT
+		p.id,
+		p.org_id as orgId,
+		p.project_name as projectName,
+		p.budget,
+		p.leader_phone as leaderPhone,
+		p.project_leader as projectLeader,
+		p.create_time as createTime,
+		o.`name` as orgName
+	FROM
+		projects p
+		INNER JOIN organization o ON o.id = p.org_id
+	where 
+	  p.is_delete=0 
+	  <if test="userId!=null">
+	    and p.user_id=#{userId} 
+	  </if>
+	  <if test="orgId!=null">
+	    and p.org_id=#{orgId} 
+	  </if>
+	  <if test="projectName!=null and projectName!=''">
+	    and p.project_name like CONCAT('%',#{projectName},'%')
+	  </if>
+	  <if test="orgName!=null and orgName!=''">
+	    and o.`name` like CONCAT('%',#{orgName},'%') 
+	  </if>
+	  <if test="leader!=null and leader!=''">
+	    and p.project_leader like CONCAT('%',#{leader},'%') 
+	  </if>
+	order by p.id desc
+  
+  </select>
+  <select id="getProjectsById" parameterType="Long" resultType="cn.forest.lyj.entity.Projects">
+  
+     SELECT
+		p.id,
+		p.org_id as orgId,
+		o.name as orgName,
+		p.budget,
+		p.project_name as projectName,
+		p.leader_phone as leaderPhone,
+		p.project_leader as projectLeader,
+		p.create_time as createTime,
+		p.update_time as updateTime,
+	    p.user_id as userId	
+	FROM
+		projects p inner join organization o 
+	on o.id=p.org_id
+	WHERE
+		p.is_delete = 0 and p.id=#{id}
+	
+  </select>
+  
+  
+  <select id="getProjectsCount" parameterType="Map" resultType="cn.forest.lyj.entity.ProjectVo">
+       SELECT
+			 count(*) as number,IFNULL(sum(p.budget),0) as total
+		FROM
+			projects p 
+		WHERE
+			1 = 1 
+			AND p.is_delete = 0 
+			<if test="orgId!=null">
+			  AND p.org_id =#{orgId}
+			</if>
+			<if test="userId!=null">
+			  AND p.user_id =#{userId}
+			</if>
+			<if test="id!=null">
+			  AND p.id = #{id}
+			</if>
+			
+  </select>
+  <select id="getProjects" parameterType="Map" resultType="cn.forest.lyj.entity.Projects">
+    <![CDATA[  select t.*,if(IFNULL(t.et/t.pt,0)<=0.3,'true','false') as xy ,if((t.pt+t.pt*0.3)<=t.et,'true','false') dy  from(
+SELECT
+			p.id,
+			p.org_id as orgId,
+			o.name as orgName,
+			p.project_name as projectName,
+			p.budget,
+			IFNULL((select sum(a.plan_total) from plan a where a.project_id = p.id and a.is_delete=0),0) as pt,
+			IFNULL((select sum(e.expenditure_total) from expenditure e where e.project_id = p.id and e.is_delete=0),0) as et
+		FROM
+			projects p inner join organization o 
+	on o.id=p.org_id
+		WHERE
+			1 = 1 
+			AND p.is_delete = 0 ) t where  1=1  ]]>  
+			<if test="orgId!=null">
+			  AND t.orgId =#{orgId}
+			</if>
+			<if test="userId!=null">
+			  AND t.userId =#{userId}
+			</if>
+			<if test="id!=null">
+			  AND t.id = #{id}
+			</if>
+			<![CDATA[  and (IFNULL(t.et/t.pt,0)<=0.3 or (t.pt+t.pt*0.3)<=t.et ) ]]>
+  </select>
+</mapper>

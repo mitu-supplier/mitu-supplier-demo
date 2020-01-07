@@ -15,8 +15,8 @@ public class SysExceptionLogsVoService {
   private SysExceptionLogsVoRemote sysExceptionLogsVoRemote;
   
   
-  public Map<String, Object> getList(Long page, Long pageSize) {
-    Object sysExceptionLogs = sysExceptionLogsVoRemote.getList(page, pageSize);
+  public Map<String, Object> getList(Long page, Long pageSize,String name) {
+    Object sysExceptionLogs = sysExceptionLogsVoRemote.getList(page, pageSize,name);
     if (sysExceptionLogs != null) {
       return ResultMessage.success(sysExceptionLogs);
     }

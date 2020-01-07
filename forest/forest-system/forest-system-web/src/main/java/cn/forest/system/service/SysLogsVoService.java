@@ -13,8 +13,8 @@ public class SysLogsVoService {
 
   @Autowired
   private SysLogsVoRemote sysLogsVoRemote;
-  public Map<String, Object> getList(Long page,Long PageSize){
-    Object list = sysLogsVoRemote.getList(page, PageSize);
+  public Map<String, Object> getList(Long page,Long PageSize,String name){
+    Object list = sysLogsVoRemote.getList(page, PageSize,name);
     if (list != null) {
       return ResultMessage.success(list);
     }

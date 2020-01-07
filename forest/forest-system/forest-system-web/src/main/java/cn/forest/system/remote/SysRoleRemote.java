@@ -12,7 +12,7 @@ import cn.forest.system.fallback.SysRoleBack;
 public interface SysRoleRemote {
   @RequestMapping("/sys_role/list")
   public Object getSysRoleList(@RequestParam(value = "page") Long page,
-      @RequestParam(value = "pageSize") Long pageSize);
+      @RequestParam(value = "pageSize") Long pageSize,@RequestParam(value = "name") String name);
   
   @RequestMapping("/sys_role/add")
   public int add(Map<String, ?> map);
@@ -32,6 +32,7 @@ public interface SysRoleRemote {
   @RequestMapping("/sys_role/getRoleByUserId")
   public Object getRoleByUserId(@RequestParam(value = "userId") Long userId);
   
-  
+  @RequestMapping("/sys_role/listAll")
+  public Object listAll();
   
 }

@@ -12,4 +12,6 @@ public interface SysRoleMapper extends BaseMapper<SysRole> {
   
   List<SysRole> getRoleByUserId(Map<String, Object> map);
   
+  List<SysRole> getUserRole(Map<String, Object> map);
+  
 }

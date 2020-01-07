@@ -93,7 +93,7 @@ public class LoginService {
     Object id = map.get("id");
     if(id != null){
       Long userId = Long.valueOf(String.valueOf(id));
-      List sysRoleList = (List)sysRoleRemote.getRoleByUserId(userId);
+      List sysRoleList = (List)sysRoleRemote.getUserRole(userId);
       map.put("roles", sysRoleList);
       Object permissionsList = sysPermissionsRemote.getPermissionByUserId(userId);
       map.put("permissions", permissionsList);
@@ -126,4 +126,5 @@ public class LoginService {
     }
     
   }
+  
 }

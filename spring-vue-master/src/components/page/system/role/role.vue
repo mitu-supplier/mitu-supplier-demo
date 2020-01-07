@@ -7,14 +7,15 @@
         </div>
         <div class="container">
             <div class="handle-box">
-                <el-button type="primary" icon="el-icon-plus" class="handle-del mr10" @click="add">添加</el-button>
-                <el-input placeholder="筛选关键词" class="handle-input mr10"></el-input>
-                <el-button type="primary" icon="el-icon-search" >搜索</el-button>
+                <el-button type="primary" icon="el-icon-plus" class="handle-del mr10" v-if="button_role&&button_role.add"  @click="add">添加</el-button>
+                <el-input placeholder="角色名称或编码" v-model="name"  class="handle-input mr10"></el-input>
+                <el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button>
+                <el-button type="primary" icon="el-icon-search" @click="rest">重置</el-button>
             </div>
             <el-table :data="tableData" border class="table" ref="multipleTable"  @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55" align="center" ></el-table-column>
                 <el-table-column type="index" label="序号" width="55" align="center" ></el-table-column>
-                <el-table-column prop="roleName" label="角色名称"  align="center" width="200"></el-table-column>
+                <el-table-column prop="roleName" label="角色名称"  align="center" ></el-table-column>
                 <el-table-column prop="roleCode" label="CODE"  align="center" width="150"></el-table-column>
                 <el-table-column prop="createTime" label="创建时间" align="center"  width="200"></el-table-column>
                 <el-table-column prop="isAdmin" label="是否管理员" align="center" width="150">
@@ -29,11 +30,11 @@
                          <i v-if="scope.row.isBuiltIn!='0'" class="el-icon-success red"></i>
                     </template>
                 </el-table-column>
-                <el-table-column label="操作" width="" align="center">
+                <el-table-column label="操作" width="" align="center" v-if="button_role&&(button_role.delete||button_role.edit||button_role.add_role)">
                     <template slot-scope="scope">
-                        <el-button type="text" icon="el-icon-setting" @click="ztreeEdit(scope.$index, scope.row)">设置权限</el-button>
-                        <el-button type="text" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                        <el-button type="text" icon="el-icon-delete" class="red" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                        <el-button type="text" icon="el-icon-setting" v-if="button_role&&button_role.add_role" @click="ztreeEdit(scope.$index, scope.row)">设置权限</el-button>
+                        <el-button type="text" icon="el-icon-edit" v-if="button_role&&button_role.edit" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                        <el-button type="text" icon="el-icon-delete" class="red" v-if="button_role&&button_role.delete" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -104,6 +105,7 @@
                 ztreeTitleName:'',
                 ztreeEditVisible:false,
                 role_id:'',
+                button_role:{},
                 form:{
                    id:'',
                    roleName:'',
@@ -111,6 +113,7 @@
                    isAdmin:'',
                    isBuiltIn:''
                 },
+                name:'',
                 setting:{
                     data: {
                     simpleData: {
@@ -125,12 +128,13 @@
                     check: {
                         enable: true,
                         chkStyle: "checkbox",
-                        chkboxType: { Y: "ps", N: "ps" }
+                        chkboxType: { Y: "s", N: "s" }
                     },
                 }
             }
         },
         created() {
+            this.button();
             this.getData();
         },
         methods: {
@@ -147,11 +151,24 @@
              handleSelectionChange(val) {
                 this.multipleSelection = val;
             },
+             search(){
+                this.getData();
+            },
+            rest(){
+               this.name="";
+               this.getData();
+            },
+             async button(){
+                var but=await this.$http.get(baseURL_.loginUrl+'/permission/button',{ 
+                    params: {'code':this.$route.path}
+                });
+                this.button_role=but.data.data;
+            },
             // 初始化数据
             async getData() {
                 const role = await this.$http.get(baseURL_.sysUrl+'/sysRole/list',{ 
-                    params: {'page':this.page,'pageSize':this.pageSize}
-                    });
+                    params: {'page':this.page,'pageSize':this.pageSize,'name':this.name}
+                });
                 if(role.data.statusCode==200){
                   this.tableData=role.data.data.list;
                   this.total=role.data.data.total;

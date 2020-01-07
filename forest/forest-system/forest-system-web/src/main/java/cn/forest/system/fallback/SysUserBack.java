@@ -10,7 +10,7 @@ import cn.forest.system.remote.SysUserRemote;
 public class SysUserBack implements SysUserRemote {
 
   @Override
-  public Object getList(Long page, Long pageSize) {
+  public Object getList(Long page, Long pageSize,Long typeId,String name) {
     return null;
   }
 
@@ -20,7 +20,7 @@ public class SysUserBack implements SysUserRemote {
   }
 
   @Override
-  public int add(Map<String, ?> map) {
+  public int add(Map<String, Object> map) {
     return 0;
   }
 

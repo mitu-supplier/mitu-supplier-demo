@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.forest.lyj.mapper.ContractMapper">
+
+  <select id="getContractList" parameterType="Map" resultType="cn.forest.lyj.entity.Contract">
+  
+	    SELECT
+		c.id,
+		o.name as orgName,
+		p.project_name as projectName,
+		c.contract_name as contractName,
+		c.contract_time as contractTime,
+		c.contract_total as contractTotal,
+		c.contract_leader as contractLeader,
+		c.contract_leader_phone as contractLeaderPhone,
+		c.contract_attachment as contractAttachment,
+		c.other_attachment as otherAttachment,
+		c.contract_attachment_name as contractAttachmentName,
+		c.other_attachment_name as otherAttachmentName
+	FROM
+		contract c
+		INNER JOIN projects p ON c.project_id = p.id
+		INNER JOIN organization o ON o.id = c.org_id
+	where c.is_delete=0 
+	  <if test="userId!=null">
+	    and c.user_id=#{userId} 
+	  </if>
+	  <if test="orgId!=null">
+	    and c.org_id=#{orgId} 
+	  </if>
+	  <if test="contractName!=null and contractName!=''">
+	    and c.contract_name like CONCAT('%',#{contractName},'%')
+	  </if>
+	  <if test="projectName!=null and projectName!=''">
+	    and p.project_name like CONCAT('%',#{projectName},'%')
+	  </if>
+	  <if test="orgName!=null and orgName!=''">
+	    and o.`name` like CONCAT('%',#{orgName},'%') 
+	  </if>
+	  <if test="leader!=null and leader!=''">
+	    and c.contract_leader like CONCAT('%',#{leader},'%') 
+	  </if>
+	order by c.id desc
+	
+  </select>
+  <select id="getContractById" parameterType="Long" resultType="cn.forest.lyj.entity.Contract">
+	    SELECT
+		c.id,
+		o.name as orgName,
+		c.org_id as orgId,
+		c.project_id as projectId,
+		p.project_name as projectName,
+		c.contract_name as contractName,
+		c.contract_time as contractTime,
+		c.contract_total as contractTotal,
+		c.contract_leader as contractLeader,
+		c.contract_leader_phone as contractLeaderPhone,
+		c.create_time as createTime,
+		c.update_time as updateTime,
+		c.contract_attachment as contractAttachment,
+		c.other_attachment as otherAttachment,
+		c.contract_attachment_name as contractAttachmentName,
+		c.other_attachment_name as otherAttachmentName
+	FROM
+		contract c
+		INNER JOIN projects p ON c.project_id = p.id
+		INNER JOIN organization o ON o.id = c.org_id
+	where c.is_delete=0 and c.id=#{id}
+  </select>
+</mapper>

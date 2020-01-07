@@ -71,9 +71,8 @@
                         if(datas[i].isParent == "false"){
                             obj.index = datas[i].url;
                         }else{
-                            
                             for(var j=0; j<len; j++){
-                               if(datas[j].treeDepth == 2 && datas[j].isParent == "false" && datas[j].parentId==datas[i].id){
+                               if(datas[j].treeDepth == 2 && datas[j].parentId==datas[i].id){
                                  var chil=new Object();
                                  chil.title = datas[j].name;
                                  chil.icon = datas[j].iconName;

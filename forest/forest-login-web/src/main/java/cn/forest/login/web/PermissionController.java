@@ -20,4 +20,9 @@ public class PermissionController {
     public Map<String, Object> list(HttpServletRequest request){
         return permissionService.getUserPermissionList(request);
     }
+    
+    @RequestMapping(value = "/button", method = RequestMethod.GET)
+    public Map<String, Object> button(HttpServletRequest request,String code){
+        return permissionService.getRoleButton(request,code);
+    }
 }

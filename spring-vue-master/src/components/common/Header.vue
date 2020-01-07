@@ -4,7 +4,7 @@
         <div class="collapse-btn" @click="collapseChage">
             <i class="el-icon-menu"></i>
         </div>
-        <div class="logo">积分时代</div>
+        <div class="logo">项目管理</div>
         <div class="header-right">
             <div class="header-user-con">
                 <!-- 全屏显示 -->
@@ -67,9 +67,9 @@
             return {
                 collapse: false,
                 fullscreen: false,
-                name: 'linxin',
                 message: 0,
                 editVisible:false,
+                username:'',
                 form:{
                   oldPass:'',
                   newPass:'',
@@ -80,12 +80,13 @@
             }
         },
         computed:{
-            username(){
-                let username = localStorage.getItem('ms_username');
-                return username ? username : this.name;
-            }
+            
         },
         methods:{
+            async user(){
+                const user = await this.$http.get(baseURL_.sysUrl+'/sysUser/getOnlineUser');
+                this.username=user.data.data.name
+            },
             // 用户名下拉菜单选择事件
             handleCommand(command) {
                 if(command == 'loginout'){
@@ -177,6 +178,7 @@
             if(document.body.clientWidth < 1500){
                 this.collapseChage();
             }
+            this.user();
         }
     }
 </script>

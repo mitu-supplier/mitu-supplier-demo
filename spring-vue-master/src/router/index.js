@@ -72,6 +72,65 @@ export default new Router({
                     component: resolve => require(['../components/page/system/dict_data/dict_data.vue'], resolve),
                     meta: { title: '字典数据' }
                 },
+
+
+
+                {
+                    path: '/position',
+                    component: resolve => require(['../components/page/position/position.vue'], resolve),
+                    meta: { title: '岗位管理' }
+                },
+                {
+                    path: '/org',
+                    component: resolve => require(['../components/page/organization/organization.vue'], resolve),
+                    meta: { title: '科室管理' }
+                },
+                {
+                    path: '/org_user',
+                    component: resolve => require(['../components/page/organization/org_user.vue'], resolve),
+                    meta: { title: '科室人员' }
+                },
+                {
+                    path: '/project',
+                    component: resolve => require(['../components/page/project/project.vue'], resolve),
+                    meta: { title: '项目管理' }
+                },
+                {
+                    path: '/contract',
+                    component: resolve => require(['../components/page/contract/contract.vue'], resolve),
+                    meta: { title: '合同管理' }
+                },
+                {
+                    path: '/plan',
+                    component: resolve => require(['../components/page/plan/plan.vue'], resolve),
+                    meta: { title: '计划管理' }
+                },
+                {
+                    path: '/expenditure',
+                    component: resolve => require(['../components/page/expenditure/expenditure.vue'], resolve),
+                    meta: { title: '执行情况管理' }
+                },
+
+                {
+                    path: '/project_supervise',
+                    component: resolve => require(['../components/page/supervise/project.vue'], resolve),
+                    meta: { title: '项目监管' }
+                },
+                {
+                    path: '/contract_supervise',
+                    component: resolve => require(['../components/page/supervise/contract.vue'], resolve),
+                    meta: { title: '合同监管' }
+                },
+                {
+                    path: '/plan_supervise',
+                    component: resolve => require(['../components/page/supervise/plan.vue'], resolve),
+                    meta: { title: '计划监管' }
+                },
+                {
+                    path: '/expenditure_supervise',
+                    component: resolve => require(['../components/page/supervise/expenditure.vue'], resolve),
+                    meta: { title: '执行情况监管' }
+                },
                 {
                     path: '/404',
                     component: resolve => require(['../components/page/404.vue'], resolve),

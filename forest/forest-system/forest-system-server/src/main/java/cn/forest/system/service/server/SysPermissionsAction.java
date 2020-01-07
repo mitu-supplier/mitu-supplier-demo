@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,10 +36,13 @@ public class SysPermissionsAction {
   
 
   @RequestMapping("/listfirstLevel")
-  public Object listfirstLevel(Long page, Long pageSize) {
+  public Object listfirstLevel(Long page, Long pageSize,String name) {
     Page<SysPermissions> pages = new Page<SysPermissions>(page, pageSize);
     QueryWrapper<SysPermissions> queryWrapper = new QueryWrapper<SysPermissions>();
     queryWrapper.eq("tree_depth", 1);
+    if(!StringUtils.isEmpty(name)) {
+      queryWrapper.like("name", name);
+    }
     IPage<SysPermissions> selectPage = sysPermissionsMapper.selectPage(pages, queryWrapper);
     selectPage.getRecords().forEach(e -> {
       if ("true".equals(e.getIsParent())) {
@@ -52,6 +57,11 @@ public class SysPermissionsAction {
     QueryWrapper<SysPermissions> queryWrapper = new QueryWrapper<SysPermissions>();
     queryWrapper.eq("parent_id", parentId);
     List<SysPermissions> selectList = sysPermissionsMapper.selectList(queryWrapper);
+    selectList.forEach(e -> {
+      if ("true".equals(e.getIsParent())) {
+        e.setHasChildren(true);
+      }
+    });
     return selectList;
   }
   
@@ -97,5 +107,20 @@ public class SysPermissionsAction {
   public Object getPermissionByUserId(Long userId){
     return sysPermissionsMapper.getPermissionByUserId(userId);
   }
-
+  
+  
+  @RequestMapping("/getRoleButton")
+  public Object getPermissionByUserId(Long userId,Long parentId){
+    Map<String, Object> map=new HashMap<String, Object>();
+    map.put("userId", userId);
+    map.put("parentId", parentId);
+    return sysPermissionsMapper.getRoleButton(map);
+  }
+  
+  @RequestMapping("/getpermissionByCode")
+  public Object getpermissionByCode(String code){
+    QueryWrapper<SysPermissions> queryWrapper = new QueryWrapper<SysPermissions>();
+    queryWrapper.eq("url", code);
+    return sysPermissionsMapper.selectOne(queryWrapper);
+  }
 }

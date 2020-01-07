@@ -2,228 +2,214 @@
     <div>
         <el-row :gutter="20">
             <el-col :span="8">
-                <el-card shadow="hover" class="mgb20" style="height:252px;">
-                    <div class="user-info">
-                        <img src="../../assets/img/img.jpg" class="user-avator" alt="">
-                        <div class="user-info-cont">
-                            <div class="user-info-name">{{name}}</div>
-                            <div>{{role}}</div>
-                        </div>
-                    </div>
-                    <div class="user-info-list">上次登录时间：<span>2019-01-01</span></div>
-                    <div class="user-info-list">上次登录地点：<span>北京</span></div>
+                <el-card shadow="hover"  style="height:300px;">
+                    <el-form ref="form" style="margin-left:50px;" >
+                        <el-form-item label="科室名称" style="margin-top:30px;">
+                            <el-select v-model="org_value" filterable placeholder="请选择科室" @change="selectOrg">
+                                <el-option
+                                v-for="item in org_option"
+                                :key="item.id"
+                                :label="item.name"
+                                :value="item.id">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="项目名称">
+                            <el-select v-model="project_value" filterable placeholder="项目名称" @change="selectProject">
+                                <el-option
+                                v-for="item in project_option"
+                                :key="item.id"
+                                :label="item.projectName"
+                                :value="item.id">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                        <div style="margin-top:40px;">项目总个数：{{project_number}}</div>
+                        <div style="margin-top:40px;">项目总预算（元）：{{project_total}}</div>
+                    </el-form>
                 </el-card>
-                <el-card shadow="hover" style="height:252px;">
-                    <div slot="header" class="clearfix">
-                        <span>语言详情</span>
-                    </div>
-                    Vue
-                    <el-progress :percentage="71.3" color="#42b983"></el-progress>
-                    JavaScript
-                    <el-progress :percentage="24.1" color="#f1e05a"></el-progress>
-                    CSS
-                    <el-progress :percentage="3.7"></el-progress>
-                    HTML
-                    <el-progress :percentage="0.9" color="#f56c6c"></el-progress>
-                </el-card>
+                
             </el-col>
             <el-col :span="16">
-                <el-row :gutter="20" class="mgb20">
-                    <el-col :span="8">
-                        <el-card shadow="hover" :body-style="{padding: '0px'}">
-                            <div class="grid-content grid-con-1">
-                                <i class="el-icon-lx-people grid-con-icon"></i>
-                                <div class="grid-cont-right">
-                                    <div class="grid-num">1234</div>
-                                    <div>用户访问量</div>
-                                </div>
-                            </div>
-                        </el-card>
-                    </el-col>
-                    <el-col :span="8">
-                        <el-card shadow="hover" :body-style="{padding: '0px'}">
-                            <div class="grid-content grid-con-2">
-                                <i class="el-icon-lx-notice grid-con-icon"></i>
-                                <div class="grid-cont-right">
-                                    <div class="grid-num">321</div>
-                                    <div>系统消息</div>
-                                </div>
-                            </div>
-                        </el-card>
-                    </el-col>
-                    <el-col :span="8">
-                        <el-card shadow="hover" :body-style="{padding: '0px'}">
-                            <div class="grid-content grid-con-3">
-                                <i class="el-icon-lx-goods grid-con-icon"></i>
-                                <div class="grid-cont-right">
-                                    <div class="grid-num">5000</div>
-                                    <div>数量</div>
-                                </div>
-                            </div>
-                        </el-card>
-                    </el-col>
-                </el-row>
-                <el-card shadow="hover" style="height:403px;">
-                    <div slot="header" class="clearfix">
-                        <span>待办事项</span>
-                        <el-button style="float: right; padding: 3px 0" type="text">添加</el-button>
-                    </div>
-                    <el-table :data="todoList" :show-header="false" height="304" style="width: 100%;font-size:14px;">
-                        <el-table-column width="40">
-                            <template slot-scope="scope">
-                                <el-checkbox v-model="scope.row.status"></el-checkbox>
-                            </template>
-                        </el-table-column>
-                        <el-table-column>
-                            <template slot-scope="scope">
-                                <div class="todo-item" :class="{'todo-item-del': scope.row.status}">{{scope.row.title}}</div>
-                            </template>
-                        </el-table-column>
-                        <el-table-column width="60">
-                            <template slot-scope="scope">
-                                <i class="el-icon-edit"></i>
-                                <i class="el-icon-delete"></i>
-                            </template>
-                        </el-table-column>
-                    </el-table>
+                
+                <el-card shadow="hover" style="height:300px;">
+                      <div class="total-class" id="myChart" style="width:100%; height: 250px"></div>
                 </el-card>
             </el-col>
         </el-row>
         <el-row :gutter="20">
-            <el-col :span="12">
+            <el-col :span="24">
                 <el-card shadow="hover">
-                    <schart ref="bar" class="schart" canvasId="bar" :data="data" type="bar" :options="options"></schart>
+                <el-table  :data="tableData" border class="table" >
+                    <el-table-column type="selection" width="55" align="center" ></el-table-column>
+                    <el-table-column type="index" label="序号" width="55" align="center" ></el-table-column>
+                    <el-table-column prop="projectName" label="项目名称"  align="center" ></el-table-column>
+                    <el-table-column prop="orgName" label="科室"  align="center" ></el-table-column>
+                    <el-table-column prop="name" label="状态"  align="center">
+                       <template slot-scope="scope">
+                         <span v-if="scope.row.xy=='true'">未达标</span>
+                         <span v-else="scope.row.dy=='true'">超出计划</span>
+                       </template>
+                    
+                    </el-table-column>
+                    
+            </el-table>
+            <div class="pagination">
+                <el-pagination
+                    @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange"
+                    :current-page="page"
+                    :page-sizes="[5,10, 15, 30, 50, 100]"
+                    :page-size="pageSize"
+                    layout="total, sizes, prev, pager, next, jumper"
+                    :total="total" >
+                 </el-pagination>
+            </div>
                 </el-card>
             </el-col>
-            <el-col :span="12">
-                <el-card shadow="hover">
-                    <schart ref="line" class="schart" canvasId="line" :data="data" type="line" :options="options2"></schart>
-                </el-card>
-            </el-col>
+            
         </el-row>
     </div>
 </template>
 
 <script>
-    import Schart from 'vue-schart';
     import bus from '../common/bus';
+    import baseURL_ from '@/utils/baseUrl.js';
     export default {
         name: 'dashboard',
+        
         data() {
             return {
-                name: localStorage.getItem('ms_username'),
-                todoList: [{
-                        title: '今天要修复100个bug',
-                        status: false,
-                    },
-                    {
-                        title: '今天要修复100个bug',
-                        status: false,
-                    },
-                    {
-                        title: '今天要写100行代码加几个bug吧',
-                        status: false,
-                    }, {
-                        title: '今天要修复100个bug',
-                        status: false,
-                    },
-                    {
-                        title: '今天要修复100个bug',
-                        status: true,
-                    },
-                    {
-                        title: '今天要写100行代码加几个bug吧',
-                        status: true,
-                    }
-                ],
-                data: [{
-                        name: '2018/09/04',
-                        value: 1083
-                    },
-                    {
-                        name: '2018/09/05',
-                        value: 941
-                    },
-                    {
-                        name: '2018/09/06',
-                        value: 1139
-                    },
-                    {
-                        name: '2018/09/07',
-                        value: 816
-                    },
-                    {
-                        name: '2018/09/08',
-                        value: 327
-                    },
-                    {
-                        name: '2018/09/09',
-                        value: 228
-                    },
-                    {
-                        name: '2018/09/10',
-                        value: 1065
-                    }
-                ],
-                options: {
-                    title: '最近七天每天的用户访问量',
-                    showValue: false,
-                    fillColor: 'rgb(45, 140, 240)',
-                    bottomPadding: 30,
-                    topPadding: 30
-                },
-                options2: {
-                    title: '最近七天用户访问趋势',
-                    fillColor: '#FC6FA1',
-                    axisColor: '#008ACD',
-                    contentColor: '#EEEEEE',
-                    bgColor: '#F5F8FD',
-                    bottomPadding: 30,
-                    topPadding: 30
-                }
+               org_option:[],
+               project_option:[],
+               org_value:'',
+               project_value:'',
+               project_number:'',
+               project_total:'',
+               tableData:[],
+               page:1,
+               total:1000,
+               pageSize:5,
+               org_id:'',
+               project_id:'',
             }
         },
         components: {
-            Schart
         },
         computed: {
-            role() {
-                return this.name === 'admin' ? '超级管理员' : '普通用户';
-            }
+           
         },
         created(){
-            this.handleListener();
-            this.changeDate();
+            this.projectCount(null,null);
+            this.org();
+            this.getData();
         },
-        activated(){
-            this.handleListener();
-        },
-        deactivated(){
-            window.removeEventListener('resize', this.renderChart);
-            bus.$off('collapse', this.handleBus);
-        },
+        
         methods: {
-            changeDate(){
-                const now = new Date().getTime();
-                this.data.forEach((item, index) => {
-                    const date = new Date(now - (6 - index) * 86400000);
-                    item.name = `${date.getFullYear()}/${date.getMonth()+1}/${date.getDate()}`
+             handleSizeChange(val){
+                   this.pageSize=val;
+                   this.getData();
+            },
+            handleCurrentChange(val){
+                   this.page=val;
+                   this.getData();
+            },
+            async getData(){
+                 const projectcount = await this.$http.get(baseURL_.lyjUrl+'/home/getProjects',{
+                   params: {'page':this.page,'pageSize':this.pageSize,'orgId':this.org_id,'id':this.project_id}
+                 });
+                this.tableData=projectcount.data.data.list;
+                this.total=projectcount.data.data.total;
+                this.page=projectcount.data.data.page;
+            },
+            async projectCount(orgId,id){
+             const projectcount = await this.$http.get(baseURL_.lyjUrl+'/home/getProjectsCount',{params: {'orgId':orgId,'id':id}});
+               this.project_number=projectcount.data.data.number;
+               this.project_total=projectcount.data.data.total;
+               var char=[];
+               var obj={};
+               obj.name="已执行金额:"+projectcount.data.data.expenditure_total;
+               obj.value=projectcount.data.data.expenditure_total;
+               char.push(obj);
+               obj={};
+               obj.name="剩余未执行金额:"+projectcount.data.data.subtract_total;
+               obj.value=projectcount.data.data.subtract_total;
+               char.push(obj);
+               let myChart = this.$echarts.init(
+                   document.getElementById('myChart')
+                )
+               myChart.setOption({
+                   legend: {
+                        orient: 'vertical',
+                        left: 'left',
+                        
+                    },
+                color: ['#f59b24', '#08a7f1'], 
+                series: [
+                    {
+                        name: '访问来源',
+                        type: 'pie',
+                        radius: '55%',
+                        center: ['50%', '60%'],
+                        data:char,
+                        emphasis: {
+                            itemStyle: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)',
+                               
+                            }
+                        }
+                    },
+                    {
+                        name: '访问来源',
+                        type: 'pie',
+                        radius: '55%',
+                        center: ['50%', '60%'],
+                                    itemStyle : {
+                                        normal : {
+                                            label:{            //饼图图形上的文本标签
+                                                    show:true,
+                                                    position:'inner', //标签的位置
+                                                    textStyle : {
+                                                        fontWeight : 300 ,
+                                                        fontSize : 12    //文字的字体大小
+                                                    },
+                                                    formatter:'{d}%'
+                                                },
+            
+                                            labelLine : {
+                                                show : false   //隐藏标示线
+                                            }
+                                        }
+                                    },
+                                data: char,
+                            }
+                    ]
                 })
+
+
             },
-            handleListener(){
-                bus.$on('collapse', this.handleBus);
-                // 调用renderChart方法对图表进行重新渲染
-                window.addEventListener('resize', this.renderChart)
-            },
-            handleBus(msg){
-                setTimeout(() => {
-                    this.renderChart()
-                }, 300);
-            },
-            renderChart(){
-                this.$refs.bar.renderChart();
-                this.$refs.line.renderChart();
-            }
+           async org(){
+               const org = await this.$http.get(baseURL_.lyjUrl+'/home/getOrg');
+               this.org_option=org.data.data;
+           },
+           async selectOrg(row){
+             this.project_option=[];
+             this.project_value='';
+             const project = await this.$http.get(baseURL_.lyjUrl+'/home/getProjectByOrgId',{params: {'orgId':row}});
+             this.project_option=project.data.data;
+             this.projectCount(row,null);
+             this.org_id=row;
+             this.project_id='';
+             this.getData();
+           },
+           async selectProject(row){
+              this.projectCount(null,row);
+              this.project_id=row;
+              this.org_id='',
+              this.getData();
+           }
         }
     }
 
@@ -339,5 +325,8 @@
         width: 100%;
         height: 300px;
     }
-
+    .table{
+        width: 100%;
+        font-size: 12px;
+    }
 </style>

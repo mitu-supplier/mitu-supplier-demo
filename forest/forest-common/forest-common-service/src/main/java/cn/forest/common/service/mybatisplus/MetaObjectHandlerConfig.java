@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 
@@ -24,7 +25,7 @@ public class MetaObjectHandlerConfig implements MetaObjectHandler {
   @Override
   public void updateFill(MetaObject metaObject) {
     Object updateTime = getFieldValByName("updateTime", metaObject);
-    if (updateTime == null) {
+    if (StringUtils.isEmpty(updateTime)) {
       setFieldValByName("updateTime",
           DateUtil.parseDateToStr(new Date(), DateUtil.DATE_TIME_FORMAT_YYYY_MM_DD_HH_MI_SS), metaObject);// mybatis-plus版本2.0.9+
     }

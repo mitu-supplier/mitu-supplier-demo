@@ -15,7 +15,7 @@ public class SysPermissionsBack implements SysPermissionsRemote {
   }
 
   @Override
-  public Object getlistfirstLevel(Long page, Long pageSize) {
+  public Object getlistfirstLevel(Long page, Long pageSize,String name) {
     return null;
   }
 

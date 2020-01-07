@@ -19,8 +19,8 @@ public class SysLoginLogsController {
 
   @RequestMapping("/list")
   @SysLogs(desc  = "登录日志列表")
-  public Map<String, Object> getList(Long page, Long pageSize) {
-    return sysLoginLogsService.getList(page, pageSize);
+  public Map<String, Object> getList(Long page, Long pageSize,String name) {
+    return sysLoginLogsService.getList(page, pageSize,name);
   }
 
 }

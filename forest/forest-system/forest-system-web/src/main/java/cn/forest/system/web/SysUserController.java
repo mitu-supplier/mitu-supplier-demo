@@ -8,9 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.forest.commom.redis.RedisDao;
 import cn.forest.common.util.RequestMap;
 import cn.forest.common.web.util.SysLogs;
-import cn.forest.system.service.SysPermissionsService;
 import cn.forest.system.service.SysRoleService;
 import cn.forest.system.service.SysUserService;
 
@@ -25,10 +25,12 @@ public class SysUserController {
   private SysRoleService sysRoleService;
   
 
+  
+
   @SysLogs(desc = "用户列表")
   @RequestMapping("/list")
-  public Map<String, Object> getList(Long page, Long pageSize) {
-    return sysUserService.getList(page, pageSize);
+  public Map<String, Object> getList(Long page, Long pageSize,Long typeId,String name) {
+    return sysUserService.getList(page, pageSize,typeId,name);
   }
 
   @SysLogs(desc = "删除用户")
@@ -67,5 +69,18 @@ public class SysUserController {
     return sysUserService.saveRole(RequestMap.requestToMap(request));
   }
   
+  @RequestMapping("/getOrgAll")
+  public Map<String, Object> getOrgAll() {
+    return sysUserService.getOrgAll();
+  }
   
+  @RequestMapping("/getRoleAll")
+  public Map<String, Object> listAll() {
+    return sysUserService.getRoleAll();
+  }
+  
+  @RequestMapping("/getOnlineUser")
+  public Map<String, Object> getOnlineUser(HttpServletRequest request) {
+    return sysUserService.getOnlineUser(request);
+  }
 }

@@ -26,8 +26,8 @@ public class SysRoleController {
 
   @RequestMapping("/list")
   @SysLogs(desc = "角色列表")
-  public Map<String, Object> getList(Long page, Long pageSize) {
-    return sysRoleService.getList(page, pageSize);
+  public Map<String, Object> getList(Long page, Long pageSize,String name) {
+    return sysRoleService.getList(page, pageSize,name);
   }
   
   @RequestMapping("/getPermissions")

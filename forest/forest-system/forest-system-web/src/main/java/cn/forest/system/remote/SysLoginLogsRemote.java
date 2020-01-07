@@ -10,6 +10,7 @@ import cn.forest.system.fallback.SysLoginLogsBack;
 public interface SysLoginLogsRemote {
 
   @RequestMapping("/sys_login_logs/list")
-  public Object getList(@RequestParam(value = "page") Long page, @RequestParam(value = "pageSize") Long pageSize);
+  public Object getList(@RequestParam(value = "page") Long page, @RequestParam(value = "pageSize") Long pageSize
+      ,@RequestParam(value = "name") String name);
 
 }

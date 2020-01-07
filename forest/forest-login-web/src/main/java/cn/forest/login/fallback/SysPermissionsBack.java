@@ -18,4 +18,15 @@ public class SysPermissionsBack implements SysPermissionsRemote {
   public Object getPermissionByUserId(Long userId) {
     return 0;
   }
+
+
+  @Override
+  public Object getpermissionByCode(String code) {
+    return null;
+  }
+
+  @Override
+  public Object getRoleButton(Long userId, Long parentId) {
+    return null;
+  }
 }

@@ -14,5 +14,6 @@
 		<module>forest-system-server</module>
 		<module>forest-system-service</module>
 		<module>forest-system-web</module>
+		<module>forest-file-web</module>
 	</modules>
 </project>

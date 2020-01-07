@@ -19,8 +19,8 @@ public class SysExceptionLogsController {
   
   @RequestMapping("list")
   @SysLogs(desc  = "异常日志列表")
-  public Map<String, Object> getList(Long page,Long pageSize){
-    return sysExceptionLogsVoService.getList(page, pageSize);
+  public Map<String, Object> getList(Long page,Long pageSize,String name){
+    return sysExceptionLogsVoService.getList(page, pageSize,name);
   }
   
   

@@ -39,12 +39,22 @@ public class SysRoleAction {
   
 
   @RequestMapping(value = "/list")
-  public Object getList(Long page, Long pageSize) {
+  public Object getList(Long page, Long pageSize,String name) {
     Page<SysRole> pages = new Page<SysRole>(page, pageSize);
-    IPage<SysRole> selectPage = sysRoleMapper.selectPage(pages, null);
+    QueryWrapper<SysRole> wrapper=new QueryWrapper<SysRole>();
+    if(!StringUtils.isEmpty(name)) {
+      wrapper.like("role_name", name).or().like("role_code", name);
+    }
+    IPage<SysRole> selectPage = sysRoleMapper.selectPage(pages, wrapper);
     return new ResultPage<SysRole>(selectPage);
   }
 
+  @RequestMapping(value = "/listAll")
+  public Object listAll() {
+    QueryWrapper<SysRole> wrapper=new QueryWrapper<SysRole>();
+    //wrapper.eq("is_admin", 0);
+    return sysRoleMapper.selectList(wrapper);
+  }
   
   @RequestMapping(value = "/add")
   public int getList(@RequestBody SysRole sysRole) {
@@ -73,6 +83,13 @@ public class SysRoleAction {
     Map<String, Object> map=new HashMap<String, Object>();
     map.put("userId",userId);
     return sysRoleMapper.getRoleByUserId(map);
+  }
+  
+  @RequestMapping("/getUserRole")
+  public Object getUserRole(Long userId) {
+    Map<String, Object> map=new HashMap<String, Object>();
+    map.put("userId",userId);
+    return sysRoleMapper.getUserRole(map);
   }
   
   
