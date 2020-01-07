@@ -65,10 +65,16 @@ public class Suppliers implements Serializable {
     private Long legalCardType;
 
     /**
-     * 法人代表身份证件
+     * 法人代表身份证件 正面
      */
-    @TableField(value = "legal_card")
-    private String legalCard;
+    @TableField(value = "legal_card_z")
+    private String legalCardZ;
+
+    /**
+     * 法人代表身份证件 反面
+     */
+    @TableField(value = "legal_card_f")
+    private String legalCardF;
 
     /**
      * 法人身份证件有效期开始时间
@@ -239,6 +245,11 @@ public class Suppliers implements Serializable {
     private Integer isDelete;
 
     /**
+     * 商户余额
+     */
+    private BigDecimal balance;
+
+    /**
      * 注册时间
      */
     @TableField(value = "created_at", fill = FieldFill.INSERT)
@@ -249,6 +260,11 @@ public class Suppliers implements Serializable {
      */
     @TableField(value = "updated_at", fill = FieldFill.UPDATE)
     private String updatedAt;
+
+
+    // =====查询字段
+    @TableField(exist = false)
+    private String enterTypeName;
 
     public Long getId() {
         return id;
@@ -320,14 +336,6 @@ public class Suppliers implements Serializable {
 
     public void setLegalCardType(Long legalCardType) {
         this.legalCardType = legalCardType;
-    }
-
-    public String getLegalCard() {
-        return legalCard;
-    }
-
-    public void setLegalCard(String legalCard) {
-        this.legalCard = legalCard;
     }
 
     public String getLegalCardDateStart() {
@@ -560,5 +568,37 @@ public class Suppliers implements Serializable {
 
     public void setSignCompany(Long signCompany) {
         this.signCompany = signCompany;
+    }
+
+    public String getLegalCardZ() {
+        return legalCardZ;
+    }
+
+    public void setLegalCardZ(String legalCardZ) {
+        this.legalCardZ = legalCardZ;
+    }
+
+    public String getLegalCardF() {
+        return legalCardF;
+    }
+
+    public void setLegalCardF(String legalCardF) {
+        this.legalCardF = legalCardF;
+    }
+
+    public BigDecimal getBalance() {
+        return balance;
+    }
+
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
+    }
+
+    public String getEnterTypeName() {
+        return enterTypeName;
+    }
+
+    public void setEnterTypeName(String enterTypeName) {
+        this.enterTypeName = enterTypeName;
     }
 }

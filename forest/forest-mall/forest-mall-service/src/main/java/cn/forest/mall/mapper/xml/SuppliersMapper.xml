@@ -2,5 +2,38 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.forest.mall.mapper.SuppliersMapper">
 
-
+    <select id="selectListByMap" resultType="cn.forest.mall.entity.Suppliers">
+        SELECT
+            s.*,
+            cc.name AS enterTypeName
+        FROM
+            suppliers s
+            LEFT JOIN catalogs cc ON s.enter_type = cc.id
+        where
+            s.is_delete = 0
+            <choose>
+                <when test="status != null">
+                    AND s.status = #{status}
+                </when>
+                <otherwise>
+                    AND s.status IN (0,1,2)
+                </otherwise>
+            </choose>
+            <if test="code != null and code != ''">
+                AND s.code LIKE CONCAT('%',#{code},'%')
+            </if>
+            <if test="name != null and name != ''">
+                AND s.name LIKE CONCAT('%',#{name},'%')
+            </if>
+            <if test="shortName != null and shortName != ''">
+                AND s.short_name LIKE CONCAT('%',#{shortName},'%')
+            </if>
+            <if test="contactName != null and contactName != ''">
+                AND s.contact_name LIKE CONCAT('%',#{contactName},'%')
+            </if>
+            <if test="contactMobile != null and contactMobile != ''">
+                AND s.contact_mobile LIKE CONCAT('%',#{contactMobile},'%')
+            </if>
+        ORDER BY created_at DESC
+    </select>
 </mapper>

@@ -17,28 +17,10 @@ public class Camilo implements Serializable {
     private Long id;
 
     /**
-     * 类目id
-     */
-    @TableField(value = "catalogs_id")
-    private Long catalogsId;
-
-    /**
-     * 类目名称
-     */
-    @TableField(value = "catalogs_name")
-    private String catalogsName;
-
-    /**
      * 商品id
      */
     @TableField(value = "product_id")
     private Long productId;
-
-    /**
-     * 商品名称
-     */
-    @TableField(value = "product_name")
-    private String productName;
 
     /**
      * 卡号
@@ -103,36 +85,12 @@ public class Camilo implements Serializable {
         this.id = id;
     }
 
-    public Long getCatalogsId() {
-        return catalogsId;
-    }
-
-    public void setCatalogsId(Long catalogsId) {
-        this.catalogsId = catalogsId;
-    }
-
-    public String getCatalogsName() {
-        return catalogsName;
-    }
-
-    public void setCatalogsName(String catalogsName) {
-        this.catalogsName = catalogsName;
-    }
-
     public Long getProductId() {
         return productId;
     }
 
     public void setProductId(Long productId) {
         this.productId = productId;
-    }
-
-    public String getProductName() {
-        return productName;
-    }
-
-    public void setProductName(String productName) {
-        this.productName = productName;
     }
 
     public String getCardNumber() {

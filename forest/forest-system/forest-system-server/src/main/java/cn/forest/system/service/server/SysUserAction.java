@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -42,7 +43,7 @@ public class SysUserAction {
     IPage<SysUser> selectPage = sysUserMapper.selectPage(ipage, null);
     /*
      * PageHelper.startPage(Integer.parseInt(page+""),Integer.parseInt(pageSize+""))
-     * ;
+            * ;
      */
     /* List<SysUser> selectList = sysUserMapper.selectList(null); */
     /* PageInfo<SysUser> selectPage=new PageInfo<SysUser>(selectList); */
@@ -96,4 +97,10 @@ public class SysUserAction {
     return result;
   }
 
+  @RequestMapping("/selectByTypeId")
+  public Object selectByTypeId(@RequestParam("typeId") Long typeId){
+    QueryWrapper<SysUser> qw = new QueryWrapper<>();
+    qw.eq("type_id", typeId);
+    return sysUserMapper.selectList(qw);
+  }
 }

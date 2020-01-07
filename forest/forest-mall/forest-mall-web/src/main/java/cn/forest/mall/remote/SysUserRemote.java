@@ -21,4 +21,7 @@ public interface SysUserRemote {
 
     @RequestMapping("/sys_user/saveRole")
     int saveRole(Map<String, ?> map);
+
+    @RequestMapping("/sys_user/selectByTypeId")
+    Object selectByTypeId(@RequestParam("typeId") Long typeId);
 }

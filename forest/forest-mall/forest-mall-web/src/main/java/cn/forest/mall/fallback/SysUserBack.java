@@ -27,4 +27,9 @@ public class SysUserBack implements SysUserRemote {
     public int update(Map<String, ?> map) {
         return 0;
     }
+
+    @Override
+    public Object selectByTypeId(Long typeId) {
+        return null;
+    }
 }

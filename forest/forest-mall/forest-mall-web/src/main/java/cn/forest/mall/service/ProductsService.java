@@ -39,37 +39,6 @@ public class ProductsService {
     public Map<String, Object> list(Map<String, Object> map) {
         Object obj = productsRemote.list(map);
         if (obj != null) {
-            Map pMap = (Map) obj;
-            Object list = pMap.get("list");
-            if(list != null){
-                List<Map<String, Object>> productList = (List<Map<String, Object>>) list;
-                for (Map<String, Object> product : productList){
-                    // 品目名称
-                    if(StringUtil.toString(product.get("catalogId")) != null){
-                        Long catalogId = Long.parseLong(StringUtil.toString(product.get("catalogId")));
-                        Object catalogs = catalogsRemote.getById(catalogId);
-                        if(catalogs != null){
-                            product.put("catalogName", JsonUtil.readTree(catalogs).path("name").asText());
-                        }
-                    }
-                    // 发货类型
-                    if(StringUtil.toString(product.get("deliveryType")) != null){
-                        Long deliveryType = Long.parseLong(StringUtil.toString(product.get("deliveryType")));
-                        Object delivery = sysDictionaryDataRemote.getById(deliveryType);
-                        if(delivery != null){
-                            product.put("deliveryName", JsonUtil.readTree(delivery).path("name").asText());
-                        }
-                    }
-                    // 商户名称
-                    if(StringUtil.toString(product.get("supplierId")) != null){
-                        Long supplierId = Long.parseLong(StringUtil.toString(product.get("supplierId")));
-                        Object suppliers = suppliersRemote.getById(supplierId);
-                        if(suppliers != null){
-                            product.put("supplierName", JsonUtil.readTree(suppliers).path("name").asText());
-                        }
-                    }
-                }
-            }
             return ResultMessage.success(obj);
         }
         return null;

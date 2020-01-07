@@ -116,6 +116,19 @@ public class Products implements Serializable {
     @TableLogic
     private Integer isDelete;
 
+
+    // ==========  查询返回字段
+
+    @TableField(exist = false)
+    private String catalogName;
+
+    @TableField(exist = false)
+    private String deliveryName;
+
+    @TableField(exist = false)
+    private String supplierName;
+
+
     public Long getId() {
         return id;
     }
@@ -258,5 +271,29 @@ public class Products implements Serializable {
 
     public void setInventoryAlertNum(Integer inventoryAlertNum) {
         this.inventoryAlertNum = inventoryAlertNum;
+    }
+
+    public String getCatalogName() {
+        return catalogName;
+    }
+
+    public void setCatalogName(String catalogName) {
+        this.catalogName = catalogName;
+    }
+
+    public String getDeliveryName() {
+        return deliveryName;
+    }
+
+    public void setDeliveryName(String deliveryName) {
+        this.deliveryName = deliveryName;
+    }
+
+    public String getSupplierName() {
+        return supplierName;
+    }
+
+    public void setSupplierName(String supplierName) {
+        this.supplierName = supplierName;
     }
 }

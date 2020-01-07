@@ -43,6 +43,9 @@ public class SuppliersService {
     @Autowired
     private RedisDao redisDao;
 
+    @Autowired
+    private CatalogsRemote catalogsRemote;
+
     /**
      * 商户列表信息
      *
@@ -52,21 +55,6 @@ public class SuppliersService {
     public Map<String, Object> list(Map<String, Object> map) {
         Object obj = suppliersRemote.list(map);
         if (obj != null) {
-            Map pMap = (Map) obj;
-            Object list = pMap.get("list");
-            if(list != null){
-                List<Map<String, Object>> supplierList = (List<Map<String, Object>>) list;
-                for (Map<String, Object> supplier : supplierList){
-                    // 入驻类型
-                    if(StringUtil.toString(supplier.get("enterType")) != null){
-                        Long deliveryType = Long.parseLong(StringUtil.toString(supplier.get("enterType")));
-                        Object delivery = sysDictionaryDataRemote.getById(deliveryType);
-                        if(delivery != null){
-                            supplier.put("enterTypeName", JsonUtil.readTree(delivery).path("name").asText());
-                        }
-                    }
-                }
-            }
             return ResultMessage.success(obj);
         }
         return null;
@@ -98,13 +86,13 @@ public class SuppliersService {
             if (map.get("loginName") == null) {
                 return ResultMessage.error("请输入用户名");
             }
-            if(map.get("password") == null){
+            if (map.get("password") == null) {
                 return ResultMessage.error("请输入密码");
             }
-            if(map.get("confirmPassword") == null){
+            if (map.get("confirmPassword") == null) {
                 return ResultMessage.error("请输入确认密码");
             }
-            if(!map.get("confirmPassword").equals(map.get("password").toString())){
+            if (!map.get("confirmPassword").equals(map.get("password").toString())) {
                 return ResultMessage.error("两次密码不一致，请重新输入");
             }
             map.remove("confirmPassword");
@@ -112,31 +100,54 @@ public class SuppliersService {
             if (user != null) {
                 return ResultMessage.error("该账号已注册，请登录后继续");
             }
+            map.put("type", 1);
             Object add = sysUserRemote.add(map);
             if (add != null) {
-                Map result = (Map) add;
-                int num = Integer.parseInt(result.get(Constant.RESULT_NUM).toString());
+                Map userResult = (Map) add;
+                int num = Integer.parseInt(userResult.get(Constant.RESULT_NUM).toString());
+                userId = JsonUtil.readTree(userResult.get(Constant.RESULT).toString()).path("id").asLong();
                 if (num > 0) {
-                    return ResultMessage.success(result.get(Constant.RESULT));
+                    // 生成供应商信息
+                    Map<String, Object> resultSupplierInfo = new HashMap<>();
+                    String supplierCode = getSupplierCode();
+                    resultSupplierInfo.put("code", supplierCode);
+                    resultSupplierInfo.put("status", -1);
+                    Object supplierSave = suppliersRemote.save(resultSupplierInfo);
+                    if (supplierSave != null) {
+                        Map supplierResult = (Map) supplierSave;
+                        if (Integer.parseInt(supplierResult.get(Constant.RESULT_NUM).toString()) > 0) {
+                            Long supplierId = JsonUtil.readTree(supplierResult.get(Constant.RESULT).toString()).path("id").asLong();
+                            // 回写用户关联供应商类型ID
+                            Map<String, Object> userInfo = new HashMap<>();
+                            userInfo.put("id", userId);
+                            userInfo.put("typeId", supplierId);
+                            int update = sysUserRemote.update(userInfo);
+                            if (update > 0) {
+                                Map<String, Object> resultMap = new HashMap<>();
+                                resultMap.put("userId", userId);
+                                resultMap.put("supplierId", supplierId);
+                                resultMap.put("supplierCode", supplierCode);
+                                return ResultMessage.success(resultMap);
+                            }
+                        }
+                    }
                 }
             }
         } else {
-            Map<String, Object> resultSupplierInfo = new HashMap<>();
-            resultSupplierInfo.put("code", getSupplierCode());
-            resultSupplierInfo.put("status", -1);
-            Object supplierSave = suppliersRemote.save(resultSupplierInfo);
-            if (supplierSave != null) {
-                Map supMap = (Map) supplierSave;
-                if (Integer.parseInt(supMap.get(Constant.RESULT_NUM).toString()) > 0) {
-                    JsonNode supplierNode = JsonUtil.readTree(supMap.get(Constant.RESULT).toString());
-                    resultSupplierInfo.put("id", supplierNode.path("id").asLong());
-                    map.put("type", 1);
-                    map.put("typeId", supplierNode.path("id").asLong());
-                    int update = sysUserRemote.update(map);
-                    if (update > 0) {
-                        return ResultMessage.success(resultSupplierInfo);
+            int update = sysUserRemote.update(map);
+            if (update > 0) {
+                // 保存对接招商人员
+                Object investmentPerson = map.get("investmentPerson");
+                if (investmentPerson != null) {
+                    Object userInfo = sysUserRemote.getById(Long.parseLong(userId.toString()));
+                    if (userInfo != null) {
+                        Map<String, Object> supplierInfo = new HashMap<>();
+                        supplierInfo.put("id", ((Map) userInfo).get("typeId"));
+                        supplierInfo.put("investmentPerson", investmentPerson);
+                        suppliersRemote.update(supplierInfo);
                     }
                 }
+                return ResultMessage.success("保存成功");
             }
         }
         return ResultMessage.error("保存失败");
@@ -199,15 +210,18 @@ public class SuppliersService {
     public Map<String, Object> getDictionaryData() {
         Map<String, Object> dataMap = new HashMap<>();
         List allTypeList = (List) sysDictionaryTypeRemote.getAll();
-        for (Object obj : allTypeList) {
-            Map type = (Map)obj;
-            long id = Long.parseLong(type.get("id").toString());
-            Object dataList = sysDictionaryDataRemote.selectByDateTypeId(id);
-            if (dataList != null) {
-                dataMap.put(type.get("code").toString(), dataList);
+        if (allTypeList != null) {
+            for (Object obj : allTypeList) {
+                Map type = (Map) obj;
+                long id = Long.parseLong(type.get("id").toString());
+                Object dataList = sysDictionaryDataRemote.selectByDateTypeId(id);
+                if (dataList != null) {
+                    dataMap.put(type.get("code").toString(), dataList);
+                }
             }
+            return ResultMessage.success(dataMap);
         }
-        return ResultMessage.success(dataMap);
+        return ResultMessage.error("未查询带数据");
     }
 
     /**
@@ -232,7 +246,8 @@ public class SuppliersService {
         HashMap userInfoMap = (HashMap) redisDao.getValue(header);
         if (userInfoMap != null) {
             Object type = userInfoMap.get("type");
-            Object typeId = userInfoMap.get("type_id");
+            Object typeId = userInfoMap.get("typeId");
+            userInfoMap.put("password", null);
             if (type != null && Integer.parseInt(type.toString()) == 1 && typeId != null) {
                 // 供应商
                 Object supplier = suppliersRemote.getById(Long.parseLong(typeId.toString()));
@@ -243,7 +258,11 @@ public class SuppliersService {
         return ResultMessage.error("未查询到用户信息");
     }
 
-
+    /**
+     * 获取供应商code
+     *
+     * @return
+     */
     private String getSupplierCode() {
         String name = "1";
         int count = sysSequenceRemote.countByName(name);
@@ -255,6 +274,57 @@ public class SuppliersService {
             map.put("next", 1);
             sysSequenceRemote.save(map);
         }
-        return name+ sysSequenceRemote.getSeqValue(name);
+        return name + sysSequenceRemote.getSeqValue(name);
+    }
+
+    /**
+     * 查询商户余额
+     *
+     * @param map
+     * @return
+     */
+    public Map<String, Object> getBalance(Map<String, Object> map) {
+        map.put("balance", "balance");
+        map.put("status", 1);
+        Object obj = suppliersRemote.list(map);
+        if (obj != null) {
+            return ResultMessage.success(obj);
+        }
+        return null;
+    }
+
+    /**
+     * 获取供应商详情
+     *
+     * @param id
+     * @return
+     */
+    public Map<String, Object> view(Long id) {
+        Object supplier = suppliersRemote.getById(id);
+        if (supplier != null) {
+            Map supplerInfo = (Map) supplier;
+            Object obj = sysUserRemote.selectByTypeId(id);
+            List userList = (List) obj;
+            if (userList != null && userList.size() > 0) {
+                Map userInfo = (Map) userList.get(0);
+                userInfo.put("password", null);
+                supplerInfo.put("user", userInfo);
+            }
+            return ResultMessage.success(supplerInfo);
+        }
+        return null;
+    }
+
+    /**
+     * 获取入驻类型
+     *
+     * @return
+     */
+    public Map<String, Object> getEnterType() {
+        Object childrenByLevel = catalogsRemote.getChildrenByLevel(null);
+        if(childrenByLevel != null){
+            return ResultMessage.success(childrenByLevel);
+        }
+        return null;
     }
 }

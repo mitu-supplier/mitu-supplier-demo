@@ -92,4 +92,9 @@ public class SuppliersAuditController {
     public Map<String, Object> getDictionaryData() {
         return suppliersService.getDictionaryData();
     }
+
+    @RequestMapping("/view")
+    public Map<String, Object> view(@RequestParam("id") Long id){
+        return suppliersService.view(id);
+    }
 }

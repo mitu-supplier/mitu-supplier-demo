@@ -62,11 +62,33 @@ public class SuppliersController {
 
     /**
      * 获取当前注册人信息
+     *
      * @param request
      * @return
      */
     @RequestMapping("/getUserInfo")
-    public Map<String, Object> getUserInfo(HttpServletRequest request){
+    public Map<String, Object> getUserInfo(HttpServletRequest request) {
         return suppliersService.getUserInfo(request);
+    }
+
+    /**
+     * 获取商户入驻类型
+     *
+     * @return
+     */
+    @RequestMapping("/getEnterType")
+    public Map<String, Object> getEnterType() {
+        return suppliersService.getEnterType();
+    }
+
+    /**
+     * 获取商户余额
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping("/getBalance")
+    public Map<String, Object> getBalance(HttpServletRequest request) {
+        return suppliersService.getBalance(RequestMap.requestToMap(request));
     }
 }

@@ -12,6 +12,8 @@ import cn.forest.mall.mapper.SuppliersMapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
@@ -42,46 +44,11 @@ public class ProductsAction {
 
     @RequestMapping("/list")
     public Object list(@RequestBody Map<String, Object> map) {
-        QueryWrapper<Products> queryWrapper = new QueryWrapper<Products>();
-        if (StringUtil.toString(map.get("name")) != null) {
-            queryWrapper.like("name", map.get("name"));
-        }
-        String catalogsName = StringUtil.toString(map.get("catalogName"));
-        if (catalogsName != null) {
-            QueryWrapper<Catalogs> qw = new QueryWrapper<Catalogs>();
-            qw.like("name", catalogsName);
-            List<Catalogs> catalogs = catalogsMapper.selectList(qw);
-            List<Long> ids = new ArrayList<>();
-            if (!CollectionUtils.isEmpty(catalogs)) {
-                ids = catalogs.stream().map(Catalogs::getId).collect(Collectors.toList());
-            } else {
-                ids.add(0L);
-            }
-            queryWrapper.in("catalog_id", ids);
-        }
-        if (StringUtil.toString(map.get("auditStatus")) != null) {
-            queryWrapper.eq("audit_status", Integer.parseInt(StringUtil.toString(map.get("auditStatus"))));
-        }
-        String supplierName = StringUtil.toString(map.get("supplierName"));
-        if (supplierName != null) {
-            QueryWrapper<Suppliers> qw = new QueryWrapper<Suppliers>();
-            qw.like("name", supplierName);
-            List<Suppliers> suppliersList = suppliersMapper.selectList(qw);
-            List<Long> ids = new ArrayList<>();
-            if (!CollectionUtils.isEmpty(suppliersList)) {
-                ids = suppliersList.stream().map(Suppliers::getId).collect(Collectors.toList());
-            } else {
-                ids.add(0L);
-            }
-            queryWrapper.in("supplier_id", ids);
-        }
-        queryWrapper.orderByAsc(new String[]{"audit_status", "sort"});
         if (StringUtil.toString(map.get("page")) != null && StringUtil.toString(map.get("pageSize")) != null) {
-            Long page = Long.parseLong(map.get("page").toString());
-            Long pageSize = Long.parseLong(map.get("pageSize").toString());
-            Page<Products> pages = new Page<Products>(page, pageSize);
-            IPage<Products> productsIPage = productsMapper.selectPage(pages, queryWrapper);
-            return new ResultPage<Products>(productsIPage);
+            PageHelper.startPage(Integer.parseInt(map.get("page").toString()), Integer.parseInt(map.get("pageSize").toString()));
+            List<Products> products = productsMapper.selectListByMap(map);
+            PageInfo<Products> productsPage = new PageInfo<Products>(products);
+            return new ResultPage<Products>(productsPage);
         }
         return null;
     }

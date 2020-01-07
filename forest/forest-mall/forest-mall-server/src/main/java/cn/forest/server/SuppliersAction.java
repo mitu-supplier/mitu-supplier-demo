@@ -8,15 +8,16 @@ import cn.forest.mall.mapper.SuppliersMapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.sun.org.apache.xpath.internal.operations.String;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
 
 @RestController
 @RequestMapping("/suppliers")
@@ -27,33 +28,11 @@ public class SuppliersAction {
 
     @RequestMapping("/list")
     public Object list(@RequestBody Map<String, Object> map) {
-        QueryWrapper<Suppliers> queryWrapper = new QueryWrapper<Suppliers>();
-        if (map.get("status") != null) {
-            queryWrapper.eq("status", map.get("status"));
-        }
-        if (StringUtil.toString(map.get("code")) != null) {
-            queryWrapper.eq("code", map.get("code"));
-        }
-        if (StringUtil.toString(map.get("name")) != null) {
-            queryWrapper.like("name", map.get("name"));
-        }
-        if (StringUtil.toString(map.get("shortName")) != null) {
-            queryWrapper.like("short_name", map.get("shortName"));
-        }
-        if (StringUtil.toString(map.get("contactName")) != null) {
-            queryWrapper.like("contact_name", map.get("contactName"));
-        }
-        if (StringUtil.toString(map.get("contactMobile")) != null) {
-            queryWrapper.like("contact_mobile", map.get("contactMobile"));
-        }
-        queryWrapper.in("status", new Integer[]{0,1,2});
-        queryWrapper.orderByDesc("created_at");
         if (StringUtil.toString(map.get("page")) != null && StringUtil.toString(map.get("pageSize")) != null) {
-            Long page = Long.parseLong(map.get("page").toString());
-            Long pageSize = Long.parseLong(map.get("pageSize").toString());
-            Page<Suppliers> pages = new Page<Suppliers>(page, pageSize);
-            IPage<Suppliers> suppliersIPage = suppliersMapper.selectPage(pages, queryWrapper);
-            return new ResultPage<Suppliers>(suppliersIPage);
+            PageHelper.startPage(Integer.parseInt(map.get("page").toString()), Integer.parseInt(map.get("pageSize").toString()));
+            List<Suppliers> products = suppliersMapper.selectListByMap(map);
+            PageInfo<Suppliers> suppliersPage = new PageInfo<Suppliers>(products);
+            return new ResultPage<Suppliers>(suppliersPage);
         }
         return null;
     }

@@ -1,10 +1,9 @@
 package cn.forest.mall.web;
 
 import cn.forest.common.util.RequestMap;
-import cn.forest.mall.remote.ProductsRemote;
 import cn.forest.mall.service.ProductsService;
+import cn.forest.mall.service.SuppliersService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,6 +17,9 @@ public class ProductsController {
 
     @Autowired
     private ProductsService productsService;
+
+    @Autowired
+    private SuppliersService suppliersService;
 
     /**
      * 列表查询
@@ -72,5 +74,12 @@ public class ProductsController {
     @RequestMapping("/batchDelete")
     public Map<String, Object> batchDelete(@RequestParam("ids") String ids) {
         return productsService.batchDelete(ids);
+    }
+
+    @RequestMapping("/supplierList")
+    private Map<String, Object> supplierList(HttpServletRequest request){
+        Map<String, Object> map = RequestMap.requestToMap(request);
+        map.put("status", 1);
+        return suppliersService.list(map);
     }
 }

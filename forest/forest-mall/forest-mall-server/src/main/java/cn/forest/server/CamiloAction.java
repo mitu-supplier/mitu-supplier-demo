@@ -1,6 +1,7 @@
 package cn.forest.server;
 
 import cn.forest.common.service.utils.ResultSave;
+import cn.forest.common.util.DateUtil;
 import cn.forest.mall.entity.Camilo;
 import cn.forest.service.CamiloService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -48,6 +50,8 @@ public class CamiloAction {
     public Object selectByProductId(@RequestParam("productId") Long productId) {
         QueryWrapper<Camilo> qw = new QueryWrapper<>();
         qw.eq("product_id", productId);
+        qw.gt("failure_time",DateUtil.parseDateToStr(new Date(), DateUtil.DATE_FORMAT_YYYY_MM_DD));
+        qw.orderByAsc(new String[]{"failure_time","id"});
         return camiloService.list(qw);
     }
 
@@ -56,6 +60,7 @@ public class CamiloAction {
         QueryWrapper<Camilo> qw = new QueryWrapper<>();
         qw.eq("product_id", productId);
         List<Camilo> list = camiloService.list(qw);
+        qw.gt("failure_time",DateUtil.parseDateToStr(new Date(), DateUtil.DATE_FORMAT_YYYY_MM_DD));
         if (!CollectionUtils.isEmpty(list)) {
             return list.size();
         }

@@ -98,6 +98,16 @@ export default new Router({
                     meta: { title: '品目管理' }
                 },
                 {
+                    path: '/camiloList',
+                    component: resolve => require(['../components/page/inventory/camiloList.vue'], resolve),
+                    meta: { title: '卡密库存' }
+                },
+                {
+                    path: '/balanceList',
+                    component: resolve => require(['../components/page/inventory/balanceList.vue'], resolve),
+                    meta: { title: '直充库存' }
+                },
+                {
                     path: '/404',
                     component: resolve => require(['../components/page/404.vue'], resolve),
                     meta: { title: '404' }
