@@ -68,7 +68,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>cn.forest.ApplicationSystemWeb</mainClass>
+                    <mainClass>cn.forest.ApplicationFileWeb</mainClass>
                 </configuration>
             </plugin>
         </plugins>
