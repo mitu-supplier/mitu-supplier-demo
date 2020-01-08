@@ -44,11 +44,14 @@ Vue.prototype.$jsEncrypt=JsEncrypt;
                 jse.prototype.setPublicKey(baseURL_.public_key);
                 let passwordDeg = jse.prototype.encrypt(this.ruleForm.password);
                 const login = await this.$http.get(baseURL_.loginUrl+'/login/do', {
-                        params: {'loginName':this.ruleForm.username,'password':passwordDeg}
+                    params: {'loginName':this.ruleForm.username,'password':passwordDeg}
                 });
                 if(login.data.statusCode==200){
                     localStorage.setItem('forestToken',login.data.data.token);
                     localStorage.setItem('ms_username',this.ruleForm.username);
+                    localStorage.removeItem('newActive');
+                    localStorage.removeItem('newUserId');
+                    localStorage.removeItem('newSupplierId');
                     if(login.data.data.isSupplier == 1){
                         if(login.data.data.status == '-1'){
                             // 未提交  跳转继续填写
@@ -62,11 +65,15 @@ Vue.prototype.$jsEncrypt=JsEncrypt;
                             // this.$router.push('/registed');
                         } else if(login.data.data.status == '0'){
                             // 待审核
+                            sessionStorage.setItem("auditType",'1');
+                            this.$router.push('/toexamine');
                         } else if(login.data.data.status == '1'){
                             // 审核通过   
                             this.$router.push('/');
                         } else if(login.data.data.status == '2'){
-                            // 审核退回  
+                            // 审核退回   
+                            sessionStorage.setItem("auditType",'2');
+                            this.$router.push('/toexamine');
                         }
                     }else{
                         this.$router.push('/');
@@ -79,6 +86,7 @@ Vue.prototype.$jsEncrypt=JsEncrypt;
                 }
             },
             registed(){
+                localStorage.removeItem('newActive');
                 this.$router.push('/registed');
             }
         }

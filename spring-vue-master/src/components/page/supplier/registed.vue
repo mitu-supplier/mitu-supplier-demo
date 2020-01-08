@@ -75,8 +75,12 @@
                             </el-form-item>
                         </el-form>
                     </div>
-                    <div v-if="active == 5" style="margin-left:17%">
-                          <div>等待审核</div>
+                    <div v-if="active == 5" class="complete">
+                          <div>
+                            <img src="../../../assets/img/ok.png" alt="">
+                          </div>
+                          <div class="waitFor">等待审核</div>
+                          <div class="waitForTime">24h内完成审核，您可以登录账号，查看审核进度</div>
                     </div>
                     <div v-if="active == 4" style="margin-left:17%">
                           <el-form
@@ -115,7 +119,7 @@
                                     :limit="1"
                                     :on-exceed="handleExceed"
                                     :on-success="handleBrandSuccess"
-                                    :file-list="barndList">
+                                    :file-list="brandList">
                                     <el-button size="small" type="primary">点击上传</el-button>
                                     <div slot="tip" class="el-upload__tip " >只能上传jpg/png文件</div>
                                 </el-upload>
@@ -207,8 +211,8 @@
                             </el-form-item>
 
                             <el-form-item label="是否支持api对接">
-                                <el-radio v-model="supplierForm.isSupportApi" label="1">支持</el-radio>
-                                <el-radio v-model="supplierForm.isSupportApi" label="0">不支持</el-radio>
+                                <el-radio v-model="supplierForm.isSupportApi" :label="1">支持</el-radio>
+                                <el-radio v-model="supplierForm.isSupportApi" :label="0">不支持</el-radio>
                             </el-form-item>
 
                             <el-form-item label="虚拟产品入驻形式">
@@ -271,7 +275,7 @@
                                     multiple
                                     :limit="1"
                                     :on-exceed="handleExceed"
-                                    :file-list="fileList">
+                                    :file-list="businessList">
                                     <el-button size="small" type="primary">点击上传</el-button>
                                     <div slot="tip" class="el-upload__tip " >只能上传jpg/png文件</div>
                                 </el-upload>
@@ -312,7 +316,7 @@
                                     multiple
                                     :limit="2"
                                     :on-exceed="handleExceed"
-                                    :file-list="fileList">
+                                    :file-list="legalCardList">
                                     <el-button size="small" type="primary">点击上传</el-button>
                                     <div slot="tip" class="el-upload__tip " >只能上传jpg/png文件</div>
                                 </el-upload>
@@ -366,7 +370,7 @@
                                     multiple
                                     :limit="1"
                                     :on-exceed="handleExceed"
-                                    :file-list="fileList">
+                                    :file-list="taxRegList">
                                     <el-button size="small" type="primary">点击上传</el-button>
                                     <div slot="tip" class="el-upload__tip " >只能上传jpg/png文件</div>
                                 </el-upload>
@@ -383,7 +387,7 @@
                                     multiple
                                     :limit="1"
                                     :on-exceed="handleExceed"
-                                    :file-list="fileList">
+                                    :file-list="taxpayeList">
                                     <el-button size="small" type="primary">点击上传</el-button>
                                     <div slot="tip" class="el-upload__tip " >只能上传jpg/png文件</div>
                                 </el-upload>
@@ -400,7 +404,7 @@
                                     multiple
                                     :limit="1"
                                     :on-exceed="handleExceed"
-                                    :file-list="fileList">
+                                    :file-list="bankAccountList">
                                     <el-button size="small" type="primary">点击上传</el-button>
                                     <div slot="tip" class="el-upload__tip " >只能上传jpg/png文件</div>
                                 </el-upload>
@@ -478,9 +482,20 @@
                 },
                 // 第三步  供应商入职信息
                 newRuleForm:{
+                    code:'',
                     name:'',
-                    businessLicense:'',
-                    code:'1000004'
+                    shortName:'',
+                    businessScope:'',
+                    registerAddress:'',
+                    legalName:'',
+                    legalCardType:'',
+                    contactMobile:'',
+                    contactName:'',
+                    taxpayerType:'',
+                    taxNumber:'',
+                    bankName:'',
+                    bankAccount:'',
+                    bankAddress:''
                 }, 
                 // 第一步注册信息
                 loginForm:{
@@ -504,7 +519,7 @@
                   logisticsInfo:'',
                   isSupportApi:'',
                   productEnterType:'',
-                  signCompany:'',
+                  signCompany:''
                 },
                 supplierRules:{
                   type: [{ required: true, message: "请选择公司类型", trigger: "change" }],
@@ -581,21 +596,100 @@
             if(this.queryActive != '' && this.queryActive != null){
               this.active = 1;
               this.getSupplierData();
+            }                      
+            window.addEventListener('beforeunload', e => {
+                localStorage.setItem('newActive', this.active);
+                localStorage.setItem('newUserId', this.userId);
+                localStorage.setItem('newSupplierId', this.supplierId);
+            });
+            var activeReload = localStorage.getItem('newActive');
+            if(activeReload != null && activeReload != ''){
+              this.active = Number(activeReload);
+            }
+
+            var userIdReload = localStorage.getItem('newUserId');
+            if(userIdReload != null && userIdReload != ''){
+              this.userId = userIdReload;
+            }
+
+            var supplierIdReload = localStorage.getItem('newSupplierId');
+            if(supplierIdReload != null && supplierIdReload != ''){
+              this.supplierId = supplierIdReload;
             }
         },
+        beforeDestroy () {
+            // window.removeEventListener('beforeunload');
+            window.removeEventListener('beforeunload', this.beforeunloadFn)
+            
+        },
         methods: {
+          beforeunloadFn(){
+            localStorage.removeItem('newActive');
+          },
           // 获取供应商入驻信息回显
             async getSupplierData(){
                 const res = await this.$http.get(baseURL_.mallUrl+'/supplier/getUserInfo');
 
-                this.newRuleForm.code = res.data.data.supplier.code;
+                // this.newRuleForm.code = res.data.data.supplier.code;
                 this.supplierId = res.data.data.supplier.id;
                 this.userId = res.data.data.id;
 
-                
+                // 第2步数据回显
                 for(var i in this.firstForm){
                   this.firstForm[i] = res.data.data[i];
                 }
+                this.firstForm.investmentPerson = res.data.data.supplier.investmentPerson;
+
+                // 第3步数据回显
+                for(var i in this.newRuleForm){
+                  this.newRuleForm[i] = res.data.data.supplier[i];
+                }
+                this.value2 = [res.data.data.supplier.legalCardDateStart,res.data.data.supplier.legalCardDateEnd];
+                // 营业执照回显
+                if(res.data.data.supplier.businessLicense){
+                  this.businessList = [{url:res.data.data.supplier.businessLicense}]
+                }
+                // 法人代表身份证件回显
+                if(res.data.data.supplier.legalCard){
+                  this.legalCardList = [{url:res.data.data.supplier.legalCard}]
+                }
+                // 税务登记证
+                if(res.data.data.supplier.taxRegistration){
+                  this.taxRegList = [{url:res.data.data.supplier.taxRegistration}]
+                }
+                // 一般纳税人正面
+                if(res.data.data.supplier.taxpayerPositive){
+                  this.taxpayeList = [{url:res.data.data.supplier.taxpayerPositive}]
+                }
+                // 银行开户许可证
+                if(res.data.data.supplier.bankAccountPermit){
+                  this.bankAccountList = [{url:res.data.data.supplier.bankAccountPermit}]
+                }
+
+                // 第4步数据回显
+                for(var i in this.supplierForm){
+                  this.supplierForm[i] = res.data.data.supplier[i];
+                } 
+
+                // 第5步数据回显
+                // 商标注册证
+                if(res.data.data.supplier.trademarkRegistration){
+                  this.trademarkList = [{url:res.data.data.supplier.trademarkRegistration}]
+                }
+                // 品牌授权书
+                if(res.data.data.supplier.brandAuthorization){
+                  this.brandList = [{url:res.data.data.supplier.brandAuthorization}]
+                }
+                // 质检报告
+                if(res.data.data.supplier.qualityInspectionReport){
+                  this.QualityList = [{url:res.data.data.supplier.qualityInspectionReport}]
+                }
+                // 卫生许可证
+                if(res.data.data.supplier.sanitaryPermit){
+                  this.permitList = [{url:res.data.data.supplier.sanitaryPermit}]
+                }
+                
+
             },
             // 获取全部下拉数据
             async getData(){
@@ -709,7 +803,9 @@
                         const role = await this.$http.post(baseURL_.mallUrl+'/supplier/register',this.$qs.stringify(this.suppImgForm));
                         
                         if(role.data.statusCode==200){
-                          
+                          localStorage.removeItem('newActive');
+                          localStorage.removeItem('newUserId');
+                          localStorage.removeItem('newSupplierId');
                           this.active = 5;
                         }else{
                           this.$message({
@@ -919,6 +1015,22 @@
         overflow-x: auto;
         margin:auto;
         
+    }
+    .complete{
+      width:100%;
+      text-align: center;
+    }
+    .complete img{
+      margin: 20px 0;
+    }
+    .complete .waitFor{
+      font-size: 22px;
+      color:#666666;
+    }
+    .complete .waitForTime{
+      font-size: 14px;
+      color:#666666;
+      margin: 10px 0 30px;
     }
 </style>
 <style >

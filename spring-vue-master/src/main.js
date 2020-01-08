@@ -70,8 +70,13 @@ axios.interceptors.response.use( response => {
 
 //使用钩子函数对路由进行权限跳转
  router.beforeEach((to, from, next) => {
+    if(to.path !== "/registed"){
+      localStorage.removeItem('newActive');
+      localStorage.removeItem('newUserId');
+      localStorage.removeItem('newSupplierId');
+    }
      const role = localStorage.getItem('forestToken');
-     if (!role && to.path.indexOf("/login") ==-1 && to.path.indexOf("/registed") ==-1) {
+     if (!role && to.path.indexOf("/login") ==-1 && to.path.indexOf("/registed") ==-1 && to.path.indexOf("/toexamine") ==-1) {
          next('/login');
      } else {
          next();
