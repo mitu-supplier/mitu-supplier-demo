@@ -52,7 +52,9 @@
                 </el-table-column> 
                 <el-table-column label="操作" width="" align="center">
                     <template slot-scope="scope">
-                        <el-button type="text" class="red" @click="view(scope.$index, scope.row)">查看详情</el-button>
+                        <el-button type="text" @click="view(scope.$index, scope.row)">查看详情</el-button>
+                        <el-button type="text" @click="auditAdopt(scope.row.id)">审核通过</el-button>
+                        <el-button type="text" @click="auditReject(scope.row.id)">审核失败</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -90,7 +92,7 @@
                     name:'',
                     catalogName:'',
                     auditStatus:''
-                }   
+                }
             }
         },
         created() {
@@ -147,13 +149,14 @@
                 var ids = [];
                 this.multipleSelection.forEach(e => {
                     ids.push(e.id);
-                    if(e.auditStatus != 0){
+                    if(e.status != 0){
                         flag ++;
                     }
                 });
                 if(flag == 0){
                     this.$confirm('确认'+msg+'？').then( e=> {
                         this.audit(ids.join(','), audit);
+
                     }).catch(_ => {});
                 }else{
                     this.$message("不能重复审核！");
@@ -177,6 +180,34 @@
                         id: item.id
                     }
                 });
+            },
+            auditAdopt(id){
+                this.$confirm('确认审核通过').then( e=> {
+                    this.confimAudit(id,1);
+                }).catch(_ => {});
+            },
+            auditReject(id){
+                this.$prompt('请输入审核失败理由：', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    inputPattern: /^[\s\S]*.*[^\s][\s\S]*$/,
+                    inputErrorMessage: '理由不能为空'
+                }).then(({ auditReason }) => {
+                    this.confimAudit(id,2,auditReason)
+                }).catch(() => { }); 
+            },
+            async confimAudit(id,auditResult,auditReason){
+                var auditResult = await this.$http.get(baseURL_.mallUrl+'/supplier_audit/audit', {
+                    params:{
+                        businessId:id,
+                        auditResult:auditResult,
+                        auditReason:auditReason
+                    }
+                });
+                this.$message(auditResult.data.data);
+                if(auditResult.data.statusCode==200){
+                    this.getData();
+                }
             }
         }
     }

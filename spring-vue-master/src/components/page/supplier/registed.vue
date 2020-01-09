@@ -305,7 +305,7 @@
                                 </el-select>
                             </el-form-item>
 
-                            <el-form-item label="法人代表身份证件">
+                            <el-form-item label="法人代表身份证件(正反面)">
                               <el-upload
                                     accept=".jpg, .png"
                                     list-type="picture-card"
@@ -315,7 +315,7 @@
                                     :on-success="legalCardSuccess"
                                     multiple
                                     :limit="2"
-                                    :on-exceed="handleExceed"
+                                    :on-exceed="handleExceed2"
                                     :file-list="legalCardList">
                                     <el-button size="small" type="primary">点击上传</el-button>
                                     <div slot="tip" class="el-upload__tip " >只能上传jpg/png文件</div>
@@ -489,6 +489,8 @@
                     registerAddress:'',
                     legalName:'',
                     legalCardType:'',
+                    legalCardZ:'',
+                    legalCardF:'',
                     contactMobile:'',
                     contactName:'',
                     taxpayerType:'',
@@ -554,12 +556,16 @@
                     type: [{ required: true, message: "请选择类型", trigger: "change" }],
                     
                 },
-                fileList:[],
-                // fileList: [{url: 'http://192.168.1.164/attach/upload/image/8fe725a7-e0b2-4b19-afb6-10d1ccc933f2.jpg'}],
+                businessList:[],
+                taxRegList:[],
+                taxpayeList:[],
+                bankAccountList:[],
                 trademarkList:[],
-                barndList:[],
+                brandList:[],
                 QualityList:[],
                 permitList:[],
+                legalCardList:[],
+
                 trademarkRegistration:'',
                 brandAuthorization:'',
                 qualityInspectionReport:'',
@@ -650,8 +656,13 @@
                   this.businessList = [{url:res.data.data.supplier.businessLicense}]
                 }
                 // 法人代表身份证件回显
-                if(res.data.data.supplier.legalCard){
-                  this.legalCardList = [{url:res.data.data.supplier.legalCard}]
+                if(res.data.data.supplier.legalCardZ){
+                  if(res.data.data.supplier.legalCardF){
+                    this.legalCardList = [{url:res.data.data.supplier.legalCardZ},{url:res.data.data.supplier.legalCardF}]
+                  }else{
+                    this.legalCardList = [{url:res.data.data.supplier.legalCardZ}]
+                  }
+                  
                 }
                 // 税务登记证
                 if(res.data.data.supplier.taxRegistration){
@@ -857,13 +868,18 @@
               });
               this.newRuleForm.businessLicense = file.response.data.path;
             },
-            legalCardSuccess(res, file) {
+            legalCardSuccess(res, file, fileList) {
+              console.log(fileList)
+              console.log(fileList[0].response.data.path)
               this.$message({
                 type: "success",
                 message: "上传成功",
                 duration: 6000
               });
-              this.newRuleForm.legalCard = file.response.data.path;
+              this.newRuleForm.legalCardZ = fileList[0].response.data.path;
+              if(fileList.length > 1){
+                this.newRuleForm.legalCardF = fileList[1].response.data.path;
+              }
             },
             
             handleBrandSuccess(res, file) {
@@ -938,6 +954,12 @@
             handleExceed(files) {
               this.$message.warning(
                 `当前已经上传了${files.length} 个文件，如需上传新的文件，请先删除之前的文件`
+              );
+            },
+            //限制文件的上传数量
+            handleExceed2(files) {
+              this.$message.warning(
+                `当前已经上传了2个文件，如需上传新的文件，请先删除之前的文件`
               );
             },
 

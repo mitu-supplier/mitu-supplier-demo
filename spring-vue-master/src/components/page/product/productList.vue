@@ -145,10 +145,15 @@
                 }
             },
             handleUpdate(index, row){
-                console.log(row.id);
+                this.$router.push({
+                    path: '/commodityEdit',
+                    query: {
+                        id: row.id
+                    }
+                });
             },
             add(){
-                console.log(1);
+                this.$router.push('/commodityAdd');
             }
         }
     }

@@ -89,8 +89,8 @@
                 </el-form-item>
 
                 <el-form-item label="状态" prop="">
-                    <el-radio v-model="addComForm.status" label="1">上架</el-radio>
-                    <el-radio v-model="addComForm.status" label="2">下架</el-radio>
+                    <el-radio v-model="addComForm.status" :label="1">上架</el-radio>
+                    <el-radio v-model="addComForm.status" :label="2">下架</el-radio>
                 </el-form-item>
 
                 <el-form-item label="商品详情" prop="">
@@ -150,6 +150,7 @@
             }
         },
         created() {
+          this.getData();
           this.getSelectForm();
         },
         mounted() {
@@ -159,6 +160,24 @@
           
         },
         methods: {
+            // 数据回显
+            async getData(){
+              var id = this.$route.query.id;
+              const res = await this.$http.get(baseURL_.mallUrl+'/products_audit/getById',{
+                params: {
+                    'id': id
+                }
+              });
+              if(res.data.statusCode==200){
+                this.addComForm = res.data.data;
+                this.fileList = [{uel:this.addComForm.img}];
+                this.orgNames = this.addComForm.catalogId;
+                this.catalogId = this.addComForm.catalogId;
+              }else{
+                this.$message(res.data.data);
+              }
+            },
+            // 获取下拉框
             async getSelectForm(){
               const res = await this.$http.get(baseURL_.mallUrl+'/products/getDelivery_type');
               this.options = [];

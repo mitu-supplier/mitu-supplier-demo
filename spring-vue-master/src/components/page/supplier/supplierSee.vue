@@ -14,9 +14,9 @@
                             class="demo-ruleForm"
                             style="margin-top:20px;"
                         >
-                          <el-form-item label="用户名" prop="loginName">
-                              <el-input v-model="loginForm.loginName" readonly size="mini" class="w50"></el-input>
-                          </el-form-item>
+                            <el-form-item label="用户名" prop="loginName">
+                                <el-input v-model="loginForm.loginName" readonly size="mini" class="w50"></el-input>
+                            </el-form-item>
                             
                             <el-form-item label="姓名" prop="name">
                                 <el-input v-model="loginForm.name" readonly size="mini" maxlength="11" class="w50"></el-input>
@@ -43,21 +43,7 @@
                             <el-form-item label="对接招商人员" >
                                 <el-input v-model="newRuleForm.investmentPerson" readonly size="mini" class="w50"></el-input>
                             </el-form-item>
-                            <el-form-item label="商标注册证">
-                               
-                            </el-form-item>
-
-                            <el-form-item label="品牌授权书">
-                               
-                            </el-form-item>
-
-                            <el-form-item label="质检报告">
-                               
-                            </el-form-item>
-
-                            <el-form-item label="卫生许可证">
-                                
-                            </el-form-item>
+                            
                             
                             <el-form-item label="公司类型" prop="type">
                               <el-select v-model="newRuleForm.type" disabled readonly placeholder="请选择">
@@ -133,8 +119,12 @@
                           </el-form-item>
 
                             <el-form-item label="营业执照">
-                               <!-- <img :src="businessLicense" alt=""> -->
-
+                                <el-upload
+                                    list-type="picture-card"
+                                    action=''
+                                    disabled
+                                    :file-list="businessList">
+                                </el-upload>
                             </el-form-item>
 
                             <el-form-item label="营业范围">
@@ -163,7 +153,9 @@
                             <el-form-item label="法人代表身份证件">
                                 <el-upload
                                     list-type="picture-card"
-                                    :file-list="taxRegList">
+                                    action=''
+                                    disabled
+                                    :file-list="legalCardList">
                                 </el-upload>
                             </el-form-item>
 
@@ -206,15 +198,65 @@
                             </el-form-item>
 
                             <el-form-item label="税务登记证">
-                               <!-- <img :src="businessLicense" alt=""> -->
+                               <el-upload
+                                    list-type="picture-card"
+                                    action=''
+                                    disabled
+                                    :file-list="taxRegList">
+                                </el-upload>
                             </el-form-item>
 
                             <el-form-item label="一般纳税人正面">
-                              <img :src="businessLicense" alt="">
+                                <el-upload
+                                    list-type="picture-card"
+                                    action=''
+                                    disabled
+                                    :file-list="taxpayeList">
+                                </el-upload>
+                            </el-form-item>
+                            <el-form-item label="商标注册证">
+                                <el-upload
+                                    list-type="picture-card"
+                                    action=''
+                                    disabled
+                                    :file-list="trademarkList">
+                                </el-upload>
+                            </el-form-item>
+
+                            <el-form-item label="品牌授权书">
+                                <el-upload
+                                    list-type="picture-card"
+                                    action=''
+                                    disabled
+                                    :file-list="brandList">
+                                </el-upload>
+                            </el-form-item>
+
+                            <el-form-item label="质检报告">
+                                <el-upload
+                                    list-type="picture-card"
+                                    action=''
+                                    disabled
+                                    :file-list="QualityList">
+                                </el-upload>
+                            </el-form-item>
+
+                            <el-form-item label="卫生许可证">
+                                <el-upload
+                                    disabled
+                                    action=''
+                                    list-type="picture-card"
+                                    :file-list="permitList">
+                                </el-upload>
                             </el-form-item>
 
                             <el-form-item label="银行开户许可证">
-                                
+                                <el-upload
+                                    list-type="picture-card"
+                                    action=''
+                                    disabled
+                                    :file-list="bankAccountList">
+                                </el-upload>
                             </el-form-item>
 
                             <el-form-item label="开户名称">
@@ -249,6 +291,7 @@
         data() {
             return {
                 active:0,
+                action:1,
                 page:1,
                 total:1000,
                 pageSize:10,
@@ -308,11 +351,7 @@
                 }, 
                 
                
-                fileList:[],
-                trademarkList:[],
-                barndList:[],
-                QualityList:[],
-                permitList:[],
+                
                 trademarkRegistration:'',
                 brandAuthorization:'',
                 qualityInspectionReport:'',
@@ -335,6 +374,14 @@
                 userId:'',
                 supplierId:'',
                 taxRegList:[],
+                businessList:[],
+                taxpayeList:[],
+                bankAccountList:[],
+                trademarkList:[],
+                brandList:[],
+                QualityList:[],
+                permitList:[],
+                legalCardList:[]
             }
         },
         created() {
@@ -372,48 +419,52 @@
                 
                 this.value2 = [res.data.data.legalCardDateStart,res.data.data.legalCardDateEnd];
                 // 营业执照回显
-                // if(res.data.data.businessLicense){
-                //   this.businessList = [{url:res.data.data.businessLicense}]
-                // }
-                this.businessLicense = res.data.data.businessLicense;
+                if(res.data.data.businessLicense){
+                  this.businessList = [{url:res.data.data.businessLicense}]
+                }
+                // this.businessLicense = res.data.data.businessLicense;
                 // // 法人代表身份证件回显
-                // if(res.data.data.legalCard){
-                //   this.legalCardList = [{url:res.data.data.legalCard}]
-                // }
+                if(res.data.data.legalCardZ){
+                  if(res.data.data.legalCardF){
+                    this.legalCardList = [{url:res.data.data.legalCardZ},{url:res.data.data.legalCardF}];
+                  }else{
+                    this.legalCardList = [{url:res.data.data.legalCardZ}];
+                  }
+                }
                 // // 税务登记证
                 if(res.data.data.taxRegistration){
                   this.taxRegList = [{url:res.data.data.taxRegistration}]
                 }
-                this.taxRegistration = res.data.data.taxRegistration;
+                // this.taxRegistration = res.data.data.taxRegistration;
                 // 一般纳税人正面
-                // if(res.data.data.taxpayerPositive){
-                //   this.taxpayeList = [{url:res.data.data.taxpayerPositive}]
-                // }
-                this.taxpayerPositive = res.data.data.taxpayerPositive;
+                if(res.data.data.taxpayerPositive){
+                  this.taxpayeList = [{url:res.data.data.taxpayerPositive}]
+                }
+                // this.taxpayerPositive = res.data.data.taxpayerPositive;
                 // 银行开户许可证
-                // if(res.data.data.bankAccountPermit){
-                //   this.bankAccountList = [{url:res.data.data.bankAccountPermit}]
-                // }
+                if(res.data.data.bankAccountPermit){
+                  this.bankAccountList = [{url:res.data.data.bankAccountPermit}]
+                }
 
                 
 
                 // 第5步数据回显
                 // 商标注册证
-                // if(res.data.data.trademarkRegistration){
-                //   this.trademarkList = [{url:res.data.data.trademarkRegistration}]
-                // }
+                if(res.data.data.trademarkRegistration){
+                  this.trademarkList = [{url:res.data.data.trademarkRegistration}]
+                }
                 // // 品牌授权书
-                // if(res.data.data.brandAuthorization){
-                //   this.brandList = [{url:res.data.data.brandAuthorization}]
-                // }
+                if(res.data.data.brandAuthorization){
+                  this.brandList = [{url:res.data.data.brandAuthorization}]
+                }
                 // // 质检报告
-                // if(res.data.data.qualityInspectionReport){
-                //   this.QualityList = [{url:res.data.data.qualityInspectionReport}]
-                // }
+                if(res.data.data.qualityInspectionReport){
+                  this.QualityList = [{url:res.data.data.qualityInspectionReport}]
+                }
                 // // 卫生许可证
-                // if(res.data.data.sanitaryPermit){
-                //   this.permitList = [{url:res.data.data.sanitaryPermit}]
-                // }
+                if(res.data.data.sanitaryPermit){
+                  this.permitList = [{url:res.data.data.sanitaryPermit}]
+                }
                 
 
             },
