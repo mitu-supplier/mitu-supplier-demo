@@ -213,7 +213,7 @@
                 });
             },
             back() {
-                this.$router.push({ path: "/login" });
+                this.$router.push({ path: "/productAuditList" });
             },
             async submitAddCom(){
               this.$refs['addComForm'].validate(async valid => {
