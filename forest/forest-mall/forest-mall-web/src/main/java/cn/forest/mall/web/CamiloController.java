@@ -20,4 +20,9 @@ public class CamiloController {
     public Map<String, Object> list(HttpServletRequest request){
         return camiloService.list(RequestMap.requestToMap(request));
     }
+
+    @RequestMapping("/recordList")
+    public Map<String, Object> recordList(HttpServletRequest request){
+        return camiloService.recordList(RequestMap.requestToMap(request));
+    }
 }

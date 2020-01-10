@@ -14,20 +14,26 @@ import java.util.Map;
 public interface CamiloRemote {
 
     @RequestMapping("/camilo/save")
-    public Object save(Map<String, ?> map);
+    Object save(Map<String, ?> map);
 
     @RequestMapping("/camilo/update")
-    public int update(Map<String, ?> map);
+    int update(Map<String, ?> map);
 
     @RequestMapping("/camilo/delete")
-    public int delete(@RequestParam("id") Long id);
+    int delete(@RequestParam("id") Long id);
 
     @RequestMapping("/camilo/batchSave")
-    public int batchSave(List<Map<String, ?>> mapList);
+    int batchSave(List<Map<String, ?>> mapList);
 
     @RequestMapping("/camilo/selectByProductId")
-    public Object selectByProductId(@RequestParam("productId") Long productId);
+    Object selectByProductId(@RequestParam("productId") Long productId);
 
     @RequestMapping("/camilo/countByProductId")
-    public int countByProductId(@RequestParam("productId") Long productId);
+    int countByProductId(@RequestParam("productId") Long productId);
+
+    @RequestMapping("/camilo/selectProductCamiloList")
+    Object selectProductCamiloList(Map<String, Object> map);
+
+    @RequestMapping("/camilo/recordList")
+    Object recordList(Map<String, Object> map);
 }

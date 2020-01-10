@@ -5,17 +5,16 @@ import cn.forest.common.service.utils.ResultSave;
 import cn.forest.common.util.StringUtil;
 import cn.forest.mall.entity.Suppliers;
 import cn.forest.mall.mapper.SuppliersMapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -64,6 +63,19 @@ public class SuppliersAction {
         if (suppliers != null) {
             suppliers.setStatus(status);
             return suppliersMapper.updateById(suppliers);
+        }
+        return 0;
+    }
+
+    @RequestMapping("/batchAudit")
+    public int updateStatus(@RequestParam("ids") String ids, @RequestParam("status") Integer status) {
+        if (StringUtils.isNotEmpty(ids)) {
+            String[] split = ids.split(",");
+            List<Long> idList = new ArrayList<>();
+            for (String str : split) {
+                idList.add(Long.parseLong(str));
+            }
+            return suppliersMapper.batchAudit(idList, status);
         }
         return 0;
     }

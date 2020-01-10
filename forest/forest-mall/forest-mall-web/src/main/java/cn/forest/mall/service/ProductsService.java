@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,8 +53,9 @@ public class ProductsService {
         return null;
     }
 
-    public Map<String, Object> save(Map<String, Object> map) {
-        Object code = map.get("code");
+    public Map<String, Object> save(HttpServletRequest request) {
+        Map<String, Object> paramMap = RequestMap.requestToMap(request);
+        Object code = paramMap.get("code");
         if (code != null) {
             Object o = productsRemote.selectByCode(code.toString());
             if (o != null) {
@@ -63,7 +65,13 @@ public class ProductsService {
                 }
             }
         }
-        Object save = productsRemote.save(map);
+        String header = request.getHeader(Constant.HEADER_TOKEN_STRING);
+        HashMap userInfoMap = (HashMap) redisDao.getValue(header);
+        if (userInfoMap != null) {
+            paramMap.put("supplierId", userInfoMap.get("id"));
+        }
+        paramMap.put("auditStatus", 0);
+        Object save = productsRemote.save(paramMap);
         if (save != null) {
             return ResultMessage.success("保存成功");
         }
@@ -115,8 +123,9 @@ public class ProductsService {
         }
         int auditStatus = productsRemote.batchAudit(ids, Integer.parseInt(paramMap.get("auditStatus").toString()));
         if (auditStatus > 0) {
-            // 保存修改记录
+            // 保存审核记录
             if (ids != null) {
+                List<Map<String, Object>> list = new ArrayList<>();
                 Map<String, Object> auditMap = null;
                 String header = request.getHeader(Constant.HEADER_TOKEN_STRING);
                 HashMap userInfoMap = (HashMap) redisDao.getValue(header);
@@ -129,8 +138,9 @@ public class ProductsService {
                     auditMap.put("auditResult", paramMap.get("auditStatus"));
                     auditMap.put("businessId", Long.parseLong(str));
                     auditMap.put("auditType", 2);
-                    auditRecodeRemote.save(auditMap);
+                    list.add(auditMap);
                 }
+                auditRecodeRemote.batchSave(list);
 
             }
             return ResultMessage.success("操作成功");

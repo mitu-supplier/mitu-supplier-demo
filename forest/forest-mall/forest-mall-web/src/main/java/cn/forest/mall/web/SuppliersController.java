@@ -1,6 +1,7 @@
 package cn.forest.mall.web;
 
 import cn.forest.common.util.RequestMap;
+import cn.forest.mall.service.CompanyService;
 import cn.forest.mall.service.SuppliersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +17,9 @@ public class SuppliersController {
 
     @Autowired
     private SuppliersService suppliersService;
+
+    @Autowired
+    private CompanyService companyService;
 
     /**
      * 查看详情
@@ -81,14 +85,8 @@ public class SuppliersController {
         return suppliersService.getEnterType();
     }
 
-    /**
-     * 获取商户余额
-     *
-     * @param request
-     * @return
-     */
-    @RequestMapping("/getBalance")
-    public Map<String, Object> getBalance(HttpServletRequest request) {
-        return suppliersService.getBalance(RequestMap.requestToMap(request));
+    @RequestMapping("/getCompany")
+    public Map<String, Object> getCompany(){
+        return companyService.getAll();
     }
 }

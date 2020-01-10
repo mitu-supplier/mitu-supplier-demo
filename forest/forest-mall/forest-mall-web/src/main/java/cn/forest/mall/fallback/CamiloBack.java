@@ -38,4 +38,14 @@ public class CamiloBack implements CamiloRemote {
     public int countByProductId(Long productId) {
         return 0;
     }
+
+    @Override
+    public Object selectProductCamiloList(Map<String, Object> map) {
+        return null;
+    }
+
+    @Override
+    public Object recordList(Map<String, Object> map) {
+        return null;
+    }
 }

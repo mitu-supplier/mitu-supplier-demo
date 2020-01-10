@@ -1,6 +1,9 @@
 package cn.forest.mall.web;
 
 import cn.forest.common.util.RequestMap;
+import cn.forest.common.util.ResultMessage;
+import cn.forest.mall.remote.CatalogsRemote;
+import cn.forest.mall.remote.SysDictionaryDataRemote;
 import cn.forest.mall.service.ProductsService;
 import cn.forest.mall.service.SuppliersService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +22,10 @@ public class ProductsController {
     private ProductsService productsService;
 
     @Autowired
-    private SuppliersService suppliersService;
+    private CatalogsRemote catalogsRemote;
+
+    @Autowired
+    private SysDictionaryDataRemote sysDictionaryDataRemote;
 
     /**
      * 列表查询
@@ -40,7 +46,18 @@ public class ProductsController {
      */
     @RequestMapping("/save")
     public Map<String, Object> save(HttpServletRequest request) {
-        return productsService.save(RequestMap.requestToMap(request));
+        return productsService.save(request);
+    }
+
+    /**
+     * 获取详情
+     *
+     * @param id
+     * @return
+     */
+    @RequestMapping("/getById")
+    public Map<String, Object> getById(@RequestParam("id") Long id) {
+        return productsService.getById(id);
     }
 
     /**
@@ -76,10 +93,21 @@ public class ProductsController {
         return productsService.batchDelete(ids);
     }
 
-    @RequestMapping("/supplierList")
-    private Map<String, Object> supplierList(HttpServletRequest request){
-        Map<String, Object> map = RequestMap.requestToMap(request);
-        map.put("status", 1);
-        return suppliersService.list(map);
+    @RequestMapping("/getCatalogs")
+    public Map<String, Object> getCatalogs() {
+        Object list = catalogsRemote.getAll();
+        if (list != null) {
+            return ResultMessage.success(list);
+        }
+        return ResultMessage.error("");
+    }
+
+    @RequestMapping("/getDelivery_type")
+    public Map<String, Object> getDelivery_type() {
+        Object list = sysDictionaryDataRemote.selectByDateTypeCode("DELIVERY_TYPE");
+        if (list != null) {
+            return ResultMessage.success(list);
+        }
+        return ResultMessage.error("");
     }
 }

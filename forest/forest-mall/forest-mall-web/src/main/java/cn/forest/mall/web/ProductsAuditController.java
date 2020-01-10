@@ -49,4 +49,15 @@ public class ProductsAuditController {
     public Map<String, Object> batchAudit(HttpServletRequest request) {
         return productsService.batchAudit(request);
     }
+
+    /**
+     * 获取详情
+     *
+     * @param id
+     * @return
+     */
+    @RequestMapping("/getById")
+    public Map<String, Object> getById(@RequestParam("id") Long id) {
+        return productsService.getById(id);
+    }
 }

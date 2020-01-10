@@ -119,14 +119,35 @@ public class Products implements Serializable {
 
     // ==========  查询返回字段
 
+    /**
+     * 品目名称
+     */
     @TableField(exist = false)
     private String catalogName;
 
+    /**
+     * 发货类型
+     */
     @TableField(exist = false)
     private String deliveryName;
 
+    /**
+     * 供应商名称
+     */
     @TableField(exist = false)
     private String supplierName;
+
+    /**
+     * 卡密过期时间
+     */
+    @TableField(exist = false)
+    private String failureTime;
+
+    /**
+     * 库存
+     */
+    @TableField(exist = false)
+    private Integer stock;
 
 
     public Long getId() {
@@ -295,5 +316,21 @@ public class Products implements Serializable {
 
     public void setSupplierName(String supplierName) {
         this.supplierName = supplierName;
+    }
+
+    public String getFailureTime() {
+        return failureTime;
+    }
+
+    public void setFailureTime(String failureTime) {
+        this.failureTime = failureTime;
+    }
+
+    public Integer getStock() {
+        return stock;
+    }
+
+    public void setStock(Integer stock) {
+        this.stock = stock;
     }
 }

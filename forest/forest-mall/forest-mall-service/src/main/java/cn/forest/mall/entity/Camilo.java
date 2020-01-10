@@ -59,7 +59,7 @@ public class Camilo implements Serializable {
     private String userName;
 
     /**
-     * 使用标示
+     * 删除标示
      */
     @TableField(value = "is_delete")
     @TableLogic
@@ -74,8 +74,18 @@ public class Camilo implements Serializable {
     /**
      * 修改时间
      */
-    @TableField(value = "updated_at", fill = FieldFill.INSERT)
+    @TableField(value = "updated_at", fill = FieldFill.UPDATE)
     private String updatedAt;
+
+    /**
+     * 使用时间
+     */
+    private String useTime;
+
+    /**
+     * 使用标示  0 未使用  1已使用
+     */
+    private Integer useFlag;
 
     public Long getId() {
         return id;
@@ -163,5 +173,21 @@ public class Camilo implements Serializable {
 
     public void setUpdatedAt(String updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public String getUseTime() {
+        return useTime;
+    }
+
+    public void setUseTime(String useTime) {
+        this.useTime = useTime;
+    }
+
+    public Integer getUseFlag() {
+        return useFlag;
+    }
+
+    public void setUseFlag(Integer useFlag) {
+        this.useFlag = useFlag;
     }
 }

@@ -24,7 +24,7 @@ public class Catalogs implements Serializable {
     /**
      * 修改时间
      */
-    @TableField(value = "updated_at", fill = FieldFill.INSERT)
+    @TableField(value = "updated_at", fill = FieldFill.UPDATE)
     private String updatedAt;
 
     /**

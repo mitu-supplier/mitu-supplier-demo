@@ -15,8 +15,8 @@ public class AuditRecode implements Serializable {
     /**
      * 审核时间
      */
-    @TableField(value = "audit_time", fill = FieldFill.INSERT)
-    private String auditTime;
+    @TableField(value = "create_time", fill = FieldFill.INSERT)
+    private String createTime;
 
     /**
      * 审核结果  1通过 2不通过
@@ -62,12 +62,12 @@ public class AuditRecode implements Serializable {
         this.id = id;
     }
 
-    public String getAuditTime() {
-        return auditTime;
+    public String getCreateTime() {
+        return createTime;
     }
 
-    public void setAuditTime(String auditTime) {
-        this.auditTime = auditTime;
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
     }
 
     public Integer getAuditResult() {

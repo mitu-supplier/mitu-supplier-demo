@@ -48,12 +48,12 @@ public class CatalogsService {
         int disable = catalogsRemote.disable(id);
         return ResultMessage.result(disable, "操作成功", "操作失败");
     }
-    
+
     public Map<String, Object> getAll() {
-      Object  list = catalogsRemote.getAll();
-       if (list != null) {
-          return ResultMessage.success(list);
-       }
-       return ResultMessage.error("");
-  }
+        Object list = catalogsRemote.getAll();
+        if (list != null) {
+            return ResultMessage.success(list);
+        }
+        return ResultMessage.error("");
+    }
 }

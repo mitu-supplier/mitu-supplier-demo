@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -188,6 +189,45 @@ public class SuppliersService {
     }
 
     /**
+     * 批量审核
+     *
+     * @param request
+     * @return
+     */
+    public Map<String, Object> batchAudit(HttpServletRequest request) {
+        Map<String, Object> paramMap = RequestMap.requestToMap(request);
+        String ids = null;
+        if (paramMap.get("ids") != null) {
+            ids = paramMap.get("ids").toString();
+        }
+        int auditStatus = suppliersRemote.batchAudit(ids, Integer.parseInt(paramMap.get("status").toString()));
+        if(auditStatus > 0){
+            // 保存审核记录
+            if (ids != null) {
+                List<Map<String, Object>> list = new ArrayList<>();
+                Map<String, Object> auditMap = null;
+                String header = request.getHeader(Constant.HEADER_TOKEN_STRING);
+                HashMap userInfoMap = (HashMap) redisDao.getValue(header);
+                for (String str : ids.split(",")) {
+                    auditMap = new HashMap<>();
+                    if (userInfoMap != null) {
+                        auditMap.put("auditUserId", userInfoMap.get("id"));
+                        auditMap.put("auditUserName", userInfoMap.get("name"));
+                    }
+                    auditMap.put("auditResult", paramMap.get("status"));
+                    auditMap.put("businessId", Long.parseLong(str));
+                    auditMap.put("auditType", 1);
+                    list.add(auditMap);
+                }
+                auditRecodeRemote.batchSave(list);
+            }
+            return ResultMessage.success("操作成功");
+        }
+        return ResultMessage.error("操作失败");
+    }
+
+
+    /**
      * 查看审核记录
      *
      * @param map
@@ -275,22 +315,6 @@ public class SuppliersService {
             sysSequenceRemote.save(map);
         }
         return name + sysSequenceRemote.getSeqValue(name);
-    }
-
-    /**
-     * 查询商户余额
-     *
-     * @param map
-     * @return
-     */
-    public Map<String, Object> getBalance(Map<String, Object> map) {
-        map.put("balance", "balance");
-        map.put("status", 1);
-        Object obj = suppliersRemote.list(map);
-        if (obj != null) {
-            return ResultMessage.success(obj);
-        }
-        return null;
     }
 
     /**

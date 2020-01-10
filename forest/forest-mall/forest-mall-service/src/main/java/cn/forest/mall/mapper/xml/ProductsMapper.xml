@@ -38,8 +38,14 @@
             <if test="supplierName != null and supplierName != ''">
                 AND s.name LIKE CONCAT('%',#{supplierName},'%')
             </if>
-            <if test="auditStatus != null">
+            <if test="auditStatus != null and auditStatus != ''">
                 AND p.audit_status = #{auditStatus}
+            </if>
+            <if test="status != null">
+                AND p.status = #{status}
+            </if>
+            <if test="deliveryCode != null and deliveryCode != ''">
+                AND d.code = #{deliveryCode}
             </if>
             order by p.audit_status, p.id
     </select>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.forest.mall.mapper.SupplierBalanceRecordMapper">
+
+    <select id="recordlist" resultType="cn.forest.mall.entity.SupplierBalanceRecord">
+        SELECT
+            sbr.*,
+            ss.name AS supplierName
+        FROM
+            supplier_balance_record sbr
+        LEFT JOIN suppliers ss ON ss.id = sbr.supplier_id
+        WHERE
+            sbr.is_delete = 0
+            <if test="supplierName != null and supplierName != ''">
+                AND ss.name LIKE CONCAT('%',#{supplierName},'%')
+            </if>
+            <if test="supplierId != null">
+                AND ss.id = #{supplierId}
+            </if>
+        ORDER BY created_at DESC
+    </select>
+
+    <select id="balanceList" resultType="cn.forest.mall.entity.SupplierBalanceRecord">
+        SELECT
+	        ss.NAME AS supplierName,
+	        tmp.money AS money
+        FROM
+	    (
+	        SELECT
+	            supplier_id, sum(money) AS money
+	        FROM
+	            supplier_balance_record
+	        WHERE
+	            is_delete = 0
+	        GROUP BY
+	            supplier_id
+	    ) tmp
+	    LEFT JOIN suppliers ss ON tmp.supplier_id = ss.id
+	    WHERE 1 = 1
+            <if test="supplierName != null and supplierName != ''">
+                AND ss.name LIKE CONCAT('%',#{supplierName},'%')
+            </if>
+            <if test="supplierId != null">
+                AND ss.id = #{supplierId}
+            </if>
+        ORDER BY ss.id
+    </select>
+</mapper>

@@ -123,6 +123,21 @@ export default new Router({
                     meta: { title: '直充库存' }
                 },
                 {
+                    path: '/camiloRecordList',
+                    component: resolve => require(['../components/page/inventory/camiloRecordList.vue'], resolve),
+                    meta: { title: '卡密入库记录' }
+                },
+                {
+                    path: '/balanceRecordList',
+                    component: resolve => require(['../components/page/inventory/balanceRecordList.vue'], resolve),
+                    meta: { title: '直充入库记录' }
+                },
+                {
+                    path: '/companyList',
+                    component: resolve => require(['../components/page/company/companyList.vue'], resolve),
+                    meta: { title: '公司列表' }
+                },
+                {
                     path: '/404',
                     component: resolve => require(['../components/page/404.vue'], resolve),
                     meta: { title: '404' }

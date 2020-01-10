@@ -36,4 +36,16 @@
             </if>
         ORDER BY created_at DESC
     </select>
+
+    <update id="batchAudit">
+        update
+            suppliers
+        set
+            status = #{status}
+        where
+            id in
+            <foreach collection="idList" separator="," item="id" open="(" close=")">
+                #{id}
+            </foreach>
+    </update>
 </mapper>

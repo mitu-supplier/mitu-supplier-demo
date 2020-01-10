@@ -19,6 +19,7 @@
                     </el-form-item>
                     <el-form-item label="审核状态">
                          <el-select v-model="formInline.auditStatus" placeholder="审核状态">
+                            <el-option label="请选择" value=""></el-option>
                             <el-option label="待审核" value="0"></el-option>
                             <el-option label="审核通过" value="1"></el-option>
                             <el-option label="审核失败" value="2"></el-option>

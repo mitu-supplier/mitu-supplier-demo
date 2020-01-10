@@ -9,7 +9,7 @@
             <div style="background:#f6f6f6;padding:20px 10px 0;margin-bottom:20px;">
                 <el-form :inline="true" :model="formInline" class="demo-form-inline">
                     <el-form-item label="商户名称">
-                        <el-input v-model="formInline.name" placeholder="商户名称"></el-input>
+                        <el-input v-model="formInline.supplierName" placeholder="商户名称"></el-input>
                     </el-form-item>
                     <el-form-item>
                         <el-button type="primary" @click="onSubmit">查询</el-button>
@@ -18,10 +18,11 @@
             </div>
             <el-table :data="tableData" border class="table" ref="multipleTable">
                 <el-table-column type="index" label="序号" width="55" align="center" ></el-table-column>
-                <el-table-column prop="name" label="商户名称"  align="center" width=""></el-table-column>
-                <el-table-column prop="balance" label="账户余额（元）" align="center" width="">
+                <el-table-column prop="supplierName" label="商户名称"  align="center" width=""></el-table-column>
+                <el-table-column label="账户余额（元）" align="center" width="">
                     <template slot-scope="scope">
-                        <span type="text" class="red">{{scope.row.balance.toFixed(2)}}</span>
+                        <span type="text" v-if="scope.row.money == null" class="red">0.00</span>
+                        <span type="text" v-else>{{scope.row.money.toFixed(2)}}</span>
                     </template>
                 </el-table-column>
             </el-table>
@@ -53,8 +54,7 @@
                 pageSize:10,
                 tableData: [],
                 formInline:{
-                    name:'',
-                    catalogName:''
+                    supplierName:''
                 }   
             }
         },
@@ -77,11 +77,11 @@
             },
             // 初始化数据
             async getData() {
-                const products = await this.$http.get(baseURL_.mallUrl+'/supplier/getBalance',{ 
+                const products = await this.$http.get(baseURL_.mallUrl+'/supplierBalanceRecord/balanceList',{ 
                     params: {
                         'page':this.page,
                         'pageSize':this.pageSize,
-                        'name':this.formInline.name
+                        'supplierName':this.formInline.supplierName
                     }
                 });
                 if(products.data.statusCode==200){

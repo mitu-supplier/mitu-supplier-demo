@@ -1,10 +1,18 @@
 package cn.forest.server;
 
+import cn.forest.common.service.utils.ResultPage;
 import cn.forest.common.service.utils.ResultSave;
 import cn.forest.common.util.DateUtil;
+import cn.forest.common.util.StringUtil;
 import cn.forest.mall.entity.Camilo;
+import cn.forest.mall.entity.CamiloRecord;
+import cn.forest.mall.entity.Products;
+import cn.forest.mall.mapper.ProductsMapper;
+import cn.forest.service.CamiloRecordService;
 import cn.forest.service.CamiloService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/camilo")
@@ -21,6 +30,12 @@ public class CamiloAction {
 
     @Autowired
     private CamiloService camiloService;
+
+    @Autowired
+    private ProductsMapper productsMapper;
+
+    @Autowired
+    private CamiloRecordService camiloRecodeService;
 
     @RequestMapping("/save")
     public Object save(@RequestBody Camilo camilo) {
@@ -66,4 +81,48 @@ public class CamiloAction {
         }
         return 0;
     }
+
+    @RequestMapping("/selectProductCamiloList")
+    public Object selectProductCamiloList(@RequestBody Map<String, Object> map) {
+        if (StringUtil.toString(map.get("page")) != null && StringUtil.toString(map.get("pageSize")) != null) {
+            PageHelper.startPage(Integer.parseInt(map.get("page").toString()), Integer.parseInt(map.get("pageSize").toString()));
+            map.put("deliveryCode","D_KM");
+            map.put("auditStatus", 1);
+            map.put("status", 1);
+            List<Products> products = productsMapper.selectListByMap(map);
+            if(!CollectionUtils.isEmpty(products)){
+                for (Products product : products){
+                    // 卡密数量 失效时间
+                    QueryWrapper<Camilo> qw = new QueryWrapper<>();
+                    qw.eq("product_id", product.getId());
+                    qw.eq("use_flag", 0);
+                    qw.gt("failure_time",DateUtil.parseDateToStr(new Date(), DateUtil.DATE_FORMAT_YYYY_MM_DD));
+                    qw.orderByAsc(new String[]{"failure_time","id"});
+                    List<Camilo> list = camiloService.list(qw);
+                    if(!CollectionUtils.isEmpty(list)){
+                        product.setStock(list.size());
+                        product.setFailureTime(list.get(0).getFailureTime());
+                    }else{
+                        product.setStock(0);
+                        product.setFailureTime("--");
+                    }
+                }
+            }
+            PageInfo<Products> productsPage = new PageInfo<Products>(products);
+            return new ResultPage<Products>(productsPage);
+        }
+        return null;
+    }
+
+    @RequestMapping("/recordList")
+    public Object recordList(@RequestBody Map<String, Object> map){
+        if (StringUtil.toString(map.get("page")) != null && StringUtil.toString(map.get("pageSize")) != null) {
+            PageHelper.startPage(Integer.parseInt(map.get("page").toString()), Integer.parseInt(map.get("pageSize").toString()));
+            List<CamiloRecord> recordlist = camiloRecodeService.recordlist(map);
+            PageInfo<CamiloRecord> productsPage = new PageInfo<CamiloRecord>(recordlist);
+            return new ResultPage<CamiloRecord>(productsPage);
+        }
+        return null;
+    }
+
 }
