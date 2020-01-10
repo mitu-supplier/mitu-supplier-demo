@@ -94,10 +94,10 @@
                 </el-form-item>
 
                 <el-form-item label="商品详情" prop="">
-                  <!-- details -->
-                    <!-- <div class="editor-container">
-                      <div id="editor" :v-model="content"></div>
-                    </div> -->
+                    <!-- <UE :defaultMsg=defaultMsg :config=config ref="ue"></UE> -->
+                    <div class="editor-container">
+                      <div id="editor"></div>
+                    </div>
                 </el-form-item>
 
                 <el-form-item>
@@ -108,22 +108,30 @@
         </div>
     </div>
 </template>
-  
+
 <script>
     import { fetchData } from '../../../api/index';
-    import ueditor_ from "../comment/ueditor";
+    import ueditor_ from '../../common/ueditor';
     import baseURL_ from '@/utils/baseUrl.js';
     export default {
         name: 'commodityAdd',
+        components:{
+          UE,
+        },
+        props: {},
         data() {
             return {
+                defaultMsg: '',
+                config: {
+                  initialFrameWidth: null,
+                  initialFrameHeight: 350
+                },
                 addComForm:{
 
                 },
                 rules: {
                     password: [{ required: true, message: "请输入密码", trigger: "blur" }],
                     confirmPassword: [{ required: true, message: "请输入密码", trigger: "blur" }]
-                    
                 },
                 options: [],
                 fileList:[],
@@ -140,11 +148,9 @@
                     onClick: this.zTreeOnClick,
                     beforeClick: this.beforeClick
                   }
-                  
+
                 },
                 orgTreeShow:false,
-                // editor: null,
-                // editorContent: ''
                 content:'',
                 catalogId:'',
             }
@@ -153,10 +159,13 @@
           this.getSelectForm();
         },
         mounted() {
-          // var ue = UE.getEditor('editor');
-          // UE.delEditor("editor");
-          // ueditor_.methods.loadComponent("editor");
-          
+          UE.delEditor("editor");
+          ueditor_.methods.loadComponent("editor");
+          var usd = UE.getEditor("editor");
+          usd.addListener("ready", function() {
+          usd.setHeight(366);
+          });
+
         },
         methods: {
             async getSelectForm(){
@@ -199,7 +208,9 @@
             async submitAddCom(){
               this.$refs['addComForm'].validate(async valid => {
                 if (valid) {
+                  var details = UE.getEditor('editor').getContent();
                   this.addComForm.catalogId = this.catalogId;
+                  this.addComForm.details = details;
                   const res = await this.$http.post(baseURL_.mallUrl+'/products/save',this.$qs.stringify(this.addComForm));
                   this.$message(res.data.data);
                   if(res.data.statusCode==200){

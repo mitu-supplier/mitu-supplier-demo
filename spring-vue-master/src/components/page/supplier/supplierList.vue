@@ -18,13 +18,14 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item>
-                        <el-button type="primary" @click="onSubmit">查询</el-button>
+                        <el-button type="primary" icon="el-icon-search" @click="onSubmit">查询</el-button>
+                        <el-button type="primary" icon="el-icon-refresh" @click="onReset">重置</el-button>
                     </el-form-item>
                 </el-form>
             </div>
             <div class="handle-box">
                 <!-- <el-input placeholder="筛选关键词" class="handle-input mr10"></el-input> -->
-                <el-button type="primary" @click="aaa = true" icon="el-icon-search" >新增</el-button>
+                <el-button type="primary" @click="aaa = true" icon="el-icon-plus" >新增</el-button>
             </div>
             <el-table :data="tableData" border class="table" ref="multipleTable">
                 <el-table-column type="index" label="序号" width="55" align="center" ></el-table-column>
@@ -118,9 +119,6 @@
             this.getData();
         },
         methods: {
-            onSubmit(){
-
-            },
             //改变每页页数
             handleSizeChange(val){
                 this.pageSize=val;
@@ -132,7 +130,26 @@
                 this.getData();
             },
             handleSelectionChange(val) {
-                this.multipleSelection = val;
+            },
+            // 重置
+            onReset(){
+                this.formInline = {};
+                this.getData();
+            },
+            // 搜索
+            async onSubmit(){
+                const permissions = await this.$http.get(baseURL_.sysUrl+'/sysRole/list',{ 
+                    params: {
+                        'page':this.page,
+                        'pageSize':this.pageSize,
+                        'user':this.formInline.user,
+                        'region':this.formInline.region
+                    }
+                });
+                if(permissions.data.statusCode==200){
+                  this.tableData=permissions.data.data.list;
+                  this.total=permissions.data.data.total;
+                }
             },
             // 初始化数据
             async getData() {

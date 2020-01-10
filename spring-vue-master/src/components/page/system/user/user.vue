@@ -9,7 +9,8 @@
             <div class="handle-box">
                 <el-button type="primary" icon="el-icon-plus" class="handle-del mr10" @click="add">添加</el-button>
                 <el-input placeholder="用户名或登录名" v-model="name"  class="handle-input mr10"></el-input>
-                <el-button type="primary" icon="el-icon-search" >搜索</el-button>
+                <el-button type="primary" icon="el-icon-search" @click="searchBtn">搜索</el-button>
+                <el-button type="primary" icon="el-icon-refresh" @click="onReset">重置</el-button>
             </div>
             <el-table  :data="tableData" border class="table" ref="multipleTable"  @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55" align="center" ></el-table-column>
@@ -202,6 +203,25 @@
                   this.tableData=user.data.data.list;
                   this.total=user.data.data.total;
                   this.page=user.data.data.page;
+                }
+            },
+            // 重置
+            onReset(){
+                this.name = '';
+                this.getData();
+            },
+            // 搜索 
+            async searchBtn(){
+                const permissions = await this.$http.get(baseURL_.sysUrl+'/sysUser/list',{ 
+                    params: {
+                        'page':this.page,
+                        'pageSize':this.pageSize,
+                        'count':this.name
+                    }
+                });
+                if(permissions.data.statusCode==200){
+                  this.tableData=permissions.data.data.list;
+                  this.total=permissions.data.data.total;
                 }
             },
             async ztreeEdit(index, row){

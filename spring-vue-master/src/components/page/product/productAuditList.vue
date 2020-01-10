@@ -27,6 +27,7 @@
                     </el-form-item>
                     <el-form-item>
                         <el-button type="primary" @click="onSubmit">查询</el-button>
+                        <el-button type="primary" @click="onReset">重置</el-button>
                     </el-form-item>
                 </el-form>
             </div>
@@ -50,7 +51,9 @@
                 </el-table-column>
                 <el-table-column label="操作" width="" align="center">
                     <template slot-scope="scope">
-                        <el-button type="text" class="red" @click="view(scope.$index, scope.row)">查看详情</el-button>
+                        <el-button type="text" @click="view(scope.$index, scope.row)">查看详情</el-button>
+                        <el-button type="text" @click="auditAdopt(scope.row.id)">审核通过</el-button>
+                        <el-button type="text" class="red" @click="auditReject(scope.row.id)">审核失败</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -66,7 +69,18 @@
                  </el-pagination>
             </div>
             <!-- <loding v-if="aaa"></loding> -->
+            <el-dialog
+                :title="msgTips"
+                :visible.sync="dialogVisible"
+                width="30%">
+                <span>这是一段信息</span>
+                <span slot="footer" class="dialog-footer">
+                    <el-button @click="dialogVisible = false">取 消</el-button>
+                    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+                </span>
+            </el-dialog>
         </div>
+        
     </div>
 </template>
   
@@ -77,6 +91,7 @@
         name: 'basetable',
         data() {
             return {
+                dialogVisible:false,
                 aaa:false,
                 page:1,
                 total:0,
@@ -88,7 +103,8 @@
                     name:'',
                     catalogName:'',
                     auditStatus:''
-                }   
+                },
+                msgTips:'',
             }
         },
         created() {
@@ -96,6 +112,10 @@
         },
         methods: {
             onSubmit(){
+                this.getData();
+            },
+            onReset(){
+                this.formInline = {};
                 this.getData();
             },
             //改变每页页数
@@ -168,8 +188,47 @@
                     this.getData();
                 }
             },
-            view(){
-                
+            view(index,row){
+                this.$router.push({
+                    path: '/auditDetails',
+                    query: {
+                        id: row.id
+                    }
+                });
+            },
+            auditAdopt(id){
+                this.$prompt('请输入发货代号：', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    inputPattern: /^[\s\S]*.*[^\s][\s\S]*$/,
+                    inputErrorMessage: '发货代号不能为空'
+                }).then(({ value }) => {
+                    this.confimAudit(id,1,null,value);
+                }).catch(() => { }); 
+            },
+            auditReject(id){
+                this.$prompt('请输入审核失败理由：', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    inputPattern: /^[\s\S]*.*[^\s][\s\S]*$/,
+                    inputErrorMessage: '理由不能为空'
+                }).then(({ value }) => {
+                    this.confimAudit(id,2,value,null)
+                }).catch(() => { }); 
+            },
+            async confimAudit(id,auditStatus,auditReason,deliveryTypeCode){
+                var auditResult = await this.$http.get(baseURL_.mallUrl+'/products_audit/audit', {
+                    params:{
+                        id:id,
+                        auditStatus:auditStatus,
+                        auditReason:auditReason,
+                        deliveryTypeCode:deliveryTypeCode
+                    }
+                });
+                this.$message(auditResult.data.data);
+                if(auditResult.data.statusCode==200){
+                    this.getData();
+                }
             }
         }
     }

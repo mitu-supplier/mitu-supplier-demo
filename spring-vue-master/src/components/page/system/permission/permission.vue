@@ -9,8 +9,9 @@
             <div class="handle-box">
                 <!-- <el-button type="primary" icon="el-icon-delete" class="handle-del mr10">批量删除</el-button> -->
                 <el-button type="primary" icon="el-icon-plus" class="handle-del mr10" @click="add">添加</el-button>
-                <el-input placeholder="筛选关键词" class="handle-input mr10"></el-input>
-                <el-button type="primary" icon="el-icon-search" >搜索</el-button>
+                <el-input placeholder="筛选关键词" v-model="searchCount" class="handle-input mr10"></el-input>
+                <el-button type="primary" icon="el-icon-search" @click="searchBtn">搜索</el-button>
+                <el-button type="primary" icon="el-icon-refresh" @click="onReset">重置</el-button>
             </div>
             <el-table  row-key="id" lazy :data="tableData" :load="load" :tree-props="{children: 'children', hasChildren: 'hasChildren'}" border id="table_id" ref="multipleTable"  @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55" align="center" ></el-table-column>
@@ -109,7 +110,8 @@
                    iconName:'',
                    parentName:'',
                    isParent:''
-                }
+                },
+                searchCount:'',
             }
         },
         created() {
@@ -129,6 +131,25 @@
              handleSelectionChange(val) {
                 this.multipleSelection = val;
                
+            },
+            // 重置
+            onReset(){
+                this.searchCount = '';
+                this.getData();
+            },
+            // 搜索 
+            async searchBtn(){
+                const permissions = await this.$http.get(baseURL_.sysUrl+'/sysPermissions/getlistfirstLevel',{ 
+                    params: {
+                        'page':this.page,
+                        'pageSize':this.pageSize,
+                        'count':this.searchCount
+                    }
+                });
+                if(permissions.data.statusCode==200){
+                  this.tableData=permissions.data.data.list;
+                  this.total=permissions.data.data.total;
+                }
             },
             // 初始化数据
             async getData() {

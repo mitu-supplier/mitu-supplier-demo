@@ -15,12 +15,21 @@ import '../zTree_v3/css/zTreeStyle/zTreeStyle.css';
 import '../zTree_v3/js/jquery.ztree.core.js';
 import '../zTree_v3/js/jquery.ztree.excheck.js';
 import '../zTree_v3/js/jquery.ztree.exedit.js';
+
+import '../static_ue/UE/ueditor.config.js'
+import '../static_ue/UE/ueditor.all.min.js'
+import '../static_ue/UE/lang/zh-cn/zh-cn.js'
+import ueConfig from '../src/assets/js/ueConfig.js';
+// import '../static/UE/ueditor.parse.min'
+
 import http from '@/utils/request.js';
+
 import qs from 'qs'
 Vue.prototype.$qs = qs;
 
 
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
+Vue.prototype.$ueConfig = ueConfig;
 Vue.use(VueI18n);
 Vue.use(http);
 Vue.use(ElementUI, {

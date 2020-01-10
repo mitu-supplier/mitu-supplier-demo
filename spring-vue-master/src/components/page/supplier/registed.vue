@@ -71,7 +71,7 @@
                             
                             <el-form-item>
                                 <el-button type="primary" @click="nextThreeDetail('firstForm')">下一步</el-button>
-                                <el-button type="danger" @click="back">取消</el-button>
+                                <!-- <el-button type="danger" @click="back">取消</el-button> -->
                             </el-form-item>
                         </el-form>
                     </div>
@@ -161,7 +161,7 @@
                             
                             <el-form-item>
                                 <el-button type="primary" @click="nextFive('suppImgForm')">下一步</el-button>
-                                <el-button type="danger" @click="back">取消</el-button>
+                                <!-- <el-button type="danger" @click="back">取消</el-button> -->
                             </el-form-item>
                         </el-form>
                     </div>

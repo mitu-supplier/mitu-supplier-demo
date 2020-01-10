@@ -111,7 +111,7 @@
   
 <script>
     import { fetchData } from '../../../api/index';
-    import ueditor_ from "../comment/ueditor";
+    import ueditor_ from '../../common/ueditor';
     import baseURL_ from '@/utils/baseUrl.js';
     export default {
         name: 'commodityAdd',
