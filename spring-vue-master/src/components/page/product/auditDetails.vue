@@ -94,14 +94,13 @@
                 </el-form-item>
 
                 <el-form-item label="商品详情" prop="">
-                  <!-- details -->
-                    <!-- <div class="editor-container">
-                      <div id="editor" :v-model="content"></div>
-                    </div> -->
+                    <div class="editor-container">
+                      <div id="editor"></div>
+                    </div>
                 </el-form-item>
 
                 <el-form-item>
-                    <el-button type="primary" @click="submitAddCom('addComForm')">提交</el-button>
+                    <!-- <el-button type="primary" @click="submitAddCom('addComForm')">提交</el-button> -->
                     <el-button type="danger" @click="back">取消</el-button>
                 </el-form-item>
             </el-form>
@@ -154,10 +153,8 @@
           this.getSelectForm();
         },
         mounted() {
-          // var ue = UE.getEditor('editor');
-          // UE.delEditor("editor");
-          // ueditor_.methods.loadComponent("editor");
-          
+          UE.delEditor("editor");
+          ueditor_.methods.loadComponent("editor");
         },
         methods: {
             // 数据回显
@@ -171,8 +168,14 @@
               if(res.data.statusCode==200){
                 this.addComForm = res.data.data;
                 this.fileList = [{uel:this.addComForm.img}];
-                this.orgNames = this.addComForm.catalogId;
+                this.orgNames = this.addComForm.name;
                 this.catalogId = this.addComForm.catalogId;
+                var details = this.addComForm.details
+                var usd = UE.getEditor("editor");
+                usd.ready(function() {
+                  usd.setHeight(366);
+                  usd.setContent(details);
+                });
               }else{
                 this.$message(res.data.data);
               }
@@ -215,18 +218,18 @@
             back() {
                 this.$router.push({ path: "/productAuditList" });
             },
-            async submitAddCom(){
-              this.$refs['addComForm'].validate(async valid => {
-                if (valid) {
-                  this.addComForm.catalogId = this.catalogId;
-                  const res = await this.$http.post(baseURL_.mallUrl+'/products/save',this.$qs.stringify(this.addComForm));
-                  this.$message(res.data.data);
-                  if(res.data.statusCode==200){
-                    this.$router.push('/productList');
-                  }
-                }
-              })
-            },
+            // async submitAddCom(){
+            //   this.$refs['addComForm'].validate(async valid => {
+            //     if (valid) {
+            //       this.addComForm.catalogId = this.catalogId;
+            //       const res = await this.$http.post(baseURL_.mallUrl+'/products/save',this.$qs.stringify(this.addComForm));
+            //       this.$message(res.data.data);
+            //       if(res.data.statusCode==200){
+            //         this.$router.push('/productList');
+            //       }
+            //     }
+            //   })
+            // },
             // Logo上传
             uploadUrl() {
               return baseURL_.fileUrl+'/file/upload';

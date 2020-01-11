@@ -6,11 +6,25 @@
             </el-breadcrumb>
         </div>
         <div class="container">
+            <div style="background:#f6f6f6;padding:20px 10px 0;margin-bottom:20px;">
+                <el-form :inline="true" :model="formInline" class="demo-form-inline">
+                    <el-form-item label="角色名称">
+                        <el-input v-model="formInline.name" placeholder="类目名称"></el-input>
+                    </el-form-item>
+                    <el-form-item label="code">
+                        <el-input v-model="formInline.code" placeholder="商户名称"></el-input>
+                    </el-form-item>
+                    
+                    <el-form-item>
+                        <el-button type="primary" icon="el-icon-search" @click="searchBtn">搜索</el-button>
+                        <el-button type="primary" icon="el-icon-refresh" @click="onReset">重置</el-button>
+                    </el-form-item>
+                </el-form>
+            </div>
             <div class="handle-box">
                 <el-button type="primary" icon="el-icon-plus" class="handle-del mr10" @click="add">添加</el-button>
-                <el-input placeholder="筛选关键词" v-model="searchCount" class="handle-input mr10"></el-input>
-                <el-button type="primary" icon="el-icon-search" @click="searchBtn">搜索</el-button>
-                <el-button type="primary" icon="el-icon-refresh" @click="onReset">重置</el-button>
+                <!-- <el-input placeholder="筛选关键词" v-model="searchCount" class="handle-input mr10"></el-input>
+                 -->
                 
             </div>
             <el-table :data="tableData" border class="table" ref="multipleTable"  @selection-change="handleSelectionChange">
@@ -130,7 +144,8 @@
                         chkboxType: { Y: "ps", N: "ps" }
                     },
                 },
-                searchCount:''
+                searchCount:'',
+                formInline:{}
             }
         },
         created() {
@@ -161,7 +176,8 @@
                     params: {
                         'page':this.page,
                         'pageSize':this.pageSize,
-                        'count':this.searchCount
+                        'name':this.formInline.name,
+                        'code':this.formInline.code
                     }
                 });
                 if(permissions.data.statusCode==200){
