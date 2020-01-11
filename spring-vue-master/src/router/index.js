@@ -58,6 +58,11 @@ export default new Router({
                     meta: { title: '新增商品' }
                 },
                 {
+                    path: '/auditDetails',
+                    component: resolve => require(['../components/page/product/auditDetails.vue'], resolve),
+                    meta: { title: '查看商品' }
+                },
+                {
                     path: '/commodityEdit',
                     component: resolve => require(['../components/page/commodity/commodityEdit.vue'], resolve),
                     meta: { title: '修改商品' }

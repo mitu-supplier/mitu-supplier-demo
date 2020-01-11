@@ -63,7 +63,7 @@
                             <el-form-item label="入驻类型" prop="address">
                               <el-select v-model="newRuleForm.enterType" disabled readonly placeholder="请选择">
                                 <el-option
-                                  v-for="item in ENTER_TYPE"
+                                  v-for="item in SettledType"
                                   :key="item.id"
                                   :label="item.name"
                                   :value="item.id">
@@ -98,7 +98,7 @@
                             <el-form-item label="签约公司">
                               <el-select v-model="newRuleForm.signCompany" disabled readonly placeholder="请选择">
                                 <el-option
-                                  v-for="item in SIGN_COMPANY"
+                                  v-for="item in CompanyType"
                                   :key="item.id"
                                   :label="item.name"
                                   :value="item.id">
@@ -366,9 +366,9 @@
                 value2:'',
                 // 下拉数据
                 COMPANY_TYPE:[],
-                ENTER_TYPE:[],
+                SettledType:[],
                 PRODUCT_ENTER_TYPE:[],
-                SIGN_COMPANY:[],
+                CompanyType:[],
                 LEGAL_CARD_TYPE:[],
                 TAXPAYER_TYPE:[],
                 userId:'',
@@ -393,12 +393,23 @@
             async getData(){
                 const res = await this.$http.get(baseURL_.mallUrl+'/supplier/getDictionaryData');
                 this.COMPANY_TYPE = res.data.data.COMPANY_TYPE;
-                this.ENTER_TYPE = res.data.data.ENTER_TYPE;
+                // this.ENTER_TYPE = res.data.data.ENTER_TYPE;
                 this.PRODUCT_ENTER_TYPE = res.data.data.PRODUCT_ENTER_TYPE;
-                this.SIGN_COMPANY = res.data.data.SIGN_COMPANY;
+                // this.SIGN_COMPANY = res.data.data.SIGN_COMPANY;
                 this.LEGAL_CARD_TYPE = res.data.data.LEGAL_CARD_TYPE;
                 this.TAXPAYER_TYPE = res.data.data.TAXPAYER_TYPE;
+                this.getSettledType();
+                this.getCompany();
             },
+            async getSettledType(){
+                const res = await this.$http.get(baseURL_.mallUrl+'/supplier/getEnterType');
+                this.SettledType = res.data.data;
+            },
+            async getCompany(){
+                const res = await this.$http.get(baseURL_.mallUrl+'/supplier/getCompany');
+                this.CompanyType = res.data.data;
+            },
+            
           // 获取供应商入驻信息回显
             async getSupplierData(){
                 const res = await this.$http.get(baseURL_.mallUrl+'/supplier_audit/view',{
