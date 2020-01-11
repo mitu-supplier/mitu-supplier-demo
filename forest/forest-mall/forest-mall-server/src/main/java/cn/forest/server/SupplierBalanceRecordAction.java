@@ -55,4 +55,10 @@ public class SupplierBalanceRecordAction {
         }
         return null;
     }
+
+    @RequestMapping("/save")
+    public int save(@RequestBody SupplierBalanceRecord supplierBalanceRecord){
+        return supplierBalanceRecordMapper.insert(supplierBalanceRecord);
+    }
+
 }

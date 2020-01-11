@@ -63,4 +63,17 @@ public class SupplierBalanceRecordService {
         }
         return paramMap;
     }
+
+    public Map<String, Object> save(HttpServletRequest request){
+        Map<String, Object> paramMap = RequestMap.requestToMap(request);
+        String header = request.getHeader(Constant.HEADER_TOKEN_STRING);
+        HashMap userInfoMap = (HashMap) redisDao.getValue(header);
+        if (userInfoMap != null) {
+            paramMap.put("userId", userInfoMap.get("id"));
+            paramMap.put("userName", userInfoMap.get("name"));
+        }
+        paramMap.put("operationType", 1);
+        int save = supplierBalanceRecordRemote.save(paramMap);
+        return ResultMessage.result(save, "操作成功","操作失败");
+    }
 }

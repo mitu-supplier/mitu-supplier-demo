@@ -23,7 +23,8 @@
     <select id="balanceList" resultType="cn.forest.mall.entity.SupplierBalanceRecord">
         SELECT
 	        ss.NAME AS supplierName,
-	        tmp.money AS money
+	        tmp.money AS money,
+	        tmp.supplier_id AS supplierId
         FROM
 	    (
 	        SELECT

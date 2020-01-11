@@ -6,10 +6,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.forest.common.Constant;
+import cn.forest.system.entity.SysUser;
+import cn.forest.system.entity.SysUserRole;
+import cn.forest.system.mapper.SysUserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -36,7 +42,12 @@ public class SysRoleAction {
   
   @Autowired
   private SysRolePermissionsService sysRolePermissionsService;
-  
+
+  @Autowired
+  private SysUserRoleMapper sysUserRoleMapper;
+
+  @Autowired
+  private SysUserMapper sysUserMapper;
 
   @RequestMapping(value = "/list")
   public Object getList(Long page, Long pageSize) {
@@ -104,5 +115,30 @@ public class SysRoleAction {
     }
     return result;
   }
-  
+
+  @RequestMapping("/saveSupplierRole")
+  public int saveSupplierRole(@RequestParam("supplierIds") String supplierIds){
+    Long roleId = null;
+    QueryWrapper<SysRole> sysRoleQueryWrapper=new QueryWrapper<SysRole>();
+    sysRoleQueryWrapper.eq("role_code", Constant.SH_ADMIN);
+    List<SysRole> sysRoles = sysRoleMapper.selectList(sysRoleQueryWrapper);
+    if(!CollectionUtils.isEmpty(sysRoles)){
+      roleId = sysRoles.get(0).getId();
+    }
+    if(!StringUtils.isEmpty(supplierIds) && roleId != null){
+      for (String s : supplierIds.split(",")){
+        QueryWrapper<SysUser> qw = new QueryWrapper<>();
+        qw.eq("type_id", Long.parseLong(s));
+        List<SysUser> sysUsers = sysUserMapper.selectList(qw);
+        if(!CollectionUtils.isEmpty(sysUsers)){
+          SysUserRole userRole = new SysUserRole();
+          userRole.setUserId(sysUsers.get(0).getId());
+          userRole.setRoleId(roleId);
+          sysUserRoleMapper.insert(userRole);
+        }
+      }
+      return 1;
+    }
+    return 0;
+  }
 }

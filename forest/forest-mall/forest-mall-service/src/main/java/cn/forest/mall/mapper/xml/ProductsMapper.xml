@@ -38,6 +38,9 @@
             <if test="supplierName != null and supplierName != ''">
                 AND s.name LIKE CONCAT('%',#{supplierName},'%')
             </if>
+            <if test="supplierId != null">
+                AND p.supplier_id = #{supplierId}
+            </if>
             <if test="auditStatus != null and auditStatus != ''">
                 AND p.audit_status = #{auditStatus}
             </if>

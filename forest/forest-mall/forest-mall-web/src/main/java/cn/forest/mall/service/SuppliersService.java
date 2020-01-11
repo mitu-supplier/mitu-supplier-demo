@@ -47,6 +47,9 @@ public class SuppliersService {
     @Autowired
     private CatalogsRemote catalogsRemote;
 
+    @Autowired
+    private SysRoleRemote sysRoleRemote;
+
     /**
      * 商户列表信息
      *
@@ -176,6 +179,9 @@ public class SuppliersService {
         Long supplierId = Long.parseLong(map.get("businessId").toString());
         Integer status = Integer.parseInt(map.get("auditResult").toString());
         suppliersRemote.updateStatus(supplierId, status);
+        if(status != null && status == 1){
+            sysRoleRemote.saveSupplierRole(supplierId+"");
+        }
         // 保存审核记录
         String header = request.getHeader(Constant.HEADER_TOKEN_STRING);
         HashMap userInfoMap = (HashMap) redisDao.getValue(header);
@@ -200,7 +206,11 @@ public class SuppliersService {
         if (paramMap.get("ids") != null) {
             ids = paramMap.get("ids").toString();
         }
-        int auditStatus = suppliersRemote.batchAudit(ids, Integer.parseInt(paramMap.get("status").toString()));
+        Integer status = Integer.parseInt(paramMap.get("status").toString());
+        int auditStatus = suppliersRemote.batchAudit(ids, status);
+        if(status != null && status == 1){
+            sysRoleRemote.saveSupplierRole(ids);
+        }
         if(auditStatus > 0){
             // 保存审核记录
             if (ids != null) {

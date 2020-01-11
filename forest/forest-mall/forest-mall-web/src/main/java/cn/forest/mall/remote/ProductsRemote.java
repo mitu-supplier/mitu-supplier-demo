@@ -16,7 +16,7 @@ public interface ProductsRemote {
     @RequestMapping("/products/save")
     Object save(Map<String, ?> map);
 
-    @RequestMapping("/suppliers/update")
+    @RequestMapping("/products/update")
     int update(Map<String, ?> map);
 
     @RequestMapping("/products/delete")

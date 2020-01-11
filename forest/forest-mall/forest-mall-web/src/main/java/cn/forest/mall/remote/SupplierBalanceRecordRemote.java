@@ -18,7 +18,7 @@ public interface SupplierBalanceRecordRemote {
      * @return
      */
     @RequestMapping("/supplierBalanceRecord/balanceList")
-    public Object balanceList(Map<String, Object> map);
+    Object balanceList(Map<String, Object> map);
 
     /**
      * 商户直充记录查询
@@ -27,5 +27,8 @@ public interface SupplierBalanceRecordRemote {
      * @return
      */
     @RequestMapping("/supplierBalanceRecord/recordList")
-    public Object recordList(Map<String, Object> map);
+    Object recordList(Map<String, Object> map);
+
+    @RequestMapping("/supplierBalanceRecord/save")
+    int save(Map<String, Object> map);
 }
