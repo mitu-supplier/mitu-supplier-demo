@@ -35,4 +35,9 @@ public class SupplierBalanceRecordController {
     public Object recordList(HttpServletRequest request) {
         return supplierBalanceRecordService.recordList(request);
     }
+
+    @RequestMapping("/save")
+    public Object save(HttpServletRequest request){
+        return supplierBalanceRecordService.save(request);
+    }
 }

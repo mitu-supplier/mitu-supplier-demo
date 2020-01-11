@@ -23,7 +23,7 @@ management:
       exposure:
         include: '*'
 
-file-site-path: http://192.168.1.164/attach
+file-site-path: http://wjrw63.natappfree.cc/attach
 upload-base-path: /Users/yehao/dev/java_upload_file
 file-upload-path: /upload/file/
 image-upload-path: /upload/image/

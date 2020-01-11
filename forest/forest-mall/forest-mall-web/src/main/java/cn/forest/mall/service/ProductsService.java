@@ -37,8 +37,19 @@ public class ProductsService {
     @Autowired
     private RedisDao redisDao;
 
-    public Map<String, Object> list(Map<String, Object> map) {
-        Object obj = productsRemote.list(map);
+    public Map<String, Object> list(HttpServletRequest request) {
+        Map<String, Object> paramMap = RequestMap.requestToMap(request);
+        String header = request.getHeader(Constant.HEADER_TOKEN_STRING);
+        HashMap userInfoMap = (HashMap) redisDao.getValue(header);
+        if (userInfoMap != null) {
+            Object type = userInfoMap.get("type");
+            Object typeId = userInfoMap.get("typeId");
+            if (type != null && Integer.parseInt(type.toString()) == 1) {
+                // 供应商
+                paramMap.put("supplierId", typeId);
+            }
+        }
+        Object obj = productsRemote.list(paramMap);
         if (obj != null) {
             return ResultMessage.success(obj);
         }
@@ -68,7 +79,7 @@ public class ProductsService {
         String header = request.getHeader(Constant.HEADER_TOKEN_STRING);
         HashMap userInfoMap = (HashMap) redisDao.getValue(header);
         if (userInfoMap != null) {
-            paramMap.put("supplierId", userInfoMap.get("id"));
+            paramMap.put("supplierId", userInfoMap.get("typeId"));
         }
         paramMap.put("auditStatus", 0);
         Object save = productsRemote.save(paramMap);

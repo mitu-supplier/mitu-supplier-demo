@@ -17,4 +17,9 @@ public class SupplierBalanceRecordBack implements SupplierBalanceRecordRemote {
     public Object recordList(Map<String, Object> map) {
         return null;
     }
+
+    @Override
+    public int save(Map<String, Object> map) {
+        return 0;
+    }
 }

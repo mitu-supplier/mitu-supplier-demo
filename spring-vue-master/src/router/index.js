@@ -85,12 +85,12 @@ export default new Router({
                 {
                     path: '/supplierList',
                     component: resolve => require(['../components/page/supplier/supplierList.vue'], resolve),
-                    meta: { title: '供应商列表' }
+                    meta: { title: '商户列表' }
                 },
                 {
                     path: '/supplierAuditList',
                     component: resolve => require(['../components/page/supplier/supplierAuditList.vue'], resolve),
-                    meta: { title: '供应商审核列表' }
+                    meta: { title: '商户审核' }
                 },
                 {
                     path: '/supplierSee',
@@ -136,6 +136,11 @@ export default new Router({
                     path: '/companyList',
                     component: resolve => require(['../components/page/company/companyList.vue'], resolve),
                     meta: { title: '公司列表' }
+                },
+                {
+                    path: '/ordersList',
+                    component: resolve => require(['../components/page/orders/ordersList.vue'], resolve),
+                    meta: { title: '订单列表' }
                 },
                 {
                     path: '/404',

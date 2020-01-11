@@ -35,7 +35,7 @@ public class ProductsController {
      */
     @RequestMapping("/list")
     public Map<String, Object> list(HttpServletRequest request) {
-        return productsService.list(RequestMap.requestToMap(request));
+        return productsService.list(request);
     }
 
     /**
