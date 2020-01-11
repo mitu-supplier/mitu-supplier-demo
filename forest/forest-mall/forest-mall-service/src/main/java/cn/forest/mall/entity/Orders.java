@@ -47,6 +47,12 @@ public class Orders implements Serializable {
     @TableField(value = "product_name")
     private String productName;
 
+    @TableField(value = "catalog_id")
+    private Long catalogId;
+
+    @TableField(value = "catalog_name")
+    private String catalogName;
+
     /**
      * 添加时间
      */
@@ -235,6 +241,22 @@ public class Orders implements Serializable {
 
     public void setOrderTime(String orderTime) {
         this.orderTime = orderTime;
+    }
+
+    public Long getCatalogId() {
+        return catalogId;
+    }
+
+    public void setCatalogId(Long catalogId) {
+        this.catalogId = catalogId;
+    }
+
+    public String getCatalogName() {
+        return catalogName;
+    }
+
+    public void setCatalogName(String catalogName) {
+        this.catalogName = catalogName;
     }
 }
 

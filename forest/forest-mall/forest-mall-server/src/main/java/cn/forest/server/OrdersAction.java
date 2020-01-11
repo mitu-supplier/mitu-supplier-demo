@@ -4,8 +4,9 @@ import cn.forest.common.service.utils.ResultPage;
 import cn.forest.common.util.StringUtil;
 import cn.forest.mall.entity.Orders;
 import cn.forest.mall.mapper.OrdersMapper;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,11 +27,31 @@ public class OrdersAction {
 
     @RequestMapping("/list")
     public Object list(@RequestBody Map<String, Object> map) {
+        QueryWrapper<Orders> catalogsQueryWrapper = new QueryWrapper<>();
+        Object supplierId = map.get("supplierId");
+        if(!StringUtil.isBlank(supplierId)){
+            catalogsQueryWrapper.eq("supplier_id", Long.parseLong(supplierId.toString()));
+        }
+        Object catalogName = map.get("catalogName");
+        if(!StringUtil.isBlank(catalogName)){
+            catalogsQueryWrapper.like("catalog_name", catalogName.toString());
+        }
+        Object supplierName = map.get("supplierName");
+        if(!StringUtil.isBlank(supplierName)){
+            catalogsQueryWrapper.like("supplier_name", supplierName.toString());
+        }
+        Object productName = map.get("productName");
+        if(!StringUtil.isBlank(productName)){
+            catalogsQueryWrapper.like("product_name", productName.toString());
+        }
+        Object code = map.get("code");
+        if(!StringUtil.isBlank(code)){
+            catalogsQueryWrapper.like("code", code.toString());
+        }
         if (StringUtil.toString(map.get("page")) != null && StringUtil.toString(map.get("pageSize")) != null) {
-            PageHelper.startPage(Integer.parseInt(map.get("page").toString()), Integer.parseInt(map.get("pageSize").toString()));
-            List<Orders> orders = ordersMapper.selectList(null);
-            PageInfo<Orders> productsPage = new PageInfo<Orders>(orders);
-            return new ResultPage<Orders>(productsPage);
+            Page<Orders> ipage = new Page<Orders>(Long.parseLong(map.get("page").toString()), Long.parseLong(map.get("pageSize").toString()));
+            IPage<Orders> selectPage = ordersMapper.selectPage(ipage, catalogsQueryWrapper);
+            return new ResultPage<Orders>(selectPage);
         }
         return null;
     }

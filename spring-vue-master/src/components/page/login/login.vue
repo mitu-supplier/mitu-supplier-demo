@@ -16,7 +16,7 @@
                 <div class="login-btn">
                     <el-button type="primary" @click="submitForm()">登录</el-button>
                 </div>
-                <p class="login-tips right-supplier" style="text-align:right;"  @click="registed()"><span style="cursor: pointer;">供应商入驻</span></p>
+                <p class="login-tips right-supplier" style="text-align:right;" ><span style="cursor: pointer;" @click="registed()">供应商入驻</span></p>
             </el-form>
         </div>
     </div>

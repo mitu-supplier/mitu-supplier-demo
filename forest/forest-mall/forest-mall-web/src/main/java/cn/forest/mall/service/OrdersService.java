@@ -1,5 +1,7 @@
 package cn.forest.mall.service;
 
+import cn.forest.commom.redis.RedisDao;
+import cn.forest.common.Constant;
 import cn.forest.common.util.RequestMap;
 import cn.forest.common.util.ResultMessage;
 import cn.forest.mall.remote.OrdersRemote;
@@ -7,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.Map;
 
 @Service("ordersService")
@@ -15,8 +18,22 @@ public class OrdersService {
     @Autowired
     private OrdersRemote ordersRemote;
 
+    @Autowired
+    private RedisDao redisDao;
+
     public Map<String, Object> list(HttpServletRequest request) {
-        Object list = ordersRemote.list(RequestMap.requestToMap(request));
+        Map<String, Object> paramMap = RequestMap.requestToMap(request);
+        String header = request.getHeader(Constant.HEADER_TOKEN_STRING);
+        HashMap userInfoMap = (HashMap) redisDao.getValue(header);
+        if (userInfoMap != null) {
+            Object type = userInfoMap.get("type");
+            Object typeId = userInfoMap.get("typeId");
+            if (type != null && Integer.parseInt(type.toString()) == 1) {
+                // 供应商
+                paramMap.put("supplierId", typeId);
+            }
+        }
+        Object list = ordersRemote.list(paramMap);
         if (list != null) {
             return ResultMessage.success(list);
         }

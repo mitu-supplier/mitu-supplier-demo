@@ -22,4 +22,7 @@ public class StringUtil {
     return null;
   }
 
+  public static boolean isBlank(Object obj) {
+    return isBlank(toString(obj));
+  }
 }

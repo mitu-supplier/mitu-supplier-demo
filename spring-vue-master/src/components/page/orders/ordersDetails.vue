@@ -2,7 +2,7 @@
     <div class="table">
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-lx-cascades"></i> 新增商品</el-breadcrumb-item>
+                <el-breadcrumb-item><i class="el-icon-lx-cascades"></i> 订单详情</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class="dityAddbox">
@@ -51,16 +51,17 @@
 
                 <el-form-item label="订单状态" prop="">
                     <el-input v-if="addComForm.status == null" size="mini" readonly class="w50"></el-input>
-                    <el-input v-else-if="addComForm.status == '1'" size="mini"  readonly class="w50" value="待付款" ></el-input></el-input>
+                    <el-input v-else-if="addComForm.status == '1'" size="mini"  readonly class="w50" value="待付款" ></el-input>
                     <el-input v-else-if="addComForm.status == '2'" size="mini"  readonly class="w50" value="待发货" ></el-input>
                     <el-input v-else-if="addComForm.status == '3'" size="mini"  readonly class="w50" value="发货中" ></el-input>
                     <el-input v-else-if="addComForm.status == '4'" size="mini"  readonly class="w50" value="已取消" ></el-input>
                     <el-input v-else-if="addComForm.status == '5'" size="mini"  readonly class="w50" value="售后" ></el-input>
                     <el-input v-else-if="addComForm.status == '6'" size="mini"  readonly class="w50" value="已完成" ></el-input>
+                    <el-input v-else size="mini" readonly class="w50" value="" ></el-input>
                 </el-form-item>
 
                 <el-form-item>
-                    <el-button type="danger" @click="back">取消</el-button>
+                    <el-button type="danger" @click="back">返回</el-button>
                 </el-form-item>
             </el-form>
         </div>

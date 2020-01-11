@@ -144,7 +144,7 @@
             },
             batchDelete(){
                 if(this.multipleSelection.length == 0){
-                    this.$message("请先选择商品");
+                    this.$message("请先选择订单");
                     return ;
                 }
                 this.$confirm('确认删除？').then( e=> {
