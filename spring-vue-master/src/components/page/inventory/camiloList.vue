@@ -21,8 +21,19 @@
                 </el-form>
             </div>
             <div class="handle-box">
-                <el-button type="primary" @click="importExcel" icon="el-icon-upload2" >批量导入</el-button>
-                <el-button type="primary" @click="exportExcel" icon="el-icon-download">批量导出</el-button>
+                <el-upload
+                    class="upload-excel-file inline-block"
+                    ref="upload"
+                    :headers="myHeaders"
+                    :action="uploadUrl()"
+                    multiple
+                    :limit="1"
+                    :show-file-list="false"
+                    :before-upload="beforeUpload"
+                    :on-success="handleSuccess">
+                    <el-button size="small" type="primary" icon="el-icon-upload2">批量导入</el-button>
+                </el-upload>
+                <!-- <el-button type="primary" @click="exportExcel" icon="el-icon-download">批量导出</el-button> -->
             </div>
             <el-table :data="tableData" border class="table" ref="multipleTable">
                 <el-table-column type="index" label="序号" width="55" align="center" ></el-table-column>
@@ -59,7 +70,6 @@
         name: 'basetable',
         data() {
             return {
-                aaa:false,
                 page:1,
                 total:0,
                 pageSize:10,
@@ -67,7 +77,10 @@
                 formInline:{
                     name:'',
                     catalogName:''
-                }   
+                },
+                myHeaders: {
+                    'token': ''
+                }
             }
         },
         created() {
@@ -106,12 +119,34 @@
                   this.total=products.data.data.total;
                   this.page=products.data.data.page;
                 }
+                const token = localStorage.getItem('forestToken');
+                this.myHeaders.token = token;
             },
             importExcel(){
                 console.log('import');
             },
             exportExcel(){
                 console.log('export');
+            },
+            uploadUrl() {
+              return baseURL_.mallUrl+'/camilo/importExcel';
+            },
+            beforeUpload(file) {
+              var FileExt = file.name.replace(/.+\./, "");
+              if (["xlsx", "xls"].indexOf(FileExt.toLowerCase()) === -1) {
+                this.$message({
+                  type: "warning",
+                  message: "请上传后缀名为xls或者xlsx的文件！"
+                });
+                return false;
+              }
+            },
+            handleSuccess(response, file, fileList){
+                this.$refs.upload.clearFiles();
+                this.$message(response.data);
+                if(response.statusCode == 200){
+                    this.getData();
+                }
             }
         }
     }
@@ -152,4 +187,7 @@
     .input-width{
         width:60%;
     }
+    .inline-block {
+        display: inline-block;
+    } 
 </style>

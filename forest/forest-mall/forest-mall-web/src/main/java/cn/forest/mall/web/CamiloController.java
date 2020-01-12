@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
 @RestController
@@ -17,12 +18,24 @@ public class CamiloController {
     private CamiloService camiloService;
 
     @RequestMapping("/list")
-    public Map<String, Object> list(HttpServletRequest request){
+    public Map<String, Object> list(HttpServletRequest request) {
         return camiloService.list(RequestMap.requestToMap(request));
     }
 
     @RequestMapping("/recordList")
-    public Map<String, Object> recordList(HttpServletRequest request){
+    public Map<String, Object> recordList(HttpServletRequest request) {
         return camiloService.recordList(RequestMap.requestToMap(request));
+    }
+
+    /**
+     * excel导入卡密
+     *
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/importExcel")
+    public Map<String, Object> importExcel(HttpServletRequest request, HttpServletResponse response) {
+        return camiloService.importExcel(request, response);
     }
 }

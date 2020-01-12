@@ -52,4 +52,21 @@
             </if>
             order by p.audit_status, p.id
     </select>
+
+
+    <select id="selectByCode" resultType="cn.forest.mall.entity.Products">
+        SELECT
+            p.id,
+            p.name
+        FROM
+            products p
+            LEFT JOIN catalogs cc ON cc.id = p.catalog_id
+        WHERE
+            p.is_delete = 0
+            AND p.code = #{productCode}
+            AND cc.code = #{catalogCode}
+        ORDER BY
+            p.id DESC
+            LIMIT 1
+    </select>
 </mapper>

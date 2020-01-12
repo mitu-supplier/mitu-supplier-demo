@@ -87,6 +87,12 @@ public class Camilo implements Serializable {
      */
     private Integer useFlag;
 
+    @TableField(exist = false)
+    private String productCode;
+
+    @TableField(exist = false)
+    private String catalogCode;
+
     public Long getId() {
         return id;
     }
@@ -189,5 +195,21 @@ public class Camilo implements Serializable {
 
     public void setUseFlag(Integer useFlag) {
         this.useFlag = useFlag;
+    }
+
+    public String getProductCode() {
+        return productCode;
+    }
+
+    public void setProductCode(String productCode) {
+        this.productCode = productCode;
+    }
+
+    public String getCatalogCode() {
+        return catalogCode;
+    }
+
+    public void setCatalogCode(String catalogCode) {
+        this.catalogCode = catalogCode;
     }
 }

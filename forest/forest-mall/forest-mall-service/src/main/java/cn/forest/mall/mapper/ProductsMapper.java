@@ -18,4 +18,11 @@ public interface ProductsMapper extends BaseMapper<Products> {
      * @return
      */
     List<Products> selectListByMap(Map<String, Object> map);
+
+    /**
+     * 根据code查询商品信息
+     *
+     * @return
+     */
+    Products selectByCode(@Param("productCode") String productCode, @Param("catalogCode") String catalogCode);
 }

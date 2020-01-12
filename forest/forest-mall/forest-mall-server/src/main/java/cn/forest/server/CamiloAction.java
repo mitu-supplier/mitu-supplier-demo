@@ -3,6 +3,7 @@ package cn.forest.server;
 import cn.forest.common.service.utils.ResultPage;
 import cn.forest.common.service.utils.ResultSave;
 import cn.forest.common.util.DateUtil;
+import cn.forest.common.util.ResultMessage;
 import cn.forest.common.util.StringUtil;
 import cn.forest.mall.entity.Camilo;
 import cn.forest.mall.entity.CamiloRecord;
@@ -20,9 +21,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/camilo")
@@ -125,4 +125,40 @@ public class CamiloAction {
         return null;
     }
 
+    @RequestMapping("/batchImport")
+    public Object importCamilo(@RequestBody List<Camilo> list){
+        if(!CollectionUtils.isEmpty(list)){
+            for (Camilo camilo : list){
+                Products products = productsMapper.selectByCode(camilo.getProductCode(), camilo.getCatalogCode());
+                if(products == null){
+                    return ResultMessage.error("未找到对应商品，品目编号："+camilo.getCatalogCode()+"，商品编号"+camilo.getProductCode());
+                }
+                camilo.setProductId(products.getId());
+            }
+            boolean b = camiloService.saveBatch(list);
+            if(b){
+                Map<Long, List<Camilo>> mapList = list.stream().collect(Collectors.groupingBy(Camilo::getProductId));
+                if(!CollectionUtils.isEmpty(mapList)){
+                    List<CamiloRecord> recordList = new ArrayList<>();
+                    CamiloRecord camiloRecord = null;
+                    Iterator it = mapList.entrySet().iterator();
+                    while (it.hasNext()){
+                        Map.Entry entry = (Map.Entry) it.next();
+                        camiloRecord = new CamiloRecord();
+                        camiloRecord.setProductId(Long.parseLong(entry.getKey().toString()));
+                        List<Camilo> cList = (List<Camilo>)entry.getValue();
+                        camiloRecord.setNum(cList.size());
+                        if(cList.size() > 0){
+                            camiloRecord.setPrice(cList.get(0).getSupplyPrice());
+                            camiloRecord.setUserId(cList.get(0).getUserId());
+                            camiloRecord.setUserName(cList.get(0).getUserName());
+                        }
+                        recordList.add(camiloRecord);
+                    }
+                    camiloRecodeService.saveBatch(recordList);
+                }
+            }
+        }
+        return ResultMessage.success("");
+    }
 }

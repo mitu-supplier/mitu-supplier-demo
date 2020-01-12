@@ -1,6 +1,7 @@
 package cn.forest.mall.remote;
 
 import cn.forest.mall.fallback.CamiloBack;
+import net.sf.json.JSONArray;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,4 +37,7 @@ public interface CamiloRemote {
 
     @RequestMapping("/camilo/recordList")
     Object recordList(Map<String, Object> map);
+
+    @RequestMapping("/camilo/batchImport")
+    Object batchImport(@RequestBody List<Map<String, Object>> list);
 }

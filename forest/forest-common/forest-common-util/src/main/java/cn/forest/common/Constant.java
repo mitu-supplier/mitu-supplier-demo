@@ -14,7 +14,6 @@ public class Constant {
 
     public static final String RESULT = "result";// 添加 返回的实体对象
 
-
     public static final String SH_ADMIN = "SH_ADMIN"; // 商户管理员code
 
 }

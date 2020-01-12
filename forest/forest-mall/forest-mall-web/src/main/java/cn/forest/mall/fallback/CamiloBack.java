@@ -1,7 +1,9 @@
 package cn.forest.mall.fallback;
 
 import cn.forest.mall.remote.CamiloRemote;
+import net.sf.json.JSONArray;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.Map;
@@ -46,6 +48,11 @@ public class CamiloBack implements CamiloRemote {
 
     @Override
     public Object recordList(Map<String, Object> map) {
+        return null;
+    }
+
+    @Override
+    public Object batchImport(List<Map<String, Object>> list) {
         return null;
     }
 }
