@@ -20,6 +20,19 @@
                     <el-form-item label="订单编号">
                         <el-input v-model="formInline.code" placeholder="订单编号"></el-input>
                     </el-form-item>
+                    <el-form-item label="下单时间">
+                                <el-date-picker
+                                  size="mini"              
+                                  v-model="formInline.searchTime"
+                                  type="datetimerange"
+                                  align="right"
+                                  format="yyyy-MM-dd HH:mm:ss"
+                                  value-format="yyyy-MM-dd HH:mm:ss"
+                                  start-placeholder="开始日期"
+                                  end-placeholder="结束日期"
+                                  class="w50">
+                                </el-date-picker>
+                    </el-form-item>
                     <el-form-item>
                         <el-button type="primary" @click="onSubmit">查询</el-button>
                         <el-button type="primary" @click="onReset">重置</el-button>
@@ -95,7 +108,8 @@
                     supplierName:'',
                     catalogName:'',
                     productName:'',
-                    code:''
+                    code:'',
+                    searchTime:[]
                 }   
             }
         },
@@ -123,6 +137,12 @@
             },
             // 初始化数据
             async getData() {
+                var startTime = '';
+                var endTime = '';
+                if(this.formInline.searchTime.length == 2){
+                    startTime = this.formInline.searchTime[0];
+                    endTime = this.formInline.searchTime[1];
+                }
                 const products = await this.$http.get(baseURL_.mallUrl+'/orders/list',{ 
                     params: {
                         'page':this.page,
@@ -130,7 +150,9 @@
                         'supplierName':this.formInline.supplierName,
                         'productName':this.formInline.productName,
                         'catalogName':this.formInline.catalogName,
-                        'code':this.formInline.code
+                        'code':this.formInline.code,
+                        'startTime':startTime,
+                        'endTime':endTime
                     }
                 });
                 if(products.data.statusCode==200){

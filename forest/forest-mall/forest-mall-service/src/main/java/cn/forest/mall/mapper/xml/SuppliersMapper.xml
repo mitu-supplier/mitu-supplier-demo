@@ -34,7 +34,7 @@
             <if test="contactMobile != null and contactMobile != ''">
                 AND s.contact_mobile LIKE CONCAT('%',#{contactMobile},'%')
             </if>
-        ORDER BY created_at DESC
+        ORDER BY s.status, s.id desc
     </select>
 
     <update id="batchAudit">

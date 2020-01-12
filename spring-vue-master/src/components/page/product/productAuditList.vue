@@ -52,8 +52,8 @@
                 <el-table-column label="操作" width="" align="center">
                     <template slot-scope="scope">
                         <el-button type="text" @click="view(scope.$index, scope.row)">查看详情</el-button>
-                        <el-button type="text" @click="auditAdopt(scope.row.id)">审核通过</el-button>
-                        <el-button type="text" class="red" @click="auditReject(scope.row.id)">审核失败</el-button>
+                        <el-button type="text" v-if="scope.row.auditStatus == '0'" @click="auditAdopt(scope.row.id)">审核通过</el-button>
+                        <el-button type="text" v-if="scope.row.auditStatus == '0'" class="red" @click="auditReject(scope.row.id)">审核失败</el-button>
                     </template>
                 </el-table-column>
             </el-table>

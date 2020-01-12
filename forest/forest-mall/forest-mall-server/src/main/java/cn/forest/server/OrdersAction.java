@@ -48,6 +48,14 @@ public class OrdersAction {
         if(!StringUtil.isBlank(code)){
             catalogsQueryWrapper.like("code", code.toString());
         }
+        Object startTime = map.get("startTime");
+        if(!StringUtil.isBlank(startTime)){
+            catalogsQueryWrapper.ge("order_time", startTime.toString());
+        }
+        Object endTime = map.get("endTime");
+        if(!StringUtil.isBlank(endTime)){
+            catalogsQueryWrapper.le("order_time", endTime.toString());
+        }
         if (StringUtil.toString(map.get("page")) != null && StringUtil.toString(map.get("pageSize")) != null) {
             Page<Orders> ipage = new Page<Orders>(Long.parseLong(map.get("page").toString()), Long.parseLong(map.get("pageSize").toString()));
             IPage<Orders> selectPage = ordersMapper.selectPage(ipage, catalogsQueryWrapper);
