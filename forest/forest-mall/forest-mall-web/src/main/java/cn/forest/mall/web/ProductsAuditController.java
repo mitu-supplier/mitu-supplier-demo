@@ -60,4 +60,15 @@ public class ProductsAuditController {
     public Map<String, Object> getById(@RequestParam("id") Long id) {
         return productsService.getById(id);
     }
+
+    /**
+     * 查看审核记录
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping("/getAuditList")
+    public Map<String, Object> getAuditList(HttpServletRequest request) {
+        return productsService.getAuditList(RequestMap.requestToMap(request));
+    }
 }

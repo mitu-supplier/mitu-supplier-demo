@@ -42,18 +42,18 @@
                 <el-table-column prop="supplierName" label="商户名称"  align="center" width=""></el-table-column>
                 <el-table-column prop="name" label="商品名称"  align="center" width=""></el-table-column>
                 <el-table-column prop="price" label="市场价（元）" align="center"  width=""></el-table-column>
-                <el-table-column label="状态" align="center"  width="">
+                <el-table-column label="审核状态" align="center"  width="">
                     <template slot-scope="scope">
                         <span type="text" v-if="scope.row.auditStatus == '0'">待审核</span>
                         <span type="text" v-if="scope.row.auditStatus == '1'">审核通过</span>
-                        <span type="text" class="red" v-if="scope.row.auditStatus == '2'">审核失败</span>
+                        <span type="text" class="red hand" v-if="scope.row.auditStatus == '2'" @click="showAuditReason(scope.row.id)" >审核失败  <i class="el-icon-info"></i></span>
                     </template>
                 </el-table-column>
                 <el-table-column label="操作" width="" align="center">
                     <template slot-scope="scope">
                         <el-button type="text" @click="view(scope.$index, scope.row)">查看详情</el-button>
                         <el-button type="text" v-if="scope.row.auditStatus == '0'" @click="auditAdopt(scope.row.id)">审核通过</el-button>
-                        <el-button type="text" v-if="scope.row.auditStatus == '0'" class="red" @click="auditReject(scope.row.id)">审核失败</el-button>
+                        <el-button type="text" v-if="scope.row.auditStatus == '0'" class="red" @click="auditReject(scope.row.id)" >审核失败</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -80,7 +80,17 @@
                 </span>
             </el-dialog>
         </div>
-        
+        <!-- 审核不通过原因提示框 -->
+        <el-dialog
+            title="审核未通过原因"
+            :visible.sync="reasonVisible"
+            width="25%"
+            center>
+            <span>{{ this.auditReason }}</span>
+            <span slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="reasonVisible = false">取消</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
   
@@ -92,7 +102,7 @@
         data() {
             return {
                 dialogVisible:false,
-                aaa:false,
+                reasonVisible:false,
                 page:1,
                 total:0,
                 pageSize:10,
@@ -105,6 +115,7 @@
                     auditStatus:''
                 },
                 msgTips:'',
+                auditReason:''
             }
         },
         created() {
@@ -229,6 +240,22 @@
                 if(auditResult.data.statusCode==200){
                     this.getData();
                 }
+            },
+            async showAuditReason(id){
+                var res = await this.$http.get(baseURL_.mallUrl+'/products_audit/getAuditList',{ 
+                    params: {
+                        'page': 1,
+                        'pageSize': 1,
+                        'businessId': id
+                    }
+                });
+                if(res.data.statusCode==200){
+                    var auditlist = res.data.data.list;
+                    if(auditlist.length > 0){
+                        this.auditReason = auditlist[0].auditReason;
+                    }
+                    this.reasonVisible = true;
+                }
             }
         }
     }
@@ -282,5 +309,8 @@
         overflow-x: auto;
         margin:auto;
         
+    }
+    .hand :hover{
+        cursor: pointer;
     }
 </style>

@@ -26,13 +26,7 @@ public class ProductsService {
     private AuditRecodeRemote auditRecodeRemote;
 
     @Autowired
-    private SysDictionaryDataRemote sysDictionaryDataRemote;
-
-    @Autowired
     private CatalogsRemote catalogsRemote;
-
-    @Autowired
-    private SuppliersRemote suppliersRemote;
 
     @Autowired
     private RedisDao redisDao;
@@ -59,7 +53,15 @@ public class ProductsService {
     public Map<String, Object> getById(Long id) {
         Object obj = productsRemote.getById(id);
         if (obj != null) {
-            return ResultMessage.success(obj);
+            Map product = (Map) obj;
+            if(!StringUtil.isBlank(product.get("catalogId"))){
+                Object catalogObj = catalogsRemote.getById(Long.parseLong(StringUtil.toString(product.get("catalogId"))));
+                if(catalogObj != null){
+                    Map catalog = (Map) catalogObj;
+                    product.put("catalogName", catalog.get("name"));
+                }
+            }
+            return ResultMessage.success(product);
         }
         return null;
     }
@@ -79,7 +81,11 @@ public class ProductsService {
         String header = request.getHeader(Constant.HEADER_TOKEN_STRING);
         HashMap userInfoMap = (HashMap) redisDao.getValue(header);
         if (userInfoMap != null) {
-            paramMap.put("supplierId", userInfoMap.get("typeId"));
+            if(!StringUtil.isBlank(userInfoMap.get("type")) && Integer.parseInt(userInfoMap.get("type").toString()) == 1){
+                paramMap.put("supplierId", userInfoMap.get("typeId"));
+            }else{
+                return ResultMessage.error("当前账号没有权限录入商品");
+            }
         }
         paramMap.put("auditStatus", 0);
         Object save = productsRemote.save(paramMap);
@@ -162,5 +168,20 @@ public class ProductsService {
     public Map<String, Object> batchDelete(String ids){
         int i = productsRemote.batchDelete(ids);
         return ResultMessage.result(i, "删除成功", "删除失败");
+    }
+
+    /**
+     * 查看审核记录
+     *
+     * @param map
+     * @return
+     */
+    public Map<String, Object> getAuditList(Map<String, Object> map) {
+        map.put("auditType", 2);
+        Object obj = auditRecodeRemote.list(map);
+        if (obj != null) {
+            return ResultMessage.success(obj);
+        }
+        return null;
     }
 }

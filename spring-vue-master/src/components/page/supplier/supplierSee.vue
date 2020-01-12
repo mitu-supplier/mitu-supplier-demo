@@ -4,7 +4,7 @@
             <el-row style="background:#fff;">
                 <el-col :span="24">
                     <div class="counnet">
-                      <div class="supplierTop">入驻供应商信息</div>
+                      <!-- <div class="supplierTop">入驻商户信息</div> -->
                     
                         <el-form
                             :model="loginForm"
@@ -271,7 +271,11 @@
                                 <el-input v-model="newRuleForm.bankAddress" readonly size="mini" class="w50"></el-input>
                             </el-form-item>
                             
-
+                            <el-form-item>
+                              <el-button type="danger" v-if="newRuleForm.status =='0'" @click="auditAdopt()">审核通过</el-button>
+                              <el-button type="danger" v-if="newRuleForm.status =='0'" @click="auditReject()">审核失败</el-button>
+                              <el-button type="danger" @click="back">返回</el-button>
+                          </el-form-item>
                       </el-form>
 
                     </div>
@@ -302,6 +306,7 @@
                 ztreeTitleName:'',
                 ztreeEditVisible:false,
                 role_id:'',
+                supplier_id:'',
                 form:{
                    id:'',
                    roleName:'',
@@ -347,7 +352,8 @@
                     trademarkRegistration:'',
                     brandAuthorization:'',
                     qualityInspectionReport:'',
-                    sanitaryPermit:''
+                    sanitaryPermit:'',
+                    status:''
                 }, 
                 
                
@@ -417,7 +423,7 @@
                     id:this.$route.query.id
                   }
                 });
-                
+                this.supplier_id = res.data.data.id;
                 for(var i in this.loginForm){
                   this.loginForm[i] = res.data.data.user[i];
                 }
@@ -480,10 +486,36 @@
 
             },
             back() {
-                this.$router.push({ path: "/login" });
+                this.$router.push({ path: "/supplierAuditList" });
             },
-            
-           
+            auditAdopt(){
+                this.$confirm('确认审核通过').then( e=> {
+                    this.confimAudit(this.supplier_id,1);
+                }).catch(_ => {});
+            },
+            auditReject(){
+                this.$prompt('请输入审核失败理由：', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    inputPattern: /^[\s\S]*.*[^\s][\s\S]*$/,
+                    inputErrorMessage: '理由不能为空'
+                }).then(({ auditReason }) => {
+                    this.confimAudit(this.supplier_id,2,auditReason)
+                }).catch(() => { }); 
+            },
+            async confimAudit(id,auditResult,auditReason){
+                var auditResult = await this.$http.get(baseURL_.mallUrl+'/supplier_audit/audit', {
+                    params:{
+                        businessId:id,
+                        auditResult:auditResult,
+                        auditReason:auditReason
+                    }
+                });
+                this.$message(auditResult.data.data);
+                if(auditResult.data.statusCode==200){
+                    this.back();
+                }
+            }
         }
     }
 

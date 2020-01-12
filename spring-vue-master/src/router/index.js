@@ -60,7 +60,7 @@ export default new Router({
                 {
                     path: '/auditDetails',
                     component: resolve => require(['../components/page/product/auditDetails.vue'], resolve),
-                    meta: { title: '查看商品' }
+                    meta: { title: '商品详情' }
                 },
                 {
                     path: '/commodityEdit',
@@ -100,7 +100,7 @@ export default new Router({
                 {
                     path: '/supplierSee',
                     component: resolve => require(['../components/page/supplier/supplierSee.vue'], resolve),
-                    meta: { title: '供应商查看' }
+                    meta: { title: '商户信息' }
                 },
                 {
                     path: '/productList',

@@ -32,7 +32,7 @@ public class AuditRecodeAction {
         QueryWrapper<AuditRecode> queryWrapper = new QueryWrapper<AuditRecode>();
         queryWrapper.eq("business_id", map.get("businessId"));
         queryWrapper.eq("audit_type", map.get("auditType"));
-        queryWrapper.orderByDesc("audit_time");
+        queryWrapper.orderByDesc("create_time");
         if (StringUtil.toString(map.get("page")) != null && StringUtil.toString(map.get("pageSize")) != null) {
             Long page = Long.parseLong(map.get("page").toString());
             Long pageSize = Long.parseLong(map.get("pageSize").toString());

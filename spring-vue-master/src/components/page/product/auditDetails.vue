@@ -2,7 +2,7 @@
     <div class="table">
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-lx-cascades"></i> 新增商品</el-breadcrumb-item>
+                <el-breadcrumb-item><i class="el-icon-lx-cascades"></i> 商品详情</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class="dityAddbox">
@@ -19,7 +19,7 @@
                 </el-form-item> -->
 
                 <el-form-item label="发货类型" prop="">
-                    <el-select v-model="addComForm.deliveryType" placeholder="请选择">
+                    <el-select v-model="addComForm.deliveryType" disabled readonly placeholder="请选择">
                       <el-option
                         v-for="item in options"
                         :key="item.id"
@@ -30,7 +30,7 @@
                 </el-form-item>
 
                 <el-form-item label="编码" prop="">
-                    <el-input v-model="addComForm.code" size="mini" class="w50"></el-input>
+                    <el-input v-model="addComForm.code" size="mini" readonly class="w50"></el-input>
                 </el-form-item>
 
                 <el-form-item label="商品分类:" prop="orgNames2" id="orgTreeBox">
@@ -46,7 +46,6 @@
                       class="w50"
                       v-model="orgNames"
                       style="box-sizing: border-box;"
-                      @click.native="openOrgTree"
                     ></el-input>
 
                     <input id="parentId" type="hidden">
@@ -60,7 +59,7 @@
                 </el-form-item>
 
                 <el-form-item label="商品名称" prop="">
-                    <el-input v-model="addComForm.name" size="mini" class="w50"></el-input>
+                    <el-input v-model="addComForm.name" readonly size="mini" class="w50"></el-input>
                 </el-form-item>
 
                 <el-form-item label="商品图片" prop="">
@@ -81,16 +80,16 @@
                 </el-form-item>
 
                 <el-form-item label="市场价(元)" prop="">
-                    <el-input v-model="addComForm.price" size="mini" class="w50"></el-input>
+                    <el-input v-model="addComForm.price" size="mini" readonly class="w50"></el-input>
                 </el-form-item>
 
                 <el-form-item label="供货价(元)" prop="">
-                    <el-input v-model="addComForm.supplyPrice" size="mini" class="w50"></el-input>
+                    <el-input v-model="addComForm.supplyPrice" size="mini" readonly class="w50"></el-input>
                 </el-form-item>
 
                 <el-form-item label="状态" prop="">
-                    <el-radio v-model="addComForm.status" :label="1">上架</el-radio>
-                    <el-radio v-model="addComForm.status" :label="2">下架</el-radio>
+                    <el-radio v-if="addComForm.status=='1'" v-model="addComForm.status" :label="1">上架</el-radio>
+                    <el-radio v-if="addComForm.status=='2'" v-model="addComForm.status" :label="2">下架</el-radio>
                 </el-form-item>
 
                 <el-form-item label="商品详情" prop="">
@@ -100,8 +99,9 @@
                 </el-form-item>
 
                 <el-form-item>
-                    <!-- <el-button type="primary" @click="submitAddCom('addComForm')">提交</el-button> -->
-                    <el-button type="danger" @click="back">取消</el-button>
+                    <el-button type="danger" v-if="addComForm.auditStatus =='0'" @click="auditAdopt()">审核通过</el-button>
+                    <el-button type="danger" v-if="addComForm.auditStatus =='0'" @click="auditReject()">审核失败</el-button>
+                    <el-button type="danger" @click="back">返回</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -146,6 +146,7 @@
                 // editorContent: ''
                 content:'',
                 catalogId:'',
+                productId:''
             }
         },
         created() {
@@ -168,9 +169,10 @@
               if(res.data.statusCode==200){
                 this.addComForm = res.data.data;
                 this.fileList = [{uel:this.addComForm.img}];
-                this.orgNames = this.addComForm.name;
+                this.orgNames = this.addComForm.catalogName;
                 this.catalogId = this.addComForm.catalogId;
-                var details = this.addComForm.details
+                this.productId = this.addComForm.id;
+                var details = this.addComForm.details;
                 var usd = UE.getEditor("editor");
                 usd.ready(function() {
                   usd.setHeight(366);
@@ -263,7 +265,42 @@
               );
             },
 
-            handleRemove(file, fileList) {}
+            handleRemove(file, fileList) {},
+            // 审核
+            auditAdopt(){
+                this.$prompt('请输入发货代号：', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    inputPattern: /^[\s\S]*.*[^\s][\s\S]*$/,
+                    inputErrorMessage: '发货代号不能为空'
+                }).then(({ value }) => {
+                    this.confimAudit(this.productId,1,null,value);
+                }).catch(() => { }); 
+            },
+            auditReject(){
+                this.$prompt('请输入审核失败理由：', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    inputPattern: /^[\s\S]*.*[^\s][\s\S]*$/,
+                    inputErrorMessage: '理由不能为空'
+                }).then(({ value }) => {
+                    this.confimAudit(this.productId,2,value,null)
+                }).catch(() => { }); 
+            },
+            async confimAudit(id,auditStatus,auditReason,deliveryTypeCode){
+                var auditResult = await this.$http.get(baseURL_.mallUrl+'/products_audit/audit', {
+                    params:{
+                        id:id,
+                        auditStatus:auditStatus,
+                        auditReason:auditReason,
+                        deliveryTypeCode:deliveryTypeCode
+                    }
+                });
+                this.$message(auditResult.data.data);
+                if(auditResult.data.statusCode==200){
+                    this.back();
+                }
+            }
         }
     }
 

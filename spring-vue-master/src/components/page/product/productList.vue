@@ -32,10 +32,17 @@
                 <el-table-column prop="price" label="市场价（元）" align="center"  width=""></el-table-column>
                 <el-table-column prop="supplyPrice" label="供货价（元）" align="center"  width=""></el-table-column>
                 <el-table-column prop="deliveryName" label="发货类型" align="center"  width=""></el-table-column>
-                <el-table-column label="状态" align="center"  width="">
+                <el-table-column label="上下架状态" align="center"  width="">
                     <template slot-scope="scope">
                         <span type="text" v-if="scope.row.status == '1'">上架</span>
                         <span type="text" v-if="scope.row.status == '2'">下架</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="审核状态" align="center"  width="">
+                    <template slot-scope="scope">
+                        <span type="text" v-if="scope.row.auditStatus == '0'">待审核</span>
+                        <span type="text" v-if="scope.row.auditStatus == '1'">审核通过</span>
+                        <span type="text" class="red hand" v-if="scope.row.auditStatus == '2'" @click="showAuditReason(scope.row.id)" >审核失败  <i class="el-icon-info"></i></span>
                     </template>
                 </el-table-column>
                 <el-table-column label="操作" width="" align="center">
@@ -56,8 +63,19 @@
                     :total="total" >
                  </el-pagination>
             </div>
-            <!-- <loding v-if="aaa"></loding> -->
         </div>
+        <!-- 审核不通过原因提示框 -->
+        <el-dialog
+            title="审核未通过原因"
+            :visible.sync="reasonVisible"
+            width="25%"
+            center>
+            <span>{{ this.auditReason }}</span>
+            <span slot="footer" class="dialog-footer">
+                <el-button type="" @click="reasonVisible = false">取消</el-button>
+                <el-button type="primary" @click="updatePro()">修改</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
   
@@ -68,7 +86,7 @@
         name: 'basetable',
         data() {
             return {
-                aaa:false,
+                reasonVisible:false,
                 page:1,
                 total:0,
                 pageSize:10,
@@ -77,7 +95,9 @@
                 formInline:{
                     name:'',
                     catalogName:''
-                }   
+                },
+                auditReason:'',
+                productId:''
             }
         },
         created() {
@@ -159,6 +179,31 @@
             },
             add(){
                 this.$router.push('/commodityAdd');
+            },
+            async showAuditReason(id){
+                var res = await this.$http.get(baseURL_.mallUrl+'/products_audit/getAuditList',{ 
+                    params: {
+                        'page': 1,
+                        'pageSize': 1,
+                        'businessId': id
+                    }
+                });
+                if(res.data.statusCode==200){
+                    var auditlist = res.data.data.list;
+                    if(auditlist.length > 0){
+                        this.auditReason = auditlist[0].auditReason;
+                    }
+                    this.productId = id;
+                    this.reasonVisible = true;
+                }
+            },
+            updatePro(){
+                this.$router.push({
+                    path: '/commodityEdit',
+                    query: {
+                        id: this.productId
+                    }
+                });
             }
         }
     }
@@ -212,5 +257,8 @@
         overflow-x: auto;
         margin:auto;
         
+    }
+    .hand :hover{
+        cursor: pointer;
     }
 </style>

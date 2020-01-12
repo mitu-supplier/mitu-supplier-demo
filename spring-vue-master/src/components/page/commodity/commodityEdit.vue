@@ -2,7 +2,7 @@
     <div class="table">
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-lx-cascades"></i> 新增商品</el-breadcrumb-item>
+                <el-breadcrumb-item><i class="el-icon-lx-cascades"></i> 修改商品</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class="dityAddbox">
@@ -168,7 +168,7 @@
               if(res.data.statusCode==200){
                 this.addComForm = res.data.data;
                 this.fileList = [{uel:this.addComForm.img}];
-                this.orgNames = this.addComForm.name;
+                this.orgNames = this.addComForm.catalogName;
                 this.catalogId = this.addComForm.catalogId;
                 var details = this.addComForm.details
                 // UE.getEditor('editor').setContent(details);
@@ -226,6 +226,7 @@
                   var details = UE.getEditor('editor').getContent();
                   this.addComForm.catalogId = this.catalogId;
                   this.addComForm.id = this.$route.query.id;
+                  this.addComForm.auditStatus = 0;
                   const res = await this.$http.post(baseURL_.mallUrl+'/products/update',this.$qs.stringify(this.addComForm));
                   this.$message(res.data.data);
                   if(res.data.statusCode==200){
