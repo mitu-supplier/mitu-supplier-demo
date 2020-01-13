@@ -287,11 +287,11 @@
 </template>
   
 <script>
-    import { fetchData } from '../../../api/index';
+    // import { fetchData } from '../../../api/index';
     import baseURL_ from '@/utils/baseUrl.js';
     
     export default {
-        name: 'basetable',
+        // name: 'basetable',
         data() {
             return {
                 active:0,
@@ -522,7 +522,6 @@
 </script>
 
 <style scoped>
-    @import url("//unpkg.com/element-ui@2.13.0/lib/theme-chalk/index.css");
     .w50{
         width:350px;
     }

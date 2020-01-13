@@ -981,7 +981,6 @@
 </script>
 
 <style scoped>
-    @import url("//unpkg.com/element-ui@2.13.0/lib/theme-chalk/index.css");
     .w50{
         width:350px;
     }
