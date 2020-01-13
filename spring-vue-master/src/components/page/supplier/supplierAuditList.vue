@@ -7,31 +7,28 @@
         </div>
         <div class="container">
             <div style="background:#f6f6f6;padding:20px 10px 0;margin-bottom:20px;">
-                <el-form :inline="true" :model="formInline" class="demo-form-inline">
+                <el-form :inline="true" ref="formInline" :model="formInline" class="demo-form-inline">
+                    
                     <el-form-item label="商户名称">
-                        <el-input v-model="formInline.supplierName" placeholder="商户名称"></el-input>
+                        <el-input v-model="formInline.name" placeholder="商户名称"></el-input>
                     </el-form-item>
-                    <el-form-item label="商品名称">
-                        <el-input v-model="formInline.name" placeholder="商品名称"></el-input>
-                    </el-form-item>
-                    <el-form-item label="类目名称">
-                        <el-input v-model="formInline.catalogName" placeholder="类目名称"></el-input>
-                    </el-form-item>
+                    
                     <el-form-item label="审核状态">
-                         <el-select v-model="formInline.auditStatus" placeholder="审核状态">
+                         <el-select v-model="formInline.status" placeholder="审核状态">
                             <el-option label="待审核" value="0"></el-option>
                             <el-option label="审核通过" value="1"></el-option>
                             <el-option label="审核失败" value="2"></el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item>
-                        <el-button type="primary" @click="onSubmit">查询</el-button>
+                        <el-button type="primary" icon="el-icon-search" @click="onSubmit">查询</el-button>
+                        <el-button type="primary" icon="el-icon-refresh" @click="onReset">重置</el-button>
                     </el-form-item>
                 </el-form>
             </div>
             <div class="handle-box">
-                <el-button type="primary" @click="batchAudit(1)" >审核通过</el-button>
-                <el-button type="primary" @click="batchAudit(2)" >审核失败</el-button>
+                <el-button type="primary" icon="el-icon-check" @click="batchAudit(1)" >审核通过</el-button>
+                <el-button type="primary" icon="el-icon-close" @click="batchAudit(2)" >审核失败</el-button>
             </div>
             <el-table :data="tableData" border class="table" ref="multipleTable" @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
@@ -41,9 +38,9 @@
                 <el-table-column prop="registerAddress" label="商户地址"  align="center" width=""></el-table-column>
                 
                 <el-table-column prop="enterTypeName" label="入驻类型" align="center"  width=""></el-table-column>
-                <el-table-column prop="contactName" label="联系人" align="center"  width=""></el-table-column>
+                <el-table-column prop="contactName" label="联系人" align="center"  width="80"></el-table-column>
                 <el-table-column prop="contactMobile" label="联系电话" align="center"  width=""></el-table-column>
-                <el-table-column label="状态" align="center"  width="">
+                <el-table-column label="状态" align="center"  width="80">
                     <template slot-scope="scope">
                         <span type="text" v-if="scope.row.status == '0'">待审核</span>
                         <span type="text" v-if="scope.row.status == '1'">审核通过</span>
@@ -52,9 +49,9 @@
                 </el-table-column> 
                 <el-table-column label="操作" width="" align="center">
                     <template slot-scope="scope">
-                        <el-button type="text" @click="view(scope.$index, scope.row)">查看详情</el-button>
-                        <el-button type="text" v-if="scope.row.status == '0'" @click="auditAdopt(scope.row.id)">审核通过</el-button>
-                        <el-button type="text" v-if="scope.row.status == '0'" class="red" @click="auditReject(scope.row.id)">审核失败</el-button>
+                        <el-button type="text" icon="el-icon-document" @click="view(scope.$index, scope.row)">查看</el-button>
+                        <el-button type="text" icon="el-icon-check" v-if="scope.row.status == '0'" @click="auditAdopt(scope.row.id)">通过</el-button>
+                        <el-button type="text" icon="el-icon-close" v-if="scope.row.status == '0'" class="red" @click="auditReject(scope.row.id)">驳回</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -88,10 +85,8 @@
                 tableData: [],
                 multipleSelection: [],
                 formInline:{
-                    supplierName:'',
                     name:'',
-                    catalogName:'',
-                    auditStatus:''
+                    status:''
                 }
             }
         },
@@ -99,6 +94,11 @@
             this.getData();
         },
         methods: {
+            onReset(){
+              this.formInline.name="";
+              this.formInline.status="";
+              this.getData();
+            },
             onSubmit(){
                 this.getData();
             },
@@ -119,9 +119,8 @@
                         'page':this.page,
                         'pageSize':this.pageSize,
                         'name':this.formInline.name,
-                        'catalogName':this.formInline.catalogName,
-                        'auditStatus':this.formInline.auditStatus,
-                        'supplierName':this.formInline.supplierName
+                        'status':this.formInline.status
+                        
                     }
                 });
                 if(products.data.statusCode==200){

@@ -25,7 +25,7 @@
                             inline-message
                             class="demo-ruleForm"
                         >
-                          <el-form-item label="用户名" prop="loginName">
+                          <el-form-item label="登录名" prop="loginName">
                               <el-input v-model="loginForm.loginName" size="mini" class="w50"></el-input>
                           </el-form-item>
 

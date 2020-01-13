@@ -30,8 +30,8 @@
                 <el-table-column prop="name" label="公司名称" align="center" width=""></el-table-column>
                 <el-table-column label="操作" width="" align="center">
                     <template slot-scope="scope">
-                        <el-button type="text" @click="handleUpdate(scope.$index, scope.row)">修改</el-button>
-                        <el-button type="text" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                        <el-button type="text" icon="el-icon-edit" @click="handleUpdate(scope.$index, scope.row)">修改</el-button>
+                        <el-button type="text" icon="el-icon-delete" class="red" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
