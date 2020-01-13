@@ -10,7 +10,7 @@ import cn.forest.lyj.remote.PlanRemote;
 public class PlanBack implements PlanRemote {
 
   @Override
-  public Object list(Long page, Long pageSize, Long userId,String projectName,String orgName,Long orgId) {
+  public Object list(Long page, Long pageSize, Long userId,String projectName,String orgName,String orgIds) {
     return null;
   }
 

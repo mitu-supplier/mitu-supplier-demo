@@ -26,8 +26,8 @@ public class SysDictionaryDataController {
 
     @RequestMapping(value = "/list")
     @SysLogs(desc = "字典数据列表")
-    public Map<String, Object> list(@RequestParam("page") Long page, @RequestParam("pageSize") Long pageSize, @RequestParam("type") Long type) {
-        return sysDictionaryDataService.list(page, pageSize, type);
+    public Map<String, Object> list(@RequestParam("page") Long page, @RequestParam("pageSize") Long pageSize, @RequestParam("type") Long type,@RequestParam("name") String name) {
+        return sysDictionaryDataService.list(page, pageSize, type,name);
     }
 
     @RequestMapping(value = "/getById")

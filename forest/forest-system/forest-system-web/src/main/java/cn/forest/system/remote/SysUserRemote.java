@@ -29,5 +29,8 @@ public interface SysUserRemote {
 
   @RequestMapping("/sys_user/saveRole")
   public int saveRole(Map<String, ?> map);
+  
+  @RequestMapping("/sys_user/getOrgByUserId")
+  public Object getOrgByUserId(@RequestParam(value = "userId") Long userId);
 
 }

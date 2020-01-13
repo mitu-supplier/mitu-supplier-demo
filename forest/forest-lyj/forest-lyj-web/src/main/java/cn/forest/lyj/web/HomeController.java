@@ -28,18 +28,23 @@ public class HomeController {
   
   
   @RequestMapping(value = "/getProjectByOrgId")
-  public Map<String, Object> getProjectByOrgId(Long orgId,HttpServletRequest request){
-      return homeService.getProjectByOrgId(orgId,request);
+  public Map<String, Object> getProjectByOrgId(Long orgId,Integer year,Long parentId,HttpServletRequest request){
+      return homeService.getProjectByOrgId(orgId,request,year,parentId);
   }
   
   @RequestMapping(value = "/getProjectsCount")
-  public Map<String, Object> getProjectsCount(Long orgId,Long id,HttpServletRequest request){
-    return homeService.getProjectsCount(id, orgId, request);
+  public Map<String, Object> getProjectsCount(Long orgId,Long id,Integer year,HttpServletRequest request){
+    return homeService.getProjectsCount(id, orgId,year, request);
   }
   
   @RequestMapping(value = "/getProjects")
-  public Map<String, Object> getProjects(Long page, Long pageSize,Long orgId,Long id,HttpServletRequest request){
-    return homeService.getProjects(page, pageSize, id, orgId, request);
+  public Map<String, Object> getProjects(Long page, Long pageSize,Long orgId,Long id,HttpServletRequest request,Integer year){
+    return homeService.getProjects(page, pageSize, id, orgId, request,year);
+  }
+  
+  @RequestMapping(value = "/getOnlineUser")
+  public Map<String, Object> getOnlineUser(HttpServletRequest request,Long id,String type) {
+    return homeService.getOnlineUser(request,id,type);
   }
   
   

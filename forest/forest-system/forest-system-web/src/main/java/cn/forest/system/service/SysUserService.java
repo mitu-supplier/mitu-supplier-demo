@@ -68,10 +68,6 @@ public class SysUserService {
   public Map<String, Object> getById(Long id) {
     Map obj = (Map) sysUserRemote.getById(id);
     if (obj != null) {
-      if(Integer.parseInt(obj.get("type").toString())==0&&obj.get("typeId")!=null) {
-        Map byId = (Map)organizationRemote.getById(Long.parseLong(obj.get("typeId").toString()));
-        obj.put("typeName", byId.get("name"));
-      }
       return ResultMessage.success(obj);
     }
     return null;
@@ -105,12 +101,10 @@ public class SysUserService {
     Map<String, Object> user=new HashMap<String, Object>();
     Map map = (Map) redisDao.getValue(request.getHeader(Constant.HEADER_TOKEN_STRING));
     user.put("name", map.get("name"));
-    if(Integer.parseInt(map.get("type").toString())==0&&map.get("typeId")!=null) {
-      Map org = (Map) organizationRemote.getById(Long.parseLong(map.get("typeId").toString()));
-      user.put("orgName", org.get("name"));
-      user.put("orgId", org.get("id"));
+    if(Integer.parseInt(map.get("type").toString())==0) {
+      Object orgByUserId = sysUserRemote.getOrgByUserId(Long.parseLong(map.get("id").toString()));
+      user.put("org", orgByUserId);
     }
     return ResultMessage.success(user);
-    
   }
 }

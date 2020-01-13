@@ -60,7 +60,12 @@ public class Expenditure {
   @TableField(value = "other_attachment_name")
   private String otherAttachmentName;
   
+//0 草稿 1 正式
+  @TableField(value = "status")
+  private Integer  status;
   
+  @TableField(value = "party_b_units")
+  private String  partyBUnits;
 
   public Long getId() {
     return id;
@@ -188,6 +193,22 @@ public class Expenditure {
 
   public void setOtherAttachmentName(String otherAttachmentName) {
     this.otherAttachmentName = otherAttachmentName;
+  }
+
+  public Integer getStatus() {
+    return status;
+  }
+
+  public void setStatus(Integer status) {
+    this.status = status;
+  }
+
+  public String getPartyBUnits() {
+    return partyBUnits;
+  }
+
+  public void setPartyBUnits(String partyBUnits) {
+    this.partyBUnits = partyBUnits;
   }
   
   

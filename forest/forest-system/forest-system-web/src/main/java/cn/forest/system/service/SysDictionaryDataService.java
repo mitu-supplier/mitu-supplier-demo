@@ -17,8 +17,8 @@ public class SysDictionaryDataService {
     @Autowired
     private SysDictionaryDataRemote sysDictionaryDataRemote;
 
-    public Map<String, Object> list(Long page, Long pageSize, Long type){
-        Object list = sysDictionaryDataRemote.list(page, pageSize, type);
+    public Map<String, Object> list(Long page, Long pageSize, Long type,String name){
+        Object list = sysDictionaryDataRemote.list(page, pageSize, type,name);
         if(list != null){
             return ResultMessage.success(list);
         }

@@ -9,7 +9,7 @@ import java.util.Map;
 public class SysDictionaryDataBack implements SysDictionaryDataRemote {
 
     @Override
-    public Object list(Long page, Long pageSize, Long type) {
+    public Object list(Long page, Long pageSize, Long type,String name) {
         return null;
     }
 

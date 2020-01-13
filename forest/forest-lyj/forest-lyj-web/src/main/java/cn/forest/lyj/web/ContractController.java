@@ -15,7 +15,7 @@ import cn.forest.lyj.service.ContractService;
 
 @RestController
 @RequestMapping("contract")
-@SysLogs(desc  = "合同管理")
+@SysLogs(desc  = "项目资料管理")
 public class ContractController {
   
   @Autowired
@@ -23,19 +23,19 @@ public class ContractController {
 
 
   @RequestMapping(value = "/list")
-  @SysLogs(desc = "合同管理列表")
+  @SysLogs(desc = "项目资料列表")
   public Map<String, Object> list(Long page, Long pageSize,HttpServletRequest request,String contractName,String projectName,String orgName,String leader){
       return contractService.list(page, pageSize,request,contractName,projectName,orgName,leader);
   }
 
   @RequestMapping(value = "/getById")
-  @SysLogs(desc = "获取一条合同")
+  @SysLogs(desc = "获取项目资料")
   public Map<String, Object> getById(@RequestParam("id") Long id){
       return  contractService.getById(id);
   }
 
   @RequestMapping(value = "/save")
-  @SysLogs(desc = "保存合同")
+  @SysLogs(desc = "保存项目资料")
   public Map<String, Object> save(HttpServletRequest request){
       return contractService.save(RequestMap.requestToMap(request),request);
   }
@@ -47,7 +47,7 @@ public class ContractController {
   }
 
   @RequestMapping(value = "/delete")
-  @SysLogs(desc = "删除合同")
+  @SysLogs(desc = "删除项目资料")
   public Map<String, Object> delete(@RequestParam("id") Long id){
       return contractService.delete(id);
   }

@@ -65,6 +65,14 @@ public class Contract {
   @TableField(value = "other_attachment_name")
   private String otherAttachmentName;
   
+  //0 草稿 1 正式
+  @TableField(value = "status")
+  private Integer  status;
+  
+  
+  //0项目合同,1其他资料
+  @TableField(value = "contract_type")
+  private Integer  contractType;
   
   public Long getId() {
     return id;
@@ -208,6 +216,22 @@ public class Contract {
 
   public void setOtherAttachmentName(String otherAttachmentName) {
     this.otherAttachmentName = otherAttachmentName;
+  }
+
+  public Integer getStatus() {
+    return status;
+  }
+
+  public void setStatus(Integer status) {
+    this.status = status;
+  }
+
+  public Integer getContractType() {
+    return contractType;
+  }
+
+  public void setContractType(Integer contractType) {
+    this.contractType = contractType;
   }
   
   

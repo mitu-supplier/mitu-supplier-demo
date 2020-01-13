@@ -12,7 +12,7 @@ import java.util.Map;
 public interface SysDictionaryTypeRemote {
 
     @RequestMapping("/sysDictionaryType/list")
-    Object list(@RequestParam(value = "page") Long page, @RequestParam(value = "pageSize") Long pageSize);
+    Object list(@RequestParam(value = "page") Long page, @RequestParam(value = "pageSize") Long pageSize,@RequestParam(value = "name")String name);
 
     @RequestMapping("/sysDictionaryType/getById")
     Object getById(@RequestParam("id") Long id);

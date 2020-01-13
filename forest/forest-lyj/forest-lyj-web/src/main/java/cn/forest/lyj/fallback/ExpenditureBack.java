@@ -10,7 +10,7 @@ import cn.forest.lyj.remote.ExpenditureRemote;
 public class ExpenditureBack implements ExpenditureRemote {
 
   @Override
-  public Object list(Long page, Long pageSize, Long userId,String projectName,String orgName,Long orgId) {
+  public Object list(Long page, Long pageSize, Long userId,String projectName,String orgName,String orgIds) {
     return null;
   }
 
@@ -35,7 +35,12 @@ public class ExpenditureBack implements ExpenditureRemote {
   }
 
   @Override
-  public Object getExpenditureCount(Long userId, Long orgId, Long projectId) {
+  public Object getExpenditureCount(Long userId, Long orgId, Long projectId,String orgIds,Integer year) {
+    return null;
+  }
+
+  @Override
+  public Object exportList(Long userId, String projectName, String orgName, String orgIds) {
     return null;
   }
 

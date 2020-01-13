@@ -2,6 +2,31 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.forest.lyj.mapper.ContractMapper">
 
+
+
+  <update id="updateContract" parameterType="cn.forest.lyj.entity.Contract">
+	    update contract
+		set 
+			org_id = #{orgId},
+			org_name = #{orgName},
+			project_id = #{projectId},
+			project_name = #{projectName},
+			contract_name = #{contractName},
+			contract_total = #{contractTotal},
+			contract_time = #{contractTime},
+			contract_leader = #{contractLeader},
+			contract_leader_phone = #{contractLeaderPhone},
+			contract_attachment = #{contractAttachment},
+			other_attachment = #{otherAttachment},
+			update_time = #{updateTime},
+			contract_attachment_name = #{contractAttachmentName},
+			other_attachment_name = #{otherAttachmentName},
+			status = #{status},
+			contract_type = #{contractType}
+		where id = #{id}
+  </update>
+  
+  
   <select id="getContractList" parameterType="Map" resultType="cn.forest.lyj.entity.Contract">
   
 	    SELECT
@@ -16,7 +41,9 @@
 		c.contract_attachment as contractAttachment,
 		c.other_attachment as otherAttachment,
 		c.contract_attachment_name as contractAttachmentName,
-		c.other_attachment_name as otherAttachmentName
+		c.other_attachment_name as otherAttachmentName,
+		c.status,
+		c.contract_type as contractType
 	FROM
 		contract c
 		INNER JOIN projects p ON c.project_id = p.id
@@ -25,8 +52,8 @@
 	  <if test="userId!=null">
 	    and c.user_id=#{userId} 
 	  </if>
-	  <if test="orgId!=null">
-	    and c.org_id=#{orgId} 
+	  <if test="orgIds!=null">
+	    and  c.org_id in <foreach collection="orgIds" item="item" index="index" open="(" separator="," close=")">#{item}</foreach>
 	  </if>
 	  <if test="contractName!=null and contractName!=''">
 	    and c.contract_name like CONCAT('%',#{contractName},'%')
@@ -60,7 +87,10 @@
 		c.contract_attachment as contractAttachment,
 		c.other_attachment as otherAttachment,
 		c.contract_attachment_name as contractAttachmentName,
-		c.other_attachment_name as otherAttachmentName
+		c.other_attachment_name as otherAttachmentName,
+		c.status,
+		c.contract_type as contractType,
+		c.user_id as userId
 	FROM
 		contract c
 		INNER JOIN projects p ON c.project_id = p.id

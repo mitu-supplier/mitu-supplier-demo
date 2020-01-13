@@ -51,17 +51,19 @@ public class SysUser implements Serializable {
   @TableField(value = "type")
   private Integer type;
   
-  @TableField(value = "type_id")
-  private Long typeId;
-  
-  @TableField(value = "type_name")
-  private String typeName;
+
 
   @TableField(exist = false)
   private String roleIds;
   
   @TableField(exist = false)
   private String roleNames;
+  
+  @TableField(exist = false)
+  private String orgIds;
+  
+  @TableField(exist = false)
+  private String orgNames;
   
   @TableField(exist = false)
   private List<SysRole> sysRoleList;
@@ -170,21 +172,7 @@ public class SysUser implements Serializable {
     this.type = type;
   }
 
-  public Long getTypeId() {
-    return typeId;
-  }
-
-  public void setTypeId(Long typeId) {
-    this.typeId = typeId;
-  }
-
-  public String getTypeName() {
-    return typeName;
-  }
-
-  public void setTypeName(String typeName) {
-    this.typeName = typeName;
-  }
+  
 
   public String getRoleIds() {
     return roleIds;
@@ -208,6 +196,22 @@ public class SysUser implements Serializable {
 
   public void setSysRoleList(List<SysRole> sysRoleList) {
     this.sysRoleList = sysRoleList;
+  }
+
+  public String getOrgIds() {
+    return orgIds;
+  }
+
+  public void setOrgIds(String orgIds) {
+    this.orgIds = orgIds;
+  }
+
+  public String getOrgNames() {
+    return orgNames;
+  }
+
+  public void setOrgNames(String orgNames) {
+    this.orgNames = orgNames;
   }
   
 }

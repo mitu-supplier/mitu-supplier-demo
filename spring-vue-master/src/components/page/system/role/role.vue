@@ -11,6 +11,7 @@
                 <el-input placeholder="角色名称或编码" v-model="name"  class="handle-input mr10"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button>
                 <el-button type="primary" icon="el-icon-search" @click="rest">重置</el-button>
+                <span class="red" style="margin-left: 30px;" >注：角色code以“KS_”开头只能查看所属科室的所有数据，以“GL_”开头为查看所有数据</span>
             </div>
             <el-table :data="tableData" border class="table" ref="multipleTable"  @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55" align="center" ></el-table-column>
@@ -53,11 +54,11 @@
 
          <!-- 编辑弹出框 添加 修改-->
         <el-dialog :title="titleName"  :visible.sync="editVisible" width="25%">
-            <el-form ref="form" :model="form" label-width="70px">
-                <el-form-item label="角色名称">
+            <el-form ref="form" :model="form"  :rules="rules" label-width="100px">
+                <el-form-item label="角色名称" prop="roleName">
                    <el-input v-model="form.roleName" class="input input-width"></el-input>
                 </el-form-item>
-                <el-form-item label="角色编码" >
+                <el-form-item label="角色编码" prop="roleCode">
                     <el-input v-model="form.roleCode"  class="input input-width"></el-input>
                 </el-form-item>
                 <el-form-item label="是否管理">
@@ -112,6 +113,14 @@
                    roleCode:'',
                    isAdmin:'',
                    isBuiltIn:''
+                },
+                rules: {
+                    roleName: [
+                        { required: true, message: '请填写角色名称', trigger: 'blur' }
+                    ],
+                    roleCode:[
+                        { required: true, message: '请填写角色code', trigger: 'blur' }
+                    ]
                 },
                 name:'',
                 setting:{
@@ -182,21 +191,30 @@
             },
              async saveEdit(){
                 var addOrEdit={};
-                if(this.form.id!=null){
-                   addOrEdit= await this.$http.post(baseURL_.sysUrl+'/sysRole/update',this.$qs.stringify(this.form));
-                }else{
-                    if(this.form.parentId==null){
-                      this.form.parentId=0;
-                      this.form.treeDepth=1;
+                var flg=true;
+                this.$refs['form'].validate((valid) => {
+                if (!valid) {
+                       flg=false;
+                     } 
+                })
+                if(flg){
+                    if(this.form.id!=null){
+                        addOrEdit=await  this.$http.post(baseURL_.sysUrl+'/sysRole/update',this.$qs.stringify(this.form));
+                    }else{
+                        if(this.form.parentId==null){
+                            this.form.parentId=0;
+                            this.form.treeDepth=1;
+                        }
+                        this.form.isParent='false';
+                        addOrEdit=await  this.$http.post(baseURL_.sysUrl+'/sysRole/add',this.$qs.stringify(this.form));
                     }
-                    this.form.isParent='false';
-                    addOrEdit= await this.$http.post(baseURL_.sysUrl+'/sysRole/add',this.$qs.stringify(this.form));
-                }
-                this.$message(addOrEdit.data.data);
-                if(addOrEdit.data.statusCode==200){
-                    this.editVisible=false;
-                }
-                this.getData();
+                    this.$message(addOrEdit.data.data);
+                    if(addOrEdit.data.statusCode==200){
+                        this.editVisible=false;
+                    }
+                    this.getData();   
+                    }
+                        
             },
              handleDelete(index, row){
                 if(row.isParent=='true'){

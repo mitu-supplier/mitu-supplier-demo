@@ -15,8 +15,8 @@ import cn.forest.common.service.datasource.DynamicDataSourceRegister;
 @Import(DynamicDataSourceRegister.class)
 public class ApplicationLyjServer {
     public static void main( String[] args ){
-        
+       
       SpringApplication.run(ApplicationLyjServer.class, args);
-         
+       
     }
 }

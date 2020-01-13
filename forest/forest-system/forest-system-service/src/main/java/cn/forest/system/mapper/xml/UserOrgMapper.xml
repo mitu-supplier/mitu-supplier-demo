@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.forest.system.mapper.UserOrgMapper">
+
+   <select id="getOrgByUserId" parameterType="Map" resultType="cn.forest.system.entity.UserOrg">
+       SELECT
+		    uo.user_id as userId,
+			uo.org_id as orgId,
+			o.`name` as orgName
+		FROM
+			user_org uo
+			INNER JOIN organization o ON o.id = uo.org_id
+		where o.is_delete=0  and uo.user_id=#{userId}
+   </select>
+</mapper>

@@ -13,7 +13,7 @@ public interface ExpenditureRemote {
   @RequestMapping("/expenditure/list")
   Object list(@RequestParam(value = "page") Long page, @RequestParam(value = "pageSize") Long pageSize,
       @RequestParam(value = "userId") Long userId,@RequestParam(value = "projectName") String projectName,
-      @RequestParam(value = "orgName") String orgName,@RequestParam(value = "orgId")Long orgId);
+      @RequestParam(value = "orgName") String orgName,@RequestParam(value = "orgIds")String orgIds);
 
   @RequestMapping("/expenditure/getById")
   Object getById(@RequestParam("id") Long id);
@@ -28,6 +28,11 @@ public interface ExpenditureRemote {
   int delete(@RequestParam("id") Long id);
   
   @RequestMapping("/expenditure/getExpenditureCount")
-  Object getExpenditureCount(@RequestParam(value = "userId") Long userId,@RequestParam(value = "orgId")Long orgId,@RequestParam(value = "projectId")Long projectId);
+  Object getExpenditureCount(@RequestParam(value = "userId") Long userId,@RequestParam(value = "orgId")Long orgId,@RequestParam(value = "projectId")Long projectId,@RequestParam(value = "orgIds") String orgIds,@RequestParam(value = "year") Integer year);
+  
+  
+  @RequestMapping("/expenditure/exportList")
+  Object exportList(@RequestParam(value = "userId") Long userId,@RequestParam(value = "projectName") String projectName,
+      @RequestParam(value = "orgName") String orgName,@RequestParam(value = "orgIds")String orgIds);
   
 }

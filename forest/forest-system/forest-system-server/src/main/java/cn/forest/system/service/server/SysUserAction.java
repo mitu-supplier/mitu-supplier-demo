@@ -20,12 +20,15 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import cn.forest.common.service.utils.ResultPage;
 import cn.forest.service.SysUserRoleService;
+import cn.forest.service.UserOrgService;
 import cn.forest.system.entity.SysRole;
 import cn.forest.system.entity.SysUser;
 import cn.forest.system.entity.SysUserRole;
+import cn.forest.system.entity.UserOrg;
 import cn.forest.system.mapper.SysRoleMapper;
 import cn.forest.system.mapper.SysUserMapper;
 import cn.forest.system.mapper.SysUserRoleMapper;
+import cn.forest.system.mapper.UserOrgMapper;
 
 @RestController
 @RequestMapping("/sys_user")
@@ -42,6 +45,12 @@ public class SysUserAction {
   
   @Autowired
   private SysRoleMapper sysRoleMapper;
+  
+  @Autowired
+  private UserOrgService userOrgService;
+  
+  @Autowired
+  private UserOrgMapper userOrgMapper;
   
   
   @RequestMapping("/list")
@@ -63,6 +72,10 @@ public class SysUserAction {
       List<SysRole> roleByUserId = sysRoleMapper.getUserRole(map);
       if(!CollectionUtils.isEmpty(roleByUserId)) {
         e.setRoleNames(roleByUserId.stream().map(t ->t.getRoleName()).collect(Collectors.joining(",")));
+      }
+      List<UserOrg> orgByUserId = userOrgMapper.getOrgByUserId(map);
+      if(!CollectionUtils.isEmpty(orgByUserId)) {
+        e.setOrgNames(orgByUserId.stream().map(t ->t.getOrgName()).collect(Collectors.joining(",")));
       }
     });
     /*
@@ -92,18 +105,33 @@ public class SysUserAction {
       user.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
     }
     int insert = sysUserMapper.insert(user);
-    String roleIds = user.getRoleIds();
-    if(!StringUtils.isEmpty(roleIds)) {
-      String[] roles = roleIds.split(",");
-      SysUserRole userRole=null;
-      List<SysUserRole> list=new ArrayList<SysUserRole>();
-      for (String roleId : roles) {
-        userRole=new SysUserRole();
-        userRole.setUserId(user.getId());
-        userRole.setRoleId(Long.parseLong(roleId));
-        list.add(userRole);
+    if(insert>0) {
+      String roleIds = user.getRoleIds();
+      if(!StringUtils.isEmpty(roleIds)) {
+        String[] roles = roleIds.split(",");
+        SysUserRole userRole=null;
+        List<SysUserRole> list=new ArrayList<SysUserRole>();
+        for (String roleId : roles) {
+          userRole=new SysUserRole();
+          userRole.setUserId(user.getId());
+          userRole.setRoleId(Long.parseLong(roleId));
+          list.add(userRole);
+        }
+        sysUserRoleService.saveBatch(list);
       }
-      sysUserRoleService.saveBatch(list);
+      String orgIds = user.getOrgIds();
+      if(!StringUtils.isEmpty(orgIds)) {
+        String[] orgs = orgIds.split(",");
+        UserOrg userOrg=null;
+        List<UserOrg> list=new ArrayList<UserOrg>();
+        for (String orgId : orgs) {
+          userOrg=new UserOrg();
+          userOrg.setUserId(user.getId());
+          userOrg.setOrgId(Long.parseLong(orgId));
+          list.add(userOrg);
+        }
+        userOrgService.saveBatch(list);
+      }
     }
     return insert;
   }
@@ -128,6 +156,22 @@ public class SysUserAction {
       }
       sysUserRoleService.saveBatch(list);
     }
+      String orgIds = user.getOrgIds();
+      if(!StringUtils.isEmpty(orgIds)) {
+        QueryWrapper<UserOrg> orgwrapper=new QueryWrapper<UserOrg>();
+        orgwrapper.eq("user_id", user.getId());
+        userOrgMapper.delete(orgwrapper);
+        String[] orgs = orgIds.split(",");
+        UserOrg userOrg=null;
+        List<UserOrg> list=new ArrayList<UserOrg>();
+        for (String orgId : orgs) {
+          userOrg=new UserOrg();
+          userOrg.setUserId(user.getId());
+          userOrg.setOrgId(Long.parseLong(orgId));
+          list.add(userOrg);
+        }
+        userOrgService.saveBatch(list);
+      }
     return sysUserMapper.updateById(user);
   }
 
@@ -139,6 +183,11 @@ public class SysUserAction {
     List<SysRole> roleByUserId = sysRoleMapper.getUserRole(map);
     if(!CollectionUtils.isEmpty(roleByUserId)) {
       sysUser.setSysRoleList(roleByUserId);
+    }
+    List<UserOrg> orgByUserId = userOrgMapper.getOrgByUserId(map);
+    if(!CollectionUtils.isEmpty(orgByUserId)) {
+      sysUser.setOrgIds(orgByUserId.stream().map(t ->t.getOrgId().toString()).collect(Collectors.joining(",")));
+      sysUser.setOrgNames(orgByUserId.stream().map(t ->t.getOrgName().toString()).collect(Collectors.joining(",")));
     }
     return sysUser;
   }
@@ -165,4 +214,10 @@ public class SysUserAction {
     return result;
   }
 
+  @RequestMapping("/getOrgByUserId")
+  public Object getOrgByUserId(Long userId) {
+    Map<String, Object> map=new HashMap<String, Object>();
+    map.put("userId", userId);
+    return userOrgMapper.getOrgByUserId(map);
+  }
 }

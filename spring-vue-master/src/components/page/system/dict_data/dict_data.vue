@@ -10,20 +10,20 @@
         </div>
         <div class="container"  style="float:left;width:75%;">
             <div class="handle-box">
-                <el-button type="primary" icon="el-icon-plus" class="handle-del mr10" @click="add">添加</el-button>
+                <el-button type="primary" icon="el-icon-plus" class="handle-del mr10" v-if="button_role&&button_role.add" @click="add">添加</el-button>
                 <el-input placeholder="名称或编码" v-model="name"  class="handle-input mr10"></el-input>
                 <el-button type="primary" icon="el-icon-search" >搜索</el-button>
             </div>
             <el-table  :data="tableData" border class="table" ref="multipleTable"  @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55" align="center" ></el-table-column>
                 <el-table-column type="index" label="序号" width="55" align="center" ></el-table-column>
-                <el-table-column prop="name" label="类型名称"  align="center" width="150"></el-table-column>
-                <el-table-column prop="code" label="类型编码"  align="center" width="150"></el-table-column>
-                <el-table-column prop="description" label="描述"  align="center" width="250"></el-table-column>
-                <el-table-column label="操作" width="" align="center">
+                <el-table-column prop="name" label="值/名称"  align="center" width="150"></el-table-column>
+                <el-table-column prop="code" label="编码"  align="center" width="150"></el-table-column>
+                <el-table-column prop="description" label="描述"  align="center" ></el-table-column>
+                <el-table-column label="操作" width="" align="center" v-if="button_role&&(button_role.delete||button_role.edit)">
                     <template slot-scope="scope">
-                        <el-button type="text" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                        <el-button type="text" icon="el-icon-delete" class="red" @click="handleDelete(scope.$index, scope.row)" >删除</el-button>
+                        <el-button type="text" icon="el-icon-edit" v-if="button_role&&button_role.edit" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                        <el-button type="text" icon="el-icon-delete" class="red"  v-if="button_role&&button_role.delete" @click="handleDelete(scope.$index, scope.row)" >删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -43,7 +43,7 @@
         <!-- 编辑弹出框 -->
         <el-dialog :title="titleName" class="dialogBox" :visible.sync="editVisible" width="26%">
             <el-form ref="form" :model="form" label-width="70px">
-                <el-form-item label="名称">
+                <el-form-item label="值/名称">
                 <el-input v-model="form.name" class="input"></el-input>
                 </el-form-item>
                 <el-form-item label="编码">
@@ -102,6 +102,7 @@
             }
         },
         created() {
+            this.button();
             this.getTreeData();
         },
         computed: {
@@ -127,6 +128,12 @@
 
                 }).catch(_ => {});
                  
+            },
+             async button(){
+                var but=await this.$http.get(baseURL_.loginUrl+'/permission/button',{ 
+                    params: {'code':this.$route.path}
+                });
+                this.button_role=but.data.data;
             },
             async saveEdit(){
                 var addOrEdit={};

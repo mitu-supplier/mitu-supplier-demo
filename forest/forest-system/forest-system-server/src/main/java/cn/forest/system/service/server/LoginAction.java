@@ -26,7 +26,6 @@ public class LoginAction {
   public Object getLoginUser(String loginName) {
     QueryWrapper<SysUser> queryWrapper = new QueryWrapper<SysUser>();
     queryWrapper.eq("login_name", loginName);
-    queryWrapper.eq("is_status", 0);
     return sysUserMapper.selectOne(queryWrapper);
   }
 

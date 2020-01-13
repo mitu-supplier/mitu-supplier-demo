@@ -44,4 +44,9 @@ public class OrganizationBack implements OrganizationRemote {
     return 0;
   }
 
+  @Override
+  public Object getOrgByUserId(Long userId) {
+    return null;
+  }
+
 }

@@ -12,7 +12,8 @@
 		p.`year`,
 		p.`month`,
 		p.plan_using as planUsing,
-		p.id
+		p.id,
+		p.status
 	FROM
 		plan p
 		INNER JOIN organization o ON o.id = p.org_id
@@ -21,8 +22,8 @@
 	  <if test="userId!=null">
 	    and p.user_id=#{userId} 
 	  </if>
-	  <if test="orgId!=null">
-	    and p.org_id=#{orgId} 
+	   <if test="orgIds!=null">
+	    and  p.org_id in <foreach collection="orgIds" item="item" index="index" open="(" separator="," close=")">#{item}</foreach>
 	  </if>
 	  <if test="projectName!=null and projectName!=''">
 	    and j.project_name like CONCAT('%',#{projectName},'%')
@@ -45,7 +46,9 @@
 		p.plan_using as planUsing,
 		p.id,
 		p.create_time as createTime,
-		p.update_time as updateTime
+		p.update_time as updateTime,
+		p.status,
+		p.user_id as userId
 	FROM
 		plan p
 		INNER JOIN organization o ON o.id = p.org_id

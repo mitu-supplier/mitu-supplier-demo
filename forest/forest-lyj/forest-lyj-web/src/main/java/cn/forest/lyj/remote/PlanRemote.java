@@ -14,7 +14,7 @@ public interface PlanRemote {
   @RequestMapping("/plan/list")
   Object list(@RequestParam(value = "page") Long page, @RequestParam(value = "pageSize") Long pageSize,
       @RequestParam(value = "userId") Long userId,@RequestParam(value = "projectName") String projectName,
-      @RequestParam(value = "orgName") String orgName,@RequestParam(value = "orgId") Long orgId);
+      @RequestParam(value = "orgName") String orgName,@RequestParam(value = "orgIds") String orgIds);
 
   @RequestMapping("/plan/getById")
   Object getById(@RequestParam("id") Long id);

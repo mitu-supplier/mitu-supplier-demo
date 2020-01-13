@@ -45,6 +45,7 @@ public class LoginService {
     }
     Object user = loginRemote.getUser(loginName.trim());
     if (user != null) {
+      
       HashMap object = JsonUtil.toObject(JsonUtil.toJson(user), HashMap.class);
       String pass = StringUtil.toString(object.get("password"));
       try {
@@ -53,6 +54,9 @@ public class LoginService {
         e.printStackTrace();
       }
       if (pass != null && BCrypt.checkpw(password, pass)) {
+        if(Integer.parseInt(object.get("isStatus").toString())==1) {
+          return ResultMessage.error("已被禁止登陆，请联系管理员");
+        }
         String token = TokenAuthenticationService.addAuthentication(StringUtil.toString(object.get("loginName")));
         HashMap userInfoMap = selectUserRoles(object);
         addSysLoginLogs(object, request,userInfoMap);

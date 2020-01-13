@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,12 +25,14 @@ public class PlanAction {
   private PlanMapper planMapper;
 
   @RequestMapping("/list")
-  public Object list(Long page, Long pageSize,Long userId,String projectName,String orgName,Long orgId) {
+  public Object list(Long page, Long pageSize,Long userId,String projectName,String orgName,String orgIds) {
     Map<String, Object> map=new HashMap<String, Object>();
     map.put("userId", userId);
     map.put("projectName", projectName);
     map.put("orgName", orgName);
-    map.put("orgId", orgId);
+    if(!StringUtils.isEmpty(orgIds)) {
+      map.put("orgIds", orgIds.split(","));
+    }
     PageHelper.startPage(Integer.parseInt(page+""),Integer.parseInt(pageSize+""));
     List<Plan> projectsList =planMapper.getPlanList(map);
     PageInfo<Plan> pageInfo = new PageInfo<Plan>(projectsList);

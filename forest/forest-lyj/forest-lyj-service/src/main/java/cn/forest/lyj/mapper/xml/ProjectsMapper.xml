@@ -11,17 +11,24 @@
 		p.leader_phone as leaderPhone,
 		p.project_leader as projectLeader,
 		p.create_time as createTime,
-		o.`name` as orgName
+		o.`name` as orgName,
+		p.project_level as projectLevel,
+		p.year as year,
+		p.status as status,
+		p.project_source as projectSource,
+		p.parent_id as parentId
 	FROM
 		projects p
 		INNER JOIN organization o ON o.id = p.org_id
 	where 
 	  p.is_delete=0 
+	  and p.project_level=1
+	  and p.parent_id=0
 	  <if test="userId!=null">
 	    and p.user_id=#{userId} 
 	  </if>
-	  <if test="orgId!=null">
-	    and p.org_id=#{orgId} 
+	  <if test="orgIds!=null">
+	    and  p.org_id in <foreach collection="orgIds" item="item" index="index" open="(" separator="," close=")">#{item}</foreach>
 	  </if>
 	  <if test="projectName!=null and projectName!=''">
 	    and p.project_name like CONCAT('%',#{projectName},'%')
@@ -47,13 +54,42 @@
 		p.project_leader as projectLeader,
 		p.create_time as createTime,
 		p.update_time as updateTime,
-	    p.user_id as userId	
+	    p.user_id as userId,
+	    p.project_level as projectLevel,
+		p.year as year,
+		p.status as status,
+		p.project_source as projectSource,
+		p.parent_id as parentId
 	FROM
 		projects p inner join organization o 
 	on o.id=p.org_id
 	WHERE
 		p.is_delete = 0 and p.id=#{id}
-	
+  </select>
+  
+  <select id="getProjectsByParentId" parameterType="Long" resultType="cn.forest.lyj.entity.Projects">
+  
+     SELECT
+		p.id,
+		p.org_id as orgId,
+		o.name as orgName,
+		p.budget,
+		p.project_name as projectName,
+		p.leader_phone as leaderPhone,
+		p.project_leader as projectLeader,
+		p.create_time as createTime,
+		p.update_time as updateTime,
+	    p.user_id as userId,
+	    p.project_level as projectLevel,
+		p.year as year,
+		p.status as status,
+		p.project_source as projectSource,
+		p.parent_id as parentId
+	FROM
+		projects p inner join organization o 
+	on o.id=p.org_id
+	WHERE
+		p.is_delete = 0 and p.parent_id=#{id}
   </select>
   
   
@@ -65,8 +101,14 @@
 		WHERE
 			1 = 1 
 			AND p.is_delete = 0 
+		    and p.status=1
+		    and p.project_level=1
+	        and p.parent_id=0
 			<if test="orgId!=null">
 			  AND p.org_id =#{orgId}
+			</if>
+			<if test="orgIds!=null">
+			    and  p.org_id in <foreach collection="orgIds" item="item" index="index" open="(" separator="," close=")">#{item}</foreach>
 			</if>
 			<if test="userId!=null">
 			  AND p.user_id =#{userId}
@@ -74,33 +116,47 @@
 			<if test="id!=null">
 			  AND p.id = #{id}
 			</if>
+			<if test="year!=null">
+			  AND p.year = #{year}
+			</if>
 			
   </select>
   <select id="getProjects" parameterType="Map" resultType="cn.forest.lyj.entity.Projects">
-    <![CDATA[  select t.*,if(IFNULL(t.et/t.pt,0)<=0.3,'true','false') as xy ,if((t.pt+t.pt*0.3)<=t.et,'true','false') dy  from(
+    <![CDATA[  select t.*,if(IFNULL(t.et/t.pt,0)<=${num},'true','false') as xy ,if((t.pt+t.pt*${num})<=t.et,'true','false') dy  from(
 SELECT
 			p.id,
 			p.org_id as orgId,
 			o.name as orgName,
 			p.project_name as projectName,
 			p.budget,
-			IFNULL((select sum(a.plan_total) from plan a where a.project_id = p.id and a.is_delete=0),0) as pt,
-			IFNULL((select sum(e.expenditure_total) from expenditure e where e.project_id = p.id and e.is_delete=0),0) as et
+			p.year,
+			IFNULL((select sum(a.plan_total) from plan a where a.project_id = p.id and a.is_delete=0 and a.status=1),0) as pt,
+			IFNULL((select sum(e.expenditure_total) from expenditure e where e.project_id = p.id and e.is_delete=0 and e.status=1),0) as et
 		FROM
 			projects p inner join organization o 
 	on o.id=p.org_id
 		WHERE
 			1 = 1 
-			AND p.is_delete = 0 ) t where  1=1  ]]>  
-			<if test="orgId!=null">
-			  AND t.orgId =#{orgId}
+			AND p.is_delete = 0 
+			and p.status=1
+		    and p.project_level=1
+	        and p.parent_id=0   ]]>  
+	         <if test="orgId!=null">
+			  AND p.org_id =#{orgId}
+			</if>
+			<if test="orgIds!=null">
+		       and p.org_id in <foreach collection="orgIds" item="item" index="index" open="(" separator="," close=")">#{item}</foreach>
 			</if>
 			<if test="userId!=null">
-			  AND t.userId =#{userId}
+			  AND p.user_id =#{userId}
+			</if>
+			<if test="year!=null">
+			  AND p.year =#{year}
 			</if>
 			<if test="id!=null">
-			  AND t.id = #{id}
+			  AND p.id = #{id}
 			</if>
-			<![CDATA[  and (IFNULL(t.et/t.pt,0)<=0.3 or (t.pt+t.pt*0.3)<=t.et ) ]]>
+	        ) t where  1=1  
+			<![CDATA[  and (IFNULL(t.et/t.pt,0)<=${num} or (t.pt+t.pt*${num})<=t.et ) ]]>
   </select>
 </mapper>

@@ -18,17 +18,30 @@
             <el-table  :data="tableData" border class="table" ref="multipleTable"  @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55" align="center" ></el-table-column>
                 <el-table-column type="index" label="序号" width="55" align="center" ></el-table-column>
-                <el-table-column prop="contractName" label="合同名称"  align="center" width="200"></el-table-column>
+                <el-table-column prop="contractName" label="名称"  align="center" ></el-table-column>
+                <el-table-column prop="contractType" label="资料类型"  align="center" width="80">
+                      <template slot-scope="scope">
+                         <span  v-if="scope.row.contractType=='0'">项目合同</span>
+                         <span v-if="scope.row.contractType=='1'">其他资料</span>
+                    </template>
+                </el-table-column>
                 <el-table-column prop="contractTotal" label="合同总金额（ 元）"  align="center" width="100"></el-table-column>
                 <el-table-column prop="contractLeader" label="合同负责人"  align="center" width="100"></el-table-column>
                 <el-table-column prop="contractLeaderPhone" label="联系方式"  align="center" width="100"></el-table-column>
                 <el-table-column prop="contractTime" label="签订时间"  align="center" width="100"></el-table-column>
                 <el-table-column prop="projectName" label="所属项目"  align="center" ></el-table-column>
                 <el-table-column prop="orgName" label="所属科室"  align="center" width="100"></el-table-column>
-                <el-table-column label="操作" width="" align="center" v-if="button_role&&(button_role.delete||button_role.edit)">
+                 <el-table-column prop="status" label="状态"  align="center" width="80">
+                    <template slot-scope="scope">
+                         <span class="blue" v-if="scope.row.status=='0'">暂存</span>
+                         <span class="blue" v-if="scope.row.status=='1'">归档</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="操作" width="" align="center" v-if="button_role&&(button_role.delete||button_role.edit||button_role.look)">
                     <template slot-scope="scope">
                         <el-button type="text" icon="el-icon-edit"  v-if="button_role&&button_role.edit" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
                         <el-button type="text" icon="el-icon-delete" class="red" v-if="button_role&&button_role.delete" @click="handleDelete(scope.$index, scope.row)" >删除</el-button>
+                        <el-button type="text" icon="el-icon-document"  v-if="button_role&&button_role.look" @click="handleLook(scope.$index, scope.row)">查看</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -46,13 +59,21 @@
         </div>
 
         <!-- 编辑弹出框 -->
-        <el-dialog :title="titleName"  :visible.sync="editVisible" width="35%">
-            <el-form ref="form" :model="form" label-width="130px">
-                <el-form-item label="所属科室">
-                    <el-input v-model="form.orgName" readOnly class="input"></el-input>
+        <el-dialog :title="titleName"  :visible.sync="editVisible" width="35%" @close="closeDilog('form')">
+            <el-form ref="form" :model="form" :rules="rules" label-width="130px">
+                <el-form-item label="所属科室" prop="org_value">
+                    <el-select v-model="form.org_value" filterable @change="changeOrg"  style="width:300px;">
+                        <el-option
+                        v-for="item in options_org"
+                        :key="item.orgId"
+                        :label="item.orgName"
+                        :value="item.orgId+'@'+item.orgName">
+                        </el-option>
+                   </el-select>
+                   
                 </el-form-item>
-                <el-form-item label="项目名称">
-                  <el-select v-model="project_value" filterable placeholder="请选择项目">
+                <el-form-item label="项目名称"  prop="project_value" >
+                  <el-select v-model="form.project_value" filterable placeholder="请选择项目" @change="selectProject">
                         <el-option
                         v-for="item in project_option"
                         :key="item.id"
@@ -62,13 +83,18 @@
                    </el-select>
                  
                 </el-form-item>
-                <el-form-item label="合同名称">
+                <el-form-item label="资料类型" prop="contractType">
+                      <el-radio v-model="form.contractType" @change="contractType" label="0">项目合同</el-radio>
+                      <el-radio v-model="form.contractType" @change="contractType" label="1">其他资料</el-radio>
+                      
+                </el-form-item>
+                <el-form-item :label="contract_title" prop="contractName"  v-show="showContractName">
                     <el-input v-model="form.contractName" class="input"></el-input>
                 </el-form-item>
-                <el-form-item label="合同总金额（元）">
+                <el-form-item label="合同总金额（元）" prop="contractTotal" v-show="showContract">
                     <el-input v-model="form.contractTotal" class="input"></el-input>
                 </el-form-item>
-                <el-form-item label="合同创建时间">
+                <el-form-item label="合同创建时间" prop="contractTime" v-show="showContract">
                     <el-date-picker
                         v-model="form.contractTime"
                         type="date"
@@ -78,13 +104,13 @@
                     </el-date-picker>
                    
                 </el-form-item>
-                <el-form-item label="合同负责人">
+                <el-form-item label="合同负责人" prop="contractLeader" v-show="showContract">
                     <el-input v-model="form.contractLeader" class="input"></el-input>
                 </el-form-item>
-                <el-form-item label="联系方式">
+                <el-form-item label="联系方式" prop="contractLeaderPhone" v-show="showContract">
                     <el-input v-model="form.contractLeaderPhone" class="input"></el-input>
                 </el-form-item>
-                <el-form-item label="合同附件">
+                <el-form-item label="合同附件"  v-show="showContract">
                   <el-upload  class="upload-class"
                     :action="uploadUrl()"
                     :on-success="contractSuccess"
@@ -94,7 +120,7 @@
                     <el-button size="small" type="primary">点击上传</el-button>
                 </el-upload>
                 </el-form-item>
-                <el-form-item label="其他附件">
+                <el-form-item label="其他附件" v-show="showOther">
                   <el-upload  class="upload-class"
                     :action="uploadUrl()"
                     :on-success="otherSuccess"
@@ -108,7 +134,8 @@
             </el-form>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="editVisible = false">取 消</el-button>
-                <el-button type="primary" @click="saveEdit">确 定</el-button>
+                <el-button type="primary" @click="saveEdit(0)">暂 存</el-button>
+                <el-button type="primary" @click="saveEdit(1)">确 定</el-button>
             </span>
         </el-dialog>
 
@@ -121,6 +148,14 @@
     export default {
         name: 'basetable',
         data() {
+            var valiNumberPass1 = (rule, value, callback) => {//包含小数的数字
+                let reg = /^[+-]?(0|([1-9]\d*))(\.\d+)?$/g;
+                if (!reg.test(value)) {
+                    callback(new Error('请输正确的金额'));
+                } else {
+                    callback();
+                }
+            };
             return {
                 editVisible: false,
                 page:1,
@@ -130,10 +165,42 @@
                 multipleSelection: [],
                 titleName:'',
                 project_option:[],
-                project_value:'',
                 contractList:'',
                 otherList:'',
                 button_role:{},
+                options_org:[],
+                contract_title:'',
+                showContractName:false,
+                showContract:false,
+                showOther:false,
+                edit_id:'',
+                rules: {
+                    org_value: [
+                        { required: true, message: '请填选择科室', trigger: 'blur' }
+                    ],
+                    project_value:[
+                        { required: true, message: '请选择项目', trigger: 'blur' }
+                    ],
+                    contractType:[
+                        { required: true, message: '请选择资料类型', trigger: 'blur' }
+                    ],
+                     contractName:[
+                        { required: true, message: '请填写名称', trigger: 'blur' }
+                    ],
+                    contractTotal:[
+                        { required: true, message: '请填写合同总金额', trigger: 'blur' },
+                        { validator:valiNumberPass1, trigger: "blur" }
+                    ],
+                    contractTime:[
+                        { required: true, message: '请填写合同创建时间', trigger: 'change' }
+                    ],
+                    contractLeader:[
+                        { required: true, message: '请填写负责人', trigger: 'change' }
+                    ],
+                    contractLeaderPhone:[
+                        { required: true, message: '请填写联系方式', trigger: 'change' }
+                    ],
+                },
                 form:{
                    id:'',
                    projectName:'',
@@ -144,7 +211,9 @@
                    contractTotal:'',
                    contractLeader:'',
                    contractLeaderPhone:'',
-                   contractTime:''
+                   contractTime:'',
+                   org_value:'',
+                   project_value:'',
                 },
                 contractName:'',
                 projectName:'',
@@ -160,6 +229,16 @@
            
         },
         methods: {
+            handleLook(index, row){
+                this.$router.push({ path:'/contract_details',query: {id: row.id}})
+            },
+            selectProject(){
+                this.$forceUpdate();
+            },
+             closeDilog:function(form){
+        
+                this.$refs[form].resetFields();//将form表单重置
+            },
             async button(){
                 var but=await this.$http.get(baseURL_.loginUrl+'/permission/button',{ 
                     params: {'code':this.$route.path}
@@ -200,6 +279,10 @@
                 this.multipleSelection = val;
             },
             handleDelete(index, row){
+                if(row.status=='1'){
+                     this.$message("归档数据不允许操作");
+                     return;
+                }
                 this.$confirm('确认删除？')
                 .then( e=> {
                   
@@ -207,6 +290,15 @@
 
                 }).catch(_ => {});
                  
+            },
+            async changeOrg(val){
+                //this.project_option=[];
+                this.$forceUpdate();
+                this.form.project_value='';
+                const projects = await this.$http.get(baseURL_.lyjUrl+'/projects/getUserAll',{ 
+                    params:{'orgId':val.split("@")[0],'type':'contract','id':this.edit_id}
+                    });
+                this.project_option=projects.data.data;
             },
             search(){
                 this.getData();
@@ -218,23 +310,45 @@
                 this.contractName='';
                 this.getData();
             },
-            async saveEdit(){
+            async saveEdit(status){
                 var addOrEdit={};
-                if(this.project_value){
-                   this.form.projectId=this.project_value.split("@")[0];
-                   this.form.projectName=this.project_value.split("@")[1];
-                }
-
-                if(this.form.id!=null){
-                   addOrEdit= await this.$http.post(baseURL_.lyjUrl+'/contract/update',this.$qs.stringify(this.form));
-                }else{
-                    addOrEdit= await this.$http.post(baseURL_.lyjUrl+'/contract/save',this.$qs.stringify(this.form));
-                }
-                this.$message(addOrEdit.data.data);
-                if(addOrEdit.data.statusCode==200){
-                    this.editVisible=false;
-                }
-                this.getData();
+                this.form.status=status;
+               
+               if(this.form.contractType=='1'){
+                   this.form.contractTotal='1';
+                   this.form.contractLeader='1';
+                   this.form.contractTime='1';
+                   this.form.contractLeaderPhone='1';
+               }
+                var flg=true;
+                if(this.form.status==1){
+                    this.$refs['form'].validate((valid) => {
+                    if (!valid) {
+                        flg=false;
+                        } 
+                    })
+                 }
+                 if(flg){
+                    if(this.form.project_value){
+                            this.form.projectId=this.form.project_value.split("@")[0];
+                            this.form.projectName=this.form.project_value.split("@")[1];
+                        }
+                        if(this.form.org_value){
+                            this.form.orgId=this.form.org_value.split("@")[0];
+                            this.form.orgName=this.form.org_value.split("@")[1];
+                        }
+                        if(this.form.id!=null){
+                            addOrEdit= await this.$http.post(baseURL_.lyjUrl+'/contract/update',this.$qs.stringify(this.form));
+                        }else{
+                            addOrEdit= await this.$http.post(baseURL_.lyjUrl+'/contract/save',this.$qs.stringify(this.form));
+                        }
+                        this.$message(addOrEdit.data.data);
+                        if(addOrEdit.data.statusCode==200){
+                            this.editVisible=false;
+                    }
+                        this.getData();
+                 }
+               
             },
             async delete(id){
                 const del = await this.$http.get(baseURL_.lyjUrl+'/contract/delete',{ 
@@ -247,17 +361,49 @@
                   
             },
             async handleEdit(index, row) {
+                if(row.status=='1'){
+                     this.$message("归档数据不允许操作");
+                     return;
+                }
+                this.edit_id=row.id;
                 this.titleName="修改";
                 this.contractList=[];
                 this.otherList=[];
-                const projects = await this.$http.get(baseURL_.lyjUrl+'/projects/getUserAll');
-                this.project_option=projects.data.data;
+               
+                const user1 = await this.$http.get(baseURL_.lyjUrl+'/home/getOnlineUser',{
+                    params:{'id':row.id,'type':'contract'}
+                });
+                this.options_org=user1.data.data.org;
+
                 const user = await this.$http.get(baseURL_.lyjUrl+'/contract/getById',{ 
                     params: {'id':row.id}
                 });
                 if(user.data.statusCode==200){
                     this.form=user.data.data
-                    this.project_value=user.data.data.projectId+'@'+user.data.data.projectName;
+                    this.form.contractType=user.data.data.contractType+'';
+                    this.form.org_value=user.data.data.orgId+"@"+user.data.data.orgName
+
+                     const projects = await this.$http.get(baseURL_.lyjUrl+'/projects/getUserAll',{
+                           params:{'orgId':user.data.data.orgId,'type':'contract','id':row.id}
+                     });
+                     this.project_option=projects.data.data;
+                     this.form.project_value=user.data.data.projectId+'@'+user.data.data.projectName;
+                    if(this.form.contractType=='0'){
+                        this.contract_title="合同名称";
+                        this.showContractName=true;
+                        this.showContract=true;
+                        this.showOther=false;
+                    }
+
+                    if(this.form.contractType=='1'){
+                        this.contract_title="资料名称";
+                        this.showContractName=true;
+                        this.showContract=false;
+                        this.showOther=true;
+                    }
+
+
+                    
                     if(user.data.data.contractAttachment){
                         var contracArry=[];
                         var obj={};
@@ -280,15 +426,24 @@
                  this.editVisible=true;
             },
             async add(){
+               this.edit_id='';
+               this.showContractName=false;
+               this.showContract=false;
+               this.showOther=false;
                this.form={};
                this.contractList=[];
                this.otherList=[];
+               this.options_org=[];
+               this.project_option=[];
+               
                const user = await this.$http.get(baseURL_.sysUrl+'/sysUser/getOnlineUser');
-               this.form.orgName=user.data.data.orgName;
-               this.form.orgId=user.data.data.orgId;
-               const projects = await this.$http.get(baseURL_.lyjUrl+'/projects/getUserAll');
+               this.options_org=user.data.data.org;
+               this.form.org_value=user.data.data.org[0].orgId+"@"+user.data.data.org[0].orgName
+               
+               const projects = await this.$http.get(baseURL_.lyjUrl+'/projects/getUserAll',{
+                    params:{'orgId':this.form.org_value.split("@")[0]}
+               });
                this.project_option=projects.data.data;
-
                this.editVisible=true;
                this.titleName="添加";
             },
@@ -305,7 +460,29 @@
                   this.page=user.data.data.page;
                 }
             },
-            
+            contractType(val){
+
+               if(val=='0'){
+                   this.contract_title="合同名称";
+                   this.showContractName=true;
+                   this.showContract=true;
+                   this.showOther=false;
+                   this.form.otherAttachmentName='';
+                   this.form.otherAttachment='';
+               }
+               if(val=='1'){
+                   this.contract_title="资料名称";
+                   this.showContractName=true;
+                   this.showContract=false;
+                   this.showOther=true;
+                   this.form.contractTotal='';
+                   this.form.contractLeader='';
+                   this.form.contractTime='';
+                   this.form.contractLeaderPhone='';
+                   this.form.contractAttachmentName='';
+                   this.form.contractAttachment='';
+               }
+            }
             
         }
     }
@@ -328,6 +505,9 @@
     .del-dialog-cnt{
         font-size: 12px;
         text-align: center
+    }
+    .blue{
+        color:blue;
     }
     .table{
         width: 100%;

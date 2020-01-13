@@ -1,6 +1,7 @@
 package cn.forest.common.web;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -67,7 +68,11 @@ public class SystemLogAspect {
 
   private Map<String, Object> params(JoinPoint joinPoint, HttpServletRequest request, Map<String, String> joinPointMap,
       String classDesc, String desc) {
-    HashMap userInfoMap = (HashMap)redisDao.getValue(request.getHeader(Constant.HEADER_TOKEN_STRING));
+    String token=request.getHeader(Constant.HEADER_TOKEN_STRING);
+    if(request.getHeader(Constant.HEADER_TOKEN_STRING)==null) {
+      token=request.getParameter(Constant.HEADER_TOKEN_STRING);
+    }
+    HashMap userInfoMap = (HashMap)redisDao.getValue(token);
     List<Map<String, Object>> roles = (List) userInfoMap.get("roles");
     String roleName="";
     if(roles!=null) {

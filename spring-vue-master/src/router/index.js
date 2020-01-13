@@ -28,6 +28,11 @@ export default new Router({
                     meta: { title: '用户管理' }
                 },
                 {
+                    path: '/user_details',
+                    component: resolve => require(['../components/page/system/user/user_details.vue'], resolve),
+                    meta: { title: '用户详情' }
+                },
+                {
                     path: '/home',
                     component: resolve => require(['../components/page/home.vue'], resolve),
                     meta: { title: '系统首页' }
@@ -86,6 +91,11 @@ export default new Router({
                     meta: { title: '科室管理' }
                 },
                 {
+                    path: '/org_details',
+                    component: resolve => require(['../components/page/organization/org_details.vue'], resolve),
+                    meta: { title: '科室详情' }
+                },
+                {
                     path: '/org_user',
                     component: resolve => require(['../components/page/organization/org_user.vue'], resolve),
                     meta: { title: '科室人员' }
@@ -96,9 +106,19 @@ export default new Router({
                     meta: { title: '项目管理' }
                 },
                 {
+                    path: '/project_details',
+                    component: resolve => require(['../components/page/project/project_details.vue'], resolve),
+                    meta: { title: '项目详情' }
+                },
+                {
                     path: '/contract',
                     component: resolve => require(['../components/page/contract/contract.vue'], resolve),
-                    meta: { title: '合同管理' }
+                    meta: { title: '项目资料管理' }
+                },
+                {
+                    path: '/contract_details',
+                    component: resolve => require(['../components/page/contract/contract_details.vue'], resolve),
+                    meta: { title: '项目资料详情' }
                 },
                 {
                     path: '/plan',
@@ -106,9 +126,20 @@ export default new Router({
                     meta: { title: '计划管理' }
                 },
                 {
+                    path: '/plan_details',
+                    component: resolve => require(['../components/page/plan/plan_details.vue'], resolve),
+                    meta: { title: '计划详情' }
+                },
+               
+                {
                     path: '/expenditure',
                     component: resolve => require(['../components/page/expenditure/expenditure.vue'], resolve),
                     meta: { title: '执行情况管理' }
+                },
+                {
+                    path: '/expenditure_details',
+                    component: resolve => require(['../components/page/expenditure/expenditure_details.vue'], resolve),
+                    meta: { title: '执行情况详情' }
                 },
 
                 {

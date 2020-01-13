@@ -15,7 +15,7 @@ public interface ProjectsRemote {
   Object list(@RequestParam(value = "page") Long page, @RequestParam(value = "pageSize") Long pageSize,
       @RequestParam(value = "userId") Long userId,@RequestParam(value = "projectName") String projectName,
       @RequestParam(value = "orgName") String orgName,@RequestParam(value = "leader") String leader,
-      @RequestParam(value = "orgId") Long orgId);
+      @RequestParam(value = "orgIds") String orgIds);
 
   @RequestMapping("/projects/getById")
   Object getById(@RequestParam("id") Long id);
@@ -30,17 +30,22 @@ public interface ProjectsRemote {
   int delete(@RequestParam("id") Long id);
 
   @RequestMapping("/projects/getUserAll")
-  Object getUserAll(@RequestParam(value = "userId") Long userId);
+  Object getUserAll(@RequestParam(value = "userId") Long userId,@RequestParam(value = "orgId") Long orgId,@RequestParam(value = "year") Integer year);
   
   @RequestMapping("/projects/getProjectByOrgId")
-  Object getProjectByOrgId(@RequestParam(value = "orgId") Long orgId);
+  Object getProjectByOrgId(@RequestParam(value = "orgId") Long orgId,@RequestParam(value = "year") Integer year,@RequestParam(value = "parentId") Long parentId);
   
   @RequestMapping("/projects/getProjectsCount")
-  Object getProjectsCount(@RequestParam(value = "orgId") Long orgId,@RequestParam(value = "userId") Long userId,@RequestParam(value = "id") Long id);
+  Object getProjectsCount(@RequestParam(value = "orgId") Long orgId,@RequestParam(value = "userId") Long userId,@RequestParam(value = "id") Long id,@RequestParam(value = "orgIds") String orgIds,@RequestParam(value = "year") Integer year);
  
   @RequestMapping("/projects/getProjects")
-  Object getProjects(@RequestParam(value = "page") Long page, @RequestParam(value = "pageSize") Long pageSize,@RequestParam(value = "orgId") Long orgId,@RequestParam(value = "userId") Long userId,@RequestParam(value = "id") Long id);
+  Object getProjects(@RequestParam(value = "page") Long page, @RequestParam(value = "pageSize") Long pageSize,@RequestParam(value = "orgId") Long orgId,@RequestParam(value = "userId") Long userId,@RequestParam(value = "id") Long id,@RequestParam(value = "orgIds") String orgIds,@RequestParam(value = "year") Integer year,@RequestParam(value = "num")Double num);
  
+  @RequestMapping("/projects/getProjectsByParentId")
+  Object getProjectsByParentId(@RequestParam(value = "parentId") Long parentId);
   
-  
+  @RequestMapping("/projects/exportList")
+  Object exportList(@RequestParam(value = "userId") Long userId,@RequestParam(value = "projectName") String projectName,
+      @RequestParam(value = "orgName") String orgName,@RequestParam(value = "leader") String leader,
+      @RequestParam(value = "orgIds") String orgIds);
 }

@@ -14,7 +14,9 @@
 		 e.expenditure_attachment as expenditureAttachment,
 		 e.other_attachment as otherAttachment,
 		 e.expenditure_attachment_name as expenditureAttachmentName,
-		 e.other_attachment_name as otherAttachmentName
+		 e.other_attachment_name as otherAttachmentName,
+		 e.status,
+		 e.party_b_units as partyBUnits
 	FROM
 		expenditure e
 		INNER JOIN organization o ON o.id = e.org_id
@@ -23,8 +25,8 @@
     <if test="userId!=null">
 	    and e.user_id=#{userId} 
 	  </if>
-	  <if test="orgId!=null">
-	    and e.org_id=#{orgId} 
+	   <if test="orgIds!=null">
+	    and  e.org_id in <foreach collection="orgIds" item="item" index="index" open="(" separator="," close=")">#{item}</foreach>
 	  </if>
 	  <if test="projectName!=null and projectName!=''">
 	    and p.project_name like CONCAT('%',#{projectName},'%')
@@ -48,7 +50,11 @@
 		 e.expenditure_attachment as expenditureAttachment,
 		 e.other_attachment as otherAttachment,
 		 e.expenditure_attachment_name as expenditureAttachmentName,
-		 e.other_attachment_name as otherAttachmentName
+		 e.other_attachment_name as otherAttachmentName,
+		 e.status,
+		 e.user_id as userId,
+		 e.party_b_units as partyBUnits,
+		 e.create_time as createTime
 	FROM
 		expenditure e
 		INNER JOIN organization o ON o.id = e.org_id
@@ -62,12 +68,20 @@
 		count( * ) as number,
 		IFNULL( sum( e.expenditure_total ), 0 ) as total 
 	FROM
-		expenditure e 
+		expenditure e inner join projects p on e.project_id=p.id
 	WHERE
 		1 = 1 
 		AND e.is_delete = 0 
+		and p.is_delete = 0
+		and p.status=1
+		and e.status=1
+		and p.parent_id = 0
+		and p.project_level=1
 		<if test="orgId!=null">
 		  AND e.org_id =#{orgId}
+		</if>
+		<if test="orgIds!=null">
+		    and  e.org_id in <foreach collection="orgIds" item="item" index="index" open="(" separator="," close=")">#{item}</foreach>
 		</if>
 		<if test="userId!=null">
 		  AND e.user_id = #{userId} 
@@ -75,7 +89,9 @@
 		<if test="projectId!=null">
 		  AND e.project_id = #{projectId}
 		</if>
-		
+		<if test="year!=null">
+			  AND p.year = #{year}
+		</if>
 		
   
   </select>

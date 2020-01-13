@@ -16,7 +16,10 @@ import '../zTree_v3/css/zTreeStyle/zTreeStyle.css';
 import '../zTree_v3/js/jquery.ztree.core.js';
 import '../zTree_v3/js/jquery.ztree.excheck.js';
 import '../zTree_v3/js/jquery.ztree.exedit.js';
+
+
 import http from '@/utils/request.js';
+
 import qs from 'qs'
 Vue.prototype.$qs = qs;
 
@@ -82,7 +85,6 @@ axios.interceptors.response.use( response => {
      }
     
  })
-
 
 new Vue({
     router,

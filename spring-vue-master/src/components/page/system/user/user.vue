@@ -20,7 +20,7 @@
                 <el-table-column prop="phone" label="手机"  align="center" width="100"></el-table-column>
                 <el-table-column prop="email" label="邮箱" align="center" width="150"> </el-table-column>
                 <el-table-column prop="createTime" label="创建时间" align="center"  width="150"></el-table-column>
-                <el-table-column prop="typeName" label="所属科室" show-overflow-tooltip align="center"  width="100"></el-table-column>
+                <el-table-column prop="orgNames" label="所属科室" show-overflow-tooltip align="center"  width="100"></el-table-column>
                 <el-table-column prop="roleNames" label="角色" show-overflow-tooltip align="center"  width="100"></el-table-column>
                 <el-table-column prop="isStatus" label="是否启用" align="center" width="70">
                   <template slot-scope="scope">
@@ -30,12 +30,12 @@
                 </el-table-column>
                 <el-table-column prop="loginTime" label="登录时间"  align="center" width="130"></el-table-column>
                 <el-table-column prop="ip" label="登录ip"  align="center" ></el-table-column>
-                <el-table-column label="操作" width="" align="center"  v-if="button_role&&(button_role.delete||button_role.edit)">
+                <el-table-column label="操作" width="" align="center"  v-if="button_role&&(button_role.delete||button_role.edit||button_role.look)">
                     <template slot-scope="scope">
                         <!-- <el-button type="text" icon="el-icon-setting" @click="ztreeEdit(scope.$index, scope.row)">设置角色</el-button>  -->
                         <el-button type="text" icon="el-icon-edit"  v-if="button_role&&button_role.edit" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
                         <el-button type="text" icon="el-icon-delete" class="red"  v-if="button_role&&button_role.delete"   @click="handleDelete(scope.$index, scope.row)" >删除</el-button>
-                        
+                        <el-button type="text" icon="el-icon-document"  v-if="button_role&&button_role.look" @click="handleLook(scope.$index, scope.row)">查看</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -53,35 +53,35 @@
         </div>
 
         <!-- 编辑弹出框 -->
-        <el-dialog :title="titleName"  :visible.sync="editVisible" width="30%">
-            <el-form ref="form" :model="form" label-width="70px">
-                <el-form-item label="姓名">
+        <el-dialog :title="titleName"  :visible.sync="editVisible" width="30%" @close="closeDilog('form')">
+            <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+                <el-form-item label="姓名" prop="name">
                 <el-input v-model="form.name" class="input"></el-input>
                 </el-form-item>
-                <el-form-item label="登录名">
+                <el-form-item label="登录名" prop="loginName">
                     <el-input v-model="form.loginName" class="input"></el-input>
                 </el-form-item>
-                <el-form-item label="密码"  v-show="show_password">
-                    <el-input v-model="form.password" type="password" class="input"></el-input>
+                <el-form-item label="密码" prop="password" v-show="show_password">
+                    <el-input v-model="form.password" type="password"  class="input"></el-input>
                 </el-form-item>
-                <el-form-item label="手机号">
+                <el-form-item label="手机号" prop="phone">
                 <el-input v-model="form.phone" class="input"></el-input>
                 </el-form-item>
-                <el-form-item label="邮箱">
+                <el-form-item label="邮箱" prop="email">
                     <el-input v-model="form.email" class="input"></el-input>
                 </el-form-item>
-                <el-form-item label="所属科室">
-                   <el-select v-model="options_value" filterable placeholder="请选择所属科室">
+                <el-form-item label="所属科室" prop="options_value">
+                   <el-select v-model="form.options_value" multiple  placeholder="请选择所属科室" style="width:300px;" @change="selectOrg">
                         <el-option
                         v-for="item in options_org"
                         :key="item.id"
                         :label="item.name"
-                        :value="item.id+'@'+item.name">
+                        :value="item.id">
                         </el-option>
                    </el-select>
                 </el-form-item>
-                <el-form-item label="角色">
-                   <el-select v-model="roles_value" filterable placeholder="请选择角色">
+                <el-form-item label="角色" prop="roles_value">
+                   <el-select v-model="form.roles_value" filterable placeholder="请选择角色" style="width:300px;">
                         <el-option
                         v-for="item in options_role"
                         :key="item.id"
@@ -132,6 +132,29 @@
                 user_id:'',
                 show_password:false,
                 button_role:{},
+                rules: {
+                    name: [
+                        { required: true, message: '请填写用户姓名', trigger: 'blur' }
+                    ],
+                    loginName:[
+                        { required: true, message: '请填写登录名', trigger: 'blur' }
+                    ],
+                    password:[
+                        { required: true, message: '请填写登录密码', trigger: 'blur' }
+                    ],
+                     phone:[
+                        { required: true, message: '请填写手机号码', trigger: 'blur' }
+                    ],
+                    email:[
+                        { required: true, message: '请填写邮箱', trigger: 'blur' }
+                    ],
+                    options_value:[
+                        { required: true, message: '请选择科室', trigger: 'change' }
+                    ],
+                    roles_value:[
+                        { required: true, message: '请选择角色', trigger: 'change' }
+                    ],
+                },
                 form:{
                    id:'',
                    name:'',
@@ -141,12 +164,13 @@
                    isStatus:'',
                    type:'',
                    typeId:'',
-                   typeName:''
+                   typeName:'',
+                   password:''
                 },
                 options_org:[],
-                options_value:'',
+                //options_value:'',
                 options_role:[],
-                roles_value:'',
+                //roles_value:'',
                  setting:{
                     data: {
                         simpleData: {
@@ -205,32 +229,49 @@
                this.name="";
                this.getData();
             },
+            selectOrg(){
+             this.$forceUpdate();
+            },
             async button(){
                 var but=await this.$http.get(baseURL_.loginUrl+'/permission/button',{ 
                     params: {'code':this.$route.path}
                 });
                 this.button_role=but.data.data;
             },
+            handleLookhandleLook(index, row){
+                 this.$router.push({ path:'/user_details',query: {id: row.id}})
+            },
             async saveEdit(){
                 var addOrEdit={};
-                if(this.options_value){
-                    this.form.type=0;
-                    this.form.typeId=this.options_value.split("@")[0];
-                    this.form.typeName=this.options_value.split("@")[1];
+                var flg=true;
+                
+                this.$refs['form'].validate((valid) => {
+                if (!valid) {
+                       flg=false;
+                     } 
+                })
+                if(flg){
+                    if(this.form.options_value){
+                        this.form.type=0;
+                        this.form.orgIds=this.form.options_value.join(",");
+                    }
+                    if(this.form.roles_value){
+                        this.form.roleIds=this.form.roles_value.split("@")[0];
+                    }
+                    if(this.form.id!=null){
+                        
+                        addOrEdit= await this.$http.post(baseURL_.sysUrl+'/sysUser/update',this.$qs.stringify(this.form));
+                    }else{
+                        addOrEdit= await this.$http.post(baseURL_.sysUrl+'/sysUser/add',this.$qs.stringify(this.form));
+                    }
+                    this.$message(addOrEdit.data.data);
+                    if(addOrEdit.data.statusCode==200){
+                        this.editVisible=false;
+                    }
+                    this.getData();
                 }
-                if(this.roles_value){
-                    this.form.roleIds=this.roles_value.split("@")[0];
-                }
-                if(this.form.id!=null){
-                   addOrEdit= await this.$http.post(baseURL_.sysUrl+'/sysUser/update',this.$qs.stringify(this.form));
-                }else{
-                    addOrEdit= await this.$http.post(baseURL_.sysUrl+'/sysUser/add',this.$qs.stringify(this.form));
-                }
-                this.$message(addOrEdit.data.data);
-                if(addOrEdit.data.statusCode==200){
-                    this.editVisible=false;
-                }
-                this.getData();
+
+                
             },
             async delete(id){
                 const del = await this.$http.get(baseURL_.sysUrl+'/sysUser/delete',{ 
@@ -244,9 +285,11 @@
             },
             async handleEdit(index, row) {
                 this.titleName="修改";  
-                this.options_value='';
-                this.getOrg();
-                this.getRole();
+                const role1 = await this.$http.get(baseURL_.sysUrl+'/sysUser/getRoleAll');
+                this.options_role=role1.data.data;
+                const org1 = await this.$http.get(baseURL_.sysUrl+'/sysUser/getOrgAll');
+                this.options_org=org1.data.data;
+               
                 const user = await this.$http.get(baseURL_.sysUrl+'/sysUser/getById',{ 
                     params: {'id':row.id}
                 });
@@ -257,27 +300,40 @@
                     this.form.phone=user.data.data.phone;
                     this.form.email=user.data.data.email;
                     this.form.isStatus=user.data.data.isStatus+'';
-                    if(user.data.data.typeId){
-                        this.options_value=user.data.data.typeId+'@'+user.data.data.typeName;
+                    this.form.password=user.data.data.password;
+                   
+                    if(user.data.data.orgIds){
+                        var orgids=user.data.data.orgIds.split(",");
+                        var ov=[];
+                        for(var i=0;i<orgids.length;i++){
+                           ov.push(parseInt(orgids[i]));
+                        }
+                        
+                        this.form.options_value=ov;
+                        
                     }
+                    
                    if(user.data.data.sysRoleList){
                      var role = user.data.data.sysRoleList[0];
-                     this.roles_value=user.data.data.sysRoleList[0].id+'@'+user.data.data.sysRoleList[0].roleName;
+                     this.form.roles_value=user.data.data.sysRoleList[0].id+'@'+user.data.data.sysRoleList[0].roleName;
                    }
                     
                 }
                  this.editVisible=true;
                  this.show_password=false;
             },
+            closeDilog:function(form){
+        
+                this.$refs[form].resetFields();//将form表单重置
+            },
             add(){
                this.form={};
-               this.options_value='';
-               this.roles_value='';
                this.getRole();
                this.getOrg();
                this.editVisible=true;
                this.show_password=true;
                this.titleName="添加";
+               
             },
             async getRole(){
                 const role = await this.$http.get(baseURL_.sysUrl+'/sysUser/getRoleAll');

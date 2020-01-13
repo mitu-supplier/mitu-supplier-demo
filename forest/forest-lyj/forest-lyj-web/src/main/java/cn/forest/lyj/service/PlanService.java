@@ -2,6 +2,7 @@ package cn.forest.lyj.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -47,18 +48,19 @@ public class PlanService {
         break;
       }
     }
-    Long orgId=null;
+    String orgIds=null;
     
     if(gl_flg) {
       userId=null;
     }else {
       if(ks_flg) {
-        orgId=Long.parseLong(map.get("typeId").toString());
+        List<?> orgList = (List) organizationRemote.getOrgByUserId(userId);
+        orgIds = orgList.stream().map(t ->((Map<String, Object>) t).get("orgId").toString()).collect(Collectors.joining(","));
         userId=null;
       }
     }
     
-    Object list = planRemote.list(page,pageSize,userId,projectName,orgName,orgId);
+    Object list = planRemote.list(page,pageSize,userId,projectName,orgName,orgIds);
     if (list != null) {
         return ResultMessage.success(list);
     }

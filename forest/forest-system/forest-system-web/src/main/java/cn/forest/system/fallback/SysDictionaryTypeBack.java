@@ -30,7 +30,7 @@ public class SysDictionaryTypeBack implements SysDictionaryTypeRemote {
     }
 
     @Override
-    public Object list(Long page, Long pageSize) {
+    public Object list(Long page, Long pageSize,String name) {
       return null;
     }
 

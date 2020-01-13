@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,9 +24,12 @@ public class SysDictionaryTypeAction {
     private SysDictionaryTypeMapper sysDictionaryTypeMapper;
 
     @RequestMapping("/list")
-    public Object list(Long page, Long pageSize) {
+    public Object list(Long page, Long pageSize,String name) {
         Page<SysDictionaryType> ipage = new Page<SysDictionaryType>(page, pageSize);
         QueryWrapper<SysDictionaryType> queryWrapper = new QueryWrapper<SysDictionaryType>();
+        if(!StringUtils.isEmpty(name)) {
+          queryWrapper.like("name", name).or().like("code", name);
+        }
         queryWrapper.orderByAsc("id");
         IPage<SysDictionaryType> selectPage = sysDictionaryTypeMapper.selectPage(ipage, queryWrapper);
         return new ResultPage<SysDictionaryType>(selectPage);

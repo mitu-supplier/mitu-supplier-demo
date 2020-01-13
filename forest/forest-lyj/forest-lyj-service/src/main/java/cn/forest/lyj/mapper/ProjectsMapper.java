@@ -21,5 +21,8 @@ public interface ProjectsMapper extends BaseMapper<Projects> {
     
     
     List<Projects> getProjects(Map<String, Object> map);
+    
+    
+    List<Projects> getProjectsByParentId(@Param("id") Long id);
   
 }

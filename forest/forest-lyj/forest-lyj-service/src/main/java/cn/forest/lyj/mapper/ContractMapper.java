@@ -14,4 +14,6 @@ public interface ContractMapper extends BaseMapper<Contract> {
   List<Contract> getContractList(Map<String, Object> map);
   
   Contract getContractById(@Param("id") Long id);
+  
+  int updateContract(Contract contract);
 }

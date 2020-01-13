@@ -1,6 +1,7 @@
 package cn.forest.lyj.entity;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -45,6 +46,23 @@ public class Projects {
   @TableField(value = "user_id")
   private Long userId;
   
+  @TableField(value = "project_level")
+  private Integer projectLevel;
+  
+  @TableField(value = "year")
+  private Integer year;
+  
+  @TableField(value = "parent_id")
+  private Long parentId;
+  
+  //0 草稿 1 正式
+  @TableField(value = "status")
+  private Integer status;
+  
+  
+  @TableField(value = "project_source")
+  private String projectSource;
+  
   @TableField(exist = false)
   private BigDecimal per;
   
@@ -59,6 +77,14 @@ public class Projects {
   
   @TableField(exist = false)
   private String dy;
+  
+  @TableField(exist = false)
+  private boolean hasChildren;
+  
+  
+  @TableField(exist = false)
+  private List children;
+  
   
   
   public Long getId() {
@@ -189,6 +215,62 @@ public class Projects {
 
   public void setDy(String dy) {
     this.dy = dy;
+  }
+
+  public Integer getProjectLevel() {
+    return projectLevel;
+  }
+
+  public void setProjectLevel(Integer projectLevel) {
+    this.projectLevel = projectLevel;
+  }
+
+  public Integer getYear() {
+    return year;
+  }
+
+  public void setYear(Integer year) {
+    this.year = year;
+  }
+
+  public Long getParentId() {
+    return parentId;
+  }
+
+  public void setParentId(Long parentId) {
+    this.parentId = parentId;
+  }
+
+  public Integer getStatus() {
+    return status;
+  }
+
+  public void setStatus(Integer status) {
+    this.status = status;
+  }
+
+  public String getProjectSource() {
+    return projectSource;
+  }
+
+  public void setProjectSource(String projectSource) {
+    this.projectSource = projectSource;
+  }
+
+  public boolean isHasChildren() {
+    return hasChildren;
+  }
+
+  public void setHasChildren(boolean hasChildren) {
+    this.hasChildren = hasChildren;
+  }
+
+  public List getChildren() {
+    return children;
+  }
+
+  public void setChildren(List children) {
+    this.children = children;
   }
 
   

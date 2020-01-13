@@ -29,11 +29,12 @@
                     </template>
                 </el-table-column>
                 
-                <el-table-column label="操作" width="" align="center" v-if="button_role&&(button_role.delete||button_role.edit||button_role.add_user)">
+                <el-table-column label="操作" width="" align="center" v-if="button_role&&(button_role.delete||button_role.edit||button_role.look)">
                     <template slot-scope="scope">
-                        <el-button type="text" icon="el-icon-share" v-if="button_role&&button_role.add_user"  @click="showUser(scope.$index, scope.row)">科室人员</el-button>
+                        
                         <el-button type="text" icon="el-icon-edit" v-if="button_role&&button_role.edit" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
                         <el-button type="text" icon="el-icon-delete" class="red" v-if="button_role&&button_role.delete" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                        <el-button type="text" icon="el-icon-document"  v-if="button_role&&button_role.look" @click="handleLook(scope.$index, scope.row)">查看</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -52,27 +53,27 @@
 
 
        <!-- 编辑弹出框 -->
-        <el-dialog :title="titleName"  :visible.sync="editVisible" width="30%">
-            <el-form ref="form" :model="form" label-width="70px">
-                <el-form-item label="科室名称">
+        <el-dialog :title="titleName"  :visible.sync="editVisible" width="30%"  @close="closeDilog('form')">
+            <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+                <el-form-item label="科室名称" prop="name">
                 <el-input v-model="form.name" class="input"></el-input>
                 </el-form-item>
                 <el-form-item label="父级科室" v-show="parentNameShow">
                     <el-input v-model="form.parentName" readOnly class="input"></el-input>
                 </el-form-item>
-                <el-form-item label="编号">
+                <el-form-item label="编号" prop="code">
                 <el-input v-model="form.code" class="input"></el-input>
                 </el-form-item>
-                <el-form-item label="排序">
-                    <el-input v-model="form.priority" class="input"></el-input>
+                <el-form-item label="排序" prop="priority">
+                    <el-input v-model.number="form.priority" class="input"></el-input>
                 </el-form-item>
-                <el-form-item label="业务分管领导">
+                <el-form-item label="业务分管领导" prop="leader">
                     <el-input v-model="form.leader" class="input"></el-input>
                 </el-form-item>
-                <el-form-item label="联系电话">
+                <el-form-item label="联系电话" prop="leaderPhone">
                     <el-input v-model="form.leaderPhone" class="input"></el-input>
                 </el-form-item>
-                <el-form-item label="性别">
+                <el-form-item label="性别" prop="leaderSex">
                     <el-radio v-model="form.leaderSex" label="1">男</el-radio>
                     <el-radio v-model="form.leaderSex" label="0">女</el-radio>
                 </el-form-item>
@@ -105,6 +106,29 @@
                 titleName:'',
                 parentNameShow:false,
                 button_role:{},
+                rules: {
+                    name: [
+                        { required: true, message: '请填写科室名称', trigger: 'blur' }
+                    ],
+                    code:[
+                        { required: true, message: '请填写科室编号', trigger: 'blur' }
+                    ],
+                    priority:[
+                        
+                        {  required: true, message: '请填写排序序号', trigger: 'change' },
+                        {  type:'number', message: '请填写数字', trigger: 'change' },
+                    ],
+                    leader:[
+                        { required: true, message: '请填写业务分管领导', trigger: 'blur' }
+                    ],
+                    leaderPhone:[
+                        { required: true, message: '请填写联系电话', trigger: 'blur' }
+                    ],
+                    leaderSex:[
+                        { required: true, message: '请选择性别', trigger: 'change' }
+                    ],
+                    
+                },
                 form:{
                    id:'',
                    name:'',
@@ -148,6 +172,9 @@
                this.name="";
                this.getData();
             },
+             handleLook(index, row){
+                 this.$router.push({ path:'/org_details',query: {id: row.id}})
+            },
             async button(){
                 var but=await this.$http.get(baseURL_.loginUrl+'/permission/button',{ 
                     params: {'code':this.$route.path}
@@ -172,6 +199,10 @@
                     resolve(permissions.data.data) 
              
             },
+            closeDilog:function(form){
+        
+                this.$refs[form].resetFields();//将form表单重置
+            },
             add(){
                if(this.multipleSelection.length>1){
                   this.$message("不能选择多条数据进行操作");
@@ -187,25 +218,35 @@
                     this.form.parentId=this.multipleSelection[0].id;
                }
                this.editVisible=true;
+               this.closeDilog("form");
                this.titleName="添加";
             },
             async saveEdit(){
                 var addOrEdit={};
-                if(this.form.id!=null){
-                   addOrEdit= await this.$http.post(baseURL_.lyjUrl+'/organization/update',this.$qs.stringify(this.form));
-                }else{
-                    if(this.form.parentId==null){
-                      this.form.parentId=0;
-                      this.form.treeDepth=1;
+                var flg=true;
+                this.$refs['form'].validate((valid) => {
+                if (!valid) {
+                       flg=false;
+                     } 
+                })
+                if(flg){
+                    if(this.form.id!=null){
+                        addOrEdit= await this.$http.post(baseURL_.lyjUrl+'/organization/update',this.$qs.stringify(this.form));
+                    }else{
+                        if(this.form.parentId==null){
+                        this.form.parentId=0;
+                        this.form.treeDepth=1;
+                        }
+                        this.form.isParent='false';
+                        addOrEdit= await this.$http.post(baseURL_.lyjUrl+'/organization/add',this.$qs.stringify(this.form));
                     }
-                    this.form.isParent='false';
-                    addOrEdit= await this.$http.post(baseURL_.lyjUrl+'/organization/add',this.$qs.stringify(this.form));
+                    this.$message(addOrEdit.data.data);
+                    if(addOrEdit.data.statusCode==200){
+                        this.editVisible=false;
+                    }
+                    this.getData();
                 }
-                this.$message(addOrEdit.data.data);
-                if(addOrEdit.data.statusCode==200){
-                    this.editVisible=false;
-                }
-                this.getData();
+                
             },
             handleDelete(index, row){
                 if(row.isParent=='true'){

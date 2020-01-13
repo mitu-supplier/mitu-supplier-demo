@@ -2,6 +2,7 @@ package cn.forest.lyj.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -46,17 +47,18 @@ public class ExpenditureService {
         break;
       }
     }
-    Long orgId=null;
+    String orgIds=null;
     
     if(gl_flg) {
       userId=null;
     }else {
       if(ks_flg) {
-        orgId=Long.parseLong(map.get("typeId").toString());
+        List<?> orgList = (List) organizationRemote.getOrgByUserId(userId);
+        orgIds = orgList.stream().map(t ->((Map<String, Object>) t).get("orgId").toString()).collect(Collectors.joining(","));
         userId=null;
       }
     }
-    Object list = expenditureRemote.list(page,pageSize,userId,projectName,orgName,orgId);
+    Object list = expenditureRemote.list(page,pageSize,userId,projectName,orgName,orgIds);
     if (list != null) {
         return ResultMessage.success(list);
     }
@@ -87,4 +89,41 @@ public class ExpenditureService {
       int delete = expenditureRemote.delete(id);
       return ResultMessage.result(delete, "删除成功", "删除失败");
   }
+  
+  public Object exportList(HttpServletRequest request,String projectName,String orgName,String token) {
+    Map map = (Map) redisDao.getValue(token);
+    Long userId=Long.parseLong(map.get("id").toString());
+    List<Map<String, Object>> roles = (List) map.get("roles");
+    boolean ks_flg=false;
+    boolean gl_flg=false;
+    for (Map<String, Object> roleMap : roles) {
+      String object = roleMap.get("roleCode").toString();
+      if(object.indexOf("KS_")>-1) {
+        ks_flg=true;
+        break;
+      }
+    }
+    
+    for (Map<String, Object> roleMap : roles) {
+      String object = roleMap.get("roleCode").toString();
+      if(object.indexOf("GL_")>-1) {
+        gl_flg=true;
+        break;
+      }
+    }
+    String orgIds=null;
+    
+    if(gl_flg) {
+      userId=null;
+    }else {
+      if(ks_flg) {
+        List<?> orgList = (List) organizationRemote.getOrgByUserId(userId);
+        orgIds = orgList.stream().map(t ->((Map<String, Object>) t).get("orgId").toString()).collect(Collectors.joining(","));
+        userId=null;
+      }
+    }
+    Object list = expenditureRemote.exportList(userId, projectName, orgName, orgIds);
+    return list;
+  }
+  
 }

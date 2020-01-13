@@ -1,6 +1,8 @@
 package cn.forest.server;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
@@ -15,6 +17,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import cn.forest.common.service.utils.ResultPage;
 import cn.forest.lyj.entity.Organization;
 import cn.forest.lyj.mapper.OrganizationMapper;
+import cn.forest.lyj.mapper.UserOrgMapper;
 
 @RestController
 @RequestMapping("/organization")
@@ -22,6 +25,9 @@ public class OrganizationAction {
 
   @Autowired
   private OrganizationMapper organizationMapper;
+  
+  @Autowired
+  private UserOrgMapper userOrgMapper;
   
   @RequestMapping("/list")
   public Object list() {
@@ -88,5 +94,10 @@ public class OrganizationAction {
   }
   
   
-  
+  @RequestMapping("/getOrgByUserId")
+  public Object getOrgByUserId(Long userId) {
+    Map<String, Object> map=new HashMap<String, Object>();
+    map.put("userId", userId);
+    return userOrgMapper.getOrgByUserId(map);
+  }
 }

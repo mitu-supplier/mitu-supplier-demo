@@ -3,8 +3,23 @@
         <el-row :gutter="20">
             <el-col :span="8">
                 <el-card shadow="hover"  style="height:300px;">
-                    <el-form ref="form" style="margin-left:50px;" >
-                        <el-form-item label="科室名称" style="margin-top:30px;">
+                    <el-form ref="form" label-width="70px" style="margin-left:50px;" >
+                        <el-form-item label="年度" style="margin-top:10px;">
+                            <el-select v-model="options_year" filterable placeholder="年度" @change="selectYear" >
+                                <el-option label="2020年" value="2020"></el-option>
+                                <el-option label="2021年" value="2021"></el-option>
+                                <el-option label="2022年" value="2022"></el-option>
+                                <el-option label="2023年" value="2023"></el-option>
+                                <el-option label="2024年" value="2024"></el-option>
+                                <el-option label="2025年" value="2025"></el-option>
+                                <el-option label="2026年" value="2026"></el-option>
+                                <el-option label="2027年" value="2027"></el-option>
+                                <el-option label="2028年" value="2028"></el-option>
+                                <el-option label="2029年" value="2029"></el-option>
+                                <el-option label="2030年" value="2030"></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="科室名称" style="margin-top:10px;">
                             <el-select v-model="org_value" filterable placeholder="请选择科室" @change="selectOrg">
                                 <el-option
                                 v-for="item in org_option"
@@ -24,8 +39,8 @@
                                 </el-option>
                             </el-select>
                         </el-form-item>
-                        <div style="margin-top:40px;">项目总个数：{{project_number}}</div>
-                        <div style="margin-top:40px;">项目总预算（元）：{{project_total}}</div>
+                        <div style="margin-top:20px;">项目总个数：{{project_number}}</div>
+                        <div style="margin-top:20px;">项目总预算（元）：{{project_total}}</div>
                     </el-form>
                 </el-card>
                 
@@ -92,6 +107,8 @@
                pageSize:5,
                org_id:'',
                project_id:'',
+               year:'',
+               options_year:[]
             }
         },
         components: {
@@ -100,7 +117,7 @@
            
         },
         created(){
-            this.projectCount(null,null);
+            this.projectCount();
             this.org();
             this.getData();
         },
@@ -116,14 +133,14 @@
             },
             async getData(){
                  const projectcount = await this.$http.get(baseURL_.lyjUrl+'/home/getProjects',{
-                   params: {'page':this.page,'pageSize':this.pageSize,'orgId':this.org_id,'id':this.project_id}
+                   params: {'page':this.page,'pageSize':this.pageSize,'orgId':this.org_id,'id':this.project_id,'year':this.year}
                  });
                 this.tableData=projectcount.data.data.list;
                 this.total=projectcount.data.data.total;
                 this.page=projectcount.data.data.page;
             },
-            async projectCount(orgId,id){
-             const projectcount = await this.$http.get(baseURL_.lyjUrl+'/home/getProjectsCount',{params: {'orgId':orgId,'id':id}});
+            async projectCount(){
+             const projectcount = await this.$http.get(baseURL_.lyjUrl+'/home/getProjectsCount',{params: {'orgId':this.org_id,'id':this.project_id,'year':this.year}});
                this.project_number=projectcount.data.data.number;
                this.project_total=projectcount.data.data.total;
                var char=[];
@@ -197,19 +214,30 @@
            async selectOrg(row){
              this.project_option=[];
              this.project_value='';
-             const project = await this.$http.get(baseURL_.lyjUrl+'/home/getProjectByOrgId',{params: {'orgId':row}});
+             const project = await this.$http.get(baseURL_.lyjUrl+'/home/getProjectByOrgId',{params: {'orgId':row,'year':this.year,'parentId':0}});
              this.project_option=project.data.data;
-             this.projectCount(row,null);
              this.org_id=row;
              this.project_id='';
+             this.projectCount();
              this.getData();
            },
            async selectProject(row){
-              this.projectCount(null,row);
+              this.projectCount();
               this.project_id=row;
-              this.org_id='',
+              this.getData();
+           },
+
+           async selectYear(row){
+              this.project_option=[];
+              this.project_value='';
+              const project = await this.$http.get(baseURL_.lyjUrl+'/home/getProjectByOrgId',{params: {'orgId':this.org_id,'year':row,'parentId':0}});
+              this.project_option=project.data.data;
+              this.year=row;
+              this.project_id='';
+              this.projectCount();
               this.getData();
            }
+
         }
     }
 
