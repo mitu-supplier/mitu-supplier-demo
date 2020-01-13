@@ -15,12 +15,13 @@
                         <el-input v-model="formInline.name" placeholder="公司名称"></el-input>
                     </el-form-item>
                     <el-form-item>
-                        <el-button type="primary" @click="onSubmit">查询</el-button>
+                        <el-button type="primary" icon="el-icon-search" @click="onSubmit">查询</el-button>
+                        <el-button type="primary" icon="el-icon-refresh" @click="onReset">重置</el-button>
                     </el-form-item>
                 </el-form>
             </div>
             <div class="handle-box">
-                <el-button type="primary" @click="add" icon="el-icon-plus" >添加</el-button>
+                <el-button type="primary"  @click="add" icon="el-icon-plus" >添加</el-button>
                 <el-button type="primary" @click="batchDelete" icon="el-icon-delete" >批量删除</el-button>
             </div>
             <el-table :data="tableData" border class="table" ref="multipleTable" @selection-change="handleSelectionChange">
@@ -94,6 +95,11 @@
             this.getData();
         },
         methods: {
+            onReset(){
+              this.formInline.code="";
+              this.formInline.name="";
+              this.getData();
+            },
             onSubmit(){
                 this.getData();
             },
