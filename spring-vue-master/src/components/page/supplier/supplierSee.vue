@@ -444,8 +444,8 @@
                   this.loginForm[i] = res.data.data.user[i];
                 }
                 
-                for(var i in this.newRuleForm){
-                  this.newRuleForm[i] = res.data.data[i];
+                for(var k in this.newRuleForm){
+                  this.newRuleForm[k] = res.data.data[k];
                 }
                 this.newRuleForm.investmentPerson = res.data.data.investmentPerson;
 

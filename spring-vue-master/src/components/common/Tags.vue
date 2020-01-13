@@ -32,14 +32,14 @@
         },
         methods: {
             isActive(path) {
-                return path === this.$route.fullPath;
+                return path === this.$route.path;
             },
             // 关闭单个标签
             closeTags(index) {
                 const delItem = this.tagsList.splice(index, 1)[0];
                 const item = this.tagsList[index] ? this.tagsList[index] : this.tagsList[index - 1];
                 if (item) {
-                    delItem.path === this.$route.fullPath && this.$router.push(item.path);
+                    delItem.path === this.$route.path && this.$router.push(item.path);
                 }else{
                     this.$router.push('/');
                 }
@@ -52,14 +52,14 @@
             // 关闭其他标签
             closeOther(){
                 const curItem = this.tagsList.filter(item => {
-                    return item.path === this.$route.fullPath;
+                    return item.path === this.$route.path;
                 })
                 this.tagsList = curItem;
             },
             // 设置标签
             setTags(route){
                 const isExist = this.tagsList.some(item => {
-                    return item.path === route.fullPath;
+                    return item.path === route.path;
                 })
                 if(!isExist){
                     if(this.tagsList.length >= 8){
@@ -67,7 +67,7 @@
                     }
                     this.tagsList.push({
                         title: route.meta.title,
-                        path: route.fullPath,
+                        path: route.path,
                         name: route.matched[1].components.default.name
                     })
                 }
@@ -93,7 +93,7 @@
             bus.$on('close_current_tags', () => {
                 for (let i = 0, len = this.tagsList.length; i < len; i++) {
                     const item = this.tagsList[i];
-                    if(item.path === this.$route.fullPath){
+                    if(item.path === this.$route.path){
                         if(i < len - 1){
                             this.$router.push(this.tagsList[i+1].path);
                         }else if(i > 0){

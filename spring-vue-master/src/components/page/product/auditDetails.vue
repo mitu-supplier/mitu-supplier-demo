@@ -99,8 +99,8 @@
                 </el-form-item>
 
                 <el-form-item>
-                    <el-button type="danger" v-if="addComForm.auditStatus =='0'" @click="auditAdopt()">审核通过</el-button>
-                    <el-button type="danger" v-if="addComForm.auditStatus =='0'" @click="auditReject()">审核失败</el-button>
+                    <el-button type="primary" v-if="auditType =='10'" @click="auditAdopt()">审核通过</el-button>
+                    <el-button type="danger" v-if="auditType =='10'" @click="auditReject()">审核失败</el-button>
                     <el-button type="danger" @click="back">返回</el-button>
                 </el-form-item>
             </el-form>
@@ -119,6 +119,7 @@
                 addComForm:{
 
                 },
+                auditType:this.$route.query.state,
                 rules: {
                     password: [{ required: true, message: "请输入密码", trigger: "blur" }],
                     confirmPassword: [{ required: true, message: "请输入密码", trigger: "blur" }]
@@ -153,6 +154,7 @@
           this.getData();
           this.getSelectForm();
         },
+        
         mounted() {
           UE.delEditor("editor");
           ueditor_.methods.loadComponent("editor");
