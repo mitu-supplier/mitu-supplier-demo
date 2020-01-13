@@ -1,287 +1,297 @@
 <template>
     <div class="table">
         <div class="">
-            <el-row style="background:#fff;">
-                <el-col :span="24">
-                    <div class="counnet">
-                      <!-- <div class="supplierTop">入驻商户信息</div> -->
+          <el-row style="background:#fff; padding: 20px;">
+            <el-tabs v-model="activeName" @tab-click="handleClick">
+              <el-tab-pane label="基本信息" name="first">
+                <el-form
+                      :model="loginForm"
+                      ref="loginForm"
+                      label-width="130px"
+                      inline-message
+                      class="demo-ruleForm"
+                  >
+                    <el-form-item label="登录名" prop="loginName">
+                        <el-input v-model="loginForm.loginName" readonly size="mini" class="w50"></el-input>
+                    </el-form-item>
+                
+                      <el-form-item label="姓名" prop="name">
+                          <el-input v-model="loginForm.name" readonly size="mini" maxlength="11" class="w50"></el-input>
+                      </el-form-item>
+
+                      <el-form-item label="手机号" prop="phone">
+                          <el-input v-model="loginForm.phone" readonly size="mini" maxlength="11" class="w50"></el-input>
+                      </el-form-item>
+
+                      <el-form-item label="邮箱" prop="email">
+                          <el-input v-model="loginForm.email" readonly size="mini" class="w50"></el-input>
+                      </el-form-item>
+
+                      <el-form-item label="对接招商人员" >
+                          <el-input v-model="newRuleForm.investmentPerson" readonly size="mini" class="w50"></el-input>
+                      </el-form-item>
+                      
+                  </el-form>
+              </el-tab-pane>
+              <el-tab-pane label="基本信息" name="third">
+                <el-form
+                    :model="newRuleForm"
+                    ref="newRuleForm"
+                    label-width="130px"
+                    inline-message
+                    class="demo-ruleForm"
+                >
+                  <el-form-item label="商户号">
+                      <el-input v-model="newRuleForm.code" readonly size="mini" class="w50"></el-input>
+                  </el-form-item>
+                  
+                  <el-form-item label="公司名称">
+                      <el-input v-model="newRuleForm.name" readonly size="mini" class="w50"></el-input>
+                  </el-form-item>
+
+                  <el-form-item label="公司简称 ">
+                      <el-input v-model="newRuleForm.shortName" readonly size="mini" class="w50"></el-input>
+                  </el-form-item>
+
+                    <el-form-item label="营业执照">
+                        <el-upload
+                            list-type="picture-card"
+                            action=''
+                            disabled
+                            :file-list="businessList">
+                        </el-upload>
+                    </el-form-item>
+
+                    <el-form-item label="营业范围">
+                      <el-input v-model="newRuleForm.businessScope" readonly size="mini" class="w50"></el-input>
+                    </el-form-item>
                     
-                        <el-form
-                            :model="loginForm"
-                            ref="loginForm"
-                            label-width="140px"
-                            inline-message
-                            class="demo-ruleForm"
-                            style="margin-top:20px;"
-                        >
-                            <el-form-item label="用户名" prop="loginName">
-                                <el-input v-model="loginForm.loginName" readonly size="mini" class="w50"></el-input>
-                            </el-form-item>
-                            
-                            <el-form-item label="姓名" prop="name">
-                                <el-input v-model="loginForm.name" readonly size="mini" maxlength="11" class="w50"></el-input>
-                            </el-form-item>
+                    <el-form-item label="公司注册地址">
+                        <el-input v-model="newRuleForm.registerAddress" readonly size="mini" class="w50"></el-input>
+                    </el-form-item>
 
-                            <el-form-item label="手机号" prop="phone">
-                                <el-input v-model="loginForm.phone" readonly size="mini" maxlength="11" class="w50"></el-input>
-                            </el-form-item>
+                    <el-form-item label="法人姓名">
+                        <el-input v-model="newRuleForm.legalName" readonly size="mini" class="w50"></el-input>
+                    </el-form-item>
 
-                            <el-form-item label="邮箱" prop="email">
-                                <el-input v-model="loginForm.email" readonly size="mini" class="w50"></el-input>
-                            </el-form-item>
+                    <el-form-item label="法人代表证件类型">
+                        <el-select v-model="newRuleForm.legalCardType" disabled placeholder="请选择">
+                          <el-option
+                            v-for="item in LEGAL_CARD_TYPE"
+                            :key="item.id"
+                            :label="item.name"
+                            :value="item.id">
+                          </el-option>
+                        </el-select>
+                    </el-form-item>
 
-                            
-                        </el-form>
-                        <el-form
-                            :model="newRuleForm"
-                            ref="newRuleForm"
-                            label-width="140px"
-                            inline-message
-                            class="demo-ruleForm"
-                            style="margin-top:20px;"
-                        >
-                            <el-form-item label="对接招商人员" >
-                                <el-input v-model="newRuleForm.investmentPerson" readonly size="mini" class="w50"></el-input>
-                            </el-form-item>
-                            
-                            
-                            <el-form-item label="公司类型" prop="type">
-                              <el-select v-model="newRuleForm.type" disabled readonly placeholder="请选择">
-                                <el-option
-                                  v-for="item in COMPANY_TYPE"
-                                  :key="item.id"
-                                  :label="item.name"
-                                  :value="item.id">
-                                </el-option>
-                              </el-select>
-                            </el-form-item>
+                    <el-form-item label="法人代表身份证件(正反面)">
+                      <el-upload
+                          list-type="picture-card"
+                          action=''
+                          disabled
+                          :file-list="legalCardList">
+                      </el-upload>
+                    </el-form-item>
 
-                            <el-form-item label="近一年销售额" prop="name">
-                                <el-input v-model="newRuleForm.sales" readonly size="mini" class="w50"></el-input>
-                            </el-form-item>
-                            
-                            <el-form-item label="入驻类型" prop="address">
-                              <el-select v-model="newRuleForm.enterType" disabled readonly placeholder="请选择">
-                                <el-option
-                                  v-for="item in SettledType"
-                                  :key="item.id"
-                                  :label="item.name"
-                                  :value="item.id">
-                                </el-option>
-                              </el-select>
-                            </el-form-item>
+                    <el-form-item label="法人身份证有效期">
+                        <el-date-picker
+                          disabled
+                          size="mini"              
+                          v-model="value2"
+                          type="datetimerange"
+                          align="right"
+                          format="yyyy-MM-dd"
+                          value-format="yyyy-MM-dd"
+                          start-placeholder="开始日期"
+                          end-placeholder="结束日期"
+                          class="w50">
+                        </el-date-picker>
+                    </el-form-item>
 
-                            <el-form-item label="仓储情况">
-                                <el-input v-model="newRuleForm.storageInfo" readonly size="mini" class="w50"></el-input>
-                            </el-form-item>
+                    <el-form-item label="公司电话">
+                        <el-input v-model="newRuleForm.contactMobile" readonly size="mini" class="w50"></el-input>
+                    </el-form-item>
 
-                            <el-form-item label="物流情况">
-                                <el-input v-model="newRuleForm.logisticsInfo" readonly size="mini" class="w50"></el-input>
-                            </el-form-item>
+                    <el-form-item label="公司联系人">
+                        <el-input v-model="newRuleForm.contactName" readonly size="mini" class="w50"></el-input>
+                    </el-form-item>
 
-                            <el-form-item label="是否支持api对接">
-                                <el-radio v-model="newRuleForm.isSupportApi" readonly :label="1">支持</el-radio>
-                                <el-radio v-model="newRuleForm.isSupportApi" readonly :label="0">不支持</el-radio>
-                            </el-form-item>
+                    <el-form-item label="纳税人类型">
+                        <el-select v-model="newRuleForm.taxpayerType" disabled placeholder="请选择">
+                          <el-option
+                            v-for="item in TAXPAYER_TYPE"
+                            :key="item.id"
+                            :label="item.name"
+                            :value="item.id">
+                          </el-option>
+                        </el-select>
+                    </el-form-item>
 
-                            <el-form-item label="虚拟产品入驻形式">
-                              <el-select v-model="newRuleForm.productEnterType" disabled readonly placeholder="请选择">
-                                <el-option
-                                  v-for="item in PRODUCT_ENTER_TYPE"
-                                  :key="item.id"
-                                  :label="item.name"
-                                  :value="item.id">
-                                </el-option>
-                              </el-select>
-                            </el-form-item>
+                    <el-form-item label="税号">
+                        <el-input v-model="newRuleForm.taxNumber" readonly size="mini" class="w50"></el-input>
+                    </el-form-item>
 
-                            <el-form-item label="签约公司">
-                              <el-select v-model="newRuleForm.signCompany" disabled readonly placeholder="请选择">
-                                <el-option
-                                  v-for="item in CompanyType"
-                                  :key="item.id"
-                                  :label="item.name"
-                                  :value="item.id">
-                                </el-option>
-                              </el-select>
-                            </el-form-item>
+                    <el-form-item label="税务登记证">
+                        <el-upload
+                            list-type="picture-card"
+                            action=''
+                            disabled
+                            :file-list="taxRegList">
+                        </el-upload>
+                    </el-form-item>
 
-                          <el-form-item label="商户号">
-                              <el-input v-model="newRuleForm.code" readonly size="mini" class="w50"></el-input>
-                          </el-form-item>
-                          
-                          <el-form-item label="公司名称">
-                              <el-input v-model="newRuleForm.name" readonly size="mini" class="w50"></el-input>
-                          </el-form-item>
+                    <el-form-item label="一般纳税人正面">
+                        <el-upload
+                            list-type="picture-card"
+                            action=''
+                            disabled
+                            :file-list="taxpayeList">
+                        </el-upload>
+                    </el-form-item>
 
-                          <el-form-item label="公司简称 ">
-                              <el-input v-model="newRuleForm.shortName" readonly size="mini" class="w50"></el-input>
-                          </el-form-item>
+                    <el-form-item label="银行开户许可证">
+                        <el-upload
+                            list-type="picture-card"
+                            action=''
+                            disabled
+                            :file-list="bankAccountList">
+                        </el-upload>
+                    </el-form-item>
 
-                            <el-form-item label="营业执照">
-                                <el-upload
-                                    list-type="picture-card"
-                                    action=''
-                                    disabled
-                                    :file-list="businessList">
-                                </el-upload>
-                            </el-form-item>
+                    <el-form-item label="开户名称">
+                        <el-input v-model="newRuleForm.bankName" readonly size="mini" class="w50"></el-input>
+                    </el-form-item>
 
-                            <el-form-item label="营业范围">
-                              <el-input v-model="newRuleForm.businessScope" readonly size="mini" class="w50"></el-input>
-                            </el-form-item>
-                            
-                            <el-form-item label="公司注册地址">
-                                <el-input v-model="newRuleForm.registerAddress" readonly size="mini" class="w50"></el-input>
-                            </el-form-item>
+                    <el-form-item label="开户账号">
+                        <el-input v-model="newRuleForm.bankAccount" readonly size="mini" class="w50"></el-input>
+                    </el-form-item>
 
-                            <el-form-item label="法人姓名">
-                                <el-input v-model="newRuleForm.legalName" readonly size="mini" class="w50"></el-input>
-                            </el-form-item>
+                    <el-form-item label="开户银行所在地">
+                        <el-input v-model="newRuleForm.bankAddress" readonly size="mini" class="w50"></el-input>
+                    </el-form-item>
+                </el-form>
+              </el-tab-pane>
+              <el-tab-pane label="基本信息" name="fourth">
+                <el-form
+                    ref="newRuleForm"
+                    label-width="130px"
+                    inline-message
+                    class="demo-ruleForm"
+                  >
+                  
+                    <el-form-item label="公司类型" prop="type">
+                      <el-select v-model="newRuleForm.type" disabled placeholder="请选择">
+                        <el-option
+                          v-for="item in COMPANY_TYPE"
+                          :key="item.id"
+                          :label="item.name"
+                          :value="item.id">
+                        </el-option>
+                      </el-select>
+                    </el-form-item>
 
-                            <el-form-item label="法人代表证件类型">
-                                <el-select v-model="newRuleForm.legalCardType" disabled readonly placeholder="请选择">
-                                  <el-option
-                                    v-for="item in LEGAL_CARD_TYPE"
-                                    :key="item.id"
-                                    :label="item.name"
-                                    :value="item.id">
-                                  </el-option>
-                                </el-select>
-                            </el-form-item>
+                    <el-form-item label="近一年销售额" prop="name">
+                        <el-input v-model="newRuleForm.sales" readonly size="mini" class="w50"></el-input>
+                    </el-form-item>
+                    
+                    <el-form-item label="入驻类型" prop="address">
+                      <el-select v-model="newRuleForm.enterType" disabled placeholder="请选择">
+                        <el-option
+                          v-for="item in SettledType"
+                          :key="item.id"
+                          :label="item.name"
+                          :value="item.id">
+                        </el-option>
+                      </el-select>
+                    </el-form-item>
 
-                            <el-form-item label="法人代表身份证件">
-                                <el-upload
-                                    list-type="picture-card"
-                                    action=''
-                                    disabled
-                                    :file-list="legalCardList">
-                                </el-upload>
-                            </el-form-item>
+                    <el-form-item label="仓储情况">
+                        <el-input v-model="newRuleForm.storageInfo" readonly size="mini" class="w50"></el-input>
+                    </el-form-item>
 
-                            <el-form-item label="法人身份证有效期">
-                                <el-date-picker
-                                  size="mini"        
-                                  disabled      
-                                  v-model="value2"
-                                  type="datetimerange"
-                                  align="right"
-                                  format="yyyy-MM-dd"
-                                  value-format="yyyy-MM-dd"
-                                  start-placeholder="开始日期"
-                                  end-placeholder="结束日期"
-                                  class="w50">
-                                </el-date-picker>
-                            </el-form-item>
+                    <el-form-item label="物流情况">
+                        <el-input v-model="newRuleForm.logisticsInfo" readonly size="mini" class="w50"></el-input>
+                    </el-form-item>
 
-                            <el-form-item label="公司电话">
-                                <el-input v-model="newRuleForm.contactMobile" readonly size="mini" class="w50"></el-input>
-                            </el-form-item>
+                    <el-form-item label="是否支持api对接">
+                        <el-radio v-model="newRuleForm.isSupportApi" disabled readonly :label="1">支持</el-radio>
+                        <el-radio v-model="newRuleForm.isSupportApi" disabled readonly :label="0">不支持</el-radio>
+                    </el-form-item>
 
-                            <el-form-item label="公司联系人">
-                                <el-input v-model="newRuleForm.contactName" readonly size="mini" class="w50"></el-input>
-                            </el-form-item>
+                    <el-form-item label="虚拟产品入驻形式">
+                      <el-select v-model="newRuleForm.productEnterType" disabled placeholder="请选择">
+                        <el-option
+                          v-for="item in PRODUCT_ENTER_TYPE"
+                          :key="item.id"
+                          :label="item.name"
+                          :value="item.id">
+                        </el-option>
+                      </el-select>
+                    </el-form-item>
 
-                            <el-form-item label="纳税人类型">
-                                <el-select v-model="newRuleForm.taxpayerType" disabled readonly placeholder="请选择">
-                                  <el-option
-                                    v-for="item in TAXPAYER_TYPE"
-                                    :key="item.id"
-                                    :label="item.name"
-                                    :value="item.id">
-                                  </el-option>
-                                </el-select>
-                            </el-form-item>
+                    <el-form-item label="签约公司">
+                      <el-select v-model="newRuleForm.signCompany" disabled placeholder="请选择">
+                        <el-option
+                          v-for="item in CompanyType"
+                          :key="item.id"
+                          :label="item.name"
+                          :value="item.id">
+                        </el-option>
+                      </el-select>
+                    </el-form-item>
+                </el-form>
+              </el-tab-pane>
+              <el-tab-pane label="基本信息" name="fiveth">
+                <el-form
+                    ref="newRuleForm"
+                    label-width="130px"
+                    inline-message
+                    class="demo-ruleForm"
+                >
+                  <el-form-item label="商标注册证">
+                      <el-upload
+                          list-type="picture-card"
+                          action=''
+                          disabled
+                          :file-list="trademarkList">
+                      </el-upload>
+                  </el-form-item>
 
-                            <el-form-item label="税号">
-                                <el-input v-model="newRuleForm.taxNumber" readonly size="mini" class="w50"></el-input>
-                            </el-form-item>
+                  <el-form-item label="品牌授权书">
+                      <el-upload
+                          list-type="picture-card"
+                          action=''
+                          disabled
+                          :file-list="brandList">
+                      </el-upload>
+                  </el-form-item>
 
-                            <el-form-item label="税务登记证">
-                               <el-upload
-                                    list-type="picture-card"
-                                    action=''
-                                    disabled
-                                    :file-list="taxRegList">
-                                </el-upload>
-                            </el-form-item>
+                  <el-form-item label="质检报告">
+                      <el-upload
+                          list-type="picture-card"
+                          action=''
+                          disabled
+                          :file-list="QualityList">
+                      </el-upload>
+                  </el-form-item>
 
-                            <el-form-item label="一般纳税人正面">
-                                <el-upload
-                                    list-type="picture-card"
-                                    action=''
-                                    disabled
-                                    :file-list="taxpayeList">
-                                </el-upload>
-                            </el-form-item>
-                            <el-form-item label="商标注册证">
-                                <el-upload
-                                    list-type="picture-card"
-                                    action=''
-                                    disabled
-                                    :file-list="trademarkList">
-                                </el-upload>
-                            </el-form-item>
-
-                            <el-form-item label="品牌授权书">
-                                <el-upload
-                                    list-type="picture-card"
-                                    action=''
-                                    disabled
-                                    :file-list="brandList">
-                                </el-upload>
-                            </el-form-item>
-
-                            <el-form-item label="质检报告">
-                                <el-upload
-                                    list-type="picture-card"
-                                    action=''
-                                    disabled
-                                    :file-list="QualityList">
-                                </el-upload>
-                            </el-form-item>
-
-                            <el-form-item label="卫生许可证">
-                                <el-upload
-                                    disabled
-                                    action=''
-                                    list-type="picture-card"
-                                    :file-list="permitList">
-                                </el-upload>
-                            </el-form-item>
-
-                            <el-form-item label="银行开户许可证">
-                                <el-upload
-                                    list-type="picture-card"
-                                    action=''
-                                    disabled
-                                    :file-list="bankAccountList">
-                                </el-upload>
-                            </el-form-item>
-
-                            <el-form-item label="开户名称">
-                                <el-input v-model="newRuleForm.bankName" readonly size="mini" class="w50"></el-input>
-                            </el-form-item>
-
-                            <el-form-item label="开户账号">
-                                <el-input v-model="newRuleForm.bankAccount" readonly size="mini" class="w50"></el-input>
-                            </el-form-item>
-
-                            <el-form-item label="开户银行所在地">
-                                <el-input v-model="newRuleForm.bankAddress" readonly size="mini" class="w50"></el-input>
-                            </el-form-item>
-                            
-                            <el-form-item>
-                              <el-button type="danger" v-if="newRuleForm.status =='0'" @click="auditAdopt()">审核通过</el-button>
-                              <el-button type="danger" v-if="newRuleForm.status =='0'" @click="auditReject()">审核失败</el-button>
-                              <el-button type="danger" @click="back">返回</el-button>
-                          </el-form-item>
-                      </el-form>
-
-                    </div>
-
-                </el-col>
-            </el-row>
+                  <el-form-item label="卫生许可证">
+                      <el-upload
+                          disabled
+                          action=''
+                          list-type="picture-card"
+                          :file-list="permitList">
+                      </el-upload>
+                  </el-form-item>
+                </el-form>
+              </el-tab-pane>
+            </el-tabs>
+            <div style="margin-left:130px;">
+              <el-button type="primary" @click="auditAdopt">审核通过</el-button>
+              <el-button type="danger" @click="auditReject">审核失败</el-button>
+            </div>
+          </el-row>
         </div>
     </div>
 </template>
@@ -294,6 +304,7 @@
         // name: 'basetable',
         data() {
             return {
+                activeName: 'first',
                 active:0,
                 action:1,
                 page:1,
@@ -395,6 +406,9 @@
             this.getSupplierData();
         },
         methods: {
+            handleClick(tab, event) {
+
+            },
           // 获取全部下拉数据
             async getData(){
                 const res = await this.$http.get(baseURL_.mallUrl+'/supplier/getDictionaryData');
@@ -488,19 +502,23 @@
             back() {
                 this.$router.push({ path: "/supplierAuditList" });
             },
+            
+            
             auditAdopt(){
+                var id = this.$route.query.id;
                 this.$confirm('确认审核通过').then( e=> {
-                    this.confimAudit(this.supplier_id,1);
+                    this.confimAudit(id,1);
                 }).catch(_ => {});
             },
             auditReject(){
+                var id = this.$route.query.id;
                 this.$prompt('请输入审核失败理由：', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     inputPattern: /^[\s\S]*.*[^\s][\s\S]*$/,
                     inputErrorMessage: '理由不能为空'
                 }).then(({ auditReason }) => {
-                    this.confimAudit(this.supplier_id,2,auditReason)
+                    this.confimAudit(id,2,auditReason)
                 }).catch(() => { }); 
             },
             async confimAudit(id,auditResult,auditReason){
@@ -513,7 +531,7 @@
                 });
                 this.$message(auditResult.data.data);
                 if(auditResult.data.statusCode==200){
-                    this.back();
+                    this.getData();
                 }
             }
         }
