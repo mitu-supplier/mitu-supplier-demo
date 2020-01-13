@@ -32,6 +32,7 @@
         },
         methods: {
             isActive(path) {
+               
                 return path === this.$route.path;
             },
             // 关闭单个标签
@@ -58,6 +59,7 @@
             },
             // 设置标签
             setTags(route){
+                
                 const isExist = this.tagsList.some(item => {
                     return item.path === route.path;
                 })

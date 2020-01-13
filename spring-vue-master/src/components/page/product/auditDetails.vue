@@ -170,7 +170,7 @@
               });
               if(res.data.statusCode==200){
                 this.addComForm = res.data.data;
-                this.fileList = [{uel:this.addComForm.img}];
+                this.fileList = [{url:this.addComForm.img}];
                 this.orgNames = this.addComForm.catalogName;
                 this.catalogId = this.addComForm.catalogId;
                 this.productId = this.addComForm.id;

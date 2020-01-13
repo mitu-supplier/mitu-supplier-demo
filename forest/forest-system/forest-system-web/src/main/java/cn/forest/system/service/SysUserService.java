@@ -1,7 +1,11 @@
 package cn.forest.system.service;
 
+import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
+import cn.forest.commom.redis.RedisDao;
 import cn.forest.common.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +19,9 @@ public class SysUserService {
 
   @Autowired
   private SysUserRemote sysUserRemote;
+  
+  @Autowired
+  private RedisDao redisDao;
 
   public Map<String, Object> getList(Long page, Long pageSize,String loginName, String name, String phone, String email) {
     Object obj = sysUserRemote.getList(page, pageSize, loginName, name, phone, email);
@@ -68,4 +75,10 @@ public class SysUserService {
     return ResultMessage.error("添加失败");
   }
 
+  public Map<String, Object> getOnlineUser(HttpServletRequest request){
+    Map<String, Object> user=new HashMap<String, Object>();
+    Map map = (Map) redisDao.getValue(request.getHeader(Constant.HEADER_TOKEN_STRING));
+    user.put("name", map.get("name"));
+    return ResultMessage.success(user);
+  }
 }

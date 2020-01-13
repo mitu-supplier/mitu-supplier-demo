@@ -42,7 +42,9 @@ public class AccessFilter extends ZuulFilter {
                 "/supplier/saveStepOneTwo",
                 "/supplier/getDictionaryData",
                 "/supplier/getEnterType",
-                "/supplier/getCompany"};
+                "/supplier/getCompany",
+                "/ueditor/upload"
+                };
         if (isFilter(pathName, filter)) {
             String authorization = request.getHeader(Constant.HEADER_TOKEN_STRING);
             if (StringUtils.isEmpty(authorization)) {

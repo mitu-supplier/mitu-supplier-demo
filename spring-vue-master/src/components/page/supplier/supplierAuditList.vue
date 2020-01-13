@@ -79,7 +79,7 @@
                 <el-table-column prop="auditReason" label="审核意见"  align="center" width="">
                    <template slot-scope="scope">
                          <span v-if="scope.row.auditResult=='1'">通过</span>
-                         <span v-if="scope.row.auditResult=='2'">${scope.row.auditReason}</span>
+                         <span v-if="scope.row.auditResult=='2'">{{scope.row.auditReason}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="auditResult" label="审核状态"  align="center" width="">

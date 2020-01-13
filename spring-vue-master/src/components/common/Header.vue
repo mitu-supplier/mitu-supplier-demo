@@ -80,10 +80,10 @@
             }
         },
         computed:{
-            username(){
-                let username = localStorage.getItem('ms_username');
-                return username ? username : this.name;
-            }
+            async user(){
+                const user = await this.$http.get(baseURL_.sysUrl+'/sysUser/getOnlineUser');
+                this.username=user.data.data.name
+            },
         },
         methods:{
             // 用户名下拉菜单选择事件
@@ -177,6 +177,7 @@
             if(document.body.clientWidth < 1500){
                 this.collapseChage();
             }
+            this.user();
         }
     }
 </script>

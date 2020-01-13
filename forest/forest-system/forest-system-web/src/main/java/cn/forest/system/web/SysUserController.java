@@ -73,5 +73,10 @@ public class SysUserController {
     return sysUserService.saveRole(RequestMap.requestToMap(request));
   }
   
+  @RequestMapping("/getOnlineUser")
+  public Map<String, Object> getOnlineUser(HttpServletRequest request) {
+    return sysUserService.getOnlineUser(request);
+  }
+  
   
 }

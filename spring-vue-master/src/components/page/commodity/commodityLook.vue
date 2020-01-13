@@ -169,7 +169,13 @@
               });
               if(res.data.statusCode==200){
                 this.addComForm = res.data.data;
-                this.fileList = [{uel:this.addComForm.img}];
+                // var contracArry=[];
+                // var obj={};
+                // obj.name="缩略图";
+                // obj.url=this.addComForm.img;
+                // contracArry.push(obj);
+                // this.fileList=contracArry;
+                this.fileList = [{url:this.addComForm.img}];
                 this.orgNames = this.addComForm.catalogName;
                 this.catalogId = this.addComForm.catalogId;
                 var details = this.addComForm.details
