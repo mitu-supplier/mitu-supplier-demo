@@ -47,8 +47,11 @@
                 </el-table-column>
                 <el-table-column label="操作" width="" align="center">
                     <template slot-scope="scope">
-                        <el-button type="text" icon="el-icon-edit" class="red" @click="handleUpdate(scope.$index, scope.row)">修改</el-button>
-                        <el-button type="text" icon="el-icon-delete" class="red" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                        <el-button type="text" icon="el-icon-search" class="red" @click="handleLook(scope.$index, scope.row)">查看</el-button>
+                        <el-button type="text" v-if="scope.row.status == '2'" icon="el-icon-edit" class="red" @click="handleUpdate(scope.$index, scope.row)">上架</el-button>
+                        <el-button type="text" v-if="scope.row.status == '1' && scope.row.auditStatus == '1'" icon="el-icon-edit" class="red" @click="handleUpdate(scope.$index, scope.row)">下架</el-button>
+                        <el-button type="text" v-if="scope.row.auditStatus == '2'" icon="el-icon-edit" class="red" @click="handleUpdate(scope.$index, scope.row)">修改</el-button>
+                        <el-button type="text" v-if="scope.row.auditStatus == '2'" icon="el-icon-delete" class="red" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -172,6 +175,14 @@
             handleUpdate(index, row){
                 this.$router.push({
                     path: '/commodityEdit',
+                    query: {
+                        id: row.id
+                    }
+                });
+            },
+            handleLook(index, row){
+                this.$router.push({
+                    path: '/commodityLook',
                     query: {
                         id: row.id
                     }

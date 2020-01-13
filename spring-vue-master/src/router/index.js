@@ -68,6 +68,11 @@ export default new Router({
                     meta: { title: '修改商品' }
                 },
                 {
+                    path: '/commodityLook',
+                    component: resolve => require(['../components/page/commodity/commodityLook.vue'], resolve),
+                    meta: { title: '修改商品' }
+                },
+                {
                     path: '/sys_logs',
                     component: resolve => require(['../components/page/system/sysLogs/sysLogs.vue'], resolve),
                     meta: { title: '操作日志' }
