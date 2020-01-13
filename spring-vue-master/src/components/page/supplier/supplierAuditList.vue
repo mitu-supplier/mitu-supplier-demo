@@ -50,8 +50,9 @@
                 <el-table-column label="操作" width="" align="center">
                     <template slot-scope="scope">
                         <el-button type="text" icon="el-icon-document" @click="view(scope.$index, scope.row)">查看</el-button>
-                        <el-button type="text" icon="el-icon-check" v-if="scope.row.status == '0'" @click="auditAdopt(scope.row.id)">通过</el-button>
-                        <el-button type="text" icon="el-icon-close" v-if="scope.row.status == '0'" class="red" @click="auditReject(scope.row.id)">驳回</el-button>
+                        <el-button type="text" icon="el-icon-document" @click="toAudit(scope.$index, scope.row)">审核</el-button>
+                        <!-- <el-button type="text" icon="el-icon-check" v-if="scope.row.status == '0'" @click="auditAdopt(scope.row.id)">通过</el-button>
+                        <el-button type="text" icon="el-icon-close" v-if="scope.row.status == '0'" class="red" @click="auditReject(scope.row.id)">驳回</el-button> -->
                     </template>
                 </el-table-column>
             </el-table>
@@ -177,6 +178,15 @@
                     path: '/supplierSee',
                     query: {
                         id: item.id
+                    }
+                });
+            },
+            toAudit(index,item){
+                this.$router.push({
+                    path: '/supplierSee',
+                    query: {
+                        id: item.id,
+                        state:item.status
                     }
                 });
             },

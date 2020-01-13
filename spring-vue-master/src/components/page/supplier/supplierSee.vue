@@ -288,8 +288,9 @@
               </el-tab-pane>
             </el-tabs>
             <div style="margin-left:130px;">
-              <el-button type="primary" @click="auditAdopt">审核通过</el-button>
-              <el-button type="danger" @click="auditReject">审核失败</el-button>
+              <el-button v-if="activeShow == '0'" type="primary" @click="auditAdopt">审核通过</el-button>
+              <el-button v-if="activeShow == '0'" type="danger" @click="auditReject">审核失败</el-button>
+              <el-button type="danger" @click="back">返回</el-button>
             </div>
           </el-row>
         </div>
@@ -305,7 +306,8 @@
         data() {
             return {
                 activeName: 'first',
-                active:0,
+
+                activeShow: this.$route.query.state,
                 action:1,
                 page:1,
                 total:1000,
