@@ -519,8 +519,8 @@
                     cancelButtonText: '取消',
                     inputPattern: /^[\s\S]*.*[^\s][\s\S]*$/,
                     inputErrorMessage: '理由不能为空'
-                }).then(({ auditReason }) => {
-                    this.confimAudit(id,2,auditReason)
+                }).then(({ value }) => {
+                    this.confimAudit(id,2,value)
                 }).catch(() => { }); 
             },
             async confimAudit(id,auditResult,auditReason){
