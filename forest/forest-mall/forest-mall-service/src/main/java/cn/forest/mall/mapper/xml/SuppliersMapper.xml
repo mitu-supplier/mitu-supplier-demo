@@ -12,7 +12,7 @@
         where
             s.is_delete = 0
             <choose>
-                <when test="status != null">
+                <when test="status != null and status!=''">
                     AND s.status = #{status}
                 </when>
                 <otherwise>

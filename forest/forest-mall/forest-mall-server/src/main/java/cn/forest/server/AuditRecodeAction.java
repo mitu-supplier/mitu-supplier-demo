@@ -39,8 +39,9 @@ public class AuditRecodeAction {
             Page<AuditRecode> pages = new Page<AuditRecode>(page, pageSize);
             IPage<AuditRecode> auditRecodeIPage = auditRecodeService.page(pages, queryWrapper);
             return new ResultPage<AuditRecode>(auditRecodeIPage);
+        }else {
+          return auditRecodeService.list(queryWrapper);
         }
-        return null;
     }
 
     @RequestMapping("/save")

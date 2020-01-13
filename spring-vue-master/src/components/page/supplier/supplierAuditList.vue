@@ -28,7 +28,7 @@
             </div>
             <div class="handle-box">
                 <el-button type="primary" icon="el-icon-check" @click="batchAudit(1)" >审核通过</el-button>
-                <el-button type="primary" icon="el-icon-close" @click="batchAudit(2)" >审核失败</el-button>
+                <!--<el-button type="primary" icon="el-icon-close" @click="batchAudit(2)" >审核失败</el-button>-->
             </div>
             <el-table :data="tableData" border class="table" ref="multipleTable" @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
@@ -50,7 +50,8 @@
                 <el-table-column label="操作" width="" align="center">
                     <template slot-scope="scope">
                         <el-button type="text" icon="el-icon-document" @click="view(scope.$index, scope.row)">查看</el-button>
-                        <el-button type="text" icon="el-icon-document" @click="toAudit(scope.$index, scope.row)">审核</el-button>
+                        <el-button type="text" icon="el-icon-document" v-if="scope.row.status == '0'"  @click="toAudit(scope.$index, scope.row)">审核</el-button>
+                        <el-button type="text" icon="el-icon-document" v-if="scope.row.status != '0'"  @click="lookAudit(scope.$index, scope.row)">审核记录</el-button>
                         <!-- <el-button type="text" icon="el-icon-check" v-if="scope.row.status == '0'" @click="auditAdopt(scope.row.id)">通过</el-button>
                         <el-button type="text" icon="el-icon-close" v-if="scope.row.status == '0'" class="red" @click="auditReject(scope.row.id)">驳回</el-button> -->
                     </template>
@@ -69,7 +70,32 @@
             </div>
             <!-- <loding v-if="aaa"></loding> -->
         </div>
+        <el-dialog title="审核记录" class="dialogBox" :visible.sync="editVisible" width="40%">
+            
+           <el-table :data="auditData" border class="table" >
+                <el-table-column type="index" label="序号" width="55" align="center" ></el-table-column>
+                <el-table-column prop="auditUserName" label="审核人"  align="center" width="80"></el-table-column>
+                <el-table-column prop="createTime" label="审核时间"  align="center" width="150"></el-table-column>
+                <el-table-column prop="auditReason" label="审核意见"  align="center" width="">
+                   <template slot-scope="scope">
+                         <span v-if="scope.row.auditResult=='1'">通过</span>
+                         <span v-if="scope.row.auditResult=='2'">${scope.row.auditReason}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="auditResult" label="审核状态"  align="center" width="">
+                   <template slot-scope="scope">
+                         <span v-if="scope.row.auditResult=='1'">通过</span>
+                         <span v-if="scope.row.auditResult=='2'">不通过</span>
+                    </template>
+                </el-table-column>
+           </el-table>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="editVisible = false">取 消</el-button>
+                
+            </span>
+        </el-dialog>
     </div>
+    
 </template>
   
 <script>
@@ -84,7 +110,9 @@
                 total:0,
                 pageSize:10,
                 tableData: [],
+                editVisible:false,
                 multipleSelection: [],
+                auditData:[],
                 formInline:{
                     name:'',
                     status:''
@@ -95,6 +123,13 @@
             this.getData();
         },
         methods: {
+            async lookAudit(index,row){
+                const audit = await this.$http.get(baseURL_.mallUrl+'/supplier_audit/getAuditList',{ 
+                    params:{'businessId':row.id}
+                })
+                this.auditData=audit.data.data;
+                this.editVisible=true;
+            },
             onReset(){
               this.formInline.name="";
               this.formInline.status="";
