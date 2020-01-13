@@ -90,7 +90,7 @@ public class AccessFilter extends ZuulFilter {
     boolean isFilter(String pathName, String ... strs){
         boolean flag = true;
         for (String str : strs){
-            if(pathName.indexOf(str) == -1){
+            if(pathName.indexOf(str) != -1){
                 flag = false;
                 break;
             }

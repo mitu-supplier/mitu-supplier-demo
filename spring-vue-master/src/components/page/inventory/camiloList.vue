@@ -39,12 +39,18 @@
                 <el-table-column type="index" label="序号" width="55" align="center" ></el-table-column>
                 <el-table-column prop="catalogName" label="商品类目"  align="center" width=""></el-table-column>
                 <el-table-column prop="name" label="商品名称"  align="center" width=""></el-table-column>
+                <el-table-column prop="supplierName" label="商户名称"  align="center" width=""></el-table-column>
                 <el-table-column prop="stock" label="剩余库存" align="center"  width=""></el-table-column>
                 <el-table-column prop="failureTime" label="失效时间" align="center"  width=""></el-table-column>
                 <el-table-column prop="" label="库存告急" align="center"  width="">
                     <template slot-scope="scope">
                         <span type="text" v-if="scope.row.stock <= scope.row.inventoryAlertNum" class="red">库存不足</span>
                         <span type="text" v-else></span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="操作" width="" align="center">
+                    <template slot-scope="scope">
+                        <el-button type="text" icon="el-icon-document" @click="record(scope.$index, scope.row)">入库记录</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -147,7 +153,10 @@
                 if(response.statusCode == 200){
                     this.getData();
                 }
-            }
+            },
+            record(index, row){
+              this.$router.push({path:'/camiloRecordList',query:{id:row.id}});
+            },
         }
     }
 

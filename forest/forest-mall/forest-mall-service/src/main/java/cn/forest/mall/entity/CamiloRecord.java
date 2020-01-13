@@ -66,6 +66,12 @@ public class CamiloRecord implements Serializable {
     @TableField(exist = false)
     private String catalogName;
 
+    /**
+     * 商户名称
+     */
+    @TableField(exist = false)
+    private String supplierName;
+
     public Long getId() {
         return id;
     }
@@ -152,5 +158,13 @@ public class CamiloRecord implements Serializable {
 
     public void setCatalogName(String catalogName) {
         this.catalogName = catalogName;
+    }
+
+    public String getSupplierName() {
+        return supplierName;
+    }
+
+    public void setSupplierName(String supplierName) {
+        this.supplierName = supplierName;
     }
 }

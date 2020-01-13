@@ -3,6 +3,7 @@ package cn.forest.mall.service;
 import cn.forest.commom.redis.RedisDao;
 import cn.forest.common.Constant;
 import cn.forest.common.util.ExcelUtils;
+import cn.forest.common.util.RequestMap;
 import cn.forest.common.util.ResultMessage;
 import cn.forest.common.util.StringUtil;
 import cn.forest.mall.remote.CamiloRemote;
@@ -39,7 +40,15 @@ public class CamiloService {
     @Autowired
     private RedisDao redisDao;
 
-    public Map<String, Object> list(Map<String, Object> map) {
+    public Map<String, Object> list(HttpServletRequest request) {
+        Map<String, Object> map = RequestMap.requestToMap(request);
+        String header = request.getHeader(Constant.HEADER_TOKEN_STRING);
+        HashMap userInfoMap = (HashMap) redisDao.getValue(header);
+        if (userInfoMap != null) {
+            if(!StringUtil.isBlank(userInfoMap.get("type")) && Integer.parseInt(userInfoMap.get("type").toString()) == 1){
+                map.put("supplierId", userInfoMap.get("typeId"));
+            }
+        }
         Object obj = camiloRemote.selectProductCamiloList(map);
         if (obj != null) {
             return ResultMessage.success(obj);
@@ -47,7 +56,15 @@ public class CamiloService {
         return null;
     }
 
-    public Map<String, Object> recordList(Map<String, Object> map) {
+    public Map<String, Object> recordList(HttpServletRequest request) {
+        Map<String, Object> map = RequestMap.requestToMap(request);
+        String header = request.getHeader(Constant.HEADER_TOKEN_STRING);
+        HashMap userInfoMap = (HashMap) redisDao.getValue(header);
+        if (userInfoMap != null) {
+            if(!StringUtil.isBlank(userInfoMap.get("type")) && Integer.parseInt(userInfoMap.get("type").toString()) == 1){
+                map.put("supplierId", userInfoMap.get("typeId"));
+            }
+        }
         Object obj = camiloRemote.recordList(map);
         if (obj != null) {
             return ResultMessage.success(obj);

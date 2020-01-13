@@ -19,12 +19,12 @@ public class CamiloController {
 
     @RequestMapping("/list")
     public Map<String, Object> list(HttpServletRequest request) {
-        return camiloService.list(RequestMap.requestToMap(request));
+        return camiloService.list(request);
     }
 
     @RequestMapping("/recordList")
     public Map<String, Object> recordList(HttpServletRequest request) {
-        return camiloService.recordList(RequestMap.requestToMap(request));
+        return camiloService.recordList(request);
     }
 
     /**

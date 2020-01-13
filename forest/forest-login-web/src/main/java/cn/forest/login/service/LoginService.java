@@ -76,6 +76,7 @@ public class LoginService {
                     resultMap.put("isSupplier", 1);
                     JsonNode supplierJsonNode = JsonUtil.readTree(supplier);
                     int status = supplierJsonNode.path("status").asInt();
+                    userInfoMap.put("supplierStatus", status);
                     resultMap.put("status", status);
                     if (status == 0) {
                         // 待审核

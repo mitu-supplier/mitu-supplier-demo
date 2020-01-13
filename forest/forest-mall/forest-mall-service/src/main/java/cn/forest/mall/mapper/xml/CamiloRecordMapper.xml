@@ -6,11 +6,13 @@
         SELECT
             cr.*,
             p.NAME AS productName,
-            cc.NAME AS catalogName
+            cc.NAME AS catalogName,
+            ss.name AS supplierName
         FROM
             camilo_record cr
             LEFT JOIN products p ON p.id = cr.product_id
             LEFT JOIN catalogs cc ON cc.id = p.catalog_id
+            LEFT JOIN suppliers ss ON ss.id = p.supplier_id
         WHERE
             cr.is_delete = 0
             <if test="productName != null and productName != ''">
@@ -18,6 +20,12 @@
             </if>
             <if test="catalogName != null and catalogName != ''">
                 AND cc.name LIKE CONCAT('%',#{catalogName},'%')
+            </if>
+            <if test="supplierId != null and supplierId != ''">
+                AND ss.id = #{supplierId}
+            </if>
+            <if test="productId != null and productId != ''">
+                AND p.id = #{productId}
             </if>
         ORDER BY created_at DESC
     </select>

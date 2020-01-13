@@ -23,6 +23,7 @@
                 <el-table-column type="index" label="序号" width="55" align="center" ></el-table-column>
                 <el-table-column prop="catalogName" label="商品类目"  align="center" width=""></el-table-column>
                 <el-table-column prop="productName" label="商品名称"  align="center" width=""></el-table-column>
+                <el-table-column prop="supplierName" label="商户名称"  align="center" width=""></el-table-column>
                 <el-table-column prop="num" label="数量"  align="center" width=""></el-table-column>
                 <el-table-column prop="price" label="商品金额" align="center"  width=""></el-table-column>
                 <el-table-column prop="createdAt" label="入库时间" align="center"  width=""></el-table-column>
@@ -57,10 +58,12 @@
                 formInline:{
                     productName:'',
                     catalogName:''
-                }   
+                },
+                productId:''
             }
         },
         created() {
+            this.productId=this.$route.query.id;
             this.getData();
         },
         methods: {
@@ -84,7 +87,8 @@
                         'page':this.page,
                         'pageSize':this.pageSize,
                         'productName':this.formInline.productName,
-                        'catalogName':this.formInline.catalogName
+                        'catalogName':this.formInline.catalogName,
+                        'productId': this.productId
                     }
                 });
                 if(products.data.statusCode==200){
