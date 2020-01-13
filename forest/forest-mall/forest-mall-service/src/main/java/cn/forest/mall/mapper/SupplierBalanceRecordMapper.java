@@ -22,5 +22,5 @@ public interface SupplierBalanceRecordMapper extends BaseMapper<SupplierBalanceR
      * @param map
      * @return
      */
-    List<SupplierBalanceRecord> balanceList(Map<String, Object> map);
+    SupplierBalanceRecord balanceList(Map<String, Object> map);
 }

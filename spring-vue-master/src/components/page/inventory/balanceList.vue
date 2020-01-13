@@ -12,23 +12,24 @@
                         <el-input v-model="formInline.supplierName" placeholder="商户名称"></el-input>
                     </el-form-item>
                     <el-form-item>
-                        <el-button type="primary" @click="onSubmit">查询</el-button>
-                        <el-button type="primary" @click="onReset">重置</el-button>
+                        <el-button type="primary" icon="el-icon-search" @click="onSubmit">查询</el-button>
+                        <el-button type="primary" icon="el-icon-refresh" @click="onReset">重置</el-button>
                     </el-form-item>
                 </el-form>
             </div>
             <el-table :data="tableData" border class="table" ref="multipleTable">
                 <el-table-column type="index" label="序号" width="55" align="center" ></el-table-column>
-                <el-table-column prop="supplierName" label="商户名称"  align="center" width=""></el-table-column>
+                <el-table-column prop="name" label="商户名称"  align="center" width=""></el-table-column>
                 <el-table-column label="账户余额（元）" align="center" width="">
                     <template slot-scope="scope">
-                        <span type="text" v-if="scope.row.money == null" class="red">0.00</span>
-                        <span type="text" v-else>{{scope.row.money.toFixed(2)}}</span>
+                        <span type="text" v-if="scope.row.balance == null" class="red">0.00</span>
+                        <span type="text" v-else>{{scope.row.balance.toFixed(2)}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column label="操作" width="" align="center">
                     <template slot-scope="scope">
-                        <el-button type="text" @click="addBalance(scope.$index, scope.row)">充值</el-button>
+                        <el-button type="text" icon="el-icon-edit" @click="addBalance(scope.$index, scope.row)">充值</el-button>
+                        <el-button type="text" icon="el-icon-document" @click="look(scope.$index, scope.row)">充值记录</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -90,6 +91,9 @@
             this.getData();
         },
         methods: {
+            look(index, row){
+              this.$router.push({path:'/balanceRecordList',query:{id:row.id}});
+            },
             onSubmit(){
                 this.getData();
             },
@@ -124,8 +128,8 @@
             },
             addBalance(index, row){
                 this.form = {};
-                this.form.supplierId = row.supplierId;
-                this.form.supplierName = row.supplierName;
+                this.form.supplierId = row.id;
+                this.form.supplierName = row.name;
                 this.editVisible=true;
                 this.titleName="充值";
             },

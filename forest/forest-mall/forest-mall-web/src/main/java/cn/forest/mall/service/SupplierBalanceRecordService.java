@@ -28,7 +28,16 @@ public class SupplierBalanceRecordService {
      * @return
      */
     public Object balanceList(HttpServletRequest request) {
-        Object o = supplierBalanceRecordRemote.balanceList(getParamMap(request));
+        Map<String, Object> paramMap = getParamMap(request);
+        String header = request.getHeader(Constant.HEADER_TOKEN_STRING);
+        HashMap userInfoMap = (HashMap) redisDao.getValue(header);
+        
+        Object type = userInfoMap.get("type");
+        Object typeId = userInfoMap.get("typeId");
+        if (type != null && Integer.parseInt(type.toString()) == 1) {
+          paramMap.put("supplierId", typeId);
+        }
+        Object o = supplierBalanceRecordRemote.balanceList(paramMap);
         if (o != null) {
             return ResultMessage.success(o);
         }
@@ -42,7 +51,15 @@ public class SupplierBalanceRecordService {
      * @return
      */
     public Object recordList(HttpServletRequest request) {
-        Object o = supplierBalanceRecordRemote.recordList(getParamMap(request));
+        Map<String, Object> paramMap = getParamMap(request);
+        String header = request.getHeader(Constant.HEADER_TOKEN_STRING);
+        HashMap userInfoMap = (HashMap) redisDao.getValue(header);
+        Object type = userInfoMap.get("type");
+        Object typeId = userInfoMap.get("typeId");
+        if (type != null && Integer.parseInt(type.toString()) == 1) {
+          paramMap.put("supplierId", typeId);
+        }
+        Object o = supplierBalanceRecordRemote.recordList(paramMap);
         if (o != null) {
             return ResultMessage.success(o);
         }

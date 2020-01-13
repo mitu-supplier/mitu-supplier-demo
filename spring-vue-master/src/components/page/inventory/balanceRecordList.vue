@@ -12,7 +12,7 @@
                         <el-input v-model="formInline.supplierName" placeholder="商户名称"></el-input>
                     </el-form-item>
                     <el-form-item>
-                        <el-button type="primary" @click="onSubmit">查询</el-button>
+                        <el-button type="primary" icon="el-icon-search" @click="onSubmit">查询</el-button>
                     </el-form-item>
                 </el-form>
             </div>
@@ -54,12 +54,14 @@
                 total:0,
                 pageSize:10,
                 tableData: [],
+                supplierId:'',
                 formInline:{
                     supplierName:''
                 }   
             }
         },
         created() {
+            this.supplierId=this.$route.query.id;
             this.getData();
         },
         methods: {
@@ -82,7 +84,8 @@
                     params: {
                         'page':this.page,
                         'pageSize':this.pageSize,
-                        'supplierName':this.formInline.supplierName
+                        'supplierName':this.formInline.supplierName,
+                        'supplierId':this.supplierId
                     }
                 });
                 if(products.data.statusCode==200){

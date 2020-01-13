@@ -14,36 +14,19 @@
             <if test="supplierName != null and supplierName != ''">
                 AND ss.name LIKE CONCAT('%',#{supplierName},'%')
             </if>
-            <if test="supplierId != null">
+            <if test="supplierId != null and supplierId!=''">
                 AND ss.id = #{supplierId}
             </if>
         ORDER BY created_at DESC
     </select>
 
-    <select id="balanceList" resultType="cn.forest.mall.entity.SupplierBalanceRecord">
+    <select id="balanceList" parameterType="Map" resultType="cn.forest.mall.entity.SupplierBalanceRecord">
         SELECT
-	        ss.NAME AS supplierName,
-	        tmp.money AS money,
-	        tmp.supplier_id AS supplierId
-        FROM
-	    (
-	        SELECT
 	            supplier_id, sum(money) AS money
 	        FROM
 	            supplier_balance_record
 	        WHERE
-	            is_delete = 0
-	        GROUP BY
-	            supplier_id
-	    ) tmp
-	    LEFT JOIN suppliers ss ON tmp.supplier_id = ss.id
-	    WHERE 1 = 1
-            <if test="supplierName != null and supplierName != ''">
-                AND ss.name LIKE CONCAT('%',#{supplierName},'%')
-            </if>
-            <if test="supplierId != null">
-                AND ss.id = #{supplierId}
-            </if>
-        ORDER BY ss.id
+	            is_delete = 0 and supplier_id=#{supplierId}
+            
     </select>
 </mapper>
