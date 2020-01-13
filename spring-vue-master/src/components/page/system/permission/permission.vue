@@ -6,12 +6,20 @@
             </el-breadcrumb>
         </div>
         <div class="container">
+            <div style="background:#f6f6f6;padding:20px 10px 0;margin-bottom:20px;">
+                <el-form :inline="true" :model="formInline" class="demo-form-inline">
+                    <el-form-item label="菜单名称">
+                        <el-input v-model="formInline.name" placeholder="菜单名称"></el-input>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" icon="el-icon-search" @click="searchBtn">搜索</el-button>
+                        <el-button type="primary" icon="el-icon-refresh" @click="onReset">重置</el-button>
+                    </el-form-item>
+                </el-form>
+            </div>
             <div class="handle-box">
                 <!-- <el-button type="primary" icon="el-icon-delete" class="handle-del mr10">批量删除</el-button> -->
                 <el-button type="primary" icon="el-icon-plus" class="handle-del mr10" @click="add">添加</el-button>
-                <el-input placeholder="筛选关键词" v-model="searchCount" class="handle-input mr10"></el-input>
-                <el-button type="primary" icon="el-icon-search" @click="searchBtn">搜索</el-button>
-                <el-button type="primary" icon="el-icon-refresh" @click="onReset">重置</el-button>
             </div>
             <el-table  row-key="id" lazy :data="tableData" :load="load" :tree-props="{children: 'children', hasChildren: 'hasChildren'}" border id="table_id" ref="multipleTable"  @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55" align="center" ></el-table-column>
@@ -112,6 +120,9 @@
                    isParent:''
                 },
                 searchCount:'',
+                formInline:{
+                    name:''
+                }
             }
         },
         created() {
@@ -134,7 +145,7 @@
             },
             // 重置
             onReset(){
-                this.searchCount = '';
+                this.formInline = {};
                 this.getData();
             },
             // 搜索 
@@ -143,7 +154,7 @@
                     params: {
                         'page':this.page,
                         'pageSize':this.pageSize,
-                        'count':this.searchCount
+                        'name':this.formInline.name
                     }
                 });
                 if(permissions.data.statusCode==200){

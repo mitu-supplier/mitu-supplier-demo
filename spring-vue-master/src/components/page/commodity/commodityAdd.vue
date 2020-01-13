@@ -33,6 +33,17 @@
                     <el-input v-model="addComForm.code" size="mini" class="w50"></el-input>
                 </el-form-item>
 
+                <el-form-item v-if="isSupplier == '1'" label="所属商户" prop="">
+                    <el-select v-model="addComForm.supplierId" placeholder="请选择">
+                      <el-option
+                        v-for="item in suppliers"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.id">
+                      </el-option>
+                    </el-select>
+                </el-form-item>
+
                 <el-form-item label="商品分类:" prop="orgNames2" id="orgTreeBox">
                   <!-- catalog_id -->
                   <input type="hidden" >
@@ -101,8 +112,9 @@
                 </el-form-item>
 
                 <el-form-item>
+                    <el-button type="success" @click="staging('addComForm')">暂存</el-button>
                     <el-button type="primary" @click="submitAddCom('addComForm')">提交</el-button>
-                    <el-button type="danger" @click="back">取消</el-button>
+                    <el-button type="danger" @click="back">返回</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -153,10 +165,14 @@
                 orgTreeShow:false,
                 content:'',
                 catalogId:'',
+                isSupplier: 1,
+                suppliers:[]
             }
         },
         created() {
           this.getSelectForm();
+          this.vaIsSupplier();
+          this.getSuppliers();
         },
         mounted() {
           UE.delEditor("editor");
@@ -172,6 +188,15 @@
               const res = await this.$http.get(baseURL_.mallUrl+'/products/getDelivery_type');
               this.options = [];
               this.options = res.data.data;
+            },
+            async vaIsSupplier(){
+              var res = await this.$http.get(baseURL_.mallUrl+'/products/isSupplier');
+              this.suppliers = res.data.data;
+            },
+            async getSuppliers(){
+              var res = await this.$http.get(baseURL_.mallUrl+'/products/getSuppliers');
+              this.suppliers = [];
+              this.suppliers = res.data.data;
             },
             zTreeOnClick(event, treeId, treeNode) {
               //给选中的节点赋值
@@ -205,12 +230,30 @@
             back() {
                 this.$router.push({ path: "/productList" });
             },
+            // 提交审核
             async submitAddCom(){
               this.$refs['addComForm'].validate(async valid => {
                 if (valid) {
                   var details = UE.getEditor('editor').getContent();
                   this.addComForm.catalogId = this.catalogId;
                   this.addComForm.details = details;
+                  this.addComForm.auditStatus = 0;
+                  const res = await this.$http.post(baseURL_.mallUrl+'/products/save',this.$qs.stringify(this.addComForm));
+                  this.$message(res.data.data);
+                  if(res.data.statusCode==200){
+                    this.$router.push('/productList');
+                  }
+                }
+              })
+            },
+            // 暂存
+            async staging(){
+              this.$refs['addComForm'].validate(async valid => {
+                if (valid) {
+                  var details = UE.getEditor('editor').getContent();
+                  this.addComForm.catalogId = this.catalogId;
+                  this.addComForm.details = details;
+                  this.addComForm.auditStatus = 3;
                   const res = await this.$http.post(baseURL_.mallUrl+'/products/save',this.$qs.stringify(this.addComForm));
                   this.$message(res.data.data);
                   if(res.data.statusCode==200){

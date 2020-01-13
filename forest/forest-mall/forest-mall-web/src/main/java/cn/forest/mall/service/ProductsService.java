@@ -83,21 +83,18 @@ public class ProductsService {
         if (userInfoMap != null) {
             if(!StringUtil.isBlank(userInfoMap.get("type")) && Integer.parseInt(userInfoMap.get("type").toString()) == 1){
                 paramMap.put("supplierId", userInfoMap.get("typeId"));
-            }else{
-                return ResultMessage.error("当前账号没有权限录入商品");
             }
         }
-        paramMap.put("auditStatus", 0);
         Object save = productsRemote.save(paramMap);
         if (save != null) {
-            return ResultMessage.success("保存成功");
+            return ResultMessage.success("操作成功");
         }
-        return ResultMessage.error("保存失败");
+        return ResultMessage.error("操作失败");
     }
 
     public Map<String, Object> update(Map<String, Object> map) {
         int update = productsRemote.update(map);
-        return ResultMessage.result(update, "修改成功", "修改失败");
+        return ResultMessage.result(update, "操作成功", "操作失败");
     }
 
     public Map<String, Object> delete(Long id) {
@@ -183,5 +180,19 @@ public class ProductsService {
             return ResultMessage.success(obj);
         }
         return null;
+    }
+
+    /**
+     * 修改上下架状态   1上架    2下架
+     * @param id
+     * @param status
+     * @return
+     */
+    public Map<String, Object> updateStatus(Long id, Integer status){
+        Map<String, Object> productMap = new HashMap<>();
+        productMap.put("id", id);
+        productMap.put("status", status);
+        int update = productsRemote.update(productMap);
+        return ResultMessage.result(update, "操作成功", "操作失败");
     }
 }

@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.forest.common.util.RequestMap;
@@ -26,8 +27,11 @@ public class SysRoleController {
 
   @RequestMapping("/list")
   @SysLogs(desc = "角色列表")
-  public Map<String, Object> getList(Long page, Long pageSize) {
-    return sysRoleService.getList(page, pageSize);
+  public Map<String, Object> getList(@RequestParam(value = "page") Long page,
+                                     @RequestParam(value = "pageSize") Long pageSize,
+                                     @RequestParam(value = "roleName", required = false) String roleName,
+                                     @RequestParam(value = "roleCode", required = false) String roleCode) {
+    return sysRoleService.getList(page, pageSize, roleName, roleCode);
   }
   
   @RequestMapping("/getPermissions")

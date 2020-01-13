@@ -12,7 +12,12 @@ import cn.forest.system.fallback.SysUserBack;
 public interface SysUserRemote {
 
   @RequestMapping("/sys_user/list")
-  public Object getList(@RequestParam(value = "page") Long page, @RequestParam(value = "pageSize") Long pageSize);
+  public Object getList(@RequestParam(value = "page") Long page,
+                        @RequestParam(value = "pageSize") Long pageSize,
+                        @RequestParam(value = "loginName") String loginName,
+                        @RequestParam(value = "name") String name,
+                        @RequestParam(value = "phone") String phone,
+                        @RequestParam(value = "email") String email);
 
   @RequestMapping("/sys_user/delete")
   public int delete(@RequestParam(value = "id") Long id);

@@ -30,4 +30,7 @@ public interface SuppliersRemote {
 
     @RequestMapping("/suppliers/batchAudit")
     int batchAudit(@RequestParam("ids") String ids, @RequestParam("status") Integer status);
+
+    @RequestMapping("/suppliers/getAll")
+    Object getAll();
 }

@@ -5,6 +5,7 @@ import cn.forest.common.service.utils.ResultSave;
 import cn.forest.common.util.StringUtil;
 import cn.forest.mall.entity.Suppliers;
 import cn.forest.mall.mapper.SuppliersMapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang.StringUtils;
@@ -78,5 +79,18 @@ public class SuppliersAction {
             return suppliersMapper.batchAudit(idList, status);
         }
         return 0;
+    }
+
+    /**
+     * 获取所有可用的供应商信息
+     *
+     * @return
+     */
+    @RequestMapping("/getAll")
+    public Object getAll() {
+        QueryWrapper<Suppliers> suppliersQueryWrapper = new QueryWrapper<>();
+        suppliersQueryWrapper.eq("status", 1);
+        suppliersQueryWrapper.select(new String[]{"id", "name"});
+        return suppliersMapper.selectList(suppliersQueryWrapper);
     }
 }

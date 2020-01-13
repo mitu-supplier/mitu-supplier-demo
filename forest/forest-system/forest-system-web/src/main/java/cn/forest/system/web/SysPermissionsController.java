@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.forest.common.util.RequestMap;
@@ -30,8 +31,8 @@ public class SysPermissionsController {
   
   @RequestMapping("/getlistfirstLevel")
   @SysLogs(desc  = "菜单一级列表")
-  public Map<String, Object> getlistfirstLevel(Long page, Long pageSize) {
-    return sysPermissionsService.getlistfirstLevel(page, pageSize);
+  public Map<String, Object> getlistfirstLevel(@RequestParam("page") Long page, @RequestParam(value = "pageSize") Long pageSize, @RequestParam(value = "name", required = false) String name) {
+    return sysPermissionsService.getlistfirstLevel(page, pageSize, name);
   }
 
   @RequestMapping("/getlistChildren")

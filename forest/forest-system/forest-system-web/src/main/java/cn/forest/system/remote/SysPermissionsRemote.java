@@ -15,7 +15,7 @@ public interface SysPermissionsRemote {
   public Object getSysPermissionsList();
 
   @RequestMapping("/sys_permissions/listfirstLevel")
-  public Object getlistfirstLevel(@RequestParam(value = "page") Long page,@RequestParam(value = "pageSize") Long pageSize);
+  public Object getlistfirstLevel(@RequestParam(value = "page") Long page,@RequestParam(value = "pageSize") Long pageSizem, @RequestParam(value = "name", required = false) String name);
 
   @RequestMapping("/sys_permissions/listChildren")
   public Object getlistChildren(@RequestParam(value = "parentId") Long parentId);

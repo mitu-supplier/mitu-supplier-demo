@@ -14,8 +14,8 @@ public class SysLoginLogsService {
   @Autowired
   private SysLoginLogsRemote sysLoginLogsRemote;
 
-  public Map<String, Object> getList(Long page, Long pageSize) {
-    Object sysLoginLogsList = sysLoginLogsRemote.getList(page, pageSize);
+  public Map<String, Object> getList(Long page, Long pageSize, String userName) {
+    Object sysLoginLogsList = sysLoginLogsRemote.getList(page, pageSize, userName);
     if (sysLoginLogsList != null) {
       return ResultMessage.success(sysLoginLogsList);
     }

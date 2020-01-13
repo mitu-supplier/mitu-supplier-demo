@@ -14,6 +14,15 @@
                     <el-form-item label="类目名称">
                         <el-input v-model="formInline.catalogName" placeholder="类目名称"></el-input>
                     </el-form-item>
+                    <el-form-item label="审核状态">
+                         <el-select v-model="formInline.auditStatus" placeholder="审核状态">
+                            <el-option label="请选择" value=""></el-option>
+                            <el-option label="暂存" value="3"></el-option>
+                            <el-option label="待审核" value="0"></el-option>
+                            <el-option label="审核通过" value="1"></el-option>
+                            <el-option label="审核失败" value="2"></el-option>
+                        </el-select>
+                    </el-form-item>
                     <el-form-item>
                         <el-button type="primary" @click="onSubmit">查询</el-button>
                         <el-button type="primary" @click="onReset">重置</el-button>
@@ -40,6 +49,7 @@
                 </el-table-column>
                 <el-table-column label="审核状态" align="center"  width="">
                     <template slot-scope="scope">
+                        <span type="text" v-if="scope.row.auditStatus == '3'">暂存</span>
                         <span type="text" v-if="scope.row.auditStatus == '0'">待审核</span>
                         <span type="text" v-if="scope.row.auditStatus == '1'">审核通过</span>
                         <span type="text" class="red hand" v-if="scope.row.auditStatus == '2'" @click="showAuditReason(scope.row.id)" >审核失败  <i class="el-icon-info"></i></span>
@@ -48,10 +58,10 @@
                 <el-table-column label="操作" width="" align="center">
                     <template slot-scope="scope">
                         <el-button type="text" icon="el-icon-search" class="red" @click="handleLook(scope.$index, scope.row)">查看</el-button>
-                        <el-button type="text" v-if="scope.row.status == '2'" icon="el-icon-edit" class="red" @click="handleUpdate(scope.$index, scope.row)">上架</el-button>
-                        <el-button type="text" v-if="scope.row.status == '1' && scope.row.auditStatus == '1'" icon="el-icon-edit" class="red" @click="handleUpdate(scope.$index, scope.row)">下架</el-button>
-                        <el-button type="text" v-if="scope.row.auditStatus == '2'" icon="el-icon-edit" class="red" @click="handleUpdate(scope.$index, scope.row)">修改</el-button>
-                        <el-button type="text" v-if="scope.row.auditStatus == '2'" icon="el-icon-delete" class="red" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                        <el-button type="text" v-if="scope.row.status == '2'" icon="el-icon-edit" class="red" @click="updateStatus(scope.$index, scope.row, 1)">上架</el-button>
+                        <el-button type="text" v-if="scope.row.status == '1' && scope.row.auditStatus == '1'" icon="el-icon-edit" class="red" @click="updateStatus(scope.$index, scope.row, 2)">下架</el-button>
+                        <el-button type="text" v-if="scope.row.auditStatus == '2' || scope.row.auditStatus == '3'" icon="el-icon-edit" class="red" @click="handleUpdate(scope.$index, scope.row)">修改</el-button>
+                        <el-button type="text" v-if="scope.row.auditStatus == '2' || scope.row.auditStatus == '3'" icon="el-icon-delete" class="red" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -97,7 +107,8 @@
                 multipleSelection: [],
                 formInline:{
                     name:'',
-                    catalogName:''
+                    catalogName:'',
+                    auditStatus:''
                 },
                 auditReason:'',
                 productId:''
@@ -112,6 +123,7 @@
             },
             onReset(){
                 this.formInline = {};
+                this.formInline.auditStatus = '';
                 this.getData();
             },
             //改变每页页数
@@ -131,7 +143,8 @@
                         'page':this.page,
                         'pageSize':this.pageSize,
                         'name':this.formInline.name,
-                        'catalogName':this.formInline.catalogName
+                        'catalogName':this.formInline.catalogName,
+                        'auditStatus':this.formInline.auditStatus
                     }
                 });
                 if(products.data.statusCode==200){
@@ -179,6 +192,17 @@
                         id: row.id
                     }
                 });
+            },
+            async updateStatus(index, row, status){
+                var product = {
+                    'id': row.id,
+                    'status': status
+                };
+                var res = await this.$http.put(baseURL_.mallUrl+'/products/updateStatus',this.$qs.stringify(product));
+                this.$message(res.data.data);
+                if(res.data.statusCode==200){
+                    this.getData();
+                }
             },
             handleLook(index, row){
                 this.$router.push({

@@ -8,8 +8,7 @@ import cn.forest.system.remote.SysExceptionLogsVoRemote;
 public class SysExceptionLogsVoBack implements SysExceptionLogsVoRemote {
 
   @Override
-  public Object getList(Long page, Long pageSize) {
+  public Object getList(Long page, Long pageSize, String userName, String modelName) {
     return null;
   }
-
 }

@@ -11,6 +11,11 @@ import cn.forest.system.fallback.SysLogsVoBack;
 public interface SysLogsVoRemote {
 
   @RequestMapping("/sys_logs/list")
-  public Object getList(@RequestParam(value = "page") Long page,@RequestParam(value = "pageSize") Long pageSize);
+  public Object getList(
+          @RequestParam("page") Long page,
+          @RequestParam("pageSize") Long pageSize,
+          @RequestParam(value = "userName", required = false) String userName,
+          @RequestParam(value = "modelName", required = false) String modelName
+  );
   
 }

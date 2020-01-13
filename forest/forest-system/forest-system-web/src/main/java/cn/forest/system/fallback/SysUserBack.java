@@ -10,7 +10,7 @@ import cn.forest.system.remote.SysUserRemote;
 public class SysUserBack implements SysUserRemote {
 
   @Override
-  public Object getList(Long page, Long pageSize) {
+  public Object getList(Long page, Long pageSize, String loginName, String name, String phone, String email) {
     return null;
   }
 

@@ -128,6 +128,7 @@
             },
             onReset(){
                 this.formInline = {};
+                this.formInline.auditStatus = '';
                 this.getData();
             },
             //改变每页页数

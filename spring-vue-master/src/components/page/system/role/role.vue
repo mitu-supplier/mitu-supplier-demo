@@ -9,10 +9,10 @@
             <div style="background:#f6f6f6;padding:20px 10px 0;margin-bottom:20px;">
                 <el-form :inline="true" :model="formInline" class="demo-form-inline">
                     <el-form-item label="角色名称">
-                        <el-input v-model="formInline.name" placeholder="类目名称"></el-input>
+                        <el-input v-model="formInline.roleName" placeholder="角色名称"></el-input>
                     </el-form-item>
-                    <el-form-item label="code">
-                        <el-input v-model="formInline.code" placeholder="商户名称"></el-input>
+                    <el-form-item label="CODE">
+                        <el-input v-model="formInline.roleCode" placeholder="CODE"></el-input>
                     </el-form-item>
                     
                     <el-form-item>
@@ -145,7 +145,10 @@
                     },
                 },
                 searchCount:'',
-                formInline:{}
+                formInline:{
+                    roleName:'',
+                    roleCode:''
+                }
             }
         },
         created() {
@@ -167,7 +170,7 @@
             },
             // 重置
             onReset(){
-                this.searchCount = '';
+                this.formInline = {};
                 this.getData();
             },
             // 搜索 
@@ -176,8 +179,8 @@
                     params: {
                         'page':this.page,
                         'pageSize':this.pageSize,
-                        'name':this.formInline.name,
-                        'code':this.formInline.code
+                        'roleName':this.formInline.roleName,
+                        'roleCode':this.formInline.roleCode
                     }
                 });
                 if(permissions.data.statusCode==200){

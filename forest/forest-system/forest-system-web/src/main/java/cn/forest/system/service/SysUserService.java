@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import cn.forest.common.util.ResultMessage;
 import cn.forest.system.remote.SysUserRemote;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Service("sysUserService")
 public class SysUserService {
@@ -15,8 +16,8 @@ public class SysUserService {
   @Autowired
   private SysUserRemote sysUserRemote;
 
-  public Map<String, Object> getList(Long page, Long pageSize) {
-    Object obj = sysUserRemote.getList(page, pageSize);
+  public Map<String, Object> getList(Long page, Long pageSize,String loginName, String name, String phone, String email) {
+    Object obj = sysUserRemote.getList(page, pageSize, loginName, name, phone, email);
     if (obj != null) {
       return ResultMessage.success(obj);
     }

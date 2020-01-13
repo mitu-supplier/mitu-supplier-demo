@@ -5,6 +5,7 @@ import java.util.List;
 
 import cn.forest.common.service.utils.ResultSave;
 import cn.forest.common.util.BCrypt;
+import cn.forest.common.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,9 +39,27 @@ public class SysUserAction {
   
   
   @RequestMapping("/list")
-  public Object getList(Long page, Long pageSize) {
+  public Object getList(@RequestParam(value = "page") Long page,
+                        @RequestParam(value = "pageSize") Long pageSize,
+                        @RequestParam(value = "loginName", required = false) String loginName,
+                        @RequestParam(value = "name", required = false) String name,
+                        @RequestParam(value = "phone", required = false) String phone,
+                        @RequestParam(value = "email", required = false) String email) {
     Page<SysUser> ipage = new Page<SysUser>(page, pageSize);
-    IPage<SysUser> selectPage = sysUserMapper.selectPage(ipage, null);
+    QueryWrapper<SysUser> sysUserQueryWrapper = new QueryWrapper<>();
+    if(!StringUtil.isBlank(loginName)){
+      sysUserQueryWrapper.like("login_name", loginName);
+    }
+    if(!StringUtil.isBlank(name)){
+      sysUserQueryWrapper.like("name", name);
+    }
+    if(!StringUtil.isBlank(phone)){
+      sysUserQueryWrapper.like("phone", phone);
+    }
+    if(!StringUtil.isBlank(email)){
+      sysUserQueryWrapper.like("email", email);
+    }
+    IPage<SysUser> selectPage = sysUserMapper.selectPage(ipage, sysUserQueryWrapper);
     /*
      * PageHelper.startPage(Integer.parseInt(page+""),Integer.parseInt(pageSize+""))
             * ;

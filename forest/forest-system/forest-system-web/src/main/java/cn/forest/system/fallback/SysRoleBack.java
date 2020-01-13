@@ -10,7 +10,7 @@ import cn.forest.system.remote.SysRoleRemote;
 public class SysRoleBack implements SysRoleRemote {
 
   @Override
-  public Object getSysRoleList(Long page, Long pageSize) {
+  public Object getSysRoleList(Long page, Long pageSize, String roleName, String roleCode) {
     return null;
   }
 

@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.forest.common.util.RequestMap;
@@ -27,8 +28,13 @@ public class SysUserController {
 
   @SysLogs(desc = "用户列表")
   @RequestMapping("/list")
-  public Map<String, Object> getList(Long page, Long pageSize) {
-    return sysUserService.getList(page, pageSize);
+  public Map<String, Object> getList(@RequestParam(value = "page") Long page,
+                                     @RequestParam(value = "pageSize") Long pageSize,
+                                     @RequestParam(value = "loginName", required = false) String loginName,
+                                     @RequestParam(value = "name", required = false) String name,
+                                     @RequestParam(value = "phone", required = false) String phone,
+                                     @RequestParam(value = "email", required = false) String email) {
+    return sysUserService.getList(page, pageSize, loginName, name, phone, email);
   }
 
   @SysLogs(desc = "删除用户")

@@ -361,4 +361,30 @@ public class SuppliersService {
         }
         return null;
     }
+
+    /**
+     * 判断当前用户是否是供应商
+     * @param request
+     * @return
+     */
+    public boolean isSupplier(HttpServletRequest request){
+        String header = request.getHeader(Constant.HEADER_TOKEN_STRING);
+        HashMap userInfoMap = (HashMap) redisDao.getValue(header);
+        if (userInfoMap != null) {
+            Object type = userInfoMap.get("type");
+            if (type != null && Integer.parseInt(type.toString()) == 1) {
+                // 供应商
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public Map<String, Object> getAll(){
+        Object list = suppliersRemote.getAll();
+        if(list != null){
+            return ResultMessage.success(list);
+        }
+        return null;
+    }
 }

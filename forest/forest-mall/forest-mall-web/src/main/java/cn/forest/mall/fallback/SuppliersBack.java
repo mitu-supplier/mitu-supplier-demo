@@ -42,4 +42,9 @@ public class SuppliersBack implements SuppliersRemote {
     public int batchAudit(String ids, Integer status) {
         return 0;
     }
+
+    @Override
+    public Object getAll() {
+        return null;
+    }
 }

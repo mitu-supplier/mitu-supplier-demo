@@ -8,14 +8,17 @@
         <div class="container">
             <div style="background:#f6f6f6;padding:20px 10px 0;margin-bottom:20px;">
                 <el-form :inline="true" :model="formInline" class="demo-form-inline">
+                    <el-form-item label="登录名">
+                        <el-input v-model="formInline.loginName" placeholder="登录名"></el-input>
+                    </el-form-item>
                     <el-form-item label="姓名">
-                        <el-input v-model="formInline.name" placeholder="类目名称"></el-input>
+                        <el-input v-model="formInline.name" placeholder="姓名"></el-input>
                     </el-form-item>
                     <el-form-item label="手机号">
-                        <el-input v-model="formInline.phone" placeholder="商户名称"></el-input>
+                        <el-input v-model="formInline.phone" placeholder="手机号"></el-input>
                     </el-form-item>
                     <el-form-item label="邮箱">
-                        <el-input v-model="formInline.email" placeholder="商户名称"></el-input>
+                        <el-input v-model="formInline.email" placeholder="邮箱"></el-input>
                     </el-form-item>
                     
                     <el-form-item>
@@ -141,7 +144,10 @@
                 },
                 name:'',
                 formInline:{
-
+                    loginName:'',
+                    name:'',
+                    phone:'',
+                    email:''
                 }
             }
         },
@@ -227,7 +233,7 @@
             },
             // 重置
             onReset(){
-                this.name = '';
+                this.formInline = {};
                 this.getData();
             },
             // 搜索 
@@ -236,6 +242,7 @@
                     params: {
                         'page':this.page,
                         'pageSize':this.pageSize,
+                        'loginName':this.formInline.loginName,
                         'name':this.formInline.name,
                         'phone':this.formInline.phone,
                         'email':this.formInline.email

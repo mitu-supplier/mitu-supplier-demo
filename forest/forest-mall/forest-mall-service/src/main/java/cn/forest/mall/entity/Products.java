@@ -83,7 +83,7 @@ public class Products implements Serializable {
     private String details;
 
     /**
-     * 审核状态  0待审核  1审核通过  2审核不通过
+     * 审核状态  0待审核  1审核通过  2审核不通过  3暂存
      */
     @TableField(value = "audit_status")
     private Integer auditStatus;

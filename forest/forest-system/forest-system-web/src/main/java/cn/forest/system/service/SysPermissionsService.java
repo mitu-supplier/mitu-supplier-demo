@@ -22,8 +22,8 @@ public class SysPermissionsService {
     return null;
   }
 
-  public Map<String, Object> getlistfirstLevel(Long page, Long pageSize) {
-    Object sysPermissionsList = sysPermissionsRemote.getlistfirstLevel(page, pageSize);
+  public Map<String, Object> getlistfirstLevel(Long page, Long pageSize, String name) {
+    Object sysPermissionsList = sysPermissionsRemote.getlistfirstLevel(page, pageSize, name);
     if (sysPermissionsList != null) {
       return ResultMessage.success(sysPermissionsList);
     }

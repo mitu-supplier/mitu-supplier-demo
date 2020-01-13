@@ -6,9 +6,23 @@
             </el-breadcrumb>
         </div>
         <div class="container">
+            <div style="background:#f6f6f6;padding:20px 10px 0;margin-bottom:20px;">
+                <el-form :inline="true" :model="formInline" class="demo-form-inline">
+                    <el-form-item label="用户名">
+                        <el-input v-model="formInline.userName" placeholder="用户名"></el-input>
+                    </el-form-item>
+                    <el-form-item label="操作模块">
+                        <el-input v-model="formInline.modelName" placeholder="操作模块"></el-input>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" icon="el-icon-search" @click="searchBtn">搜索</el-button>
+                        <el-button type="primary" icon="el-icon-refresh" @click="onReset">重置</el-button>
+                    </el-form-item>
+                </el-form>
+            </div>
             <div class="handle-box">
-                <el-input placeholder="筛选关键词" class="handle-input mr10"></el-input>
-                <el-button type="primary" icon="el-icon-search" >搜索</el-button>
+                <!-- <el-input placeholder="筛选关键词" class="handle-input mr10"></el-input>
+                <el-button type="primary" icon="el-icon-search" >搜索</el-button> -->
             </div>
             <el-table  :data="tableData"  border class="table" ref="multipleTable"  @selection-change="handleSelectionChange">
                 <el-table-column type="index" label="序号" width="55" align="center" ></el-table-column>
@@ -55,6 +69,10 @@
                 pageSize:10,
                 tableData: [],
                 multipleSelection: [],
+                formInline: {
+                    userName: '',
+                    modelName: ''
+                }
             }
         },
         created() {
@@ -85,7 +103,26 @@
                   this.page=sysLogs.data.data.page;
                 }
             },
-            
+            // 重置
+            onReset(){
+                this.formInline = {};
+                this.getData();
+            },
+            // 搜索 
+            async searchBtn(){
+                const permissions = await this.$http.get(baseURL_.sysUrl+'/sysLogs/list',{ 
+                    params: {
+                        'page':this.page,
+                        'pageSize':this.pageSize,
+                        'userName':this.formInline.userName,
+                        'modelName': this.formInline.modelName
+                    }
+                });
+                if(permissions.data.statusCode==200){
+                  this.tableData=permissions.data.data.list;
+                  this.total=permissions.data.data.total;
+                }
+            }
         }
     }
 

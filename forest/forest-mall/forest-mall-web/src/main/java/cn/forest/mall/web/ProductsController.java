@@ -3,9 +3,11 @@ package cn.forest.mall.web;
 import cn.forest.common.util.RequestMap;
 import cn.forest.common.util.ResultMessage;
 import cn.forest.mall.remote.CatalogsRemote;
+import cn.forest.mall.remote.SuppliersRemote;
 import cn.forest.mall.remote.SysDictionaryDataRemote;
 import cn.forest.mall.service.ProductsService;
 import cn.forest.mall.service.SuppliersService;
+import org.json.HTTP;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,6 +28,9 @@ public class ProductsController {
 
     @Autowired
     private SysDictionaryDataRemote sysDictionaryDataRemote;
+
+    @Autowired
+    private SuppliersService suppliersService;
 
     /**
      * 列表查询
@@ -109,5 +114,23 @@ public class ProductsController {
             return ResultMessage.success(list);
         }
         return ResultMessage.error("");
+    }
+
+    @RequestMapping("/getSuppliers")
+    public Map<String, Object> getSuppliers(){
+        return suppliersService.getAll();
+    }
+
+    @RequestMapping("/isSupplier")
+    public Map<String, Object> isSupplier(HttpServletRequest request){
+        if(suppliersService.isSupplier(request)){
+            return ResultMessage.success(1);
+        }
+        return ResultMessage.success(0);
+    }
+
+    @RequestMapping("/updateStatus")
+    public Map<String, Object> updateStatus(Long id, Integer status){
+        return  productsService.updateStatus(id, status);
     }
 }

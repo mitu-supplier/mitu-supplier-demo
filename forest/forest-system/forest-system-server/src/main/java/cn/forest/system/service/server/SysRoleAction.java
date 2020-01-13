@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import cn.forest.common.Constant;
+import cn.forest.common.util.StringUtil;
 import cn.forest.system.entity.SysUser;
 import cn.forest.system.entity.SysUserRole;
 import cn.forest.system.mapper.SysUserMapper;
@@ -50,9 +51,19 @@ public class SysRoleAction {
   private SysUserMapper sysUserMapper;
 
   @RequestMapping(value = "/list")
-  public Object getList(Long page, Long pageSize) {
+  public Object getList(@RequestParam(value = "page") Long page,
+                        @RequestParam(value = "pageSize") Long pageSize,
+                        @RequestParam(value = "roleName", required = false) String roleName,
+                        @RequestParam(value = "roleCode", required = false) String roleCode) {
     Page<SysRole> pages = new Page<SysRole>(page, pageSize);
-    IPage<SysRole> selectPage = sysRoleMapper.selectPage(pages, null);
+    QueryWrapper<SysRole> sysRoleQueryWrapper = new QueryWrapper<>();
+    if(!StringUtil.isBlank(roleName)){
+      sysRoleQueryWrapper.like("role_name", roleName);
+    }
+    if(!StringUtil.isBlank(roleCode)){
+      sysRoleQueryWrapper.like("role_code", roleCode);
+    }
+    IPage<SysRole> selectPage = sysRoleMapper.selectPage(pages, sysRoleQueryWrapper);
     return new ResultPage<SysRole>(selectPage);
   }
 

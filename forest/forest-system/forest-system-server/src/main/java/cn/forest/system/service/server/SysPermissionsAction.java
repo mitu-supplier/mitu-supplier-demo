@@ -4,9 +4,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.forest.common.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -34,9 +36,12 @@ public class SysPermissionsAction {
   
 
   @RequestMapping("/listfirstLevel")
-  public Object listfirstLevel(Long page, Long pageSize) {
+  public Object listfirstLevel(@RequestParam("page") Long page, @RequestParam("pageSize") Long pageSize, @RequestParam(value = "name", required = false) String name) {
     Page<SysPermissions> pages = new Page<SysPermissions>(page, pageSize);
     QueryWrapper<SysPermissions> queryWrapper = new QueryWrapper<SysPermissions>();
+    if(!StringUtil.isBlank(name)){
+      queryWrapper.like("name", name);
+    }
     queryWrapper.eq("tree_depth", 1);
     IPage<SysPermissions> selectPage = sysPermissionsMapper.selectPage(pages, queryWrapper);
     selectPage.getRecords().forEach(e -> {
