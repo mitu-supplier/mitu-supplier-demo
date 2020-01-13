@@ -50,7 +50,6 @@
         name: 'basetable',
         data() {
             return {
-                aaa:false,
                 page:1,
                 total:0,
                 pageSize:10,

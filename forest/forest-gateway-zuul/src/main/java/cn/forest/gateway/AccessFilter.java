@@ -36,7 +36,13 @@ public class AccessFilter extends ZuulFilter {
         HttpServletRequest request = ctx.getRequest();
         HttpServletResponse response = ctx.getResponse();
         String pathName = request.getServletPath();
-        String[] filter = {"/login","/file/upload", "/supplier/register", "/supplier/saveStepOneTwo", "/supplier/getDictionaryData", "/camilo/importExcel"};
+        String[] filter = {"/login",
+                "/file/upload",
+                "/supplier/register",
+                "/supplier/saveStepOneTwo",
+                "/supplier/getDictionaryData",
+                "/supplier/getEnterType",
+                "/supplier/getCompany"};
         if (isFilter(pathName, filter)) {
             String authorization = request.getHeader(Constant.HEADER_TOKEN_STRING);
             if (StringUtils.isEmpty(authorization)) {

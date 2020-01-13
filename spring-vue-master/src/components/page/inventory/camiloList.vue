@@ -84,6 +84,8 @@
             }
         },
         created() {
+            var token = localStorage.getItem('forestToken');
+            this.myHeaders.token = token;
             this.getData();
         },
         methods: {
@@ -119,8 +121,6 @@
                   this.total=products.data.data.total;
                   this.page=products.data.data.page;
                 }
-                const token = localStorage.getItem('forestToken');
-                this.myHeaders.token = token;
             },
             importExcel(){
                 console.log('import');

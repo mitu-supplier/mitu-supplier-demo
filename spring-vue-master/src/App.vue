@@ -16,8 +16,8 @@
     display: table-cell !important;
   }
   .upload-excel-file .el-upload--text {    
-        border: none !important;
-        width: 100% !important;
-        height: 100% !important;
-    }
+    border: none !important;
+    width: 100% !important;
+    height: 100% !important;
+  }
 </style>
