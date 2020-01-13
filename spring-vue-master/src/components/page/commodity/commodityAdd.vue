@@ -33,7 +33,7 @@
                     <el-input v-model="addComForm.code" size="mini" class="w50"></el-input>
                 </el-form-item>
 
-                <el-form-item v-if="isSupplier == '1'" label="所属商户" prop="">
+                <el-form-item v-if="isSupplier != '1'" label="所属商户" prop="">
                     <el-select v-model="addComForm.supplierId" placeholder="请选择">
                       <el-option
                         v-for="item in suppliers"
@@ -191,7 +191,7 @@
             },
             async vaIsSupplier(){
               var res = await this.$http.get(baseURL_.mallUrl+'/products/isSupplier');
-              this.suppliers = res.data.data;
+              this.isSupplier = res.data.data;
             },
             async getSuppliers(){
               var res = await this.$http.get(baseURL_.mallUrl+'/products/getSuppliers');

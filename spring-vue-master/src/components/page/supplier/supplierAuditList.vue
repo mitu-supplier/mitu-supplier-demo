@@ -49,7 +49,7 @@
                 </el-table-column> 
                 <el-table-column label="操作" width="" align="center">
                     <template slot-scope="scope">
-                        <el-button type="text" icon="el-icon-document" @click="view(scope.$index, scope.row)">查看</el-button>
+                        <el-button type="text" icon="el-icon-search" @click="view(scope.$index, scope.row)">查看</el-button>
                         <el-button type="text" icon="el-icon-edit" v-if="scope.row.status == '0'"  @click="toAudit(scope.$index, scope.row)">审核</el-button>
                         <el-button type="text" icon="el-icon-document" v-if="scope.row.status != '0'"  @click="lookAudit(scope.$index, scope.row)">审核记录</el-button>
                         <!-- <el-button type="text" icon="el-icon-check" v-if="scope.row.status == '0'" @click="auditAdopt(scope.row.id)">通过</el-button>
