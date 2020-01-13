@@ -533,7 +533,7 @@
                 });
                 this.$message(auditResult.data.data);
                 if(auditResult.data.statusCode==200){
-                    this.getData();
+                    this.$router.push({ path: "/supplierAuditList" });
                 }
             }
         }
