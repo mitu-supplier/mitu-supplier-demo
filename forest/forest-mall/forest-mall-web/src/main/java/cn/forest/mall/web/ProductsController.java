@@ -40,7 +40,7 @@ public class ProductsController {
      */
     @RequestMapping("/list")
     public Map<String, Object> list(HttpServletRequest request) {
-        return productsService.list(request);
+        return productsService.list(request, null);
     }
 
     /**

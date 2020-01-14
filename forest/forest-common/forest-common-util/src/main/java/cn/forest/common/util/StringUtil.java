@@ -25,4 +25,12 @@ public class StringUtil {
   public static boolean isBlank(Object obj) {
     return isBlank(toString(obj));
   }
+
+  public static boolean isNotBlank(Object obj) {
+    return !isBlank(obj);
+  }
+
+  public static boolean isNotBlank(String str) {
+    return !isBlank(str);
+  }
 }

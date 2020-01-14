@@ -43,8 +43,10 @@ public class AccessFilter extends ZuulFilter {
                 "/supplier/getDictionaryData",
                 "/supplier/getEnterType",
                 "/supplier/getCompany",
-                "/ueditor/upload"
-                };
+                "/ueditor/upload",
+                "/ueditor/listimage",
+                "/supplier/getUserInfo"
+        };
         if (isFilter(pathName, filter)) {
             String authorization = request.getHeader(Constant.HEADER_TOKEN_STRING);
             if (StringUtils.isEmpty(authorization)) {

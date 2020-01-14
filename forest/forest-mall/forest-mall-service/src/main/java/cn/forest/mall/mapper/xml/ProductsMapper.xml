@@ -48,6 +48,9 @@
             <if test="deliveryCode != null and deliveryCode != ''">
                 AND d.code = #{deliveryCode}
             </if>
+            <if test="listType != null and listType == 'audit'">
+                AND p.audit_status IN (0,1,2)
+            </if>
             order by FIELD(p.audit_status,3,0,1,2), p.id DESC
     </select>
 

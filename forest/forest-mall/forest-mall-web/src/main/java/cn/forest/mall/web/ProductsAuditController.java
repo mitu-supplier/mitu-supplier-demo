@@ -25,7 +25,7 @@ public class ProductsAuditController {
      */
     @RequestMapping("/list")
     public Map<String, Object> list(HttpServletRequest request) {
-        return productsService.list(request);
+        return productsService.list(request, "audit");
     }
 
     /**

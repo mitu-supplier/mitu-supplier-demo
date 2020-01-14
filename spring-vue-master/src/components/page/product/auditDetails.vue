@@ -102,6 +102,21 @@
                     </div>
                 </el-form-item>
 
+                <el-form-item v-if="auditType =='10'" label="发货代号" prpo="">
+                  <el-select v-model="addComForm.deliveryTypeCode" filterable placeholder="请选择">
+                    <el-option
+                      v-for="item in deliveryTypeCodeList"
+                      :key="item.code"
+                      :label="item.label"
+                      :value="item.code">
+                    </el-option>
+                  </el-select>
+                  <el-button class="add_delivery" type="success" @click="addDelivery()">添加</el-button>
+                </el-form-item>
+                <el-form-item v-else label="发货代号" prpo="">
+                  <el-input v-model="addComForm.deliveryTypeCode" size="mini" readonly class="w50"></el-input>
+                </el-form-item>
+
                 <el-form-item>
                     <el-button type="primary" v-if="auditType =='10'" @click="auditAdopt()">审核通过</el-button>
                     <el-button type="danger" v-if="auditType =='10'" @click="auditReject()">审核失败</el-button>
@@ -151,7 +166,8 @@
                 // editorContent: ''
                 content:'',
                 catalogId:'',
-                productId:''
+                productId:'',
+                deliveryTypeCodeList:[]
             }
         },
         created() {
@@ -184,6 +200,7 @@
                   usd.setHeight(366);
                   usd.setContent(details);
                 });
+                this.getDeliveryTypeCode();
               }else{
                 this.$message(res.data.data);
               }
@@ -274,14 +291,12 @@
             handleRemove(file, fileList) {},
             // 审核
             auditAdopt(){
-                this.$prompt('请输入发货代号：', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    inputPattern: /^[\s\S]*.*[^\s][\s\S]*$/,
-                    inputErrorMessage: '发货代号不能为空'
-                }).then(({ value }) => {
-                    this.confimAudit(this.productId,1,null,value);
-                }).catch(() => { }); 
+              var code = this.addComForm.deliveryTypeCode;
+              if(code == null || code == ''){
+                this.$message("请选择发货代号");
+                return;
+              }
+              this.confimAudit(this.productId,1,null,code);
             },
             auditReject(){
                 this.$prompt('请输入审核失败理由：', '提示', {
@@ -305,6 +320,39 @@
                 this.$message(auditResult.data.data);
                 if(auditResult.data.statusCode==200){
                     this.back();
+                }
+            },
+            async getDeliveryTypeCode(){
+              var deliveryCodeRes = await this.$http.get(baseURL_.mallUrl+'/deliveryCode/select',{
+                params:{
+                  supplierId:this.addComForm.supplierId
+                }
+              });
+              this.deliveryTypeCodeList = [];
+              this.deliveryTypeCodeList = deliveryCodeRes.data.data;
+            },
+            // 添加发货代号
+            addDelivery(){
+                this.$prompt('请输入发货代号：', '添加发货代号', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    inputPattern: /^[\s\S]*.*[^\s][\s\S]*$/,
+                    inputErrorMessage: '发货代号不能为空'
+                }).then(({ value }) => {
+                    this.saveDelivery(this.addComForm.supplierid, value);
+                }).catch(() => { }); 
+            },
+            // 保存发货代号
+            async saveDelivery(supplierId, deliveryTypeCode){
+              var params = {
+                supplierId:this.addComForm.supplierId,
+                code: deliveryTypeCode
+              }
+              var saveRes = await this.$http.post(baseURL_.mallUrl+'/deliveryCode/save',this.$qs.stringify(params));
+                this.$message(saveRes.data.data);
+                if(saveRes.data.statusCode==200){
+                  this.addComForm.deliveryTypeCode = deliveryTypeCode;
+                  this.getDeliveryTypeCode();
                 }
             }
         }
@@ -349,5 +397,8 @@
     ::-webkit-scrollbar-thumb {
       border-radius: 4px;
       background-color: #ccc;
+    }
+    .add_delivery {
+      margin-left: 10px;
     }
 </style>
