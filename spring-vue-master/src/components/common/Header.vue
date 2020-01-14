@@ -75,17 +75,19 @@
                   newPass:'',
                   passTow:''
 
-                }
+                },
+                username:''
 
             }
         },
         computed:{
+            
+        },
+        methods:{
             async user(){
                 const user = await this.$http.get(baseURL_.sysUrl+'/sysUser/getOnlineUser');
                 this.username=user.data.data.name
             },
-        },
-        methods:{
             // 用户名下拉菜单选择事件
             handleCommand(command) {
                 if(command == 'loginout'){

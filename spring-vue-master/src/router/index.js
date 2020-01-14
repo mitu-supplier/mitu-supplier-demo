@@ -70,7 +70,7 @@ export default new Router({
                 {
                     path: '/commodityLook',
                     component: resolve => require(['../components/page/commodity/commodityLook.vue'], resolve),
-                    meta: { title: '修改商品' }
+                    meta: { title: '商品详情' }
                 },
                 {
                     path: '/sys_logs',

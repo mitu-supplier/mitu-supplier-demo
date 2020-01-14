@@ -33,6 +33,10 @@
                     <el-input v-model="addComForm.code" size="mini" readonly class="w50"></el-input>
                 </el-form-item>
 
+                <el-form-item label="所属商户" prop="">
+                    <el-input v-model="addComForm.supplierName" readonly size="mini" class="w50"></el-input>
+                </el-form-item>
+
                 <el-form-item label="商品分类:" prop="orgNames2" id="orgTreeBox">
                   <!-- catalog_id -->
                   <input type="hidden" >

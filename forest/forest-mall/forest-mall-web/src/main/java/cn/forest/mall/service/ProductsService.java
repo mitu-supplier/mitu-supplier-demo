@@ -53,15 +53,7 @@ public class ProductsService {
     public Map<String, Object> getById(Long id) {
         Object obj = productsRemote.getById(id);
         if (obj != null) {
-            Map product = (Map) obj;
-            if(!StringUtil.isBlank(product.get("catalogId"))){
-                Object catalogObj = catalogsRemote.getById(Long.parseLong(StringUtil.toString(product.get("catalogId"))));
-                if(catalogObj != null){
-                    Map catalog = (Map) catalogObj;
-                    product.put("catalogName", catalog.get("name"));
-                }
-            }
-            return ResultMessage.success(product);
+            return ResultMessage.success(obj);
         }
         return null;
     }

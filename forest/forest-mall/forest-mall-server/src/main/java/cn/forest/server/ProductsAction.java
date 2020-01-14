@@ -3,7 +3,9 @@ package cn.forest.server;
 
 import cn.forest.common.service.utils.ResultPage;
 import cn.forest.common.util.StringUtil;
+import cn.forest.mall.entity.Catalogs;
 import cn.forest.mall.entity.Products;
+import cn.forest.mall.entity.Suppliers;
 import cn.forest.mall.mapper.CatalogsMapper;
 import cn.forest.mall.mapper.ProductsMapper;
 import cn.forest.mall.mapper.SuppliersMapper;
@@ -47,7 +49,20 @@ public class ProductsAction {
 
     @RequestMapping("/getById")
     public Object getById(@RequestParam("id") Long id) {
-        return productsMapper.selectById(id);
+        Products products = productsMapper.selectById(id);
+        if(products != null){
+            Long catalogId = products.getCatalogId();
+            if(catalogId != null){
+                Catalogs catalogs = catalogsMapper.selectById(catalogId);
+                products.setCatalogName(catalogs == null ? null : catalogs.getName());
+            }
+            Long supplierId = products.getSupplierId();
+            if(supplierId != null){
+                Suppliers suppliers = suppliersMapper.selectById(supplierId);
+                products.setSupplierName(suppliers == null ? null : suppliers.getName());
+            }
+        }
+        return products;
     }
 
     @RequestMapping("/save")

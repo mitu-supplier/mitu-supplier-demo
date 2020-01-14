@@ -33,19 +33,19 @@ public class ExcelUtils {
     /**
      * 读取文件数据
      *
-     * @param file .xlsx文件或者.xls文件
+     * @param fileName 文件名
+     * @param inputStream 文件流
      * @param fieldsMap  key excel对应的列名, value 每列对应的字段名称
      * @return 文件数据
      */
-    public static JSONArray getExcelData(File file, Map<String, String> fieldsMap) {
+    public static JSONArray getExcelData(String fileName, InputStream inputStream, Map<String, String> fieldsMap) {
         JSONArray array = null;
         Workbook book = null;
         try {
-            String fileName = file.getName().toLowerCase();
             if (fileName.endsWith(XLSX)) {
-                book = new XSSFWorkbook(new FileInputStream(file));
+                book = new XSSFWorkbook(inputStream);
             } else if (fileName.endsWith(XLS)) {
-                POIFSFileSystem poifsFileSystem = new POIFSFileSystem(new FileInputStream(file));
+                POIFSFileSystem poifsFileSystem = new POIFSFileSystem(inputStream);
                 book = new HSSFWorkbook(poifsFileSystem);
             } else {
                 return array;

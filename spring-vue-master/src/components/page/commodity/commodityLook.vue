@@ -2,7 +2,7 @@
     <div class="table">
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-lx-cascades"></i> 查看商品</el-breadcrumb-item>
+                <el-breadcrumb-item><i class="el-icon-lx-cascades"></i> 商品详情</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class="dityAddbox">
@@ -32,6 +32,10 @@
 
                 <el-form-item label="编码" prop="">
                     <el-input v-model="addComForm.code" readonly size="mini" class="w50"></el-input>
+                </el-form-item>
+
+                <el-form-item v-if="isSupplier != '1'" label="所属商户" prop="">
+                    <el-input v-model="addComForm.supplierName" readonly size="mini" class="w50"></el-input>
                 </el-form-item>
 
                 <el-form-item label="商品分类:" prop="orgNames2" id="orgTreeBox">
@@ -101,7 +105,7 @@
                 </el-form-item>
 
                 <el-form-item>
-                    <el-button type="danger" @click="back">取消</el-button>
+                    <el-button type="danger" @click="back">返回</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -146,11 +150,13 @@
                 // editorContent: ''
                 content:'',
                 catalogId:'',
+                isSupplier: 1
             }
         },
         created() {
           this.getData();
           this.getSelectForm();
+          this.vaIsSupplier();
         },
         mounted() {
           UE.delEditor("editor");
@@ -247,7 +253,11 @@
               );
             },
 
-            handleRemove(file, fileList) {}
+            handleRemove(file, fileList) {},
+            async vaIsSupplier(){
+              var res = await this.$http.get(baseURL_.mallUrl+'/products/isSupplier');
+              this.isSupplier = res.data.data;
+            },
         }
     }
 

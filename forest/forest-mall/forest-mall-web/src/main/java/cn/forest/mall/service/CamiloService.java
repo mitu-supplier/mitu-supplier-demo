@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -87,10 +88,9 @@ public class CamiloService {
         }
         MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
         MultipartFile multipartFile = multipartRequest.getFileMap().entrySet().iterator().next().getValue();
-
-        File file = new File(multipartFile.getOriginalFilename());
+        InputStream inputStream = null;
         try {
-            FileUtils.copyInputStreamToFile(multipartFile.getInputStream(), file);
+            inputStream = multipartFile.getInputStream();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -101,7 +101,7 @@ public class CamiloService {
         fieldsMap.put("密码", "cardPassword");
         fieldsMap.put("失效时间", "failureTime");
         fieldsMap.put("供货价", "supplyPrice");
-        JSONArray excelData = ExcelUtils.getExcelData(file, fieldsMap);
+        JSONArray excelData = ExcelUtils.getExcelData(multipartFile.getOriginalFilename(), inputStream, fieldsMap);
         if(excelData != null){
             List<Map<String, Object>> mapList = new ArrayList<>();
             Map<String, Object> camiloMap = null;
@@ -129,10 +129,6 @@ public class CamiloService {
                     return resultMap;
                 }
             }
-        }
-        //如果不需要File文件可删除
-        if (file.exists()) {
-            file.delete();
         }
         return ResultMessage.error("导入失败");
     }
