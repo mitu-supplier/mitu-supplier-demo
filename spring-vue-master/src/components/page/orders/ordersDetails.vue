@@ -110,7 +110,7 @@
         methods: {
             // 数据回显
             async getData(){
-              var id = this.$route.query.id;
+              var id = this.$route.params.id;
               const res = await this.$http.get(baseURL_.mallUrl+'/orders/getById',{
                 params: {
                     'id': id

@@ -58,11 +58,11 @@ Vue.prototype.$jsEncrypt=JsEncrypt;
                             // activeId
                             this.$router.push({
                                 path: '/registed',
-                                query: {
+                                name: 'registed',
+                                params: {
                                     activeId: 2
                                 }
                             });
-                            // this.$router.push('/registed');
                         } else if(login.data.data.status == '0'){
                             // 待审核
                             sessionStorage.setItem("auditType",'1');

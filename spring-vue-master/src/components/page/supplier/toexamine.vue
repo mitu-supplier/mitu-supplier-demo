@@ -57,7 +57,8 @@
           toRegisted(){
             this.$router.push({
                 path: '/registed',
-                query: {
+                name: 'registed',
+                params: {
                     activeId: 2
                 }
             });

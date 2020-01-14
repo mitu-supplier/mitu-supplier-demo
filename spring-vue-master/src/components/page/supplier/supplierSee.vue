@@ -307,7 +307,7 @@
             return {
                 activeName: 'first',
 
-                activeShow: this.$route.query.state,
+                activeShow: this.$route.params.state,
                 action:1,
                 page:1,
                 total:1000,
@@ -436,7 +436,7 @@
             async getSupplierData(){
                 const res = await this.$http.get(baseURL_.mallUrl+'/supplier_audit/view',{
                   params:{
-                    id:this.$route.query.id
+                    id:this.$route.params.id
                   }
                 });
                 this.supplier_id = res.data.data.id;
@@ -507,13 +507,13 @@
             
             
             auditAdopt(){
-                var id = this.$route.query.id;
+                var id = this.$route.params.id;
                 this.$confirm('确认审核通过').then( e=> {
                     this.confimAudit(id,1);
                 }).catch(_ => {});
             },
             auditReject(){
-                var id = this.$route.query.id;
+                var id = this.$route.params.id;
                 this.$prompt('请输入审核失败理由：', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',

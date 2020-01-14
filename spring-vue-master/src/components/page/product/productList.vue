@@ -186,12 +186,7 @@
                 }
             },
             handleUpdate(index, row){
-                this.$router.push({
-                    path: '/commodityEdit',
-                    query: {
-                        id: row.id
-                    }
-                });
+                this.$router.push({path:'/commodityEdit',name:"commodityEdit", params: {id: row.id}});
             },
             async updateStatus(index, row, status){
                 var product = {
@@ -207,7 +202,8 @@
             handleLook(index, row){
                 this.$router.push({
                     path: '/commodityLook',
-                    query: {
+                    name: 'commodityLook',
+                    params: {
                         id: row.id
                     }
                 });

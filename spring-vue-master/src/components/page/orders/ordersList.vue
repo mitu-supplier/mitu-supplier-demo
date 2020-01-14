@@ -196,7 +196,8 @@
             view(index, row){
                 this.$router.push({
                     path: '/ordersDetails',
-                    query: {
+                    name: 'ordersDetails',
+                    params: {
                         id: row.id
                     }
                 });

@@ -602,7 +602,7 @@
         },
         created() {
             this.getData();
-            this.queryActive = this.$route.query.activeId;
+            this.queryActive = this.$route.params.activeId;
             if(this.queryActive != '' && this.queryActive != null){
               this.active = 1;
               this.getSupplierData();
@@ -889,8 +889,6 @@
               this.newRuleForm.businessLicense = file.response.data.path;
             },
             legalCardSuccess(res, file, fileList) {
-              console.log(fileList)
-              console.log(fileList[0].response.data.path)
               this.$message({
                 type: "success",
                 message: "上传成功",

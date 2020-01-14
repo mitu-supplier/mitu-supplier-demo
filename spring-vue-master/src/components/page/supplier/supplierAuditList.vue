@@ -211,7 +211,8 @@
             view(index,item){
                 this.$router.push({
                     path: '/supplierSee',
-                    query: {
+                    name: 'supplierSee',
+                    params: {
                         id: item.id
                     }
                 });
@@ -219,7 +220,8 @@
             toAudit(index,item){
                 this.$router.push({
                     path: '/supplierSee',
-                    query: {
+                    name: 'supplierSee',
+                    params: {
                         id: item.id,
                         state:item.status
                     }

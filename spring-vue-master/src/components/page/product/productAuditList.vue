@@ -204,7 +204,8 @@
             view(index,row){
                 this.$router.push({
                     path: '/auditDetails',
-                    query: {
+                    name:'auditDetails',
+                    params: {
                         id: row.id
                     }
                 });
@@ -212,7 +213,8 @@
             toAudit(index,row){
                 this.$router.push({
                     path: '/auditDetails',
-                    query: {
+                    name:'auditDetails',
+                    params: {
                         id: row.id,
                         state:10
                     }

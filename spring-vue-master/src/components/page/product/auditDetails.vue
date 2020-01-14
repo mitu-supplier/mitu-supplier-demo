@@ -138,7 +138,7 @@
                 addComForm:{
 
                 },
-                auditType:this.$route.query.state,
+                auditType:this.$route.params.state,
                 rules: {
                     password: [{ required: true, message: "请输入密码", trigger: "blur" }],
                     confirmPassword: [{ required: true, message: "请输入密码", trigger: "blur" }]
@@ -182,7 +182,7 @@
         methods: {
             // 数据回显
             async getData(){
-              var id = this.$route.query.id;
+              var id = this.$route.params.id;
               const res = await this.$http.get(baseURL_.mallUrl+'/products_audit/getById',{
                 params: {
                     'id': id

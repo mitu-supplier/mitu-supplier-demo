@@ -53,22 +53,30 @@ export default new Router({
                     meta: { title: '系统监控' }
                 },
                 {
+                    path: '/productList',
+                    component: resolve => require(['../components/page/product/productList.vue'], resolve),
+                    meta: { title: '商品列表' }
+                },
+                {
                     path: '/commodityAdd',
                     component: resolve => require(['../components/page/commodity/commodityAdd.vue'], resolve),
                     meta: { title: '新增商品' }
                 },
                 {
                     path: '/auditDetails',
+                    name: 'auditDetails',
                     component: resolve => require(['../components/page/product/auditDetails.vue'], resolve),
                     meta: { title: '商品详情' }
                 },
                 {
                     path: '/commodityEdit',
+                    name: 'commodityEdit',
                     component: resolve => require(['../components/page/commodity/commodityEdit.vue'], resolve),
                     meta: { title: '修改商品' }
                 },
                 {
                     path: '/commodityLook',
+                    name: 'commodityLook',
                     component: resolve => require(['../components/page/commodity/commodityLook.vue'], resolve),
                     meta: { title: '商品详情' }
                 },
@@ -104,14 +112,11 @@ export default new Router({
                 },
                 {
                     path: '/supplierSee',
+                    name: 'supplierSee',
                     component: resolve => require(['../components/page/supplier/supplierSee.vue'], resolve),
                     meta: { title: '商户信息' }
                 },
-                {
-                    path: '/productList',
-                    component: resolve => require(['../components/page/product/productList.vue'], resolve),
-                    meta: { title: '商品列表' }
-                },
+                
                 {
                     path: '/productAuditList',
                     component: resolve => require(['../components/page/product/productAuditList.vue'], resolve),
@@ -154,6 +159,7 @@ export default new Router({
                 },
                 {
                     path: '/ordersDetails',
+                    name: 'ordersDetails',
                     component: resolve => require(['../components/page/orders/ordersDetails.vue'], resolve),
                     meta: { title: '订单详情' }
                 },
@@ -177,6 +183,7 @@ export default new Router({
         },
         {
             path: '/registed',
+            name: 'registed',
             component: resolve => require(['../components/page/supplier/registed.vue'], resolve),
             meta: { title: '供应注册' }
         },
