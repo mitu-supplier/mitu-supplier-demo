@@ -160,6 +160,7 @@
                             </el-form-item>
                             
                             <el-form-item>
+                                <el-button type="primary" @click="upbtn('4')">上一步</el-button>
                                 <el-button type="primary" @click="nextFive('suppImgForm')">下一步</el-button>
                                 <!-- <el-button type="danger" @click="back">取消</el-button> -->
                             </el-form-item>
@@ -187,8 +188,8 @@
                               </el-select>
                             </el-form-item>
 
-                            <el-form-item label="近一年销售额" prop="name">
-                                <el-input v-model="supplierForm.sales" size="mini" class="w50"></el-input>
+                            <el-form-item label="近一年销售额（万元）" prop="name">
+                                <el-input v-model.number="supplierForm.sales" size="mini" class="w50"></el-input>
                             </el-form-item>
                             
                             <el-form-item label="入驻类型" prop="address">
@@ -238,7 +239,9 @@
                             </el-form-item>
 
                             <el-form-item>
+                                <el-button type="primary" @click="upbtn('3')">上一步</el-button>
                                 <el-button type="primary" @click="submitBtn('supplierForm')">下一步</el-button>
+                                
                                 <!-- <el-button type="danger" @click="back">取消</el-button> -->
                             </el-form-item>
                         </el-form>
@@ -424,6 +427,7 @@
                             
 
                           <el-form-item>
+                              <el-button type="primary" @click="upbtn('2')">上一步</el-button>
                               <el-button type="primary" @click="goFore('newRuleForm')">下一步</el-button>
                               <el-button type="danger" @click="back">返回</el-button>
                           </el-form-item>
@@ -629,6 +633,9 @@
             
         },
         methods: {
+          upbtn(upNumber){
+             this.active=Number(upNumber)-1;
+          },
           beforeunloadFn(){
             localStorage.removeItem('newActive');
           },
@@ -650,7 +657,10 @@
                 for(var i in this.newRuleForm){
                   this.newRuleForm[i] = res.data.data.supplier[i];
                 }
-                this.value2 = [res.data.data.supplier.legalCardDateStart,res.data.data.supplier.legalCardDateEnd];
+                if(res.data.data.supplier.legalCardDateStart!=null){
+                  this.value2 = [res.data.data.supplier.legalCardDateStart,res.data.data.supplier.legalCardDateEnd];
+                }
+                
                 // 营业执照回显
                 if(res.data.data.supplier.businessLicense){
                   this.businessList = [{url:res.data.data.supplier.businessLicense}]
@@ -733,10 +743,10 @@
                 if (valid) {
                     const role = await this.$http.post(baseURL_.mallUrl+'/supplier/register',this.$qs.stringify(this.newRuleForm));
                     if(role.data.statusCode==200){
-                      this.$message({
-                        type: "success",
-                        message: "保存成功"
-                      });
+                      // this.$message({
+                      //   type: "success",
+                      //   message: "保存成功"
+                      // });
                       this.active = 3;
                     }else{
                       this.$message({
@@ -760,10 +770,10 @@
                       
                     });
                     if(role.data.statusCode==200){
-                      this.$message({
-                        type: "success",
-                        message: "保存成功"
-                      });
+                      // this.$message({
+                      //   type: "success",
+                      //   message: "保存成功"
+                      // });
                       // var newdataId = JSON.parse(role.data.data.user);
                       this.newRuleForm.code = role.data.data.supplierCode;
                       this.supplierId = role.data.data.supplierId;
@@ -795,10 +805,10 @@
                     const role = await this.$http.post(baseURL_.mallUrl+'/supplier/saveStepOneTwo',this.$qs.stringify(this.firstForm));
                     
                     if(role.data.statusCode==200){
-                      this.$message({
-                        type: "success",
-                        message: "保存成功"
-                      });
+                      // this.$message({
+                      //   type: "success",
+                      //   message: "保存成功"
+                      // });
                       
                       this.active = 2;
                     }else{
@@ -887,7 +897,7 @@
                 duration: 6000
               });
               this.newRuleForm.legalCardZ = fileList[0].response.data.path;
-              if(fileList.length > 1){
+              if(fileList&&fileList.length > 1){
                 this.newRuleForm.legalCardF = fileList[1].response.data.path;
               }
             },
