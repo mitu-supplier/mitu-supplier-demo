@@ -4,7 +4,7 @@
         <div class="collapse-btn" @click="collapseChage">
             <i class="el-icon-menu"></i>
         </div>
-        <div class="logo">项目管理</div>
+        <div class="logo">积分时代</div>
         <div class="header-right">
             <div class="header-user-con">
                 <!-- 全屏显示 -->
@@ -67,13 +67,14 @@
             return {
                 collapse: false,
                 fullscreen: false,
+                name: 'linxin',
                 message: 0,
                 editVisible:false,
                 username:'',
                 form:{
                   oldPass:'',
                   newPass:'',
-                  passTow:''
+                  passTow:'',
 
                 }
 

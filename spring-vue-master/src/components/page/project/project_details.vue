@@ -25,43 +25,51 @@
                         <td class="companytitle1" >
                         {{projectData.createTime}}
                         </td>                                
+                        <td class="companytitle">修改时间</td>
+                        <td class="companytitle1" >
+                        <span v-if="projectData.updateTime==null">{{projectData.createTime}}</span>
+                        <span v-if="projectData.updateTime!=null">{{projectData.updateTime}}</span>
+                        </td>   
+                    </tr>
+                        <tr>
                         <td class="companytitle">总预算（ 元）</td>
                         <td class="companytitle1" >
                             {{projectData.budget}}
                         </td>
-                    </tr>
-                        <tr>
                         <td class="companytitle">资金来源</td>
                         <td class="companytitle1" >
                           {{projectData.projectSource}}
                         </td>                                
-                        <td class="companytitle">所属科室</td>
-                        <td class="companytitle1" >{{projectData.orgName}}</td>     
+                        
                     </tr>
                     </tr>
                         <tr>
+                         <td class="companytitle">所属科室</td>
+                        <td class="companytitle1" >{{projectData.orgName}}</td>    
                         <td class="companytitle">项目负责人</td>
                         <td class="companytitle1" >
-                        {{projectData.projectLeader}}
-                        <td class="companytitle">联系方式</td>
+                        {{projectData.projectLeader}}</td>   
+                               
+                       
+                    </tr>
+                    <tr>
+                    <td class="companytitle">联系方式</td>
                         <td class="companytitle1" >
                         {{projectData.leaderPhone}}
                            
-                        </td>                                
+                        </td>                         
+                        <td class="companytitle">执行进度</td>
+                        <td class="companytitle1" >
+                        {{projectData.per}} </td>  
+                                                   
                        
                     </tr>
                     <tr>
-                        <td class="companytitle">执行进度</td>
-                        <td class="companytitle1" >
-                        {{projectData.per}}
-                        <td class="companytitle">已执行金额（元）</td>
+                       <td class="companytitle">已执行金额（元）</td>
                         <td class="companytitle1" >
                         {{projectData.usedTotal}}
                            
-                        </td>                                
-                       
-                    </tr>
-                    <tr>
+                        </td>     
                         <td class="companytitle">剩余金额（元）</td>
                         <td class="companytitle1" >
                         {{projectData.laveTotal}}

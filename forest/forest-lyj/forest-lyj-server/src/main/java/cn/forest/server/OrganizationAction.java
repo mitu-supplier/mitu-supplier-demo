@@ -32,7 +32,7 @@ public class OrganizationAction {
   @RequestMapping("/list")
   public Object list() {
     QueryWrapper<Organization> queryWrapper = new QueryWrapper<Organization>();
-    queryWrapper.orderByAsc("id");
+    queryWrapper.orderByDesc("id");
     queryWrapper.select(new String[] {"name","id","code"});
     return organizationMapper.selectList(queryWrapper);
   }
@@ -41,6 +41,7 @@ public class OrganizationAction {
   public Object listfirstLevel(Long page, Long pageSize,String name) {
     Page<Organization> pages = new Page<Organization>(page, pageSize);
     QueryWrapper<Organization> queryWrapper = new QueryWrapper<Organization>();
+    queryWrapper.orderByDesc("id");
     if(!StringUtils.isEmpty(name)) {
       queryWrapper.like("name", name).or().like("code", name);
     }

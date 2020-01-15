@@ -33,4 +33,9 @@ public interface SysUserRemote {
   @RequestMapping("/sys_user/getOrgByUserId")
   public Object getOrgByUserId(@RequestParam(value = "userId") Long userId);
 
+  
+  @RequestMapping("/sys_user/getUserByOrgId")
+  public Object getUserByOrgId(@RequestParam(value = "page") Long page, @RequestParam(value = "pageSize") Long pageSize,
+      @RequestParam(value = "orgId") Long orgId,@RequestParam(value = "name") String name);
+  
 }

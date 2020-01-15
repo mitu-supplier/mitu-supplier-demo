@@ -1,5 +1,7 @@
 package cn.forest.login.service;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -45,7 +47,6 @@ public class LoginService {
     }
     Object user = loginRemote.getUser(loginName.trim());
     if (user != null) {
-      
       HashMap object = JsonUtil.toObject(JsonUtil.toJson(user), HashMap.class);
       String pass = StringUtil.toString(object.get("password"));
       try {
@@ -53,18 +54,19 @@ public class LoginService {
       } catch (Exception e) {
         e.printStackTrace();
       }
+      HashMap userInfoMap = selectUserRoles(object);
       if (pass != null && BCrypt.checkpw(password, pass)) {
         if(Integer.parseInt(object.get("isStatus").toString())==1) {
           return ResultMessage.error("已被禁止登陆，请联系管理员");
         }
         String token = TokenAuthenticationService.addAuthentication(StringUtil.toString(object.get("loginName")));
-        HashMap userInfoMap = selectUserRoles(object);
-        addSysLoginLogs(object, request,userInfoMap);
+        addSysLoginLogs(object, request,userInfoMap,"登录成功");
         updateUser(object, request);
         // 查询当前用户的角色权限
         redisDao.setKey(token, userInfoMap, TokenAuthenticationService.EXPIRATIONTIME);
         return ResultMessage.success(token);
       } else {
+        addSysLoginLogs(object, request,userInfoMap,"登录失败");
         return ResultMessage.error("用户或密码错误");
       }
     } else {
@@ -78,7 +80,7 @@ public class LoginService {
     return sysUserRemote.update(map);
   }
 
-  public int addSysLoginLogs(Map map, HttpServletRequest request,HashMap hashMap) {
+  public int addSysLoginLogs(Map map, HttpServletRequest request,HashMap hashMap,String content) {
     List<Map<String, Object>> roles = (List) hashMap.get("roles");
     String roleName="";
     if(roles!=null) {
@@ -90,6 +92,12 @@ public class LoginService {
     logsMap.put("loginName", map.get("loginName"));
     logsMap.put("userName", map.get("name"));
     logsMap.put("roleName", roleName);
+    try {
+      logsMap.put("city", URLDecoder.decode(request.getHeader("addressCity"), "UTF-8"));
+    } catch (UnsupportedEncodingException e) {
+      e.printStackTrace();
+    }
+    logsMap.put("content", content);
     return sysLoginLogsRemote.add(logsMap);
   }
 

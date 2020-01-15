@@ -17,7 +17,11 @@
             </div>
             <el-table id="table_id" row-key="id" lazy :data="tableData" border class="table"  :tree-props="{children: 'children', hasChildren: 'hasChildren'}" ref="multipleTable"  @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55" align="center" ></el-table-column>
-                <el-table-column type="index" label="序号" width="55" align="center" ></el-table-column>
+                <el-table-column type="index" label="序号" width="55" align="center" >
+                   <template slot-scope="scope">
+                         <span >{{(page-1)*pageSize+scope.$index+1}}</span>
+                    </template>
+                </el-table-column>
                 <el-table-column prop="projectName" label="项目名称"  align="center" ></el-table-column>
                 <el-table-column prop="year" label="年度"  align="center" width="80"></el-table-column>
                 <el-table-column prop="budget" label="总预算（ 元）"  align="center" width="100"></el-table-column>
@@ -68,8 +72,8 @@
         </div>
 
         <!-- 编辑弹出框 -->
-        <el-dialog :title="titleName"  :visible.sync="editVisible" width="30%" @close="closeDilog('form')">
-            <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+        <el-dialog :title="titleName"  :visible.sync="editVisible" width="35%" @close="closeDilog('form')">
+            <el-form ref="form" :model="form" :rules="rules" label-width="130px">
                  <el-form-item label="上级项目名称" v-show="parentNameShow">
                    <el-input v-model="form.parentName" readOnly class="input"></el-input>
                  </el-form-item>

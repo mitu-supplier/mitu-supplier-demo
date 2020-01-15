@@ -15,7 +15,11 @@
             </div>
             <el-table  row-key="id" lazy :data="tableData" :load="load" :tree-props="{children: 'children', hasChildren: 'hasChildren'}" border id="table_id" ref="multipleTable"  @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55" align="center" ></el-table-column>
-                <el-table-column type="index" label="序号" width="55" align="center" ></el-table-column>
+                <el-table-column type="index" label="序号" width="55" align="center" >
+                    <template slot-scope="scope">
+                         <span >{{(page-1)*pageSize+scope.$index+1}}</span>
+                    </template>
+                </el-table-column>
                 <el-table-column prop="name" label="菜单名称"  align="center" width="200"></el-table-column>
                 <el-table-column prop="type" label="类别"  align="center" width="150">
                     <template slot-scope="scope">

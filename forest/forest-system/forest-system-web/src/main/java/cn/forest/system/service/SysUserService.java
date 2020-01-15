@@ -107,4 +107,13 @@ public class SysUserService {
     }
     return ResultMessage.success(user);
   }
+  
+  public Map<String, Object> getUserByOrgId(Long page, Long pageSize,Long orgId,String name){
+    
+    Object userByOrgId = sysUserRemote.getUserByOrgId(page, pageSize, orgId, name);
+    if (userByOrgId != null) {
+      return ResultMessage.success(userByOrgId);
+    }
+    return null;
+  }
 }

@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 
 import cn.forest.common.service.utils.ResultPage;
 import cn.forest.service.SysUserRoleService;
@@ -57,6 +59,7 @@ public class SysUserAction {
   public Object getList(Long page, Long pageSize,Long typeId,String name) {
     Page<SysUser> ipage = new Page<SysUser>(page, pageSize);
     QueryWrapper<SysUser> wrapper=new QueryWrapper<SysUser>();
+    wrapper.orderByDesc("id");
     if(typeId!=null) {
       wrapper.eq("type_id", typeId);
     }
@@ -88,6 +91,39 @@ public class SysUserAction {
     return new ResultPage<SysUser>(selectPage);
   }
 
+  
+  
+  @RequestMapping("/getUserByOrgId")
+  public Object getUserByOrgId(Long page, Long pageSize,Long orgId,String name) {
+    PageHelper.startPage(Integer.parseInt(page+""),Integer.parseInt(pageSize+""));
+    Map<String, Object> map=new HashMap<String, Object>();
+    map.put("orgId", orgId);
+    map.put("name", name);
+    List<SysUser> userByOrgId = sysUserMapper.getUserByOrgId(map);
+    PageInfo<SysUser> selectPage=new PageInfo<SysUser>(userByOrgId);
+    List<SysUser> list = selectPage.getList();
+    list.forEach( e -> {
+      Map<String, Object> map1=new HashMap<String, Object>();
+      map1.put("userId",e.getId());
+      List<SysRole> roleByUserId = sysRoleMapper.getUserRole(map1);
+      if(!CollectionUtils.isEmpty(roleByUserId)) {
+        e.setRoleNames(roleByUserId.stream().map(t ->t.getRoleName()).collect(Collectors.joining(",")));
+      }
+      List<UserOrg> orgByUserId = userOrgMapper.getOrgByUserId(map1);
+      if(!CollectionUtils.isEmpty(orgByUserId)) {
+        e.setOrgNames(orgByUserId.stream().map(t ->t.getOrgName()).collect(Collectors.joining(",")));
+      }
+    });
+    
+    return new ResultPage<SysUser>(selectPage);
+  }
+  
+  
+  
+  
+  
+  
+  
   private List<SysRole> getRoleName() {
     // TODO Auto-generated method stub
     return null;

@@ -22,38 +22,46 @@
                         <td class="companytitle">创建时间</td>
                         <td class="companytitle1" >
                         {{expendData.createTime}}
-                        </td>                                
-                        <td class="companytitle">支出时间</td>
+                        </td>      
+                        <td class="companytitle">修改时间</td>
+                        <td class="companytitle1" >
+                        <span v-if="expendData.updateTime==null">{{expendData.createTime}}</span>
+                        <span v-if="expendData.updateTime!=null">{{expendData.updateTime}}</span>
+                        </td>                            
+                       
+                    </tr>
+                        <tr>
+                         <td class="companytitle">支出时间</td>
                         <td class="companytitle1" >
                             {{expendData.expenditureTime}}月
                         </td>
-                    </tr>
-                        <tr>
                         <td class="companytitle">支出金额（元）</td>
                         <td class="companytitle1" >
                           {{expendData.expenditureTotal}}
                         </td> 
                                                        
-                          <td class="companytitle">乙方单位</td>
-                        <td class="companytitle1" >
-                          {{expendData.partyBUnits}}
-                        </td>  
+                         
                     </tr>
                     </tr>
                         <tr>
+                         <td class="companytitle">乙方单位</td>
+                        <td class="companytitle1" >
+                          {{expendData.partyBUnits}}
+                        </td>  
                         <td class="companytitle">支出凭证</td>
                         <td class="companytitle1" >
                          <a :href="expendData.expenditureAttachment" target="_blank"> {{expendData.expenditureAttachmentName}}</a>
                         </td> 
                                                        
-                          <td class="companytitle">其他附件</td>
-                        <td class="companytitle1" >
-                          <a :href="expendData.otherAttachment" target="_blank">{{expendData.otherAttachmentName}}</a>
-                        </td>  
+                           
                     </tr>
                     <tr>
+                    <td class="companytitle">其他附件</td>
+                        <td class="companytitle1" >
+                          <a :href="expendData.otherAttachment" target="_blank">{{expendData.otherAttachmentName}}</a>
+                        </td> 
                      <td class="companytitle">用途</td>
-                        <td class="companytitle1" colspan='3' >
+                        <td class="companytitle1" >
                           {{expendData.expenditureUsing}}
                         </td>   
                     </tr>

@@ -22,23 +22,31 @@
                         <td class="companytitle">创建时间</td>
                         <td class="companytitle1" >
                         {{planData.createTime}}
-                        </td>                                
+                        </td>             
+                        <td class="companytitle">修改时间</td>
+                        <td class="companytitle1" >
+                        <span v-if="planData.updateTime == null">{{planData.createTime}}</span>
+                        <span v-if="planData.updateTime != null">{{planData.updateTime}}</span>
+                        </td>                     
+                        
+                    </tr>
+                        <tr>
                         <td class="companytitle">计划支出时间</td>
                         <td class="companytitle1" >
                             {{planData.year}}年{{planData.month}}月
                         </td>
-                    </tr>
-                        <tr>
                         <td class="companytitle">出金额（元）</td>
                         <td class="companytitle1" >
                           {{planData.planTotal}}
                         </td>                                
-                        <td class="companytitle">用途</td>
-                        <td class="companytitle1" >
-                          {{planData.planUsing}}
-                        </td>     
+                             
                     </tr>
-                    
+                    <tr>
+                       <td class="companytitle">用途</td>
+                        <td class="companytitle1" colspan='3'>
+                          {{planData.planUsing}}
+                        </td>
+                    </tr>
            
                         </tbody>
                 </table>

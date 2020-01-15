@@ -16,7 +16,11 @@
             </div>
             <el-table  :data="tableData" border class="table" ref="multipleTable"  @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55" align="center" ></el-table-column>
-                <el-table-column type="index" label="序号" width="55" align="center" ></el-table-column>
+                <el-table-column type="index" label="序号" width="55" align="center" >
+                    <template slot-scope="scope">
+                         <span >{{(page-1)*pageSize+scope.$index+1}}</span>
+                    </template>
+                </el-table-column>
                 <el-table-column prop="projectName" label="所属项目"  align="center" ></el-table-column>
                 <el-table-column prop="year"  label="计划支出时间"  align="center" width="150">
                      <template slot-scope="scope">

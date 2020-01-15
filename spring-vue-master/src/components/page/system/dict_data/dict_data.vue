@@ -16,7 +16,11 @@
             </div>
             <el-table  :data="tableData" border class="table" ref="multipleTable"  @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55" align="center" ></el-table-column>
-                <el-table-column type="index" label="序号" width="55" align="center" ></el-table-column>
+                <el-table-column type="index" label="序号" width="55" align="center" >
+                    <template slot-scope="scope">
+                         <span >{{(page-1)*pageSize+scope.$index+1}}</span>
+                    </template>
+                </el-table-column>
                 <el-table-column prop="name" label="值/名称"  align="center" width="150"></el-table-column>
                 <el-table-column prop="code" label="编码"  align="center" width="150"></el-table-column>
                 <el-table-column prop="description" label="描述"  align="center" ></el-table-column>
@@ -181,7 +185,7 @@
             // 获取 easy-mock 的模拟数据
             async getData(typeId) {
                 const user = await this.$http.get(baseURL_.sysUrl+'/sysDictionaryData/list',{ 
-                    params: {'page':this.page,'pageSize':this.pageSize,'type':typeId}
+                    params: {'page':this.page,'pageSize':this.pageSize,'type':typeId,'name':this.name}
                     });
                 if(user.data.statusCode==200){
                   this.tableData=user.data.data.list;

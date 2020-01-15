@@ -25,39 +25,49 @@
                         <td class="companytitle">创建时间</td>
                         <td class="companytitle1" >
                         {{contractData.createTime}}
-                        </td>                                
+                        </td>  
+                        <td class="companytitle">修改时间</td>
+                        <td class="companytitle1" >
+                        <span v-if="contractData.updateTime == null">{{contractData.createTime}}</span>
+                        <span v-if="contractData.updateTime != null">{{contractData.updateTime}}</span>
+                        </td>                                 
+                        
+                    </tr>
+                        <tr>
                         <td class="companytitle">合同总金额（ 元）</td>
                         <td class="companytitle1" >
                             {{contractData.contractTotal}}
                         </td>
-                    </tr>
-                        <tr>
                         <td class="companytitle">合同负责人</td>
                         <td class="companytitle1" >
                           {{contractData.contractLeader}}
                         </td>                                
-                        <td class="companytitle">联系方式</td>
-                        <td class="companytitle1" >{{contractData.contractLeaderPhone}}</td>     
+                            
                     </tr>
                     </tr>
                         <tr>
+                         <td class="companytitle">联系方式</td>
+                        <td class="companytitle1" >{{contractData.contractLeaderPhone}}</td>
                         <td class="companytitle">签订时间</td>
                         <td class="companytitle1" >
-                        {{contractData.contractTime}}
-                        <td class="companytitle">所属项目</td>
-                        <td class="companytitle1" >
-                        {{contractData.projectName}}
-                           
-                        </td>                                
+                        {{contractData.contractTime}} </td>
+                                                    
                        
                     </tr>
                     <tr>
+                       <td class="companytitle">所属项目</td>
+                        <td class="companytitle1" >
+                        {{contractData.projectName}}
+                           
+                        </td>    
                         <td class="companytitle">所属科室</td>
                         <td class="companytitle1" >{{contractData.orgName}}</td>
-                        <td class="companytitle">合同附件</td>
-                        <td class="companytitle1" ><a  :href="contractData.contractAttachment" target="_blank">{{contractData.contractAttachmentName}}</a></td>
+                        
                     </tr>
-                    
+                       <tr>
+                         <td class="companytitle">合同附件</td>
+                        <td class="companytitle1" colspan='3'><a  :href="contractData.contractAttachment" target="_blank">{{contractData.contractAttachmentName}}</a></td>
+                       </tr>
                         </tbody>
                 </table>
             </el-row>
@@ -79,19 +89,27 @@
                         <td class="companytitle">创建时间</td>
                         <td class="companytitle1" >
                         {{contractData.createTime}}
-                        </td>                                
-                        <td class="companytitle">所属科室</td>
-                        <td class="companytitle1" >{{contractData.orgName}}</td>
+                        </td>   
+                        <td class="companytitle">修改时间</td>
+                        <td class="companytitle1" >
+                        <span v-if="contractData.updateTime==null">{{contractData.createTime}}</span>
+                        <span v-if="contractData.updateTime!=null">{{contractData.updateTime}}</span>
+                        </td>                                       
+                        
                     </tr>
                         
                     <tr>
+                        <td class="companytitle">所属科室</td>
+                        <td class="companytitle1" >{{contractData.orgName}}</td>
                         <td class="companytitle">所属项目</td>
                         <td class="companytitle1" >
-                        {{contractData.projectName}}
-                        <td class="companytitle">合同附件</td>
-                        <td class="companytitle1" ><a :href="contractData.otherAttachment" target="_blank">{{contractData.otherAttachmentName}}</a></td>
+                        {{contractData.projectName}} </td>
+                        
                     </tr>
-                    
+                    <tr>
+                      <td class="companytitle">合同附件</td>
+                      <td class="companytitle1" colspan='3'><a :href="contractData.otherAttachment" target="_blank">{{contractData.otherAttachmentName}}</a></td>
+                    </tr>
                         </tbody>
                 </table>
             </el-row>

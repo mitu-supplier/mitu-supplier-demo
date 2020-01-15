@@ -35,6 +35,12 @@ public class SysLoginLogs {
 
   @TableField(value = "user_name")
   private String userName;
+  
+  @TableField(value = "city")
+  private String city;
+  
+  @TableField(value = "content")
+  private String content;
 
   public Long getId() {
     return id;
@@ -106,6 +112,22 @@ public class SysLoginLogs {
 
   public void setUserName(String userName) {
     this.userName = userName;
+  }
+
+  public String getCity() {
+    return city;
+  }
+
+  public void setCity(String city) {
+    this.city = city;
+  }
+
+  public String getContent() {
+    return content;
+  }
+
+  public void setContent(String content) {
+    this.content = content;
   }
 
 }

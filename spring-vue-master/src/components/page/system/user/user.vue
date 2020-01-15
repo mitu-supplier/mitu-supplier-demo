@@ -14,7 +14,11 @@
             </div>
             <el-table  :data="tableData" border class="table" ref="multipleTable"  @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55" align="center" ></el-table-column>
-                <el-table-column type="index" label="序号" width="55" align="center" ></el-table-column>
+                <el-table-column type="index" label="序号" width="55" align="center" >
+                   <template slot-scope="scope">
+                         <span >{{(page-1)*pageSize+scope.$index+1}}</span>
+                    </template>
+                </el-table-column>
                 <el-table-column prop="loginName" label="登录名"  align="center" width="80"></el-table-column>
                 <el-table-column prop="name" label="姓名"  align="center" width="80"></el-table-column>
                 <el-table-column prop="phone" label="手机"  align="center" width="100"></el-table-column>

@@ -7,21 +7,25 @@
         </div>
         <div class="container">
             <div class="handle-box">
-                <el-button type="primary" icon="el-icon-plus" class="handle-del mr10" @click="add">添加</el-button>
+                
                 <el-input placeholder="用户名或登录名" v-model="name"  class="handle-input mr10"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button>
                 <el-button type="primary" icon="el-icon-search" @click="rest">重置</el-button>
             </div>
             <el-table  :data="tableData" border class="table" ref="multipleTable"  @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55" align="center" ></el-table-column>
-                <el-table-column type="index" label="序号" width="55" align="center" ></el-table-column>
+                <el-table-column type="index" label="序号" width="55" align="center" >
+                   <template slot-scope="scope">
+                         <span >{{(page-1)*pageSize+scope.$index+1}}</span>
+                    </template>
+                </el-table-column>
                 <el-table-column prop="loginName" label="登录名"  align="center" width="80"></el-table-column>
                 <el-table-column prop="name" label="姓名"  align="center" width="80"></el-table-column>
                 <el-table-column prop="phone" label="手机"  align="center" width="100"></el-table-column>
                 <el-table-column prop="email" label="邮箱" align="center" width="150"> </el-table-column>
                 <el-table-column prop="createTime" label="创建时间" align="center"  width="150"></el-table-column>
-                <el-table-column prop="typeName" label="所属科室" show-overflow-tooltip align="center"  width="100"></el-table-column>
-                <el-table-column prop="roleNames" label="角色" show-overflow-tooltip align="center"  width="100"></el-table-column>
+                <el-table-column prop="orgNames" label="所属科室" show-overflow-tooltip align="center"  ></el-table-column>
+                <el-table-column prop="roleNames" label="角色" show-overflow-tooltip align="center" ></el-table-column>
                 <el-table-column prop="isStatus" label="是否启用" align="center" width="70">
                   <template slot-scope="scope">
                          <span v-if="scope.row.isStatus=='0'">启用</span>
@@ -30,14 +34,7 @@
                 </el-table-column>
                 <el-table-column prop="loginTime" label="登录时间"  align="center" width="130"></el-table-column>
                 <el-table-column prop="ip" label="登录ip"  align="center" width="100"></el-table-column>
-                <el-table-column label="操作" width="" align="center">
-                    <template slot-scope="scope">
-                        <!-- <el-button type="text" icon="el-icon-setting" @click="ztreeEdit(scope.$index, scope.row)">设置角色</el-button>  -->
-                        <el-button type="text" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                        <el-button type="text" icon="el-icon-delete" class="red" @click="handleDelete(scope.$index, scope.row)" >删除</el-button>
-                        
-                    </template>
-                </el-table-column>
+                
             </el-table>
             <div class="pagination">
                 <el-pagination
@@ -277,8 +274,8 @@
                 if(!this.org_id){
                     return;
                 }
-                const user = await this.$http.get(baseURL_.sysUrl+'/sysUser/list',{ 
-                    params: {'page':this.page,'pageSize':this.pageSize,'typeId':this.org_id,'name':this.name}
+                const user = await this.$http.get(baseURL_.sysUrl+'/sysUser/getUserByOrgId',{ 
+                    params: {'page':this.page,'pageSize':this.pageSize,'orgId':this.org_id,'name':this.name}
                     });
                 if(user.data.statusCode==200){
                   this.tableData=user.data.data.list;

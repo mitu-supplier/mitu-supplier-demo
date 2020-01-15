@@ -44,4 +44,9 @@ public class SysUserBack implements SysUserRemote {
     return null;
   }
 
+  @Override
+  public Object getUserByOrgId(Long page, Long pageSize, Long orgId, String name) {
+    return null;
+  }
+
 }

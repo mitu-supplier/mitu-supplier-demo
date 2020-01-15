@@ -26,6 +26,12 @@ public class SysUserController {
   
 
   
+  
+  @SysLogs(desc = "获取当前部门下的用户列表")
+  @RequestMapping("/getUserByOrgId")
+  public Map<String, Object> getUserByOrgId(Long page, Long pageSize,Long orgId,String name) {
+    return sysUserService.getUserByOrgId(page, pageSize,orgId,name);
+  }
 
   @SysLogs(desc = "用户列表")
   @RequestMapping("/list")
