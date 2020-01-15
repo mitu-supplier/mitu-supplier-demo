@@ -2,19 +2,22 @@
     <div class="table">
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-lx-cascades"></i> 供应商管理</el-breadcrumb-item>
+                <el-breadcrumb-item><i class="el-icon-lx-cascades"></i> 商户列表</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class="container">
             <div style="background:#f6f6f6;padding:20px 10px 0;margin-bottom:20px;">
-                <el-form :inline="true" :model="formInline" class="demo-form-inline">
-                    <el-form-item label="审批人">
-                        <el-input v-model="formInline.user" placeholder="审批人"></el-input>
+                <el-form :inline="true" ref="formInline" :model="formInline" class="demo-form-inline">
+                    
+                    <el-form-item label="商户名称">
+                        <el-input v-model="formInline.name" placeholder="商户名称"></el-input>
                     </el-form-item>
-                    <el-form-item label="活动区域">
-                        <el-select v-model="formInline.region" placeholder="活动区域">
-                            <el-option label="区域一" value="shanghai"></el-option>
-                            <el-option label="区域二" value="beijing"></el-option>
+                    
+                    <el-form-item label="审核状态">
+                         <el-select v-model="formInline.status" placeholder="审核状态">
+                            <el-option label="待审核" value="0"></el-option>
+                            <el-option label="审核通过" value="1"></el-option>
+                            <el-option label="审核失败" value="2"></el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item>
@@ -24,20 +27,29 @@
                 </el-form>
             </div>
             <div class="handle-box">
-                <!-- <el-input placeholder="筛选关键词" class="handle-input mr10"></el-input> -->
-                <el-button type="primary" @click="aaa = true" icon="el-icon-plus" >新增</el-button>
+                <el-button type="primary" v-if="isSupplier != '1'" icon="el-icon-plus" @click="add_supplier()" >添加商户</el-button>
             </div>
-            <el-table :data="tableData" border class="table" ref="multipleTable">
+            <el-table :data="tableData" border class="table" ref="multipleTable" @selection-change="handleSelectionChange">
+                <el-table-column type="selection" width="55" align="center"></el-table-column>
                 <el-table-column type="index" label="序号" width="55" align="center" ></el-table-column>
-                <el-table-column prop="roleName" label="商户号"  align="center" width=""></el-table-column>
-                <el-table-column prop="roleCode" label="商户名称"  align="center" width=""></el-table-column>
-                <el-table-column prop="createTime" label="商户地址" align="center"  width=""></el-table-column>
-                <el-table-column prop="createTime" label="入驻类型" align="center"  width=""></el-table-column>
-                <el-table-column prop="createTime" label="联系人" align="center"  width=""></el-table-column>
-                <el-table-column prop="createTime" label="联系电话" align="center"  width=""></el-table-column>
+                <el-table-column prop="code" label="商户号"  align="center" width=""></el-table-column>
+                <el-table-column prop="name" label="商户名称"  align="center" width=""></el-table-column>
+                <el-table-column prop="registerAddress" label="商户地址"  align="center" width=""></el-table-column>
+                
+                <el-table-column prop="enterTypeName" label="入驻类型" align="center"  width=""></el-table-column>
+                <el-table-column prop="contactName" label="联系人" align="center"  width="80"></el-table-column>
+                <el-table-column prop="contactMobile" label="联系电话" align="center"  width=""></el-table-column>
+                <el-table-column label="状态" align="center"  width="80">
+                    <template slot-scope="scope">
+                        <span type="text" v-if="scope.row.status == '0'">待审核</span>
+                        <span type="text" v-if="scope.row.status == '1'">审核通过</span>
+                        <span type="text" class="red" v-if="scope.row.status == '2'">审核失败</span>
+                    </template>
+                </el-table-column> 
                 <el-table-column label="操作" width="" align="center">
                     <template slot-scope="scope">
-                        <el-button type="text" icon="el-icon-delete" class="red" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                        <el-button type="text" icon="el-icon-search" @click="view(scope.$index, scope.row)">查看</el-button>
+                        <el-button type="text" v-if="isSupplier == '1'" icon="el-icon-edit" class="red" @click="handleUpdate(scope.$index, scope.row)">修改</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -54,71 +66,68 @@
             </div>
             <!-- <loding v-if="aaa"></loding> -->
         </div>
+        <el-dialog title="审核记录" class="dialogBox" :visible.sync="editVisible" width="40%">
+            
+           <el-table :data="auditData" border class="table" >
+                <el-table-column type="index" label="序号" width="55" align="center" ></el-table-column>
+                <el-table-column prop="auditUserName" label="审核人"  align="center" width="80"></el-table-column>
+                <el-table-column prop="createTime" label="审核时间"  align="center" width="150"></el-table-column>
+                <el-table-column prop="auditReason" label="审核意见"  align="center" width="">
+                   <template slot-scope="scope">
+                         <span v-if="scope.row.auditResult=='1'">通过</span>
+                         <span v-if="scope.row.auditResult=='2'">{{scope.row.auditReason}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="auditResult" label="审核状态"  align="center" width="">
+                   <template slot-scope="scope">
+                         <span v-if="scope.row.auditResult=='1'">通过</span>
+                         <span v-if="scope.row.auditResult=='2'">不通过</span>
+                    </template>
+                </el-table-column>
+           </el-table>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="editVisible = false">取 消</el-button>
+            </span>
+        </el-dialog>
     </div>
+    
 </template>
   
 <script>
     import { fetchData } from '../../../api/index';
     import baseURL_ from '@/utils/baseUrl.js';
-    // import loding from './loding.vue';
     export default {
-        // components:{
-        //     loding
-        // },
         name: 'basetable',
         data() {
             return {
-                // data:["用户名","密码","确认密码"],
-                // data:[
-                //     {"name":"用户名","type":"text"},
-                //     {"name":"密码","type":"password"},
-                // ],
                 aaa:false,
                 page:1,
-                total:1000,
+                total:0,
                 pageSize:10,
                 tableData: [],
-                multipleSelection: [],
                 editVisible:false,
-                titleName:'',
-                ztreeTitleName:'',
-                ztreeEditVisible:false,
-                role_id:'',
-                form:{
-                   id:'',
-                   roleName:'',
-                   roleCode:'',
-                   isAdmin:'',
-                   isBuiltIn:''
-                },
-                setting:{
-                    data: {
-                    simpleData: {
-                        enable: true,
-                        idKey: "id",
-                        pIdKey: "parentId"
-                    }
-                    },
-                    callback: {
-                        
-                    },
-                    check: {
-                        enable: true,
-                        chkStyle: "checkbox",
-                        chkboxType: { Y: "ps", N: "ps" }
-                    },
-                },
-                suppids: '',
+                multipleSelection: [],
+                auditData:[],
                 formInline:{
-                    region:'',
-                    user:''
-                }   
+                    name:'',
+                    status:''
+                },
+                isSupplier:1
             }
         },
         created() {
             this.getData();
+            this.vaIsSupplier();
         },
         methods: {
+            onReset(){
+              this.formInline.name="";
+              this.formInline.status="";
+              this.getData();
+            },
+            onSubmit(){
+                this.getData();
+            },
             //改变每页页数
             handleSizeChange(val){
                 this.pageSize=val;
@@ -129,109 +138,41 @@
                 this.page=val;
                 this.getData();
             },
-            handleSelectionChange(val) {
-            },
-            // 重置
-            onReset(){
-                this.formInline = {};
-                this.getData();
-            },
-            // 搜索
-            async onSubmit(){
-                const permissions = await this.$http.get(baseURL_.sysUrl+'/sysRole/list',{ 
+            // 初始化数据
+            async getData() {
+                const products = await this.$http.get(baseURL_.mallUrl+'/supplier/list',{ 
                     params: {
                         'page':this.page,
                         'pageSize':this.pageSize,
-                        'user':this.formInline.user,
-                        'region':this.formInline.region
+                        'name':this.formInline.name,
+                        'status':this.formInline.status
+                        
                     }
                 });
-                if(permissions.data.statusCode==200){
-                  this.tableData=permissions.data.data.list;
-                  this.total=permissions.data.data.total;
+                if(products.data.statusCode==200){
+                  this.tableData=products.data.data.list;
+                  this.total=products.data.data.total;
+                  this.page=products.data.data.page;
                 }
             },
-            // 初始化数据
-            async getData() {
-                const role = await this.$http.get(baseURL_.sysUrl+'/supplier/list',{ 
-                    params: {'page':this.page,'pageSize':this.pageSize}
-                });
-                if(role.data.statusCode==200){
-                  this.tableData=role.data.data.list;
-                  this.total=role.data.data.total;
-                  this.page=role.data.data.page;
-                }
+            handleSelectionChange(val){
+                this.multipleSelection = val;
             },
-            add(){
-               this.form={};
-               this.editVisible=true;
-               this.titleName="添加";
-            },
-            
-             async saveEdit(){
-                var addOrEdit={};
-                if(this.form.id!=null){
-                   addOrEdit= await this.$http.post(baseURL_.sysUrl+'/sysRole/update',this.$qs.stringify(this.form));
-                }else{
-                    if(this.form.parentId==null){
-                      this.form.parentId=0;
-                      this.form.treeDepth=1;
+            view(index,item){
+                this.$router.push({
+                    path: '/supplierSee',
+                    name: 'supplierSee',
+                    params: {
+                        id: item.id
                     }
-                    this.form.isParent='false';
-                    addOrEdit= await this.$http.post(baseURL_.sysUrl+'/sysRole/add',this.$qs.stringify(this.form));
-                }
-                this.$message(addOrEdit.data.data);
-                if(addOrEdit.data.statusCode==200){
-                    this.editVisible=false;
-                }
-                this.getData();
+                });
             },
-            handleDelete(index, row){
-                if(row.isParent=='true'){
-                   this.$message("该节点下有数据，不允许删除！");
-                   return;
-                }
-                this.$confirm('确认删除？')
-                .then( e=> {
-                  
-                   this.delete(row.id);
+            async vaIsSupplier(){
+              var res = await this.$http.get(baseURL_.mallUrl+'/supplier/isSupplier');
+              this.isSupplier = res.data.data;
+            },
+            handleUpdate(index, row){
 
-                }).catch(_ => {});
-                 
-            },
-            // 批量删除
-            async DeteleAll(){
-                const del = await this.$http.get(baseURL_.sysUrl+'/sysRole/delete',{ 
-                    params: {'id':id}
-                });
-                this.$message(del.data.data);
-                if(del.data.statusCode==200){
-                   this.getData();
-                }
-            },
-            async delete(id){
-                const del = await this.$http.get(baseURL_.sysUrl+'/sysRole/delete',{ 
-                    params: {'id':id}
-                });
-                this.$message(del.data.data);
-                if(del.data.statusCode==200){
-                   this.getData();
-                }
-                  
-            },
-            async handleEdit(index, row) {
-                this.titleName="修改";
-                const permiss = await this.$http.get(baseURL_.sysUrl+'/sysRole/getById',{ 
-                    params: {'id':row.id}
-                });
-                if(permiss.data.statusCode==200){
-                    this.form.id=permiss.data.data.id;
-                    this.form.roleName=permiss.data.data.roleName;
-                    this.form.roleCode=permiss.data.data.roleCode;
-                    this.form.isAdmin=permiss.data.data.isAdmin;
-                    this.form.isBuiltIn=permiss.data.data.isBuiltIn;
-                }
-                 this.editVisible=true;
             }
         }
     }

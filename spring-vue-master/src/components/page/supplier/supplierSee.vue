@@ -3,7 +3,7 @@
         <div class="">
           <el-row style="background:#fff; padding: 20px;">
             <el-tabs v-model="activeName" @tab-click="handleClick">
-              <el-tab-pane label="基本信息" name="first">
+              <el-tab-pane label="联系人信息" name="first">
                 <el-form
                       :model="loginForm"
                       ref="loginForm"
@@ -33,7 +33,7 @@
                       
                   </el-form>
               </el-tab-pane>
-              <el-tab-pane label="基本信息" name="third">
+              <el-tab-pane label="公司主体信息" name="third">
                 <el-form
                     :model="newRuleForm"
                     ref="newRuleForm"
@@ -172,7 +172,7 @@
                     </el-form-item>
                 </el-form>
               </el-tab-pane>
-              <el-tab-pane label="基本信息" name="fourth">
+              <el-tab-pane label="公司经营信息" name="fourth">
                 <el-form
                     ref="newRuleForm"
                     label-width="130px"
@@ -242,7 +242,7 @@
                     </el-form-item>
                 </el-form>
               </el-tab-pane>
-              <el-tab-pane label="基本信息" name="fiveth">
+              <el-tab-pane label="品牌资质" name="fiveth">
                 <el-form
                     ref="newRuleForm"
                     label-width="130px"

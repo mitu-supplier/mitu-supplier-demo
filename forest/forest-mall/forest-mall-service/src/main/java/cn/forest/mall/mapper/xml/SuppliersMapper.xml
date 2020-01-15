@@ -34,6 +34,9 @@
             <if test="contactMobile != null and contactMobile != ''">
                 AND s.contact_mobile LIKE CONCAT('%',#{contactMobile},'%')
             </if>
+            <if test="id != null and id != ''">
+                AND s.id = #{id}
+            </if>
         ORDER BY s.status, s.id desc
     </select>
 

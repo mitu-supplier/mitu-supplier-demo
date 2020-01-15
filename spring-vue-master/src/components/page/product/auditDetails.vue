@@ -92,8 +92,8 @@
                 </el-form-item>
 
                 <el-form-item label="状态" prop="">
-                    <el-radio v-if="addComForm.status=='1'" v-model="addComForm.status" :label="1">上架</el-radio>
-                    <el-radio v-if="addComForm.status=='2'" v-model="addComForm.status" :label="2">下架</el-radio>
+                    <el-radio v-model="addComForm.status" disabled readonly :label="1">上架</el-radio>
+                    <el-radio v-model="addComForm.status" disabled readonly :label="2">下架</el-radio>
                 </el-form-item>
 
                 <el-form-item label="商品详情" prop="">
@@ -199,6 +199,7 @@
                 usd.ready(function() {
                   usd.setHeight(366);
                   usd.setContent(details);
+                  usd.setDisabled();
                 });
                 this.getDeliveryTypeCode();
               }else{

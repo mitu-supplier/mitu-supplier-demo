@@ -53,10 +53,20 @@ public class SuppliersService {
     /**
      * 商户列表信息
      *
-     * @param map
      * @return
      */
-    public Map<String, Object> list(Map<String, Object> map) {
+    public Map<String, Object> list(HttpServletRequest request) {
+        Map<String, Object> map = RequestMap.requestToMap(request);
+        String header = request.getHeader(Constant.HEADER_TOKEN_STRING);
+        HashMap userInfoMap = (HashMap) redisDao.getValue(header);
+        if (userInfoMap != null) {
+            Object type = userInfoMap.get("type");
+            Object typeId = userInfoMap.get("typeId");
+            if (type != null && Integer.parseInt(type.toString()) == 1) {
+                // 供应商
+                map.put("id", typeId);
+            }
+        }
         Object obj = suppliersRemote.list(map);
         if (obj != null) {
             return ResultMessage.success(obj);

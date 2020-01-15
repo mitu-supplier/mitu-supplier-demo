@@ -18,14 +18,14 @@ public class SuppliersAuditController {
     private SuppliersService suppliersService;
 
     /**
-     * 查看商户列表
+     * 查看商户审核列表
      *
      * @param request
      * @return
      */
     @RequestMapping("/list")
     public Map<String, Object> list(HttpServletRequest request) {
-        return suppliersService.list(RequestMap.requestToMap(request));
+        return suppliersService.list(request);
     }
 
     /**

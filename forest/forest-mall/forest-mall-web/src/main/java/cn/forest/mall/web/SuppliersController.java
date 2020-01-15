@@ -1,6 +1,7 @@
 package cn.forest.mall.web;
 
 import cn.forest.common.util.RequestMap;
+import cn.forest.common.util.ResultMessage;
 import cn.forest.mall.service.CompanyService;
 import cn.forest.mall.service.SuppliersService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,7 +87,32 @@ public class SuppliersController {
     }
 
     @RequestMapping("/getCompany")
-    public Map<String, Object> getCompany(){
+    public Map<String, Object> getCompany() {
         return companyService.getAll();
+    }
+
+    /**
+     * 查看商户信息列表
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping("/list")
+    public Map<String, Object> list(HttpServletRequest request) {
+        return suppliersService.list(request);
+    }
+
+    /**
+     * 判断是否为供应商
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping("/isSupplier")
+    public Map<String, Object> isSupplier(HttpServletRequest request) {
+        if (suppliersService.isSupplier(request)) {
+            return ResultMessage.success(1);
+        }
+        return ResultMessage.success(0);
     }
 }

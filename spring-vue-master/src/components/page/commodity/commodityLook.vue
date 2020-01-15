@@ -191,6 +191,7 @@
                 usd.ready(function() {
                   usd.setHeight(366);
                   usd.setContent(details);
+                  usd.setDisabled();
                 });
               }else{
                 this.$message(res.data.data);
