@@ -52,7 +52,7 @@ public class SuppliersController {
      */
     @RequestMapping("/register")
     public Map<String, Object> register(HttpServletRequest request) {
-        return suppliersService.update(RequestMap.requestToMap(request));
+        return suppliersService.saveStepOther(RequestMap.requestToMap(request));
     }
 
     /**
@@ -114,5 +114,26 @@ public class SuppliersController {
             return ResultMessage.success(1);
         }
         return ResultMessage.success(0);
+    }
+
+    /**
+     * 获取供应商code
+     *
+     * @return
+     */
+    @RequestMapping("/getSupplierCode")
+    public Map<String, Object> getSupplierCode() {
+        return ResultMessage.success(suppliersService.getSupplierCode());
+    }
+
+    /**
+     * 新增供应商信息
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping("/save")
+    public Map<String, Object> save(HttpServletRequest request) {
+        return suppliersService.save(RequestMap.requestToMap(request));
     }
 }

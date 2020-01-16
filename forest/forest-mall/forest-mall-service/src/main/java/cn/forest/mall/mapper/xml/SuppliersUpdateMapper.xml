@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.forest.mall.mapper.SuppliersUpdateMapper">
+
+    <select id="selectUpdateRecodeList" resultType="cn.forest.mall.entity.SuppliersUpdate">
+        SELECT
+            su.*,
+            cc.name AS enterTypeName
+        FROM
+            suppliers_update su
+        LEFT JOIN catalogs cc ON su.enter_type = cc.id
+        where
+            su.is_delete = 0
+            <if test="status != null and status != ''">
+                AND su.status = #{status}
+            </if>
+            <if test="code != null and code != ''">
+                AND su.code LIKE CONCAT('%',#{code},'%')
+            </if>
+            <if test="name != null and name != ''">
+                AND su.name LIKE CONCAT('%',#{name},'%')
+            </if>
+            <if test="shortName != null and shortName != ''">
+                AND su.short_name LIKE CONCAT('%',#{shortName},'%')
+            </if>
+            <if test="contactName != null and contactName != ''">
+                AND su.contact_name LIKE CONCAT('%',#{contactName},'%')
+            </if>
+            <if test="contactMobile != null and contactMobile != ''">
+                AND su.contact_mobile LIKE CONCAT('%',#{contactMobile},'%')
+            </if>
+            <if test="id != null and id != ''">
+                AND su.id = #{id}
+            </if>
+            <if test="supplierId != null and supplierId != ''">
+                AND su.supplier_id = #{supplierId}
+            </if>
+        ORDER BY su.status, su.id desc
+    </select>
+
+    <update id="batchAudit">
+        update
+            suppliers_update
+        set
+            status = #{status}
+        where
+            id in
+            <foreach collection="idList" separator="," item="id" open="(" close=")">
+                #{id}
+            </foreach>
+    </update>
+</mapper>

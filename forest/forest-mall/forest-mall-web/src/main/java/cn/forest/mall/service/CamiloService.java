@@ -2,10 +2,7 @@ package cn.forest.mall.service;
 
 import cn.forest.commom.redis.RedisDao;
 import cn.forest.common.Constant;
-import cn.forest.common.util.ExcelUtils;
-import cn.forest.common.util.RequestMap;
-import cn.forest.common.util.ResultMessage;
-import cn.forest.common.util.StringUtil;
+import cn.forest.common.util.*;
 import cn.forest.mall.remote.CamiloRemote;
 import cn.forest.mall.remote.CatalogsRemote;
 import cn.forest.mall.remote.ProductsRemote;
@@ -13,6 +10,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -20,6 +18,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,7 +45,7 @@ public class CamiloService {
         String header = request.getHeader(Constant.HEADER_TOKEN_STRING);
         HashMap userInfoMap = (HashMap) redisDao.getValue(header);
         if (userInfoMap != null) {
-            if(!StringUtil.isBlank(userInfoMap.get("type")) && Integer.parseInt(userInfoMap.get("type").toString()) == 1){
+            if (!StringUtil.isBlank(userInfoMap.get("type")) && Integer.parseInt(userInfoMap.get("type").toString()) == 1) {
                 map.put("supplierId", userInfoMap.get("typeId"));
             }
         }
@@ -62,7 +61,7 @@ public class CamiloService {
         String header = request.getHeader(Constant.HEADER_TOKEN_STRING);
         HashMap userInfoMap = (HashMap) redisDao.getValue(header);
         if (userInfoMap != null) {
-            if(!StringUtil.isBlank(userInfoMap.get("type")) && Integer.parseInt(userInfoMap.get("type").toString()) == 1){
+            if (!StringUtil.isBlank(userInfoMap.get("type")) && Integer.parseInt(userInfoMap.get("type").toString()) == 1) {
                 map.put("supplierId", userInfoMap.get("typeId"));
             }
         }
@@ -83,7 +82,7 @@ public class CamiloService {
     public Map<String, Object> importExcel(HttpServletRequest request, HttpServletResponse response) {
         String header = request.getHeader(Constant.HEADER_TOKEN_STRING);
         HashMap userInfoMap = null;
-        if(header != null){
+        if (header != null) {
             userInfoMap = (HashMap) redisDao.getValue(header);
         }
         MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
@@ -102,10 +101,10 @@ public class CamiloService {
         fieldsMap.put("失效时间", "failureTime");
         fieldsMap.put("供货价", "supplyPrice");
         JSONArray excelData = ExcelUtils.getExcelData(multipartFile.getOriginalFilename(), inputStream, fieldsMap);
-        if(excelData != null){
+        if (excelData != null) {
             List<Map<String, Object>> mapList = new ArrayList<>();
             Map<String, Object> camiloMap = null;
-            for (int i = 0; i < excelData.size(); i++){
+            for (int i = 0; i < excelData.size(); i++) {
                 JSONObject jsonObject = excelData.getJSONObject(i);
                 camiloMap = new HashMap<>();
                 camiloMap.put("productCode", jsonObject.get("productCode"));
@@ -114,7 +113,7 @@ public class CamiloService {
                 camiloMap.put("cardPassword", jsonObject.get("cardPassword"));
                 camiloMap.put("failureTime", jsonObject.get("failureTime"));
                 camiloMap.put("supplyPrice", jsonObject.get("supplyPrice"));
-                if(userInfoMap != null){
+                if (userInfoMap != null) {
                     camiloMap.put("userId", userInfoMap.get("id"));
                     camiloMap.put("userName", userInfoMap.get("name"));
                 }
@@ -122,14 +121,26 @@ public class CamiloService {
             }
             Object obj = camiloRemote.batchImport(mapList);
             Map resultMap = (Map) obj;
-            if(resultMap != null){
-                if("200".equals(StringUtil.toString(resultMap.get("statusCode")))){
+            if (resultMap != null) {
+                if ("200".equals(StringUtil.toString(resultMap.get("statusCode")))) {
                     return ResultMessage.success("导入成功");
-                }else{
+                } else {
                     return resultMap;
                 }
             }
         }
         return ResultMessage.error("导入失败");
+    }
+
+    /**
+     * 下载卡密模版
+     *
+     * @param response
+     * @throws IOException
+     */
+    public void doemloadTemplate(HttpServletResponse response) throws IOException {
+        ClassPathResource classPathResource = new ClassPathResource("templateExample/camiloTemplate.xlsx");
+        InputStream inputStream = classPathResource.getInputStream();
+        FileUtilEx.downloadFile(inputStream, response, "卡密导入模板.xlsx");
     }
 }

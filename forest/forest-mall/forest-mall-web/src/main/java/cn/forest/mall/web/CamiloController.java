@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Map;
 
 @RestController
@@ -37,5 +38,16 @@ public class CamiloController {
     @RequestMapping(value = "/importExcel")
     public Map<String, Object> importExcel(HttpServletRequest request, HttpServletResponse response) {
         return camiloService.importExcel(request, response);
+    }
+
+    /**
+     * 下载卡密模版
+     *
+     * @param response
+     * @throws IOException
+     */
+    @RequestMapping(value = "/downloadTemplate")
+    public void downloadTemplate(HttpServletResponse response) throws IOException {
+        camiloService.doemloadTemplate(response);
     }
 }

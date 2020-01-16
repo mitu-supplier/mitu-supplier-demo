@@ -5,6 +5,7 @@ import cn.forest.common.service.utils.ResultSave;
 import cn.forest.common.util.StringUtil;
 import cn.forest.mall.entity.Suppliers;
 import cn.forest.mall.mapper.SuppliersMapper;
+import cn.forest.service.SuppliersService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -25,6 +26,9 @@ public class SuppliersAction {
 
     @Autowired
     private SuppliersMapper suppliersMapper;
+
+    @Autowired
+    private SuppliersService suppliersService;
 
     @RequestMapping("/list")
     public Object list(@RequestBody Map<String, Object> map) {
@@ -92,5 +96,11 @@ public class SuppliersAction {
         suppliersQueryWrapper.eq("status", 1);
         suppliersQueryWrapper.select(new String[]{"id", "name"});
         return suppliersMapper.selectList(suppliersQueryWrapper);
+    }
+
+    @RequestMapping("/batchUpdate")
+    public int batchUpdate(@RequestBody List<Suppliers> list){
+        boolean b = suppliersService.updateBatchById(list);
+        return b ? 1 : 0;
     }
 }

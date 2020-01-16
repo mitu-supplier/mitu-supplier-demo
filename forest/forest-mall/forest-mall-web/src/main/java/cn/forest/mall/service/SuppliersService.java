@@ -50,6 +50,9 @@ public class SuppliersService {
     @Autowired
     private SysRoleRemote sysRoleRemote;
 
+    @Autowired
+    private SuppliersUpdateRemote suppliersUpdateRemote;
+
     /**
      * 商户列表信息
      *
@@ -168,12 +171,12 @@ public class SuppliersService {
     }
 
     /**
-     * 注册
+     * 商户注册保存三四五步信息
      *
      * @param map
      * @return
      */
-    public Map<String, Object> update(Map<String, Object> map) {
+    public Map<String, Object> saveStepOther(Map<String, Object> map) {
         int update = suppliersRemote.update(map);
         return ResultMessage.result(update, "保存成功", "保存失败");
     }
@@ -189,8 +192,8 @@ public class SuppliersService {
         Long supplierId = Long.parseLong(map.get("businessId").toString());
         Integer status = Integer.parseInt(map.get("auditResult").toString());
         suppliersRemote.updateStatus(supplierId, status);
-        if(status != null && status == 1){
-            sysRoleRemote.saveSupplierRole(supplierId+"");
+        if (status != null && status == 1) {
+            sysRoleRemote.saveSupplierRole(supplierId + "");
         }
         // 保存审核记录
         String header = request.getHeader(Constant.HEADER_TOKEN_STRING);
@@ -218,10 +221,10 @@ public class SuppliersService {
         }
         Integer status = Integer.parseInt(paramMap.get("status").toString());
         int auditStatus = suppliersRemote.batchAudit(ids, status);
-        if(status != null && status == 1){
+        if (status != null && status == 1) {
             sysRoleRemote.saveSupplierRole(ids);
         }
-        if(auditStatus > 0){
+        if (auditStatus > 0) {
             // 保存审核记录
             if (ids != null) {
                 List<Map<String, Object>> list = new ArrayList<>();
@@ -323,7 +326,7 @@ public class SuppliersService {
      *
      * @return
      */
-    private String getSupplierCode() {
+    public String getSupplierCode() {
         String name = "1";
         int count = sysSequenceRemote.countByName(name);
         if (count < 1) {
@@ -366,7 +369,7 @@ public class SuppliersService {
      */
     public Map<String, Object> getEnterType() {
         Object childrenByLevel = catalogsRemote.getChildrenByLevel(null);
-        if(childrenByLevel != null){
+        if (childrenByLevel != null) {
             return ResultMessage.success(childrenByLevel);
         }
         return null;
@@ -374,10 +377,11 @@ public class SuppliersService {
 
     /**
      * 判断当前用户是否是供应商
+     *
      * @param request
      * @return
      */
-    public boolean isSupplier(HttpServletRequest request){
+    public boolean isSupplier(HttpServletRequest request) {
         String header = request.getHeader(Constant.HEADER_TOKEN_STRING);
         HashMap userInfoMap = (HashMap) redisDao.getValue(header);
         if (userInfoMap != null) {
@@ -390,11 +394,56 @@ public class SuppliersService {
         return false;
     }
 
-    public Map<String, Object> getAll(){
+    /**
+     * 获取所有可用供应商信息
+     *
+     * @return
+     */
+    public Map<String, Object> getAll() {
         Object list = suppliersRemote.getAll();
-        if(list != null){
+        if (list != null) {
             return ResultMessage.success(list);
         }
         return null;
+    }
+
+    public Map<String, Object> save(Map<String, Object> paramMap){
+        if (paramMap.get("loginName") == null) {
+            return ResultMessage.error("请输入用户名");
+        }
+        if (paramMap.get("password") == null) {
+            return ResultMessage.error("请输入密码");
+        }
+        if (paramMap.get("confirmPassword") == null) {
+            return ResultMessage.error("请输入确认密码");
+        }
+        if (!paramMap.get("confirmPassword").equals(paramMap.get("password").toString())) {
+            return ResultMessage.error("两次密码不一致，请重新输入");
+        }
+        Object user = loginRemote.getUser(paramMap.get("loginName").toString().trim());
+        if (user != null) {
+            return ResultMessage.error("该账号已注册，请登录后继续");
+        }
+        // 保存供应商信息
+        Object save = suppliersRemote.save(paramMap);
+        if (save != null) {
+            Map supplierResult = (Map) save;
+            int num = Integer.parseInt(supplierResult.get(Constant.RESULT_NUM).toString());
+            if(num > 0){
+                Long supplierId = JsonUtil.readTree(supplierResult.get(Constant.RESULT).toString()).path("id").asLong();
+                //保存用户信息
+                Map<String, Object> userInfoMap = new HashMap<>();
+                userInfoMap.put("loginName", paramMap.get("loginName"));
+                userInfoMap.put("password", paramMap.get("password"));
+                userInfoMap.put("name", paramMap.get("userName"));
+                userInfoMap.put("phone", paramMap.get("phone"));
+                userInfoMap.put("email", paramMap.get("email"));
+                userInfoMap.put("typeId", supplierId);
+                userInfoMap.put("type", 1);
+                Object add = sysUserRemote.add(userInfoMap);
+                return ResultMessage.result(Integer.parseInt(((Map) add).get(Constant.RESULT_NUM).toString()), "保存成功", "保存失败");
+            }
+        }
+        return ResultMessage.error("保存失败");
     }
 }

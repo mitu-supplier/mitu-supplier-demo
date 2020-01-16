@@ -45,7 +45,8 @@ public class AccessFilter extends ZuulFilter {
                 "/supplier/getCompany",
                 "/ueditor/upload",
                 "/ueditor/listimage",
-                "/supplier/getUserInfo"
+                "/supplier/getUserInfo",
+                "/camilo/downloadTemplate"
         };
         if (isFilter(pathName, filter)) {
             String authorization = request.getHeader(Constant.HEADER_TOKEN_STRING);

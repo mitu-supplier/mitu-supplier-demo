@@ -434,7 +434,7 @@
             
           // 获取供应商入驻信息回显
             async getSupplierData(){
-                const res = await this.$http.get(baseURL_.mallUrl+'/supplier_audit/view',{
+                const res = await this.$http.get(baseURL_.mallUrl+'/supplier_update/view',{
                   params:{
                     id:this.$route.params.id
                   }
@@ -502,7 +502,7 @@
 
             },
             back() {
-                this.$router.push({ path: "/supplierAuditList" });
+                this.$router.push({ path: "/supplierUpdateList" });
             },
             
             
@@ -524,7 +524,7 @@
                 }).catch(() => { }); 
             },
             async confimAudit(id,auditResult,auditReason){
-                var auditResult = await this.$http.get(baseURL_.mallUrl+'/supplier_audit/audit', {
+                var auditResult = await this.$http.get(baseURL_.mallUrl+'/supplier_update/audit', {
                     params:{
                         businessId:id,
                         auditResult:auditResult,
@@ -533,7 +533,7 @@
                 });
                 this.$message(auditResult.data.data);
                 if(auditResult.data.statusCode==200){
-                    this.$router.push({ path: "/supplierAuditList" });
+                    this.$router.push({ path: "/supplierUpdateList" });
                 }
             }
         }

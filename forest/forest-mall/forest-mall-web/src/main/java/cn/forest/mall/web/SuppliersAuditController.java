@@ -29,39 +29,6 @@ public class SuppliersAuditController {
     }
 
     /**
-     * 查看详情
-     *
-     * @param id
-     * @return
-     */
-    @RequestMapping("/getById")
-    public Map<String, Object> getById(@RequestParam("id") Long id) {
-        return suppliersService.getById(id);
-    }
-
-    /**
-     * 修改
-     *
-     * @param request
-     * @return
-     */
-    @RequestMapping("/update")
-    public Map<String, Object> update(HttpServletRequest request) {
-        return suppliersService.update(RequestMap.requestToMap(request));
-    }
-
-    /**
-     * 删除
-     *
-     * @param id
-     * @return
-     */
-    @RequestMapping("/delete")
-    public Map<String, Object> delete(@RequestParam("id") Long id) {
-        return suppliersService.delete(id);
-    }
-
-    /**
      * 审核
      *
      * @param request
@@ -104,8 +71,14 @@ public class SuppliersAuditController {
         return suppliersService.getDictionaryData();
     }
 
+    /**
+     * 查看详情
+     *
+     * @param id
+     * @return
+     */
     @RequestMapping("/view")
-    public Map<String, Object> view(@RequestParam("id") Long id){
+    public Map<String, Object> view(@RequestParam("id") Long id) {
         return suppliersService.view(id);
     }
 }

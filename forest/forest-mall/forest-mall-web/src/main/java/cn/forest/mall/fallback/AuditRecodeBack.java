@@ -28,4 +28,9 @@ public class AuditRecodeBack implements AuditRecodeRemote {
     public int batchSave(List<Map<String, Object>> list) {
         return 0;
     }
+
+    @Override
+    public Object selectByBusinessId(Long businessId, Integer auditType) {
+        return null;
+    }
 }

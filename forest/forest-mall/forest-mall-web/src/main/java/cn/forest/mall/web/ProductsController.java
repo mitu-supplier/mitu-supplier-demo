@@ -5,6 +5,7 @@ import cn.forest.common.util.ResultMessage;
 import cn.forest.mall.remote.CatalogsRemote;
 import cn.forest.mall.remote.SuppliersRemote;
 import cn.forest.mall.remote.SysDictionaryDataRemote;
+import cn.forest.mall.remote.SysSequenceRemote;
 import cn.forest.mall.service.ProductsService;
 import cn.forest.mall.service.SuppliersService;
 import org.json.HTTP;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -132,5 +134,15 @@ public class ProductsController {
     @RequestMapping("/updateStatus")
     public Map<String, Object> updateStatus(Long id, Integer status){
         return  productsService.updateStatus(id, status);
+    }
+
+    /**
+     * 获取商品编码
+     *
+     * @return
+     */
+    @RequestMapping("/getProductCode")
+    public Map<String, Object> getProductCode() {
+        return ResultMessage.success(productsService.getProductCode());
     }
 }

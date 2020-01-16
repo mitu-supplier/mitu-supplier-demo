@@ -31,7 +31,7 @@ public class AuditRecode implements Serializable {
     private String auditReason;
 
     /**
-     * 审核类型  1供应商  2商品
+     * 审核类型  1供应商  2商品  3供应商信息变更审核
      */
     @TableField(value = "audit_type")
     private Integer auditType;

@@ -2,7 +2,7 @@
     <div class="table">
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-lx-cascades"></i> 商户审核</el-breadcrumb-item>
+                <el-breadcrumb-item><i class="el-icon-lx-cascades"></i> 商户修改审核</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class="container">
@@ -28,7 +28,6 @@
             </div>
             <div class="handle-box">
                 <el-button type="primary" icon="el-icon-check" @click="batchAudit(1)" >审核通过</el-button>
-                <!--<el-button type="primary" icon="el-icon-close" @click="batchAudit(2)" >审核失败</el-button>-->
             </div>
             <el-table :data="tableData" border class="table" ref="multipleTable" @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
@@ -52,8 +51,6 @@
                         <el-button type="text" icon="el-icon-search" @click="view(scope.$index, scope.row)">查看</el-button>
                         <el-button type="text" icon="el-icon-edit" v-if="scope.row.status == '0'"  @click="toAudit(scope.$index, scope.row)">审核</el-button>
                         <el-button type="text" icon="el-icon-document" v-if="scope.row.status != '0'"  @click="lookAudit(scope.$index, scope.row)">审核记录</el-button>
-                        <!-- <el-button type="text" icon="el-icon-check" v-if="scope.row.status == '0'" @click="auditAdopt(scope.row.id)">通过</el-button>
-                        <el-button type="text" icon="el-icon-close" v-if="scope.row.status == '0'" class="red" @click="auditReject(scope.row.id)">驳回</el-button> -->
                     </template>
                 </el-table-column>
             </el-table>
@@ -68,6 +65,7 @@
                     :total="total" >
                  </el-pagination>
             </div>
+            <!-- <loding v-if="aaa"></loding> -->
         </div>
         <el-dialog title="审核记录" class="dialogBox" :visible.sync="editVisible" width="40%">
             
@@ -104,6 +102,7 @@
         name: 'basetable',
         data() {
             return {
+                aaa:false,
                 page:1,
                 total:0,
                 pageSize:10,
@@ -122,8 +121,8 @@
         },
         methods: {
             async lookAudit(index,row){
-                const audit = await this.$http.get(baseURL_.mallUrl+'/supplier_audit/getAuditList',{ 
-                    params:{'businessId':row.id}
+                const audit = await this.$http.get(baseURL_.mallUrl+'/supplier_update/getAuditList',{ 
+                    params:{'id':row.id}
                 })
                 this.auditData=audit.data.data;
                 this.editVisible=true;
@@ -148,7 +147,7 @@
             },
             // 初始化数据
             async getData() {
-                const products = await this.$http.get(baseURL_.mallUrl+'/supplier_audit/list',{ 
+                const products = await this.$http.get(baseURL_.mallUrl+'/supplier_update/list',{ 
                     params: {
                         'page':this.page,
                         'pageSize':this.pageSize,
@@ -200,7 +199,7 @@
                     'ids': ids,
                     'status': auditStatus
                 }
-                var auditResult = await this.$http.put(baseURL_.mallUrl+'/supplier_audit/batchAudit', this.$qs.stringify(params));
+                var auditResult = await this.$http.put(baseURL_.mallUrl+'/supplier_update/batchAudit', this.$qs.stringify(params));
                 this.$message(auditResult.data.data);
                 if(auditResult.data.statusCode==200){
                     this.getData();
@@ -208,8 +207,8 @@
             },
             view(index,item){
                 this.$router.push({
-                    path: '/supplierSee',
-                    name: 'supplierSee',
+                    path: '/supplierUpdateView',
+                    name: 'supplierUpdateView',
                     params: {
                         id: item.id
                     }
@@ -217,8 +216,8 @@
             },
             toAudit(index,item){
                 this.$router.push({
-                    path: '/supplierSee',
-                    name: 'supplierSee',
+                    path: '/supplierUpdateView',
+                    name: 'supplierUpdateView',
                     params: {
                         id: item.id,
                         state:item.status
@@ -241,7 +240,7 @@
                 }).catch(() => { }); 
             },
             async confimAudit(id,auditResult,auditReason){
-                var auditResult = await this.$http.get(baseURL_.mallUrl+'/supplier_audit/audit', {
+                var auditResult = await this.$http.get(baseURL_.mallUrl+'/supplier_update/audit', {
                     params:{
                         businessId:id,
                         auditResult:auditResult,

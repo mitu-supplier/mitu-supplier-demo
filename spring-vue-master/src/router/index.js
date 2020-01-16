@@ -163,7 +163,17 @@ export default new Router({
                     component: resolve => require(['../components/page/orders/ordersDetails.vue'], resolve),
                     meta: { title: '订单详情' }
                 },
-                
+                {
+                    path: '/supplierUpdateList',
+                    component: resolve => require(['../components/page/supplier/supplierUpdateList.vue'], resolve),
+                    meta: { title: '商户修改审核' }
+                },
+                {
+                    path: '/supplierUpdateView',
+                    name: 'supplierUpdateView',
+                    component: resolve => require(['../components/page/supplier/supplierUpdateView.vue'], resolve),
+                    meta: { title: '商户修改详情' }
+                },
                 {
                     path: '/404',
                     component: resolve => require(['../components/page/404.vue'], resolve),

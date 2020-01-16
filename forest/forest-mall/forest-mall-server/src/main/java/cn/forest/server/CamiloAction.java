@@ -88,7 +88,6 @@ public class CamiloAction {
             PageHelper.startPage(Integer.parseInt(map.get("page").toString()), Integer.parseInt(map.get("pageSize").toString()));
             map.put("deliveryCode","D_KM");
             map.put("auditStatus", 1);
-            map.put("status", 1);
             List<Products> products = productsMapper.selectListByMap(map);
             if(!CollectionUtils.isEmpty(products)){
                 for (Products product : products){

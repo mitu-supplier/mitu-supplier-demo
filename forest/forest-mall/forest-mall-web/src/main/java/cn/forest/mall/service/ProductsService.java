@@ -31,6 +31,9 @@ public class ProductsService {
     @Autowired
     private RedisDao redisDao;
 
+    @Autowired
+    private SysSequenceRemote sysSequenceRemote;
+
     public Map<String, Object> list(HttpServletRequest request, String listType) {
         Map<String, Object> paramMap = RequestMap.requestToMap(request);
         String header = request.getHeader(Constant.HEADER_TOKEN_STRING);
@@ -63,21 +66,16 @@ public class ProductsService {
 
     public Map<String, Object> save(HttpServletRequest request) {
         Map<String, Object> paramMap = RequestMap.requestToMap(request);
-        Object code = paramMap.get("code");
-        if (code != null) {
-            Object o = productsRemote.selectByCode(code.toString());
-            if (o != null) {
-                List pList = (List) o;
-                if (pList.size() > 0) {
-                    return ResultMessage.error("保存失败，商品编码已存在");
-                }
-            }
-        }
         String header = request.getHeader(Constant.HEADER_TOKEN_STRING);
         HashMap userInfoMap = (HashMap) redisDao.getValue(header);
         if (userInfoMap != null) {
             if(!StringUtil.isBlank(userInfoMap.get("type")) && Integer.parseInt(userInfoMap.get("type").toString()) == 1){
                 paramMap.put("supplierId", userInfoMap.get("typeId"));
+            }
+        }
+        if(StringUtil.isNotBlank(paramMap.get("auditStatus")) && Integer.parseInt(paramMap.get("auditStatus").toString()) == 0){
+            if(StringUtil.isBlank(paramMap.get("supplierId"))){
+                return ResultMessage.error("请选择商户信息");
             }
         }
         Object save = productsRemote.save(paramMap);
@@ -88,6 +86,11 @@ public class ProductsService {
     }
 
     public Map<String, Object> update(Map<String, Object> map) {
+        if(StringUtil.isNotBlank(map.get("auditStatus")) && Integer.parseInt(map.get("auditStatus").toString()) == 0){
+            if(StringUtil.isBlank(map.get("supplierId"))){
+                return ResultMessage.error("请选择商户信息");
+            }
+        }
         int update = productsRemote.update(map);
         return ResultMessage.result(update, "操作成功", "操作失败");
     }
@@ -147,6 +150,7 @@ public class ProductsService {
                     auditMap.put("auditResult", paramMap.get("auditStatus"));
                     auditMap.put("businessId", Long.parseLong(str));
                     auditMap.put("auditType", 2);
+                    auditMap.put("auditReason", paramMap.get("auditReason"));
                     list.add(auditMap);
                 }
                 auditRecodeRemote.batchSave(list);
@@ -189,5 +193,24 @@ public class ProductsService {
         productMap.put("status", status);
         int update = productsRemote.update(productMap);
         return ResultMessage.result(update, "操作成功", "操作失败");
+    }
+
+    /**
+     * 获取商品编码
+     *
+     * @return
+     */
+    public String getProductCode() {
+        String name = "0";
+        int count = sysSequenceRemote.countByName(name);
+        if (count < 1) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("name", name);
+            map.put("max", 0L);
+            map.put("length", 7);
+            map.put("next", 1);
+            sysSequenceRemote.save(map);
+        }
+        return name + sysSequenceRemote.getSeqValue(name);
     }
 }

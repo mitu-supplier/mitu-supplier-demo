@@ -39,8 +39,8 @@ public class AuditRecodeAction {
             Page<AuditRecode> pages = new Page<AuditRecode>(page, pageSize);
             IPage<AuditRecode> auditRecodeIPage = auditRecodeService.page(pages, queryWrapper);
             return new ResultPage<AuditRecode>(auditRecodeIPage);
-        }else {
-          return auditRecodeService.list(queryWrapper);
+        } else {
+            return auditRecodeService.list(queryWrapper);
         }
     }
 
@@ -56,8 +56,17 @@ public class AuditRecodeAction {
     }
 
     @RequestMapping("/batchSave")
-    public int batchSave(@RequestBody List<AuditRecode> list){
+    public int batchSave(@RequestBody List<AuditRecode> list) {
         boolean b = auditRecodeService.saveBatch(list);
-        return b ? 1 :0;
+        return b ? 1 : 0;
+    }
+
+    @RequestMapping("/selectByBusinessId")
+    public Object selectByBusinessId(@RequestParam("businessId") Long businessId, @RequestParam("auditType") Integer auditType) {
+        QueryWrapper<AuditRecode> queryWrapper = new QueryWrapper<AuditRecode>();
+        queryWrapper.eq("business_id", businessId);
+        queryWrapper.eq("audit_type", auditType);
+        queryWrapper.orderByDesc("create_time");
+        return auditRecodeService.list(queryWrapper);
     }
 }

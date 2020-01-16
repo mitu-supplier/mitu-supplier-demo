@@ -167,13 +167,6 @@
                     this.$message("请先选择商品");
                     return ;
                 }
-                var msg = "";
-                if(audit == 1){
-                    msg = "审核通过";
-                }
-                if(audit == 2){
-                    msg = "审核不通过";
-                }
                 var flag = 0;
                 var ids = [];
                 this.multipleSelection.forEach(e => {
@@ -183,17 +176,30 @@
                     }
                 });
                 if(flag == 0){
-                    this.$confirm('确认'+msg+'？').then( e=> {
-                        this.audit(ids.join(','), audit);
+                    if(audit == 1){
+                        this.$confirm('确认审核通过？').then( e=> {
+                        this.audit(ids.join(','), audit, "");
                     }).catch(_ => {});
+                    }
+                    if(audit == 2){
+                        this.$prompt('请输入审核失败理由：', '提示', {
+                            confirmButtonText: '确定',
+                            cancelButtonText: '取消',
+                            inputPattern: /^[\s\S]*.*[^\s][\s\S]*$/,
+                            inputErrorMessage: '理由不能为空'
+                        }).then(({ value }) => {
+                            this.audit(ids.join(','),2,value)
+                        }).catch(() => { }); 
+                    }
                 }else{
                     this.$message("不能重复审核！");
                 }
             },
-            async audit(ids, auditStatus){
+            async audit(ids, auditStatus, auditReason){
                 var params = {
                     'ids': ids,
-                    'auditStatus': auditStatus
+                    'auditStatus': auditStatus,
+                    'auditReason': auditReason
                 }
                 var auditResult = await this.$http.put(baseURL_.mallUrl+'/products_audit/batchAudit', this.$qs.stringify(params));
                 this.$message(auditResult.data.data);
@@ -219,40 +225,6 @@
                         state:10
                     }
                 });
-            },
-            auditAdopt(id){
-                this.$prompt('请输入发货代号：', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    inputPattern: /^[\s\S]*.*[^\s][\s\S]*$/,
-                    inputErrorMessage: '发货代号不能为空'
-                }).then(({ value }) => {
-                    this.confimAudit(id,1,null,value);
-                }).catch(() => { }); 
-            },
-            auditReject(id){
-                this.$prompt('请输入审核失败理由：', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    inputPattern: /^[\s\S]*.*[^\s][\s\S]*$/,
-                    inputErrorMessage: '理由不能为空'
-                }).then(({ value }) => {
-                    this.confimAudit(id,2,value,null)
-                }).catch(() => { }); 
-            },
-            async confimAudit(id,auditStatus,auditReason,deliveryTypeCode){
-                var auditResult = await this.$http.get(baseURL_.mallUrl+'/products_audit/audit', {
-                    params:{
-                        id:id,
-                        auditStatus:auditStatus,
-                        auditReason:auditReason,
-                        deliveryTypeCode:deliveryTypeCode
-                    }
-                });
-                this.$message(auditResult.data.data);
-                if(auditResult.data.statusCode==200){
-                    this.getData();
-                }
             },
             async showAuditReason(id){
                 var res = await this.$http.get(baseURL_.mallUrl+'/products_audit/getAuditList',{ 

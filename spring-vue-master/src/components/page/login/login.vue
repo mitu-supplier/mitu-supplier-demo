@@ -4,12 +4,12 @@
             <div class="ms-title">商户系统</div>
             <el-form :model="ruleForm"  ref="ruleForm" label-width="0px" class="ms-content">
                 <el-form-item prop="username">
-                    <el-input v-model="ruleForm.username" placeholder="username">
+                    <el-input v-model="ruleForm.username" placeholder="用户名">
                         <el-button slot="prepend" icon="el-icon-lx-people"></el-button>
                     </el-input>
                 </el-form-item>
                 <el-form-item prop="password">
-                    <el-input type="password" placeholder="password" v-model="ruleForm.password" @keyup.enter.native="submitForm()">
+                    <el-input type="password" placeholder="密码" v-model="ruleForm.password" @keyup.enter.native="submitForm()">
                         <el-button slot="prepend" icon="el-icon-lx-lock"></el-button>
                     </el-input>
                 </el-form-item>
@@ -32,8 +32,8 @@ Vue.prototype.$jsEncrypt=JsEncrypt;
         data: function(){
             return {
                 ruleForm: {
-                    username: 'admin',
-                    password: 'admin'
+                    username: '',
+                    password: ''
                 },
                 
             }

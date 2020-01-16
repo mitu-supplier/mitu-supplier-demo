@@ -20,9 +20,9 @@
                     </el-form-item>
                 </el-form>
             </div>
-            <div class="handle-box">
+            <div class="handle-box canahead">
                 <el-upload
-                    class="upload-excel-file inline-block"
+                    class="upload-excel-file"
                     ref="upload"
                     :headers="myHeaders"
                     :action="uploadUrl()"
@@ -33,8 +33,9 @@
                     :on-success="handleSuccess">
                     <el-button size="small" type="primary" icon="el-icon-upload2">批量导入</el-button>
                 </el-upload>
-                <!-- <el-button type="primary" @click="exportExcel" icon="el-icon-download">批量导出</el-button> -->
             </div>
+                <el-button type="primary" @click="exportTemplate" icon="el-icon-download">下载模版</el-button>
+
             <el-table :data="tableData" border class="table" ref="multipleTable">
                 <el-table-column type="index" label="序号" width="55" align="center" ></el-table-column>
                 <el-table-column prop="catalogName" label="商品类目"  align="center" width=""></el-table-column>
@@ -157,6 +158,9 @@
             record(index, row){
               this.$router.push({path:'/camiloRecordList',query:{id:row.id}});
             },
+            exportTemplate(){
+                window.location.href = baseURL_.mallUrl+'/camilo/downloadTemplate';
+            }
         }
     }
 
@@ -199,4 +203,11 @@
     .inline-block {
         display: inline-block;
     } 
+</style>
+<style>
+.canahead .upload-excel-file .el-upload--text {    
+    border: none !important;
+    /* width: 100% !important;
+    height: 100% !important; */
+  }
 </style>

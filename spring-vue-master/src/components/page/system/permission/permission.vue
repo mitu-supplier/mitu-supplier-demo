@@ -199,6 +199,12 @@
             },
             async saveEdit(){
                 var addOrEdit={};
+                var permissionName = this.form.name;
+                if(permissionName == null || permissionName.trim() == ''){
+                    this.$message("请输入菜单名称");
+                    return;
+                }
+                this.form.name = permissionName.trim();
                 if(this.form.id!=null){
                    addOrEdit= await this.$http.post(baseURL_.sysUrl+'/sysPermissions/update',this.$qs.stringify(this.form));
                 }else{
