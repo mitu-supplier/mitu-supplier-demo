@@ -85,7 +85,7 @@
             // 初始化数据
             async getData() {
                 const loginLogs = await this.$http.get(baseURL_.sysUrl+'/sysLoginLogs/list',{ 
-                    params: {'page':this.page,'pageSize':this.pageSize}
+                    params: {'page':this.page,'pageSize':this.pageSize,'userName':this.formInline.userName}
                     });
                 if(loginLogs.data.statusCode==200){
                   this.tableData=loginLogs.data.data.list;

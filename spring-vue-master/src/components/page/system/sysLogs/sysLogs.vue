@@ -95,7 +95,12 @@
             // 初始化数据
             async getData() {
                 const sysLogs = await this.$http.get(baseURL_.sysUrl+'/sysLogs/list',{ 
-                    params: {'page':this.page,'pageSize':this.pageSize}
+                    params: {
+                        'page':this.page,
+                        'pageSize':this.pageSize,
+                        'userName':this.formInline.userName,
+                        'modelName': this.formInline.modelName
+                        }
                     });
                 if(sysLogs.data.statusCode==200){
                   this.tableData=sysLogs.data.data.list;    

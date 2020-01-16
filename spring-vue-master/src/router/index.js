@@ -103,7 +103,7 @@ export default new Router({
                 {
                     path: '/supplierList',
                     component: resolve => require(['../components/page/supplier/supplierList.vue'], resolve),
-                    meta: { title: '商户列表' }
+                    meta: { title: '商户管理' }
                 },
                 {
                     path: '/addSupplier',

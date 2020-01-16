@@ -565,6 +565,7 @@
                         type: "success",
                         message: role.data.data || "保存成功"
                       });
+                      this.$router.push({ path: "/supplierList" });
                     }else{
                       this.$message({
                         type: "error",
@@ -575,7 +576,7 @@
               })
             },
             back() {
-                this.$router.push({ path: "/login" });
+                this.$router.push({ path: "/supplierList" });
             },
             
             // Logo上传

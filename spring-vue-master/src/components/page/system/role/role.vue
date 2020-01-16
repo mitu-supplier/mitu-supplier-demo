@@ -191,8 +191,13 @@
             // 初始化数据
             async getData() {
                 const role = await this.$http.get(baseURL_.sysUrl+'/sysRole/list',{ 
-                    params: {'page':this.page,'pageSize':this.pageSize}
-                    });
+                    params: {
+                        'page':this.page,
+                        'pageSize':this.pageSize,
+                        'roleName':this.formInline.roleName,
+                        'roleCode':this.formInline.roleCode
+                    }
+                });
                 if(role.data.statusCode==200){
                   this.tableData=role.data.data.list;
                   this.total=role.data.data.total;
@@ -241,6 +246,9 @@
                 });
                 this.$message(del.data.data);
                 if(del.data.statusCode==200){
+                    if(this.tableData.length == 1 && this.page > 1){
+                        this.page = this.page-1;
+                    }
                    this.getData();
                 }
                   

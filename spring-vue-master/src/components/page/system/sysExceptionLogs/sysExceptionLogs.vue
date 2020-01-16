@@ -95,7 +95,12 @@
             // 初始化数据
             async getData() {
                 const sysExceptionLogs = await this.$http.get(baseURL_.sysUrl+'/sysExceptionLogs/list',{ 
-                    params: {'page':this.page,'pageSize':this.pageSize}
+                    params: {
+                        'page':this.page,
+                        'pageSize':this.pageSize,
+                        'userName':this.formInline.userName,
+                        'modelName': this.formInline.modelName
+                        }
                     });
                 if(sysExceptionLogs.data.statusCode==200){
                   this.tableData=sysExceptionLogs.data.data.list;    

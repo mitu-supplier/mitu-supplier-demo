@@ -159,12 +159,12 @@
         },
         methods: {
             handleSizeChange(val){
-                   this.pageSize=val;
-                   this.getData();
+                this.pageSize=val;
+                this.getData();
             },
             handleCurrentChange(val){
-                   this.page=val;
-                   this.getData();
+                this.page=val;
+                this.getData();
             },
              handleSelectionChange(val) {
                 this.multipleSelection = val;
@@ -197,6 +197,9 @@
                 });
                 this.$message(del.data.data);
                 if(del.data.statusCode==200){
+                    if(this.tableData.length == 1 && this.page > 1){
+                        this.page = this.page-1;
+                    }
                    this.getData();
                 }
                   
@@ -223,7 +226,14 @@
             // 获取 easy-mock 的模拟数据
             async getData() {
                 const user = await this.$http.get(baseURL_.sysUrl+'/sysUser/list',{ 
-                    params: {'page':this.page,'pageSize':this.pageSize}
+                    params: {
+                        'page':this.page,
+                        'pageSize':this.pageSize,
+                        'loginName':this.formInline.loginName,
+                        'name':this.formInline.name,
+                        'phone':this.formInline.phone,
+                        'email':this.formInline.email
+                        }
                     });
                 if(user.data.statusCode==200){
                   this.tableData=user.data.data.list;

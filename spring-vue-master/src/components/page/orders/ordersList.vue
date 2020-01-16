@@ -188,8 +188,12 @@
                         'ids': ids
                     }
                 });
+                var idLength = (ids+'').split(',').length;
                 this.$message(delResult.data.data);
                 if(delResult.data.statusCode==200){
+                    if(this.tableData.length == idLength && this.page > 1){
+                        this.page = this.page-1;
+                    }
                     this.getData();
                 }
             },

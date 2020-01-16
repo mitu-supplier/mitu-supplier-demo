@@ -165,7 +165,7 @@
             // 初始化数据
             async getData() {
                 const permissions = await this.$http.get(baseURL_.sysUrl+'/sysPermissions/getlistfirstLevel',{ 
-                    params: {'page':this.page,'pageSize':this.pageSize}
+                    params: {'page':this.page,'pageSize':this.pageSize,'name':this.formInline.name}
                     });
                 if(permissions.data.statusCode==200){
                   this.tableData=permissions.data.data.list;
@@ -240,6 +240,9 @@
                 });
                 this.$message(del.data.data);
                 if(del.data.statusCode==200){
+                    if(this.tableData.length == 1 && this.page > 1){
+                        this.page = this.page-1;
+                    }
                    this.getData();
                 }
                   

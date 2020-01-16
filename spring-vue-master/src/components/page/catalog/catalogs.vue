@@ -5,37 +5,38 @@
                 <el-breadcrumb-item><i class="el-icon-lx-cascades"></i> 品目管理</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
-        <div class="container"  style="float:left;width:15%;">
-              <ul id="ztree" class="ztree"></ul>
-        </div>
-        <div class="container"  style="float:left;width:75%;">
-             <el-form ref="form" :model="form" label-width="100px">
-                <el-form-item label="名称">
-                <el-input v-model="form.name" class="input" style="width:200px;"></el-input>
-                </el-form-item>
-                <el-form-item label="编码">
-                    <el-input v-model="form.code" class="input" style="width:200px;"></el-input>
-                </el-form-item>
-                <el-form-item label="父节点名称">
-                    <el-input v-model="form.parentName" class="input" style="width:200px;"></el-input>
-                </el-form-item>
-                <el-form-item label="排序">
-                    <el-input v-model="form.priority" class="input" style="width:200px;"></el-input>
-                </el-form-item>
-                <el-form-item label="是否启用">
-                    <el-radio v-model="form.usable" label="1">启用</el-radio>
-                    <el-radio v-model="form.usable" label="0">禁用</el-radio>
-                </el-form-item>
-
-                
-            </el-form>
-            <span slot="footer" class="dialog-footer" style="margin-left:120px;">
-                <el-button type="primary" @click="saveEdit" >保存</el-button>
-            </span>
-        </div>
-
-      
-
+        <ul>
+            <li class="li-left">
+                <div class="container">
+                    <ul id="ztree" class="ztree"></ul>
+                </div>
+            </li>
+            <li class="li-right">
+                <div class="container">
+                    <el-form ref="form" :model="form" label-width="100px">
+                        <el-form-item label="名称">
+                        <el-input v-model="form.name" class="input" style="width:200px;"></el-input>
+                        </el-form-item>
+                        <el-form-item label="编码">
+                            <el-input v-model="form.code" class="input" style="width:200px;"></el-input>
+                        </el-form-item>
+                        <el-form-item label="父节点名称">
+                            <el-input v-model="form.parentName" class="input" style="width:200px;"></el-input>
+                        </el-form-item>
+                        <el-form-item label="排序">
+                            <el-input v-model="form.priority" class="input" style="width:200px;"></el-input>
+                        </el-form-item>
+                        <el-form-item label="是否启用">
+                            <el-radio v-model="form.usable" label="1">启用</el-radio>
+                            <el-radio v-model="form.usable" label="0">禁用</el-radio>
+                        </el-form-item>
+                    </el-form>
+                    <span slot="footer" class="dialog-footer" style="margin-left:120px;">
+                        <el-button type="primary" @click="saveEdit" >保存</el-button>
+                    </span>
+                </div>
+            </li>
+        </ul>
     </div>
 </template>
 
@@ -217,6 +218,16 @@
         overflow-y: auto;
         margin:auto;
         
+    }
+    .li-left{
+        width: 15%;
+        float: left;
+        list-style:none;
+    }
+    .li-right{
+        width: 75%;
+        float: left;
+        list-style:none;
     }
     
 </style>
