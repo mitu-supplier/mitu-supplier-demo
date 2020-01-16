@@ -58,7 +58,9 @@
                             list-type="picture-card"
                             action=''
                             disabled
-                            :file-list="businessList">
+                            :file-list="businessList"
+                            :on-preview="handlePictureCardPreview"
+                            class="upload_img_view">
                         </el-upload>
                     </el-form-item>
 
@@ -90,7 +92,9 @@
                           list-type="picture-card"
                           action=''
                           disabled
-                          :file-list="legalCardList">
+                          :file-list="legalCardList"
+                          :on-preview="handlePictureCardPreview"
+                          class="upload_img_view">
                       </el-upload>
                     </el-form-item>
 
@@ -137,7 +141,9 @@
                             list-type="picture-card"
                             action=''
                             disabled
-                            :file-list="taxRegList">
+                            :file-list="taxRegList"
+                            :on-preview="handlePictureCardPreview"
+                            class="upload_img_view">
                         </el-upload>
                     </el-form-item>
 
@@ -146,7 +152,9 @@
                             list-type="picture-card"
                             action=''
                             disabled
-                            :file-list="taxpayeList">
+                            :file-list="taxpayeList"
+                            :on-preview="handlePictureCardPreview"
+                          class="upload_img_view">
                         </el-upload>
                     </el-form-item>
 
@@ -155,7 +163,9 @@
                             list-type="picture-card"
                             action=''
                             disabled
-                            :file-list="bankAccountList">
+                            :file-list="bankAccountList"
+                            :on-preview="handlePictureCardPreview"
+                            class="upload_img_view">
                         </el-upload>
                     </el-form-item>
 
@@ -254,7 +264,9 @@
                           list-type="picture-card"
                           action=''
                           disabled
-                          :file-list="trademarkList">
+                          :file-list="trademarkList"
+                          :on-preview="handlePictureCardPreview"
+                          class="upload_img_view">
                       </el-upload>
                   </el-form-item>
 
@@ -263,7 +275,9 @@
                           list-type="picture-card"
                           action=''
                           disabled
-                          :file-list="brandList">
+                          :file-list="brandList"
+                          :on-preview="handlePictureCardPreview"
+                          class="upload_img_view">
                       </el-upload>
                   </el-form-item>
 
@@ -272,7 +286,9 @@
                           list-type="picture-card"
                           action=''
                           disabled
-                          :file-list="QualityList">
+                          :file-list="QualityList"
+                          :on-preview="handlePictureCardPreview"
+                          class="upload_img_view">
                       </el-upload>
                   </el-form-item>
 
@@ -281,7 +297,9 @@
                           disabled
                           action=''
                           list-type="picture-card"
-                          :file-list="permitList">
+                          :file-list="permitList"
+                          :on-preview="handlePictureCardPreview"
+                          class="upload_img_view">
                       </el-upload>
                   </el-form-item>
                 </el-form>
@@ -294,6 +312,11 @@
             </div>
           </el-row>
         </div>
+        <el-row class="tipsBoxImg">
+          <el-dialog :visible.sync="dialogVisible" size="tiny" style="text-align:center;">
+            <img  :src="dialogImageUrl" style="padding-bottom: 50px;"/>
+          </el-dialog>
+        </el-row>
     </div>
 </template>
   
@@ -400,7 +423,9 @@
                 brandList:[],
                 QualityList:[],
                 permitList:[],
-                legalCardList:[]
+                legalCardList:[],
+                dialogVisible:false,
+                dialogImageUrl:''
             }
         },
         created() {
@@ -535,6 +560,10 @@
                 if(auditResult.data.statusCode==200){
                     this.$router.push({ path: "/supplierAuditList" });
                 }
+            },
+            handlePictureCardPreview(file) {
+              this.dialogImageUrl = file.url;
+              this.dialogVisible = true;
             }
         }
     }
@@ -631,5 +660,8 @@
   .stepList .el-step__icon{
     width:20px !important;
     height:20px !important;
+  }
+  .tipsBoxImg .el-dialog__header{
+      padding: 20px 20px 30px !important;
   }
 </style>

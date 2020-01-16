@@ -70,7 +70,7 @@
                 <el-form-item label="商品图片" prop="">
                     <el-upload
                         accept=".jpg, .png"
-                        disabled
+                        :disabled=true
                         list-type="picture-card"
                         :action="uploadUrl()"
                         :on-preview="handlePictureCardPreview"
@@ -79,9 +79,9 @@
                         multiple
                         :limit="1"
                         :on-exceed="handleExceed"
-                        :file-list="fileList">
+                        :file-list="fileList"
+                        class="upload_img_view">
                         <el-button size="small" type="primary">点击上传</el-button>
-                        <div slot="tip" class="el-upload__tip " >只能上传jpg/png文件</div>
                     </el-upload>
                 </el-form-item>
 
@@ -107,6 +107,11 @@
                 <el-form-item>
                     <el-button type="danger" @click="back">返回</el-button>
                 </el-form-item>
+                <el-row class="tipsBoxImg">
+                  <el-dialog :visible.sync="dialogVisible" size="tiny" style="text-align:center;">
+                    <img  :src="dialogImageUrl" style="padding-bottom: 50px;"/>
+                  </el-dialog>
+                </el-row>
             </el-form>
         </div>
     </div>
@@ -150,7 +155,9 @@
                 // editorContent: ''
                 content:'',
                 catalogId:'',
-                isSupplier: 1
+                isSupplier: 1,
+                dialogVisible:false,
+                dialogImageUrl:''
             }
         },
         created() {
@@ -237,7 +244,7 @@
             },
             handlePictureCardPreview(file) {
               this.dialogImageUrl = file.url;
-              // this.dialogVisible = true;
+              this.dialogVisible = true;
             },
             fileSuccess(res, file) {
               this.$message({
@@ -302,4 +309,9 @@
       border-radius: 4px;
       background-color: #ccc;
     }
+</style>
+<style >
+  .tipsBoxImg .el-dialog__header{
+      padding: 20px 20px 30px !important;
+  }
 </style>

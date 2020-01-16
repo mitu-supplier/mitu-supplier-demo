@@ -70,6 +70,7 @@
                     <el-upload
                         accept=".jpg, .png"
                         list-type="picture-card"
+                        :disabled=true
                         :action="uploadUrl()"
                         :on-preview="handlePictureCardPreview"
                         :on-remove="handleRemove"
@@ -77,9 +78,9 @@
                         multiple
                         :limit="1"
                         :on-exceed="handleExceed"
-                        :file-list="fileList">
+                        :file-list="fileList"
+                        class="upload_img_view">
                         <el-button size="small" type="primary">点击上传</el-button>
-                        <div slot="tip" class="el-upload__tip " >只能上传jpg/png文件</div>
                     </el-upload>
                 </el-form-item>
 
@@ -122,6 +123,12 @@
                     <el-button type="danger" v-if="auditType =='10'" @click="auditReject()">审核失败</el-button>
                     <el-button type="danger" @click="back">返回</el-button>
                 </el-form-item>
+
+                <el-row class="tipsBoxImg">
+                  <el-dialog :visible.sync="dialogVisible" size="tiny" style="text-align:center;">
+                    <img  :src="dialogImageUrl" style="padding-bottom: 50px;"/>
+                  </el-dialog>
+                </el-row>
             </el-form>
         </div>
     </div>
@@ -167,7 +174,9 @@
                 content:'',
                 catalogId:'',
                 productId:'',
-                deliveryTypeCodeList:[]
+                deliveryTypeCodeList:[],
+                dialogVisible:false,
+                dialogImageUrl:''
             }
         },
         created() {
@@ -272,7 +281,7 @@
             },
             handlePictureCardPreview(file) {
               this.dialogImageUrl = file.url;
-              // this.dialogVisible = true;
+              this.dialogVisible = true;
             },
             fileSuccess(res, file) {
               this.$message({
@@ -402,4 +411,10 @@
     .add_delivery {
       margin-left: 10px;
     }
+    
+</style>
+<style >
+  .tipsBoxImg .el-dialog__header{
+      padding: 20px 20px 30px !important;
+  }
 </style>

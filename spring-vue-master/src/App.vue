@@ -15,5 +15,11 @@
   body .el-table colgroup.gutter {
     display: table-cell !important;
   }
-  
+
+  /* 文件上传回显样式 */
+  .upload_img_view .el-upload--picture-card {
+    display: none;
+  }
+  /* 文件上传回显样式end */
+
 </style>
