@@ -33,8 +33,8 @@
                     :on-success="handleSuccess">
                     <el-button size="small" type="primary" icon="el-icon-upload2">批量导入</el-button>
                 </el-upload>
+                <el-button type="primary" @click="exportTemplate" icon="el-icon-download">下载模板</el-button> 
             </div>
-                <el-button type="primary" @click="exportTemplate" icon="el-icon-download">下载模版</el-button>
 
             <el-table :data="tableData" border class="table" ref="multipleTable">
                 <el-table-column type="index" label="序号" width="55" align="center" ></el-table-column>
@@ -207,7 +207,9 @@
 <style>
 .canahead .upload-excel-file .el-upload--text {    
     border: none !important;
-    /* width: 100% !important;
-    height: 100% !important; */
+    display: inline-block;
+    width: 110px;
+    height: 40px;
+    float: left;
   }
 </style>

@@ -521,7 +521,7 @@
               this.newRuleForm.code = res.data.data;
             },
             toFix(){
-              this.newRuleForm.sales = Number(this.newRuleForm.sales).toFixed(2);
+              this.newRuleForm.sales = Number(this.newRuleForm.sales).toFixed(4);
             },
             // 获取全部下拉数据
             async getData(){

@@ -223,9 +223,10 @@
         width: 15%;
         float: left;
         list-style:none;
+        margin-right: 0.5%;
     }
     .li-right{
-        width: 75%;
+        width: 83%;
         float: left;
         list-style:none;
     }
