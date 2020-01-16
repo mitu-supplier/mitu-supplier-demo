@@ -189,10 +189,12 @@
               });
               if(res.data.statusCode==200){
                 this.addComForm = res.data.data;
+                this.addComForm.orgNames2 = this.addComForm.catalogId;
+                this.addComForm.protalDetails = this.addComForm.details;
                 this.fileList = [{url:this.addComForm.img}];
                 this.orgNames = this.addComForm.catalogName;
                 this.catalogId = this.addComForm.catalogId;
-                var details = this.addComForm.details
+                var details = this.addComForm.details;
                 // UE.getEditor('editor').setContent(details);
                 // var content = this.form.content;
                 var usd = UE.getEditor("editor");
@@ -249,7 +251,7 @@
               this.$refs['addComForm'].validate(async valid => {
                 if (valid) {
                   this.addComForm.catalogId = this.catalogId;
-                  this.addComForm.id = this.$route.query.id;
+                  this.addComForm.id = this.$route.params.id;
                   this.addComForm.auditStatus = 0;
                   this.addComForm.details = details;
                   const res = await this.$http.post(baseURL_.mallUrl+'/products/update',this.$qs.stringify(this.addComForm));
@@ -266,7 +268,7 @@
                 if (valid) {
                   var details = UE.getEditor('editor').getContent();
                   this.addComForm.catalogId = this.catalogId;
-                  this.addComForm.id = this.$route.query.id;
+                  this.addComForm.id = this.$route.params.id;
                   this.addComForm.auditStatus = 3;
                   this.addComForm.details = details;
                   const res = await this.$http.post(baseURL_.mallUrl+'/products/update',this.$qs.stringify(this.addComForm));
