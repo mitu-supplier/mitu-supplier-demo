@@ -32,22 +32,20 @@
                     <div style="margin-left:8%;">
                           <el-form
                               :model="newRuleForm"
-                              :rules="rules"
-                              ref="newRuleForm"
                               label-width="180px"
                               inline-message
                               class="demo-ruleForm"
                           >
                             
-                            <el-form-item label="姓名" prop="userName">
+                            <el-form-item label="姓名">
                                 <el-input v-model="newRuleForm.userName" size="mini" maxlength="11" class="w50"></el-input>
                             </el-form-item>
 
-                            <el-form-item label="手机号" prop="phone">
+                            <el-form-item label="手机号">
                                 <el-input v-model="newRuleForm.phone" size="mini" maxlength="11" class="w50"></el-input>
                             </el-form-item>
 
-                            <el-form-item label="邮箱" prop="email">
+                            <el-form-item label="邮箱">
                                 <el-input v-model="newRuleForm.email" size="mini" class="w50"></el-input>
                             </el-form-item>
 
@@ -63,8 +61,8 @@
                     <div style="margin-left:8%">
                         <el-form
                             :model="newRuleForm"
-                            :rules="rules"
-                            ref="newRuleForm"
+                            ref="supplierForm"
+                            :rules="rulessupplier"
                             label-width="180px"
                             inline-message
                             class="demo-ruleForm"
@@ -73,11 +71,11 @@
                               <el-input v-model="newRuleForm.code" readonly size="mini" class="w50"></el-input>
                           </el-form-item>
                           
-                          <el-form-item label="公司名称">
+                          <el-form-item label="公司名称" prop="name">
                               <el-input v-model="newRuleForm.name" size="mini" class="w50"></el-input>
                           </el-form-item>
 
-                          <el-form-item label="公司简称 ">
+                          <el-form-item label="公司简称" prop="shortName">
                               <el-input v-model="newRuleForm.shortName" size="mini" class="w50"></el-input>
                           </el-form-item>
 
@@ -253,14 +251,15 @@
                     <div >
                           <el-form
                             :model="newRuleForm"
-                            ref="newRuleForm"
+                            ref="supplierIfrim"
+                            :rules="rulesIfrim"
                             label-width="180px"
                             inline-message
                             class="demo-ruleForm"
                             style="margin-left:8%"
                           >
                           
-                            <el-form-item label="公司类型" prop="type">
+                            <el-form-item label="公司类型" >
                               <el-select v-model="newRuleForm.type" placeholder="请选择">
                                 <el-option
                                   v-for="item in COMPANY_TYPE"
@@ -275,7 +274,7 @@
                                 <el-input v-model="newRuleForm.sales" size="mini" oninput="value=value.replace(/[^\d^\.]+/g,'').replace('.','$#$').replace(/\./g,'').replace('$#$','.')" v-on:blur="toFix" class="w50"></el-input>
                             </el-form-item>
                             
-                            <el-form-item label="入驻类型" prop="address">
+                            <el-form-item label="入驻类型" >
                               <el-select v-model="newRuleForm.enterType" placeholder="请选择">
                                 <el-option
                                   v-for="item in SettledType"
@@ -299,7 +298,7 @@
                                 <el-radio v-model="newRuleForm.isSupportApi" :label="0">不支持</el-radio>
                             </el-form-item>
 
-                            <el-form-item label="虚拟产品入驻形式">
+                            <el-form-item label="虚拟产品入驻形式" prop="productEnterType">
                               <el-select v-model="newRuleForm.productEnterType" placeholder="请选择">
                                 <el-option
                                   v-for="item in PRODUCT_ENTER_TYPE"
@@ -327,8 +326,6 @@
                     <div style="margin-left:8%">
                           <el-form
                               :model="newRuleForm"
-                              :rules="rules"
-                              ref="newRuleForm"
                               label-width="180px"
                               inline-message
                               class="demo-ruleForm"
@@ -412,6 +409,12 @@
 
                 </el-col>
             </el-row>
+            <el-row class="tipsBoxImg">
+              <el-dialog :visible.sync="dialogVisible" size="tiny" style="text-align:center;">
+                <img  :src="imgUrl" style="padding-bottom: 50px;"/>
+              </el-dialog>
+            </el-row>
+            
         </div>
     </div>
 </template>
@@ -464,26 +467,16 @@
                 }, 
                 // 第一步注册信息
                 rules: {
-                    loginName: [{ required: true, message: "请输入用户名", trigger: "blur" }],
-                    userName: [{ required: true, message: "请输入姓名", trigger: "blur" }],
-                    // loginName: [{ required: true, message: "请输入真实姓名", trigger: "blur" }],
-                    phone: [
-                        { required: true, message: "请输入手机号码", trigger: "blur" },
-                        { min: 11, max: 11, message: "请输入正确的手机号码", trigger: "blur" }
-                    ],
-                    email: [
-                        { required: true, message: "请输入邮箱", trigger: "blur" },
-                        {
-                          type: "email",
-                          message: "请输入正确的邮箱地址",
-                          trigger: ["blur", "change"]
-                        }
-                    ],
+                    loginName: [{ required: true, message: "请输入登录名", trigger: "blur" }],
                     password: [{ required: true, message: "请输入密码", trigger: "blur" }],
-                    confirmPassword: [{ required: true, message: "请输入密码", trigger: "blur" }],
-                    address: [{ required: true, message: "请输入地址", trigger: "blur" }],
-                    type: [{ required: true, message: "请选择类型", trigger: "change" }],
-                    
+                    confirmPassword: [{ required: true, message: "请输入密码", trigger: "blur" }]
+                },
+                rulessupplier:{
+                    name: [{ required: true, message: "请输入公司名称", trigger: "blur" }],
+                    shortName: [{ required: true, message: "请输入公司简称", trigger: "blur" }],
+                },
+                rulesIfrim:{
+                    productEnterType: [{ required: true, message: "请选择虚拟产品入驻形式", trigger: "change" }]
                 },
                 businessList:[],
                 taxRegList:[],
@@ -514,6 +507,8 @@
                 CompanyType:[],
                 LEGAL_CARD_TYPE:[],
                 TAXPAYER_TYPE:[],
+                dialogVisible:false,
+                imgUrl:'',
             }
         },
         created() {
@@ -547,17 +542,29 @@
                 this.CompanyType = res.data.data;
             },
             async subitBtn(dataform){
-              var startTime = this.value2[0]; 
-              var endTime = this.value2[1]; 
-              this.newRuleForm.legalCardDateStart = startTime;
-              this.newRuleForm.legalCardDateEnd = endTime;
-
+              if(this.value2.length > 0){
+                var startTime = this.value2[0]; 
+                var endTime = this.value2[1]; 
+                this.newRuleForm.legalCardDateStart = startTime;
+                this.newRuleForm.legalCardDateEnd = endTime;
+              }
               this.newRuleForm.trademarkRegistration = this.trademarkRegistration;
               this.newRuleForm.brandAuthorization = this.brandAuthorization;
               this.newRuleForm.qualityInspectionReport = this.qualityInspectionReport;
               this.newRuleForm.sanitaryPermit = this.sanitaryPermit;
               this.newRuleForm.status = 0;
               this.$refs[dataform].validate(async valid => {
+                this.$refs['supplierForm'].validate(async valid2 => {
+                  if(valid2){
+                    return false;
+                  }
+                })
+                
+                this.$refs['supplierIfrim'].validate(async valid3 => {
+                  if(valid3){
+                    return false;
+                  }
+                })
                 if (valid) {
                     const role = await this.$http.post(baseURL_.mallUrl+'/supplier/save',this.$qs.stringify(this.newRuleForm));
                     if(role.data.statusCode==200){
@@ -678,7 +685,8 @@
             handlePictureCardPreview(file) {
               console.log(file);
               if(file.url != null){
-                this.dialogImageUrl = file.url;
+                this.dialogVisible = true;
+                this.imgUrl = file.url;
               }else{
                 alert("图片路径有问题")
               };
@@ -799,11 +807,7 @@
     }
 </style>
 <style >
-  .stepList .el-step__title{
-      font-size: 12px !important;
-    }
-  .stepList .el-step__icon{
-    width:20px !important;
-    height:20px !important;
+  .tipsBoxImg .el-dialog__header{
+      padding: 20px 20px 30px !important;
   }
 </style>

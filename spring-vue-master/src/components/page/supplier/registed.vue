@@ -53,15 +53,15 @@
                               class="demo-ruleForm"
                           >
                             
-                            <el-form-item label="姓名" prop="name">
+                            <el-form-item label="姓名">
                                 <el-input v-model="firstForm.name" size="mini" maxlength="11" class="w50"></el-input>
                             </el-form-item>
 
-                            <el-form-item label="手机号" prop="phone">
+                            <el-form-item label="手机号">
                                 <el-input v-model="firstForm.phone" size="mini" maxlength="11" class="w50"></el-input>
                             </el-form-item>
 
-                            <el-form-item label="邮箱" prop="email">
+                            <el-form-item label="邮箱">
                                 <el-input v-model="firstForm.email" size="mini" class="w50"></el-input>
                             </el-form-item>
 
@@ -177,7 +177,7 @@
                             style="margin-left:17%"
                           >
                           
-                            <el-form-item label="公司类型" prop="type">
+                            <el-form-item label="公司类型">
                               <el-select v-model="supplierForm.type" placeholder="请选择">
                                 <el-option
                                   v-for="item in COMPANY_TYPE"
@@ -216,7 +216,7 @@
                                 <el-radio v-model="supplierForm.isSupportApi" :label="0">不支持</el-radio>
                             </el-form-item>
 
-                            <el-form-item label="虚拟产品入驻形式">
+                            <el-form-item label="虚拟产品入驻形式" prop="productEnterType">
                               <el-select v-model="supplierForm.productEnterType" placeholder="请选择">
                                 <el-option
                                   v-for="item in PRODUCT_ENTER_TYPE"
@@ -259,11 +259,11 @@
                               <el-input v-model="newRuleForm.code" readonly size="mini" class="w50"></el-input>
                           </el-form-item>
                           
-                          <el-form-item label="公司名称">
+                          <el-form-item label="公司名称" prop="name">
                               <el-input v-model="newRuleForm.name" size="mini" class="w50"></el-input>
                           </el-form-item>
 
-                          <el-form-item label="公司简称 ">
+                          <el-form-item label="公司简称" prop="shortName">
                               <el-input v-model="newRuleForm.shortName" size="mini" class="w50"></el-input>
                           </el-form-item>
 
@@ -438,6 +438,11 @@
 
                 </el-col>
             </el-row>
+            <el-row class="tipsBoxImg">
+              <el-dialog :visible.sync="dialogVisible" size="tiny" style="text-align:center;">
+                <img  :src="imgUrl" style="padding-bottom: 50px;"/>
+              </el-dialog>
+            </el-row>
         </div>
     </div>
 </template>
@@ -529,7 +534,7 @@
                   signCompany:''
                 },
                 supplierRules:{
-                  type: [{ required: true, message: "请选择公司类型", trigger: "change" }],
+                  productEnterType: [{ required: true, message: "请选择虚拟产品入驻形式", trigger: "change" }],
                   // type: [{ required: true, message: "请输入用户名", trigger: "blur" }],
                 },
                 // 第五步注册信息
@@ -541,7 +546,9 @@
                 },
                 rules: {
                     loginName: [{ required: true, message: "请输入用户名", trigger: "blur" }],
-                    name: [{ required: true, message: "请输入供应商名称", trigger: "blur" }],
+                    name: [{ required: true, message: "请输入公司名称", trigger: "blur" }],
+                    shortName: [{ required: true, message: "请输入公司简称", trigger: "blur" }],
+                    
                     // loginName: [{ required: true, message: "请输入真实姓名", trigger: "blur" }],
                     phone: [
                         { required: true, message: "请输入手机号码", trigger: "blur" },
@@ -598,7 +605,9 @@
                 LEGAL_CARD_TYPE:[],
                 TAXPAYER_TYPE:[],
                 userId:'',
-                supplierId:''
+                supplierId:'',
+                dialogVisible:false,
+                imgUrl:''
             }
         },
         created() {
@@ -966,8 +975,8 @@
               }
             },
             handlePictureCardPreview(file) {
-              this.dialogImageUrl = file.url;
-              // this.dialogVisible = true;
+              this.imgUrl = file.url;
+              this.dialogVisible = true;
             },
             //限制文件的上传数量
             handleExceed(files) {
@@ -1080,5 +1089,8 @@
   .stepList .el-step__icon{
     width:20px !important;
     height:20px !important;
+  }
+  .tipsBoxImg .el-dialog__header{
+      padding: 20px 20px 30px !important;
   }
 </style>
