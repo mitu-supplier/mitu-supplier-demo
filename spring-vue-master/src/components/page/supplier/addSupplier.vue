@@ -138,13 +138,6 @@
                             </el-form-item>
 
                             <el-form-item label="法人身份证有效期">
-                                <!-- <el-date-picker
-                                    v-model="value2"
-                                    type="daterange"
-                                    format="yyyy-MM-dd"
-                                    value-format="yyyy-MM-dd"
-                                    placeholder="选择日期时间">
-                                </el-date-picker> -->
                                 <el-date-picker
                                   size="mini"              
                                   v-model="value2"

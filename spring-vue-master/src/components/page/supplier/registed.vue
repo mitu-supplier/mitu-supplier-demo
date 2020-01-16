@@ -743,10 +743,13 @@
                 this.CompanyType = res.data.data;
             },
             async goFore(dataform){
-              var startTime = this.value2[0]; 
-              var endTime = this.value2[1]; 
-              this.newRuleForm.legalCardDateStart = startTime;
-              this.newRuleForm.legalCardDateEnd = endTime;
+              if(this.value2.length > 0){
+                  var startTime = this.value2[0]; 
+                  var endTime = this.value2[1]; 
+                  this.newRuleForm.legalCardDateStart = startTime;
+                  this.newRuleForm.legalCardDateEnd = endTime;
+              }
+              
               this.newRuleForm.id = this.supplierId;
               
               this.$refs[dataform].validate(async valid => {

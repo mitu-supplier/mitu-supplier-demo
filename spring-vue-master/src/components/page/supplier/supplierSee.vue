@@ -474,8 +474,9 @@
                 }
                 this.newRuleForm.investmentPerson = res.data.data.investmentPerson;
 
-                
-                this.value2 = [res.data.data.legalCardDateStart,res.data.data.legalCardDateEnd];
+                if(res.data.data.legalCardDateStart!=null){
+                  this.value2 = [res.data.data.legalCardDateStart,res.data.data.legalCardDateEnd];
+                }
                 // 营业执照回显
                 if(res.data.data.businessLicense){
                   this.businessList = [{url:res.data.data.businessLicense}]
