@@ -106,6 +106,11 @@ export default new Router({
                     meta: { title: '商户列表' }
                 },
                 {
+                    path: '/addSupplier',
+                    component: resolve => require(['../components/page/supplier/addSupplier.vue'], resolve),
+                    meta: { title: '新增商户' }
+                },
+                {
                     path: '/supplierAuditList',
                     component: resolve => require(['../components/page/supplier/supplierAuditList.vue'], resolve),
                     meta: { title: '商户审核' }

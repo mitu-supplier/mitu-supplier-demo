@@ -272,7 +272,7 @@
         box-sizing: border-box;
     }
     .w50{
-      width:30%;
+      width:20%;
     }
     .zTreeStyle {
       width: 240px;

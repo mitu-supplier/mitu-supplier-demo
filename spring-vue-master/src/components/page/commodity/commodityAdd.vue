@@ -18,7 +18,7 @@
                     <el-input v-model="addComForm.sort" size="mini" class="w50"></el-input>
                 </el-form-item> -->
 
-                <el-form-item label="发货类型" prop="">
+                <el-form-item label="发货类型" prop="deliveryType">
                     <el-select v-model="addComForm.deliveryType" placeholder="请选择">
                       <el-option
                         v-for="item in options"
@@ -30,10 +30,10 @@
                 </el-form-item>
 
                 <el-form-item label="编码" prop="">
-                    <el-input v-model="addComForm.code" size="mini" class="w50"></el-input>
+                    <el-input v-model="addComForm.code" readonly size="mini" class="w50"></el-input>
                 </el-form-item>
 
-                <el-form-item v-if="isSupplier != '1'" label="所属商户" prop="">
+                <el-form-item v-if="isSupplier != '1'" label="所属商户" prop="supplierId">
                     <el-select v-model="addComForm.supplierId" placeholder="请选择">
                       <el-option
                         v-for="item in suppliers"
@@ -45,6 +45,7 @@
                 </el-form-item>
 
                 <el-form-item label="商品分类:" prop="orgNames2" id="orgTreeBox">
+                  <input type="hidden" v-model="addComForm.orgNames2">
                   <!-- catalog_id -->
                   <input type="hidden" >
                   <!-- 所属栏目树 -->
@@ -70,7 +71,7 @@
                     </div>
                 </el-form-item>
 
-                <el-form-item label="商品名称" prop="">
+                <el-form-item label="商品名称" prop="name">
                     <el-input v-model="addComForm.name" size="mini" class="w50"></el-input>
                 </el-form-item>
 
@@ -91,7 +92,7 @@
                     </el-upload>
                 </el-form-item>
 
-                <el-form-item label="市场价(元)" prop="">
+                <el-form-item label="市场价(元)" prop="price">
                     <el-input v-model="addComForm.price" size="mini" class="w50"></el-input>
                 </el-form-item>
 
@@ -104,7 +105,8 @@
                     <el-radio v-model="addComForm.status" label="2">下架</el-radio>
                 </el-form-item>
 
-                <el-form-item label="商品详情" prop="">
+                <el-form-item label="商品详情" prop="protalDetails">
+                    <input type="hidden" v-model="addComForm.protalDetails">
                     <!-- <UE :defaultMsg=defaultMsg :config=config ref="ue"></UE> -->
                     <div class="editor-container">
                       <div id="editor"></div>
@@ -139,11 +141,17 @@
                   initialFrameHeight: 350
                 },
                 addComForm:{
-
+                  code:'',
+                  orgNames2:'',
+                  protalDetails:'',
                 },
                 rules: {
-                    password: [{ required: true, message: "请输入密码", trigger: "blur" }],
-                    confirmPassword: [{ required: true, message: "请输入密码", trigger: "blur" }]
+                    deliveryType: [{ required: true, message: "请选择发货类型", trigger: "change" }],
+                    supplierId: [{ required: true, message: "请选择所属商户", trigger: "change" }],
+                    orgNames2: [{ required: true, message: "请选择商品分类", trigger: "change" }],
+                    name: [{ required: true, message: "请输入商品名称", trigger: "blur" }],
+                    price: [{ required: true, message: "请输入市场价", trigger: "blur" }],
+                    protalDetails: [{ required: true, message: "请输入商品详情", trigger: "change" }],
                 },
                 options: [],
                 fileList:[],
@@ -171,6 +179,7 @@
         },
         created() {
           this.getSelectForm();
+          this.getparentCode();
           this.vaIsSupplier();
           this.getSuppliers();
         },
@@ -189,6 +198,10 @@
               this.options = [];
               this.options = res.data.data;
             },
+            async getparentCode(){
+              var res = await this.$http.get(baseURL_.mallUrl+'/products/getProductCode');
+              this.addComForm.code = res.data.data;
+            },
             async vaIsSupplier(){
               var res = await this.$http.get(baseURL_.mallUrl+'/products/isSupplier');
               this.isSupplier = res.data.data;
@@ -201,6 +214,7 @@
             zTreeOnClick(event, treeId, treeNode) {
               //给选中的节点赋值
               this.orgNames = treeNode.name;
+              this.addComForm.orgNames2 = treeNode.id;
               this.catalogId = treeNode.id;
               this.orgTreeShow = false;
             },
@@ -232,9 +246,11 @@
             },
             // 提交审核
             async submitAddCom(){
+              var details = UE.getEditor('editor').getContent();
+              this.addComForm.protalDetails = details;
               this.$refs['addComForm'].validate(async valid => {
                 if (valid) {
-                  var details = UE.getEditor('editor').getContent();
+                
                   this.addComForm.catalogId = this.catalogId;
                   this.addComForm.details = details;
                   this.addComForm.auditStatus = 0;
@@ -309,7 +325,7 @@
         box-sizing: border-box;
     }
     .w50{
-      width:30%;
+      width:20%;
     }
     .zTreeStyle {
       width: 240px;

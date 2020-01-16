@@ -17,9 +17,10 @@
                         
                           <div v-if="active == 5" class="complete">
                                 <div>
-                                  <img src="../../../assets/img/ok.png" alt="">
+                                  <img v-if="!vShow" src="../../../assets/img/auditetc.png" alt="">
+                                  <img v-if="vShow" src="../../../assets/img/auditfail.png" alt="">
                                 </div>
-                                <div v-if="!vShow" class="waitFor">等待审核</div>
+                                <div v-if="!vShow" class="waitFor">审核中</div>
                                 <div v-if="!vShow" class="waitForTime">24h内完成审核，您可以登录账号，查看审核进度</div>
                                 <div v-if="vShow" class="waitForTime">商户信息有误，请确认后从新提交</div>
                                 <div v-if="vShow" class="modifyFor" @click="toRegisted">修改申请</div>

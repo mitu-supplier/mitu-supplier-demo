@@ -329,8 +329,9 @@
                                 <el-date-picker
                                   size="mini"              
                                   v-model="value2"
-                                  type="datetimerange"
+                                  type="daterange"
                                   align="right"
+                                  range-separator="至"
                                   format="yyyy-MM-dd"
                                   value-format="yyyy-MM-dd"
                                   start-placeholder="开始日期"
