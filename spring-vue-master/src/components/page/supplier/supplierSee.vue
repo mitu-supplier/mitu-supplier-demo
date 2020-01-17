@@ -312,9 +312,38 @@
             </div>
           </el-row>
         </div>
-        <el-row class="tipsBoxImg">
-          <el-dialog :visible.sync="dialogVisible" size="tiny" style="text-align:center;">
+        <el-row class="">
+          <el-dialog :visible.sync="dialogVisible" title="图片查看" size="tiny" width="40%" style="text-align:center;">
             <img  :src="dialogImageUrl" style="padding-bottom: 50px;"/>
+          </el-dialog>
+          <!-- 审核弹出框 -->
+          <el-dialog title="审核员完善信息"  :visible.sync="auditVisible" width="20%">
+              <el-form ref="form" :model="form" label-width="70px">
+                  <el-form-item label="签约公司">
+                      <el-select v-model="newRuleForm.type" placeholder="请选择">
+                        <el-option
+                          v-for="item in COMPANY_TYPE"
+                          :key="item.id"
+                          :label="item.name"
+                          :value="item.id">
+                        </el-option>
+                      </el-select>
+                  </el-form-item>
+                  <el-form-item label="角色">
+                      <el-select v-model="newRuleForm.type" placeholder="请选择">
+                        <el-option
+                          v-for="item in COMPANY_TYPE"
+                          :key="item.id"
+                          :label="item.name"
+                          :value="item.id">
+                        </el-option>
+                      </el-select>
+                  </el-form-item>
+              </el-form>
+              <span slot="footer" class="dialog-footer">
+                  <el-button @click="auditVisible = false">取 消</el-button>
+                  <el-button type="primary" @click="auditConfim">确 定</el-button>
+              </span>
           </el-dialog>
         </el-row>
     </div>
@@ -329,8 +358,8 @@
         data() {
             return {
                 activeName: 'first',
-
-                activeShow: this.$route.params.state,
+                auditVisible:false,
+                activeShow: '',
                 action:1,
                 page:1,
                 total:1000,
@@ -430,7 +459,32 @@
         },
         created() {
             this.getData();
+            
+        },
+        mounted(){
+            this.auditId = this.$route.params.id;
+            if(this.auditId != null && this.auditId != ''){
+              sessionStorage.setItem('auditId',this.auditId);
+            }else{
+              this.auditId = sessionStorage.getItem('auditId');
+            }
+            
+            this.activeShow = this.$route.params.state;
+            if(this.activeShow != null){
+              sessionStorage.setItem('activeShow',this.activeShow);
+            }else{
+              var newactiveShow = sessionStorage.getItem('activeShow');
+              if(newactiveShow != null && newactiveShow != ''){
+                this.activeShow = newactiveShow;
+              }else{
+                this.activeShow = '';
+              }
+            }
             this.getSupplierData();
+        },
+        destroyed(){
+          sessionStorage.removeItem('auditId');
+          sessionStorage.removeItem('activeShow');
         },
         methods: {
             handleClick(tab, event) {
@@ -461,13 +515,16 @@
             async getSupplierData(){
                 const res = await this.$http.get(baseURL_.mallUrl+'/supplier_audit/view',{
                   params:{
-                    id:this.$route.params.id
+                    id:this.auditId
                   }
                 });
                 this.supplier_id = res.data.data.id;
-                for(var i in this.loginForm){
-                  this.loginForm[i] = res.data.data.user[i];
+                if(res.data.data.user != null){
+                    for(var i in this.loginForm){
+                      this.loginForm[i] = res.data.data.user[i];
+                    }
                 }
+                
                 
                 for(var k in this.newRuleForm){
                   this.newRuleForm[k] = res.data.data[k];
@@ -533,13 +590,23 @@
             
             
             auditAdopt(){
-                var id = this.$route.params.id;
-                this.$confirm('确认审核通过').then( e=> {
-                    this.confimAudit(id,1);
-                }).catch(_ => {});
+              this.auditVisible = true;
+                // var id = this.auditId;
+                // this.$confirm('确认审核通过').then( e=> {
+                //     this.confimAudit(id,1);
+                // }).catch(_ => {});
+            },
+            async auditConfim(){
+                // var auditResult = await this.$http.get(baseURL_.mallUrl+'/supplier_audit/audit', {
+                //     params:{
+                //         businessId:id,
+                //         auditResult:auditResult,
+                //         auditReason:auditReason
+                //     }
+                // });
             },
             auditReject(){
-                var id = this.$route.params.id;
+                var id = this.auditId;
                 this.$prompt('请输入审核失败理由：', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',

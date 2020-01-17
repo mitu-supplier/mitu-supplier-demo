@@ -4,7 +4,7 @@
             <el-row style="background: #fff;">
                 <el-col :span="14" >
                     <div class="counnet">
-                    <div class="tipSize">供应商新增</div>
+                    <div class="tipSize">供应商修改</div>
                     <div  style="margin-left:8%;margin-top:20px;">
                         <el-form
                             :model="newRuleForm"
@@ -15,15 +15,7 @@
                             class="demo-ruleForm"
                         >
                           <el-form-item label="登录名" prop="loginName">
-                              <el-input v-model="newRuleForm.loginName" size="mini" class="w50"></el-input>
-                          </el-form-item>
-
-                          <el-form-item label="密码" prop="password">
-                              <el-input type="password" v-model="newRuleForm.password" size="mini" class="w50"></el-input>
-                          </el-form-item>
-
-                          <el-form-item label="确认密码" prop="confirmPassword">
-                              <el-input type="password" v-model="newRuleForm.confirmPassword" size="mini" class="w50"></el-input>
+                              <el-input v-model="newRuleForm.loginName" readonly size="mini" class="w50"></el-input>
                           </el-form-item>
 
                       </el-form>
@@ -422,7 +414,8 @@
             return {
                 active:0,
                 newRuleForm:{
-                    sales:''
+                    sales:'',
+                    userName:'',
                 }, 
                 // 第一步注册信息
                 rules: {
@@ -468,21 +461,41 @@
                 TAXPAYER_TYPE:[],
                 dialogVisible:false,
                 imgUrl:'',
+                editId:'',
             }
         },
         created() {
-            this.getById();
             this.getData(); 
             this.getCode(); 
         },
+        mounted(){
+          this.editId = this.$route.params.id;
+          if(this.editId != null && this.editId != ''){
+            sessionStorage.setItem('editId',this.editId);
+          }else{
+            this.editId = sessionStorage.getItem('editId');
+          }
+          this.getById();
+        },
+        destroyed(){
+          sessionStorage.removeItem('editId');
+        },
         methods: {
             async getById(){
-              const res = await this.$http.get(baseURL_.mallUrl+'/supplier_audit/view',{
+              const res = await this.$http.get(baseURL_.mallUrl+'/supplier/getById',{
                   params:{
-                    id:this.$route.params.id
+                    id:this.editId
                   }
               });
               this.newRuleForm = res.data.data;
+              // for(var k in this.newRuleForm){
+              //     this.newRuleForm[k] = res.data.data[k];
+              // }
+              this.newRuleForm.loginName = res.data.data.user.loginName;
+              this.$set(this.newRuleForm,'phone',res.data.data.user.phone)
+              this.$set(this.newRuleForm,'userName',res.data.data.user.userName)
+              this.$set(this.newRuleForm,'email',res.data.data.user.email)
+              
                 if(res.data.data.legalCardDateStart!=null){
                   this.value2 = [res.data.data.legalCardDateStart,res.data.data.legalCardDateEnd];
                 }
@@ -555,6 +568,7 @@
                 const res = await this.$http.get(baseURL_.mallUrl+'/supplier/getCompany');
                 this.CompanyType = res.data.data;
             },
+            
             async subitBtn(dataform){
               var contentType = 0;
               if(this.value2.length > 0){
@@ -591,7 +605,7 @@
                 }
               })
               if(contentType == 0){
-                  const role = await this.$http.post(baseURL_.mallUrl+'/supplier/save',this.$qs.stringify(this.newRuleForm));
+                  const role = await this.$http.post(baseURL_.mallUrl+'/supplier/update',this.$qs.stringify(this.newRuleForm));
                   if(role.data.statusCode==200){
                     this.$message({
                       type: "success",

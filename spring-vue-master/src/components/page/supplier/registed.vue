@@ -614,7 +614,7 @@
             this.getData();
             this.queryActive = this.$route.params.activeId;
             if(this.queryActive != '' && this.queryActive != null){
-              this.active = 1;
+              this.active = Number(this.queryActive)-1;
               this.getSupplierData();
             }                      
             window.addEventListener('beforeunload', e => {
@@ -754,6 +754,7 @@
               
               this.$refs[dataform].validate(async valid => {
                 if (valid) {
+                    this.newRuleForm.registerStep = 3;
                     const role = await this.$http.post(baseURL_.mallUrl+'/supplier/register',this.$qs.stringify(this.newRuleForm));
                     if(role.data.statusCode==200){
                       // this.$message({
@@ -779,7 +780,12 @@
                 if (valid) {
                   if(this.newRuleForm.password  == this.newRuleForm.confirmPassword){
                     const role = await this.$http.get(baseURL_.mallUrl+'/supplier/saveStepOneTwo',{
-                      params: {'loginName':this.loginForm.loginName,'password':this.loginForm.password,"confirmPassword":this.loginForm.confirmPassword}
+                      params: {
+                        'loginName':this.loginForm.loginName,
+                        'password':this.loginForm.password,
+                        "confirmPassword":this.loginForm.confirmPassword,
+                        "registerStep":1
+                      }
                       
                     });
                     if(role.data.statusCode==200){
@@ -815,6 +821,7 @@
               this.$refs[dataform].validate(async valid => {
                 if (valid) {
                   this.firstForm.id = this.userId;
+                  this.firstForm.registerStep = 2;
                     const role = await this.$http.post(baseURL_.mallUrl+'/supplier/saveStepOneTwo',this.$qs.stringify(this.firstForm));
                     
                     if(role.data.statusCode==200){
@@ -844,6 +851,7 @@
                       this.suppImgForm.sanitaryPermit = this.sanitaryPermit;
                       this.suppImgForm.id = this.supplierId;
                       this.suppImgForm.status = 0;
+                      this.suppImgForm.registerStep = 5;
                         const role = await this.$http.post(baseURL_.mallUrl+'/supplier/register',this.$qs.stringify(this.suppImgForm));
                         
                         if(role.data.statusCode==200){
@@ -865,6 +873,7 @@
             submitBtn(dataform){
               this.$refs[dataform].validate(async valid => {
                 if (valid) {
+                    this.supplierForm.registerStep = 4;
                     this.supplierForm.id = this.supplierId;
                       const role = await this.$http.post(baseURL_.mallUrl+'/supplier/register',this.$qs.stringify(this.supplierForm));
                       

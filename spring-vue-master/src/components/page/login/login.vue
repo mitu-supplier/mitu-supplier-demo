@@ -56,11 +56,12 @@ Vue.prototype.$jsEncrypt=JsEncrypt;
                         if(login.data.data.status == '-1'){
                             // 未提交  跳转继续填写
                             // activeId
+                            
                             this.$router.push({
                                 path: '/registed',
                                 name: 'registed',
                                 params: {
-                                    activeId: 2
+                                    activeId: login.data.data.registerStep
                                 }
                             });
                         } else if(login.data.data.status == '0'){

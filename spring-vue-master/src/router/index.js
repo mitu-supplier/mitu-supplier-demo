@@ -114,7 +114,7 @@ export default new Router({
                     path: '/editSupplier',
                     name:'editSupplier',
                     component: resolve => require(['../components/page/supplier/editSupplier.vue'], resolve),
-                    meta: { title: '新增商户' }
+                    meta: { title: '修改商户' }
                 },
                 
                 {

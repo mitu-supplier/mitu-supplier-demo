@@ -49,7 +49,8 @@
                 <el-table-column label="操作" width="" align="center">
                     <template slot-scope="scope">
                         <el-button type="text" icon="el-icon-search" @click="view(scope.$index, scope.row)">查看</el-button>
-                        <el-button type="text" v-if="isSupplier == '1'" icon="el-icon-edit" class="red" @click="handleUpdate(scope.$index, scope.row)">修改</el-button>
+                        <el-button type="text"  icon="el-icon-edit" class="red" @click="handleUpdate(scope.$index, scope.row)">修改</el-button>
+                        <!-- v-if="isSupplier == '1'" -->
                     </template>
                 </el-table-column>
             </el-table>
@@ -172,7 +173,13 @@
               this.isSupplier = res.data.data;
             },
             handleUpdate(index, row){
-
+                this.$router.push({
+                    path: '/editSupplier',
+                    name: 'editSupplier',
+                    params: {
+                        id: row.id
+                    }
+                });
             },
             add_supplier(){
                 this.$router.push('/addSupplier');
