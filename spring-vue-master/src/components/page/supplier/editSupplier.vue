@@ -471,10 +471,65 @@
             }
         },
         created() {
+            this.getById();
             this.getData(); 
             this.getCode(); 
         },
         methods: {
+            async getById(){
+              const res = await this.$http.get(baseURL_.mallUrl+'/supplier_audit/view',{
+                  params:{
+                    id:this.$route.params.id
+                  }
+              });
+              this.newRuleForm = res.data.data;
+                if(res.data.data.legalCardDateStart!=null){
+                  this.value2 = [res.data.data.legalCardDateStart,res.data.data.legalCardDateEnd];
+                }
+                // 营业执照回显
+                if(res.data.data.businessLicense){
+                  this.businessList = [{url:res.data.data.businessLicense}]
+                }
+                // this.businessLicense = res.data.data.businessLicense;
+                // // 法人代表身份证件回显
+                if(res.data.data.legalCardZ){
+                  if(res.data.data.legalCardF){
+                    this.legalCardList = [{url:res.data.data.legalCardZ},{url:res.data.data.legalCardF}];
+                  }else{
+                    this.legalCardList = [{url:res.data.data.legalCardZ}];
+                  }
+                }
+                // // 税务登记证
+                if(res.data.data.taxRegistration){
+                  this.taxRegList = [{url:res.data.data.taxRegistration}]
+                }
+                // this.taxRegistration = res.data.data.taxRegistration;
+                // 一般纳税人正面
+                if(res.data.data.taxpayerPositive){
+                  this.taxpayeList = [{url:res.data.data.taxpayerPositive}]
+                }
+                // this.taxpayerPositive = res.data.data.taxpayerPositive;
+                // 银行开户许可证
+                if(res.data.data.bankAccountPermit){
+                  this.bankAccountList = [{url:res.data.data.bankAccountPermit}]
+                }
+                // 商标注册证
+                if(res.data.data.trademarkRegistration){
+                  this.trademarkList = [{url:res.data.data.trademarkRegistration}]
+                }
+                // // 品牌授权书
+                if(res.data.data.brandAuthorization){
+                  this.brandList = [{url:res.data.data.brandAuthorization}]
+                }
+                // // 质检报告
+                if(res.data.data.qualityInspectionReport){
+                  this.QualityList = [{url:res.data.data.qualityInspectionReport}]
+                }
+                // // 卫生许可证
+                if(res.data.data.sanitaryPermit){
+                  this.permitList = [{url:res.data.data.sanitaryPermit}]
+                }
+            },
             async getCode(){
               const res = await this.$http.get(baseURL_.mallUrl+'/supplier/getSupplierCode');
               this.newRuleForm.code = res.data.data;
