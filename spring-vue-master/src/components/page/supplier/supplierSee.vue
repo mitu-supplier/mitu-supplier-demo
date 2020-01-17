@@ -317,26 +317,32 @@
             <img  :src="dialogImageUrl" style="padding-bottom: 50px;"/>
           </el-dialog>
           <!-- 审核弹出框 -->
-          <el-dialog title="审核员完善信息"  :visible.sync="auditVisible" width="20%">
-              <el-form ref="form" :model="form" label-width="70px">
-                  <el-form-item label="签约公司">
-                      <el-select v-model="newRuleForm.type" placeholder="请选择">
+          <el-dialog title="审核员完善信息" :close-on-click-modal="false" :visible.sync="auditVisible" width="20%">
+              <el-form ref="auditFormList" :rules="auditrules" :model="auditFormList" label-width="90px">
+                  <el-form-item label="签约公司" prop="signCompany">
+                      <el-select v-model="auditFormList.signCompany" placeholder="请选择">
                         <el-option
-                          v-for="item in COMPANY_TYPE"
+                          v-for="item in CompanyType"
                           :key="item.id"
                           :label="item.name"
                           :value="item.id">
                         </el-option>
                       </el-select>
                   </el-form-item>
-                  <el-form-item label="角色">
-                      <el-select v-model="newRuleForm.type" placeholder="请选择">
-                        <el-option
-                          v-for="item in COMPANY_TYPE"
-                          :key="item.id"
-                          :label="item.name"
-                          :value="item.id">
-                        </el-option>
+                  <el-form-item label="角色" prop="Permis">
+                      <el-select
+                          v-model="auditFormList.Permis"
+                          multiple
+                          filterable
+                          allow-create
+                          default-first-option
+                          placeholder="请选择角色">
+                          <el-option
+                              v-for="item in Permissions"
+                              :key="item.id"
+                              :label="item.roleName"
+                              :value="item.id">
+                          </el-option>
                       </el-select>
                   </el-form-item>
               </el-form>
@@ -357,6 +363,10 @@
         // name: 'basetable',
         data() {
             return {
+                auditrules: {
+                  signCompany: [{ required: true, message: "请选择签约公司", trigger: "change" }],
+                  Permis: [{ required: true, message: "请选择角色", trigger: "change" }],
+                },
                 activeName: 'first',
                 auditVisible:false,
                 activeShow: '',
@@ -372,6 +382,10 @@
                 ztreeEditVisible:false,
                 role_id:'',
                 supplier_id:'',
+                auditFormList:{
+                  Permis:[],
+                  signCompany:'',
+                },
                 form:{
                    id:'',
                    roleName:'',
@@ -454,7 +468,8 @@
                 permitList:[],
                 legalCardList:[],
                 dialogVisible:false,
-                dialogImageUrl:''
+                dialogImageUrl:'',
+                Permissions:[],
             }
         },
         created() {
@@ -501,6 +516,7 @@
                 this.TAXPAYER_TYPE = res.data.data.TAXPAYER_TYPE;
                 this.getSettledType();
                 this.getCompany();
+                this.getRoleForm();
             },
             async getSettledType(){
                 const res = await this.$http.get(baseURL_.mallUrl+'/supplier/getEnterType');
@@ -510,7 +526,12 @@
                 const res = await this.$http.get(baseURL_.mallUrl+'/supplier/getCompany');
                 this.CompanyType = res.data.data;
             },
-            
+            // 角色信息
+            async getRoleForm(){
+                this.Permissions = [];
+                const res = await this.$http.get(baseURL_.mallUrl+'/supplier_audit/getPermissions');
+                this.Permissions = res.data.data;
+            },
           // 获取供应商入驻信息回显
             async getSupplierData(){
                 const res = await this.$http.get(baseURL_.mallUrl+'/supplier_audit/view',{
@@ -597,13 +618,14 @@
                 // }).catch(_ => {});
             },
             async auditConfim(){
-                // var auditResult = await this.$http.get(baseURL_.mallUrl+'/supplier_audit/audit', {
-                //     params:{
-                //         businessId:id,
-                //         auditResult:auditResult,
-                //         auditReason:auditReason
-                //     }
-                // });
+              this.$refs['auditFormList'].validate(async valid => {
+                if (valid) {
+                  var id = this.auditId;
+                  var permissionIds = this.auditFormList.Permis.join(",");
+                  this.confimAudit(id,1,null,this.auditFormList.signCompany,permissionIds);
+                }
+              })
+              
             },
             auditReject(){
                 var id = this.auditId;
@@ -616,12 +638,14 @@
                     this.confimAudit(id,2,value)
                 }).catch(() => { }); 
             },
-            async confimAudit(id,auditResult,auditReason){
+            async confimAudit(id,auditResult,auditReason,signCompany,permissionIds){
                 var auditResult = await this.$http.get(baseURL_.mallUrl+'/supplier_audit/audit', {
                     params:{
                         businessId:id,
                         auditResult:auditResult,
-                        auditReason:auditReason
+                        auditReason:auditReason,
+                        signCompany:signCompany,
+                        permissionIds:permissionIds
                     }
                 });
                 this.$message(auditResult.data.data);
