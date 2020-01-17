@@ -11,5 +11,8 @@ import java.util.Map;
 public interface SysRoleRemote {
 
     @RequestMapping("/sys_role/saveSupplierRole")
-    int saveSupplierRole(@RequestParam("supplierIds") String supplierIds);
+    int saveSupplierRole(@RequestParam("supplierIds") String supplierIds, @RequestParam("permissionIds") String permissionIds);
+
+    @RequestMapping("/sys_role/getAll")
+    Object getAll();
 }

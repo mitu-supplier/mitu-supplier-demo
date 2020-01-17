@@ -35,16 +35,6 @@ public class SuppliersBack implements SuppliersRemote {
     }
 
     @Override
-    public int updateStatus(Long id, Integer status) {
-        return 0;
-    }
-
-    @Override
-    public int batchAudit(String ids, Integer status) {
-        return 0;
-    }
-
-    @Override
     public Object getAll() {
         return null;
     }

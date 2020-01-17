@@ -261,6 +261,11 @@ public class Suppliers implements Serializable {
     @TableField(value = "updated_at", fill = FieldFill.UPDATE)
     private String updatedAt;
 
+    /**
+     * 注册填写进度
+     */
+    @TableField(value = "register_step")
+    private Integer registerStep;
 
     // =====查询字段
     @TableField(exist = false)
@@ -600,5 +605,13 @@ public class Suppliers implements Serializable {
 
     public void setEnterTypeName(String enterTypeName) {
         this.enterTypeName = enterTypeName;
+    }
+
+    public Integer getRegisterStep() {
+        return registerStep;
+    }
+
+    public void setRegisterStep(Integer registerStep) {
+        this.registerStep = registerStep;
     }
 }

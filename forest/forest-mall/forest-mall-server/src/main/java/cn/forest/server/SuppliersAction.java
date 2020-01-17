@@ -62,29 +62,6 @@ public class SuppliersAction {
         return suppliersMapper.selectById(id);
     }
 
-    @RequestMapping("/updateStatus")
-    public int updateStatus(@RequestParam("id") Long id, @RequestParam("status") Integer status) {
-        Suppliers suppliers = suppliersMapper.selectById(id);
-        if (suppliers != null) {
-            suppliers.setStatus(status);
-            return suppliersMapper.updateById(suppliers);
-        }
-        return 0;
-    }
-
-    @RequestMapping("/batchAudit")
-    public int updateStatus(@RequestParam("ids") String ids, @RequestParam("status") Integer status) {
-        if (StringUtils.isNotEmpty(ids)) {
-            String[] split = ids.split(",");
-            List<Long> idList = new ArrayList<>();
-            for (String str : split) {
-                idList.add(Long.parseLong(str));
-            }
-            return suppliersMapper.batchAudit(idList, status);
-        }
-        return 0;
-    }
-
     /**
      * 获取所有可用的供应商信息
      *

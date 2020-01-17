@@ -122,9 +122,9 @@ public class ProductsService {
             auditMap.put("businessId", paramMap.get("id"));
             auditMap.put("auditType", 2);
             int save = auditRecodeRemote.save(auditMap);
-            return ResultMessage.result(save, "审核成功", "审核失败");
+            return ResultMessage.result(save, "操作提交成功", "操作提交失败");
         }
-        return ResultMessage.error("审核失败");
+        return ResultMessage.error("操作提交失败");
     }
 
     public Map<String, Object> batchAudit(HttpServletRequest request) {
@@ -156,9 +156,9 @@ public class ProductsService {
                 auditRecodeRemote.batchSave(list);
 
             }
-            return ResultMessage.success("操作成功");
+            return ResultMessage.success("操作提交成功");
         }
-        return ResultMessage.error("操作失败");
+        return ResultMessage.error("操作提交失败");
     }
 
     public Map<String, Object> batchDelete(String ids){

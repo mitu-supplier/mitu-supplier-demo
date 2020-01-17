@@ -30,7 +30,7 @@ public class SuppliersController {
      */
     @RequestMapping("/getById")
     public Map<String, Object> getById(@RequestParam("id") Long id) {
-        return suppliersService.getById(id);
+        return suppliersService.view(id);
     }
 
     /**
@@ -86,6 +86,11 @@ public class SuppliersController {
         return suppliersService.getEnterType();
     }
 
+    /**
+     * 获取签约公司
+     *
+     * @return
+     */
     @RequestMapping("/getCompany")
     public Map<String, Object> getCompany() {
         return companyService.getAll();
@@ -135,5 +140,16 @@ public class SuppliersController {
     @RequestMapping("/save")
     public Map<String, Object> save(HttpServletRequest request) {
         return suppliersService.save(RequestMap.requestToMap(request));
+    }
+
+    /**
+     * 供应商信息修改
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping("/update")
+    public Map<String, Object> update(HttpServletRequest request) {
+        return suppliersService.saveStepOther(RequestMap.requestToMap(request));
     }
 }

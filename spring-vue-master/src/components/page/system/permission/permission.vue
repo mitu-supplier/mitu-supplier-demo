@@ -69,7 +69,7 @@
                 <el-input v-model="form.url" class="input"></el-input>
                 </el-form-item>
                 <el-form-item label="排序">
-                    <el-input v-model="form.priority" class="input"></el-input>
+                    <el-input v-model="form.priority" class="input" oninput="value=value.replace(/[^\d]/g,'')" ></el-input>
                 </el-form-item>
                 <el-form-item label="图标">
                     <el-input v-model="form.iconName" class="input"></el-input>

@@ -26,12 +26,6 @@ public interface SuppliersRemote {
     @RequestMapping("/suppliers/getById")
     Object getById(@RequestParam("id") Long id);
 
-    @RequestMapping("/suppliers/updateStatus")
-    int updateStatus(@RequestParam("id")Long id, @RequestParam("status")Integer status);
-
-    @RequestMapping("/suppliers/batchAudit")
-    int batchAudit(@RequestParam("ids") String ids, @RequestParam("status") Integer status);
-
     @RequestMapping("/suppliers/getAll")
     Object getAll();
 

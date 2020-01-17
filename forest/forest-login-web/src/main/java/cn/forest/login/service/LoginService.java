@@ -85,7 +85,8 @@ public class LoginService {
                         // 审核不通过
                         resultMap.put("message", "商户信息有误，请确认后重新提交");
                     } else if (status == -1) {
-                        // 审核不通过
+                        // 未填写完毕
+                        resultMap.put("registerStep", supplierJsonNode.path("registerStep").asInt());
                         resultMap.put("message", "商户信息未填写完毕，请继续填写");
                     }
                 } else {

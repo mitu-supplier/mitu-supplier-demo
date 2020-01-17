@@ -40,17 +40,6 @@ public class SuppliersAuditController {
     }
 
     /**
-     * 批量审核
-     *
-     * @param request
-     * @return
-     */
-    @RequestMapping("/batchAudit")
-    public Map<String, Object> batchAudit(HttpServletRequest request) {
-        return suppliersService.batchAudit(request);
-    }
-
-    /**
      * 查看审核记录
      *
      * @param request
@@ -80,5 +69,15 @@ public class SuppliersAuditController {
     @RequestMapping("/view")
     public Map<String, Object> view(@RequestParam("id") Long id) {
         return suppliersService.view(id);
+    }
+
+    /**
+     * 获取所有的角色
+     *
+     * @return
+     */
+    @RequestMapping("/getPermissions")
+    public Map<String, Object> getPermissions() {
+        return suppliersService.getPermissions();
     }
 }

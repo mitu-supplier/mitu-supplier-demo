@@ -9,7 +9,12 @@ import java.util.Map;
 public class SysRoleBack implements SysRoleRemote {
 
     @Override
-    public int saveSupplierRole(String supplierIds) {
+    public int saveSupplierRole(String supplierIds, String permissionIds) {
         return 0;
+    }
+
+    @Override
+    public Object getAll() {
+        return null;
     }
 }

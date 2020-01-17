@@ -7,12 +7,10 @@ import cn.forest.common.util.RequestMap;
 import cn.forest.common.util.ResultMessage;
 import cn.forest.common.util.StringUtil;
 import cn.forest.mall.remote.*;
-import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -129,6 +127,7 @@ public class SuppliersService {
                     String supplierCode = getSupplierCode();
                     resultSupplierInfo.put("code", supplierCode);
                     resultSupplierInfo.put("status", -1);
+                    resultSupplierInfo.put("registerStep", map.get("registerStep"));
                     Object supplierSave = suppliersRemote.save(resultSupplierInfo);
                     if (supplierSave != null) {
                         Map supplierResult = (Map) supplierSave;
@@ -161,6 +160,7 @@ public class SuppliersService {
                         Map<String, Object> supplierInfo = new HashMap<>();
                         supplierInfo.put("id", ((Map) userInfo).get("typeId"));
                         supplierInfo.put("investmentPerson", investmentPerson);
+                        supplierInfo.put("registerStep", map.get("registerStep"));
                         suppliersRemote.update(supplierInfo);
                     }
                 }
@@ -191,64 +191,29 @@ public class SuppliersService {
         Map<String, Object> map = RequestMap.requestToMap(request);
         Long supplierId = Long.parseLong(map.get("businessId").toString());
         Integer status = Integer.parseInt(map.get("auditResult").toString());
-        suppliersRemote.updateStatus(supplierId, status);
-        if (status != null && status == 1) {
-            sysRoleRemote.saveSupplierRole(supplierId + "");
-        }
-        // 保存审核记录
-        String header = request.getHeader(Constant.HEADER_TOKEN_STRING);
-        HashMap userInfoMap = (HashMap) redisDao.getValue(header);
-        if (userInfoMap != null) {
-            map.put("auditUserId", userInfoMap.get("id"));
-            map.put("auditUserName", userInfoMap.get("name"));
-        }
-        map.put("auditType", 1);
-        int save = auditRecodeRemote.save(map);
-        return ResultMessage.result(save, "审核成功", "审核失败");
-    }
-
-    /**
-     * 批量审核
-     *
-     * @param request
-     * @return
-     */
-    public Map<String, Object> batchAudit(HttpServletRequest request) {
-        Map<String, Object> paramMap = RequestMap.requestToMap(request);
-        String ids = null;
-        if (paramMap.get("ids") != null) {
-            ids = paramMap.get("ids").toString();
-        }
-        Integer status = Integer.parseInt(paramMap.get("status").toString());
-        int auditStatus = suppliersRemote.batchAudit(ids, status);
-        if (status != null && status == 1) {
-            sysRoleRemote.saveSupplierRole(ids);
-        }
-        if (auditStatus > 0) {
-            // 保存审核记录
-            if (ids != null) {
-                List<Map<String, Object>> list = new ArrayList<>();
-                Map<String, Object> auditMap = null;
-                String header = request.getHeader(Constant.HEADER_TOKEN_STRING);
-                HashMap userInfoMap = (HashMap) redisDao.getValue(header);
-                for (String str : ids.split(",")) {
-                    auditMap = new HashMap<>();
-                    if (userInfoMap != null) {
-                        auditMap.put("auditUserId", userInfoMap.get("id"));
-                        auditMap.put("auditUserName", userInfoMap.get("name"));
-                    }
-                    auditMap.put("auditResult", paramMap.get("status"));
-                    auditMap.put("businessId", Long.parseLong(str));
-                    auditMap.put("auditType", 1);
-                    list.add(auditMap);
-                }
-                auditRecodeRemote.batchSave(list);
+        String permissionIds = StringUtil.isBlank(map.get("permissionIds")) ? null : map.get("permissionIds").toString();
+        Long signCompany = StringUtil.isBlank(map.get("signCompany")) ? null : Long.parseLong(map.get("signCompany").toString());
+        Map<String, Object> supplierInfo = new HashMap<>();
+        supplierInfo.put("id", supplierId);
+        supplierInfo.put("status", status);
+        supplierInfo.put("signCompany", signCompany);
+        int update = suppliersRemote.update(supplierInfo);
+        if (update > 0) {
+            if (status != null && status == 1) {
+                sysRoleRemote.saveSupplierRole(supplierId + "", permissionIds);
             }
-            return ResultMessage.success("操作成功");
+            // 保存审核记录
+            String header = request.getHeader(Constant.HEADER_TOKEN_STRING);
+            HashMap userInfoMap = (HashMap) redisDao.getValue(header);
+            if (userInfoMap != null) {
+                map.put("auditUserId", userInfoMap.get("id"));
+                map.put("auditUserName", userInfoMap.get("name"));
+            }
+            map.put("auditType", 1);
+            auditRecodeRemote.save(map);
         }
-        return ResultMessage.error("操作失败");
+        return ResultMessage.result(update, "操作提交成功", "操作提交失败");
     }
-
 
     /**
      * 查看审核记录
@@ -284,7 +249,7 @@ public class SuppliersService {
             }
             return ResultMessage.success(dataMap);
         }
-        return ResultMessage.error("未查询带数据");
+        return ResultMessage.error("未查询到数据");
     }
 
     /**
@@ -407,7 +372,7 @@ public class SuppliersService {
         return null;
     }
 
-    public Map<String, Object> save(Map<String, Object> paramMap){
+    public Map<String, Object> save(Map<String, Object> paramMap) {
         if (paramMap.get("loginName") == null) {
             return ResultMessage.error("请输入用户名");
         }
@@ -429,7 +394,7 @@ public class SuppliersService {
         if (save != null) {
             Map supplierResult = (Map) save;
             int num = Integer.parseInt(supplierResult.get(Constant.RESULT_NUM).toString());
-            if(num > 0){
+            if (num > 0) {
                 Long supplierId = JsonUtil.readTree(supplierResult.get(Constant.RESULT).toString()).path("id").asLong();
                 //保存用户信息
                 Map<String, Object> userInfoMap = new HashMap<>();
@@ -445,5 +410,18 @@ public class SuppliersService {
             }
         }
         return ResultMessage.error("保存失败");
+    }
+
+    /**
+     * 获取所有的角色信息
+     *
+     * @return
+     */
+    public Map<String, Object> getPermissions() {
+        Object all = sysRoleRemote.getAll();
+        if (all != null) {
+            return ResultMessage.success(all);
+        }
+        return null;
     }
 }

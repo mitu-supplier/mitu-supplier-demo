@@ -128,28 +128,29 @@ public class SysRoleAction {
   }
 
   @RequestMapping("/saveSupplierRole")
-  public int saveSupplierRole(@RequestParam("supplierIds") String supplierIds){
-    Long roleId = null;
-    QueryWrapper<SysRole> sysRoleQueryWrapper=new QueryWrapper<SysRole>();
-    sysRoleQueryWrapper.eq("role_code", Constant.SH_ADMIN);
-    List<SysRole> sysRoles = sysRoleMapper.selectList(sysRoleQueryWrapper);
-    if(!CollectionUtils.isEmpty(sysRoles)){
-      roleId = sysRoles.get(0).getId();
-    }
-    if(!StringUtils.isEmpty(supplierIds) && roleId != null){
+  public int saveSupplierRole(@RequestParam("supplierIds") String supplierIds, @RequestParam("permissionIds") String permissionIds){
+    if(StringUtil.isNotBlank(supplierIds) && StringUtil.isNotBlank(permissionIds)){
       for (String s : supplierIds.split(",")){
         QueryWrapper<SysUser> qw = new QueryWrapper<>();
         qw.eq("type_id", Long.parseLong(s));
         List<SysUser> sysUsers = sysUserMapper.selectList(qw);
         if(!CollectionUtils.isEmpty(sysUsers)){
-          SysUserRole userRole = new SysUserRole();
-          userRole.setUserId(sysUsers.get(0).getId());
-          userRole.setRoleId(roleId);
-          sysUserRoleMapper.insert(userRole);
+          SysUserRole userRole = null;
+          for(String permissionId : permissionIds.split(",")){
+            userRole = new SysUserRole();
+            userRole.setUserId(sysUsers.get(0).getId());
+            userRole.setRoleId(Long.parseLong(permissionId));
+            sysUserRoleMapper.insert(userRole);
+          }
         }
       }
       return 1;
     }
     return 0;
+  }
+
+  @RequestMapping("/getAll")
+  public Object getAll(){
+    return sysRoleMapper.selectList(new QueryWrapper<SysRole>());
   }
 }

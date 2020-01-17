@@ -52,7 +52,7 @@
                      <el-input v-model="form.supplierName" :disabled="edit" class="input"></el-input>
                 </el-form-item>
                 <el-form-item label="金额">
-                    <el-input v-model="form.money" class="input"></el-input>
+                    <el-input v-model="form.money" oninput="value=value.replace(/[^\d^\.]+/g,'').replace('.','$#$').replace(/\./g,'').replace('$#$','.')" v-on:blur="toFix" class="input"></el-input>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
@@ -145,7 +145,10 @@
                     this.editVisible=false;
                 }
                 this.getData();
-            }
+            },
+            toFix(){
+                this.form.money = Number(this.form.money).toFixed(2);
+            },
         }
     }
 
