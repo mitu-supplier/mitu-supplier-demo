@@ -16,8 +16,8 @@
 		p.status
 	FROM
 		plan p
-		INNER JOIN organization o ON o.id = p.org_id
-		INNER JOIN projects j ON j.id = p.project_id
+		left  JOIN organization o ON o.id = p.org_id
+		left JOIN projects j ON j.id = p.project_id
 	where p.is_delete=0 
 	  <if test="userId!=null">
 	    and p.user_id=#{userId} 

@@ -122,7 +122,7 @@
 			
   </select>
   <select id="getProjects" parameterType="Map" resultType="cn.forest.lyj.entity.Projects">
-    <![CDATA[  select t.*,if(IFNULL(t.et/t.pt,0)<=${num},'true','false') as xy ,if((t.pt+t.pt*${num})<=t.et,'true','false') dy  from(
+    <![CDATA[  select t.*,if(IFNULL(t.et,0)<t.pt*(1-${num}),'true','false') as xy ,if(IFNULL(t.et,0)>t.pt*(1+${num}),'true','false') dy  from(
 SELECT
 			p.id,
 			p.org_id as orgId,
@@ -157,6 +157,6 @@ SELECT
 			  AND p.id = #{id}
 			</if>
 	        ) t where  1=1  
-			<![CDATA[  and (IFNULL(t.et/t.pt,0)<=${num} or (t.pt+t.pt*${num})<=t.et ) ]]>
+			<![CDATA[  and (IFNULL(t.et,0)<t.pt*(1-${num}) or IFNULL(t.et,0)>t.pt*(1+${num})  )]]>
   </select>
 </mapper>

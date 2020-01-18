@@ -63,7 +63,7 @@
                     <el-table-column prop="name" label="状态"  align="center">
                        <template slot-scope="scope">
                          <span v-if="scope.row.xy=='true'">未达标</span>
-                         <span v-else="scope.row.dy=='true'">超出计划</span>
+                         <span v-if="scope.row.dy=='true'">超出计划</span>
                        </template>
                     
                     </el-table-column>

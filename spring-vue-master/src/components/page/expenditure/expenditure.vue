@@ -101,8 +101,9 @@
                   <el-upload  class="upload-class"
                     :action="uploadUrl()"
                     :on-success="expenditureSuccess"
+                    :on-remove="handleExpenditureRemove"
                     multiple
-                    :limit="1"
+                    :limit="10"
                     :file-list="expenditureList">
                     <el-button size="small" type="primary">点击上传</el-button>
                 </el-upload>
@@ -111,8 +112,9 @@
                   <el-upload  class="upload-class"
                     :action="uploadUrl()"
                     :on-success="otherSuccess"
+                    :on-remove="handleOtherRemove"
                     multiple
-                    :limit="1"
+                    :limit="10"
                     :file-list="otherList">
                     <el-button size="small" type="primary">点击上传</el-button>
                 </el-upload>
@@ -176,8 +178,8 @@
                 },
                 options_year:'',
                 options_month:'',
-                expenditureList:'',
-                otherList:'',
+                expenditureList:[],
+                otherList:[],
                 options_org:[],
                 
                 button_role:{},
@@ -233,23 +235,32 @@
             uploadUrl() {
               return baseURL_.fileUrl+'/file/upload';
             },
-            expenditureSuccess(res, file) {
-              this.$message({
-                type: "success",
-                message: "上传成功",
-                duration: 6000
-              });
-              this.form.expenditureAttachmentName=file.response.data.fileName;
-              this.form.expenditureAttachment=file.response.data.path;
+            handleExpenditureRemove(file,fileList){
+               this.expenditureList=fileList;
             },
-            otherSuccess(res, file) {
+            handleOtherRemove(file,fileList){
+                this.otherList=fileList;
+            },
+            expenditureSuccess(res, file,fileList) {
               this.$message({
                 type: "success",
                 message: "上传成功",
                 duration: 6000
               });
-             this.form.otherAttachmentName=file.response.data.fileName;
-             this.form.otherAttachment=file.response.data.path;
+              this.expenditureList=fileList;
+              
+            //   this.form.expenditureAttachmentName=file.response.data.fileName;
+            //   this.form.expenditureAttachment=file.response.data.path;
+            },
+            otherSuccess(res, file,fileList) {
+              this.$message({
+                type: "success",
+                message: "上传成功",
+                duration: 6000
+              });
+              this.otherList=fileList;
+            //  this.form.otherAttachmentName=file.response.data.fileName;
+            //  this.form.otherAttachment=file.response.data.path;
             },
             handleSizeChange(val){
                    this.pageSize=val;
@@ -312,6 +323,41 @@
                     })
                  }
                 if(flg){
+
+                    var c_list=[]; 
+                        if(this.otherList.length>0){
+                            for(var i=0;i<this.otherList.length;i++){
+                                var obj={};
+                                if(this.otherList[i].response){
+                                    obj.url=this.otherList[i].response.data.path;
+                                    obj.name=this.otherList[i].response.data.fileName;
+                                }else{
+                                    obj.url=this.otherList[i].url;
+                                    obj.name=this.otherList[i].name;
+                                }
+                                c_list.push(obj);
+                            }
+                         }
+                        this.form.otherAttachment=JSON.stringify(c_list);
+                   
+
+                        var o_list=[]; 
+                        if(this.expenditureList.length>0){
+                                for(var i=0;i<this.expenditureList.length;i++){
+                                    var obj={};
+                                    if(this.expenditureList[i].response){
+                                        obj.url=this.expenditureList[i].response.data.path;
+                                        obj.name=this.expenditureList[i].response.data.fileName;
+                                    }else{
+                                        obj.url=this.expenditureList[i].url;
+                                        obj.name=this.expenditureList[i].name;
+                                    }
+                                    o_list.push(obj);
+                                }
+                            }
+                         
+                        this.form.expenditureAttachment=JSON.stringify(o_list);
+
                     if(this.form.id!=null){
                         addOrEdit= await this.$http.post(baseURL_.lyjUrl+'/expenditure/update',this.$qs.stringify(this.form));
                     }else{
@@ -365,24 +411,21 @@
 
                     this.form.project_value=user.data.data.projectId+'@'+user.data.data.projectName;
                     if(user.data.data.otherAttachment){
-                        var contracArry=[];
-                        var obj={};
-                        obj.name=user.data.data.otherAttachmentName;
-                        obj.url=user.data.data.otherAttachment;
-                        contracArry.push(obj);
-                        this.otherList=contracArry;
+                        // var contracArry=[];
+                        // var obj={};
+                        // obj.name=user.data.data.otherAttachmentName;
+                        // obj.url=user.data.data.otherAttachment;
+                        // contracArry.push(obj);
+                        this.otherList=eval(user.data.data.otherAttachment);
                     }
                     if(user.data.data.expenditureAttachment){
-                        var contracArry=[];
-                        var obj={};
-                        obj.name=user.data.data.expenditureAttachmentName;
-                        obj.url=user.data.data.expenditureAttachment;
-                        contracArry.push(obj);
-                        this.expenditureList=contracArry;
+                        // var contracArry=[];
+                        // var obj={};
+                        // obj.name=user.data.data.expenditureAttachmentName;
+                        // obj.url=user.data.data.expenditureAttachment;
+                        // contracArry.push(obj);
+                        this.expenditureList=eval(user.data.data.expenditureAttachment);
                     }
-
-
-
                 }
                  this.editVisible=true;
             },
@@ -478,7 +521,6 @@
         width: auto;
         height: auto;
         border:none;
-        float: left;
         z-index:999;
     }
 

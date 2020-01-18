@@ -55,10 +55,10 @@ public class ContractAction {
     if(contract.getContractType()==null) {
       contract.setContractType(0);
     }
-    if(contract.getContractType()==0) {
-      contract.setOtherAttachmentName(null);
-      contract.setOtherAttachment(null);
-    }
+    /*
+     * if(contract.getContractType()==0) { contract.setOtherAttachmentName(null);
+     * contract.setOtherAttachment(null); }
+     */
     if(contract.getContractType()==1) {
       contract.setContractTotal(null);
       contract.setContractLeader(null);
@@ -72,10 +72,10 @@ public class ContractAction {
 
   @RequestMapping("/update")
   public int update(@RequestBody Contract contract) {
-    if(contract.getContractType()==0) {
-      contract.setOtherAttachmentName(null);
-      contract.setOtherAttachment(null);
-    }
+    /*
+     * if(contract.getContractType()==0) { contract.setOtherAttachmentName(null);
+     * contract.setOtherAttachment(null); }
+     */
     if(contract.getContractType()==1) {
       contract.setContractTotal(null);
       contract.setContractLeader(null);

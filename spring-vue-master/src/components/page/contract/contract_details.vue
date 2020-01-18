@@ -66,7 +66,19 @@
                     </tr>
                        <tr>
                          <td class="companytitle">合同附件</td>
-                        <td class="companytitle1" colspan='3'><a  :href="contractData.contractAttachment" target="_blank">{{contractData.contractAttachmentName}}</a></td>
+                        <td class="companytitle1" colspan='3'>
+                         <span v-for="item in contractData.contractAttachment">
+                           <a :href="item.url" target="_blank" style="margin-left:10px;">{{item.name}}</a>
+                         </span>
+                        </td>
+                       </tr>
+                       <tr>
+                         <td class="companytitle">其他附件</td>
+                        <td class="companytitle1" colspan='3'>
+                         <span v-for="item in contractData.otherAttachment">
+                           <a :href="item.url" target="_blank" style="margin-left:10px;">{{item.name}}</a>
+                         </span>
+                        </td>
                        </tr>
                         </tbody>
                 </table>
@@ -107,8 +119,12 @@
                         
                     </tr>
                     <tr>
-                      <td class="companytitle">合同附件</td>
-                      <td class="companytitle1" colspan='3'><a :href="contractData.otherAttachment" target="_blank">{{contractData.otherAttachmentName}}</a></td>
+                      <td class="companytitle">其他附件</td>
+                      <td class="companytitle1" colspan='3'>
+                         <span v-for="item in contractData.otherAttachment">
+                           <a :href="item.url" target="_blank" style="margin-left:10px;">{{item.name}}</a>
+                         </span>
+                      </td>
                     </tr>
                         </tbody>
                 </table>
@@ -136,6 +152,9 @@
            this.getpermissById();
         },
         methods: {
+            down(url){
+               location.href=url;
+            },
             fileOpen(fileUrl){
                 alert(fileUrl)
                location.href=fileUrl;
@@ -146,6 +165,8 @@
                 });
                 this.contractData=contract.data.data;
                 if(contract.data.data.contractType=='0'){
+                    this.contractData.contractAttachment=eval(contract.data.data.contractAttachment)
+                    this.contractData.otherAttachment=eval(contract.data.data.otherAttachment)
                     this.type0=true;
                 }else{
                    this.type1=true;

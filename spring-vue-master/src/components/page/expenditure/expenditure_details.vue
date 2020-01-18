@@ -48,24 +48,34 @@
                         <td class="companytitle1" >
                           {{expendData.partyBUnits}}
                         </td>  
-                        <td class="companytitle">支出凭证</td>
-                        <td class="companytitle1" >
-                         <a :href="expendData.expenditureAttachment" target="_blank"> {{expendData.expenditureAttachmentName}}</a>
-                        </td> 
-                                                       
-                           
-                    </tr>
-                    <tr>
-                    <td class="companytitle">其他附件</td>
-                        <td class="companytitle1" >
-                          <a :href="expendData.otherAttachment" target="_blank">{{expendData.otherAttachmentName}}</a>
-                        </td> 
-                     <td class="companytitle">用途</td>
+                        <td class="companytitle">用途</td>
                         <td class="companytitle1" >
                           {{expendData.expenditureUsing}}
                         </td>   
+                        
+                                                       
+                           
                     </tr>
-           
+                    
+                    <tr>
+                        <td class="companytitle">支出凭证</td>
+                        <td class="companytitle1" colspan='3'>
+                          <span v-for="item in expendData.expenditureAttachment">
+                            <a :href="item.url" target="_blank" style="margin-left:10px;">{{item.name}}</a>
+                          </span>
+                         
+                        </td>
+                    </tr>
+                    <tr>
+                      <td class="companytitle">其他附件</td>
+                        <td class="companytitle1" colspan='3'>
+                          <span v-for="item in expendData.otherAttachment">
+                            <a :href="item.url" target="_blank" style="margin-left:10px;">{{item.name}}</a>
+                          </span>
+                          
+                        </td> 
+                     
+                    </tr>
                         </tbody>
                 </table>
             </el-row>
@@ -94,6 +104,8 @@
                     params: {'id':this.expend_id}
                 });
                 this.expendData=expend.data.data;
+                this.expendData.otherAttachment=eval(expend.data.data.otherAttachment);
+                this.expendData.expenditureAttachment=eval(expend.data.data.expenditureAttachment);
                
             }
         }

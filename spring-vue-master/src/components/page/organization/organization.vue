@@ -59,7 +59,7 @@
        <!-- 编辑弹出框 -->
         <el-dialog :title="titleName"  :visible.sync="editVisible" width="35%"  @close="closeDilog('form')">
             <el-form ref="form" :model="form" :rules="rules" label-width="130px">
-                <el-form-item label="排序" prop="priority">
+                <el-form-item label="排序" >
                     <el-input v-model.number="form.priority" class="input"></el-input>
                 </el-form-item>
                 <el-form-item label="科室名称" prop="name">
@@ -127,11 +127,7 @@
                     code:[
                         { required: true, message: '请填写科室编号', trigger: 'blur' }
                     ],
-                    priority:[
-                        
-                        {  required: true, message: '请填写排序序号', trigger: 'change' },
-                        {  type:'number', message: '请填写数字', trigger: 'change' },
-                    ],
+                   
                     leader:[
                         { required: true, message: '请填写业务分管领导', trigger: 'blur' }
                     ],

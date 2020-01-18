@@ -25,23 +25,29 @@
                         <td class="companytitle1" >
                         {{permissData.createTime}}
                         </td>                                
+                          <td class="companytitle">修改时间</td>
+                        <td class="companytitle1" >
+                        <span v-if="permissData.updateTime==null">{{permissData.createTime}}</span>
+                        <span v-if="permissData.updateTime!=null">{{permissData.updateTime}}</span>
+                        </td>             
+                    </tr>
+                        <tr>
                         <td class="companytitle">科室排序</td>
                         <td class="companytitle1" >
                             {{permissData.priority}}
                         </td>
-                    </tr>
-                        <tr>
                         <td class="companytitle">业务分管领导</td>
                         <td class="companytitle1" >
                           {{permissData.leader}}
                         </td>                                
-                        <td class="companytitle">联系电话</td>
-                        <td class="companytitle1" >{{permissData.leaderPhone}}</td>     
+                        
                     </tr>
                     </tr>
                         <tr>
+                        <td class="companytitle">联系电话</td>
+                        <td class="companytitle1" >{{permissData.leaderPhone}}</td>     
                         <td class="companytitle">性别</td>
-                        <td class="companytitle1" colspan='3'>
+                        <td class="companytitle1" >
                             <span v-if="permissData.leaderSex=='1'">男</span>
                             <span v-if="permissData.leaderSex=='0'">女</span>
                         </td>                                

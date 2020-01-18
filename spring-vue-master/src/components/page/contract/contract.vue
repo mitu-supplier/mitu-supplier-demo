@@ -64,7 +64,7 @@
 
         <!-- 编辑弹出框 -->
         <el-dialog :title="titleName"  :visible.sync="editVisible" width="35%" @close="closeDilog('form')">
-            <el-form ref="form" :model="form" :rules="rules" label-width="130px">
+            <el-form ref="form" :model="form" :rules="rules" label-width="135px">
                 <el-form-item label="所属科室" prop="org_value">
                     <el-select v-model="form.org_value" filterable @change="changeOrg"  style="width:300px;">
                         <el-option
@@ -98,7 +98,7 @@
                 <el-form-item label="合同总金额（元）" prop="contractTotal" v-show="showContract">
                     <el-input v-model="form.contractTotal" class="input"></el-input>
                 </el-form-item>
-                <el-form-item label="合同创建时间" prop="contractTime" v-show="showContract">
+                <el-form-item label="合同签订时间" prop="contractTime" v-show="showContract">
                     <el-date-picker
                         v-model="form.contractTime"
                         type="date"
@@ -118,8 +118,9 @@
                   <el-upload  class="upload-class"
                     :action="uploadUrl()"
                     :on-success="contractSuccess"
+                    :on-remove="handleContractRemove"
                     multiple
-                    :limit="1"
+                    :limit="10"
                     :file-list="contractList">
                     <el-button size="small" type="primary">点击上传</el-button>
                 </el-upload>
@@ -128,8 +129,9 @@
                   <el-upload  class="upload-class"
                     :action="uploadUrl()"
                     :on-success="otherSuccess"
+                    :on-remove="handleOtherRemove"
                     multiple
-                    :limit="1"
+                    :limit="10"
                     :file-list="otherList">
                     <el-button size="small" type="primary">点击上传</el-button>
                 </el-upload>
@@ -169,8 +171,8 @@
                 multipleSelection: [],
                 titleName:'',
                 project_option:[],
-                contractList:'',
-                otherList:'',
+                contractList:[],
+                otherList:[],
                 button_role:{},
                 options_org:[],
                 contract_title:'',
@@ -196,13 +198,13 @@
                         { validator:valiNumberPass1, trigger: "blur" }
                     ],
                     contractTime:[
-                        { required: true, message: '请填写合同创建时间', trigger: 'change' }
+                        { required: true, message: '请填写合同创建时间', trigger: 'blur' }
                     ],
                     contractLeader:[
-                        { required: true, message: '请填写负责人', trigger: 'change' }
+                        { required: true, message: '请填写负责人', trigger: 'blur' }
                     ],
                     contractLeaderPhone:[
-                        { required: true, message: '请填写联系方式', trigger: 'change' }
+                        { required: true, message: '请填写联系方式', trigger: 'blur' }
                     ],
                 },
                 form:{
@@ -222,7 +224,8 @@
                 contractName:'',
                 projectName:'',
                 orgName:'',
-                leader:''
+                leader:'',
+                
             }
         },
         created() {
@@ -252,23 +255,95 @@
              uploadUrl() {
               return baseURL_.fileUrl+'/file/upload';
             },
-            contractSuccess(res, file) {
-              this.$message({
-                type: "success",
-                message: "上传成功",
-                duration: 6000
-              });
-              this.form.contractAttachmentName=file.response.data.fileName;
-              this.form.contractAttachment=file.response.data.path;
+            handleContractRemove(file,fileList){
+            //     console.log("contract",fileList)
+            //     var c_list=[]; 
+            //   if(fileList.length>0){
+            //         for(var i=0;i<fileList.length;i++){
+            //             var obj={};
+            //             if(fileList[i].response){
+            //                 obj.url=fileList[i].response.data.path;
+            //                 obj.name=fileList[i].response.data.fileName;
+            //             }else{
+            //                 obj.url=fileList[i].url;
+            //                 obj.name=fileList[i].name;
+            //             }
+            //             c_list.push(obj);
+            //         }
+            //     }
+                this.contractList=fileList;
+               //this.contractList=fileList;
             },
-            otherSuccess(res, file) {
+            handleOtherRemove(file,fileList){
+               //this.otherList=fileList;
+            //    console.log("other",fileList)
+            //    var c_list=[]; 
+            //   if(fileList.length>0){
+                 
+            //         for(var i=0;i<fileList.length;i++){
+            //              var obj={};
+            //             if(fileList[i].response){
+            //                 obj.url=fileList[i].response.data.path;
+            //                 obj.name=fileList[i].response.data.fileName;
+            //             }else{
+            //                 obj.url=fileList[i].url;
+            //                 obj.name=fileList[i].name;
+            //             }
+                        
+            //             c_list.push(obj);
+            //         }
+            //     }
+                this.otherList=fileList;
+            },
+            contractSuccess(res, file,fileList) {
               this.$message({
                 type: "success",
                 message: "上传成功",
                 duration: 6000
               });
-             this.form.otherAttachmentName=file.response.data.fileName;
-             this.form.otherAttachment=file.response.data.path;
+              //this.contractList=fileList;
+            //   var c_list=[]; 
+            //   if(fileList.length>0){
+            //         for(var i=0;i<fileList.length;i++){
+            //             var obj={};
+            //             if(fileList[i].response){
+            //                 obj.url=fileList[i].response.data.path;
+            //                 obj.name=fileList[i].response.data.fileName;
+            //             }else{
+            //                 obj.url=fileList[i].url;
+            //                 obj.name=fileList[i].name;
+            //             }
+            //             c_list.push(obj);
+            //         }
+            //     }
+                this.contractList=fileList;
+            //   this.form.contractAttachmentName=file.response.data.fileName;
+            //   this.form.contractAttachment=file.response.data.path;
+            },
+            otherSuccess(res, file,fileList) {
+              this.$message({
+                type: "success",
+                message: "上传成功",
+                duration: 6000
+              });
+              //this.otherList=fileList;
+            //   var c_list=[]; 
+            //   if(fileList.length>0){
+            //         for(var i=0;i<fileList.length;i++){
+            //             var obj={};
+            //            if(fileList[i].response){
+            //                 obj.url=fileList[i].response.data.path;
+            //                 obj.name=fileList[i].response.data.fileName;
+            //             }else{
+            //                 obj.url=fileList[i].url;
+            //                 obj.name=fileList[i].name;
+            //             }
+            //             c_list.push(obj);
+            //         }
+            //     }
+                this.otherList=fileList;
+            //  this.form.otherAttachmentName=file.response.data.fileName;
+            //  this.form.otherAttachment=file.response.data.path;
             },
 
             handleSizeChange(val){
@@ -317,7 +392,7 @@
             async saveEdit(status){
                 var addOrEdit={};
                 this.form.status=status;
-               
+                
                if(this.form.contractType=='1'){
                    this.form.contractTotal='1';
                    this.form.contractLeader='1';
@@ -333,6 +408,42 @@
                     })
                  }
                  if(flg){
+                     
+                     
+                        var c_list=[]; 
+                        if(this.otherList.length>0){
+                            for(var i=0;i<this.otherList.length;i++){
+                                var obj={};
+                                if(this.otherList[i].response){
+                                    obj.url=this.otherList[i].response.data.path;
+                                    obj.name=this.otherList[i].response.data.fileName;
+                                }else{
+                                    obj.url=this.otherList[i].url;
+                                    obj.name=this.otherList[i].name;
+                                }
+                                c_list.push(obj);
+                            }
+                         }
+                        this.form.otherAttachment=JSON.stringify(c_list);
+                   
+
+                        var o_list=[]; 
+                        if(this.contractList.length>0){
+                                for(var i=0;i<this.contractList.length;i++){
+                                    var obj={};
+                                    if(this.contractList[i].response){
+                                        obj.url=this.contractList[i].response.data.path;
+                                        obj.name=this.contractList[i].response.data.fileName;
+                                    }else{
+                                        obj.url=this.contractList[i].url;
+                                        obj.name=this.contractList[i].name;
+                                    }
+                                    o_list.push(obj);
+                                }
+                            }
+                         
+                        this.form.contractAttachment=JSON.stringify(o_list);
+                    
                     if(this.form.project_value){
                             this.form.projectId=this.form.project_value.split("@")[0];
                             this.form.projectName=this.form.project_value.split("@")[1];
@@ -396,7 +507,7 @@
                         this.contract_title="合同名称";
                         this.showContractName=true;
                         this.showContract=true;
-                        this.showOther=false;
+                        this.showOther=true;
                     }
 
                     if(this.form.contractType=='1'){
@@ -409,21 +520,23 @@
 
                     
                     if(user.data.data.contractAttachment){
-                        var contracArry=[];
-                        var obj={};
-                        obj.name=user.data.data.contractAttachmentName;
-                        obj.url=user.data.data.contractAttachment;
-                        contracArry.push(obj);
-                        this.contractList=contracArry;
+                        this.contractList=eval(user.data.data.contractAttachment)
+                        // var contracArry=[];
+                        // var obj={};
+                        // obj.name=user.data.data.contractAttachmentName;
+                        // obj.url=user.data.data.contractAttachment;
+                        // contracArry.push(obj);
+                        // this.contractList=contracArry;
                     }
 
                     if(user.data.data.otherAttachment){
-                        var contracArry=[];
-                        var obj={};
-                        obj.name=user.data.data.otherAttachmentName;
-                        obj.url=user.data.data.otherAttachment;
-                        contracArry.push(obj);
-                        this.otherList=contracArry;
+                        this.otherList=eval(user.data.data.otherAttachment)
+                        // var contracArry=[];
+                        // var obj={};
+                        // obj.name=user.data.data.otherAttachmentName;
+                        // obj.url=user.data.data.otherAttachment;
+                        // contracArry.push(obj);
+                        // this.otherList=contracArry;
                     }
                     
                 }
@@ -470,9 +583,8 @@
                    this.contract_title="合同名称";
                    this.showContractName=true;
                    this.showContract=true;
-                   this.showOther=false;
-                   this.form.otherAttachmentName='';
-                   this.form.otherAttachment='';
+                   this.showOther=true;
+                   
                }
                if(val=='1'){
                    this.contract_title="资料名称";
@@ -550,7 +662,6 @@
         width: auto;
         height: auto;
         border:none;
-        float: left;
         z-index:999;
     }
 
