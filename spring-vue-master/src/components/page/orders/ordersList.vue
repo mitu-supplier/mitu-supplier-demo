@@ -198,11 +198,12 @@
                 }
             },
             view(index, row){
+                var id = Base64.encode(row.id);
                 this.$router.push({
                     path: '/ordersDetails',
                     name: 'ordersDetails',
                     params: {
-                        id: row.id
+                        id: id
                     }
                 });
             }

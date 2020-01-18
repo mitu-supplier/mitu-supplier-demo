@@ -165,23 +165,27 @@
                 content:'',
                 catalogId:'',
                 isSupplier: 1,
-                suppliers:[]
+                suppliers:[],
+                detailsId:''
             }
         },
         created() {
-          this.getData();
+          
           this.getSelectForm();
           this.vaIsSupplier();
           this.getSuppliers();
         },
         mounted() {
+          var id = this.$route.query.id;
+          this.detailsId = Base64.decode(id);
+          this.getData();
           UE.delEditor("editor");
           ueditor_.methods.loadComponent("editor");
         },
         methods: {
             // 数据回显
             async getData(){
-              var id = this.$route.params.id;
+              var id = this.detailsId;
               const res = await this.$http.get(baseURL_.mallUrl+'/products/getById',{
                 params: {
                     'id': id
@@ -251,7 +255,7 @@
               this.$refs['addComForm'].validate(async valid => {
                 if (valid) {
                   this.addComForm.catalogId = this.catalogId;
-                  this.addComForm.id = this.$route.params.id;
+                  this.addComForm.id = this.detailsId;
                   this.addComForm.auditStatus = 0;
                   this.addComForm.details = details;
                   const res = await this.$http.post(baseURL_.mallUrl+'/products/update',this.$qs.stringify(this.addComForm));
@@ -268,7 +272,7 @@
                 if (valid) {
                   var details = UE.getEditor('editor').getContent();
                   this.addComForm.catalogId = this.catalogId;
-                  this.addComForm.id = this.$route.params.id;
+                  this.addComForm.id = this.detailsId;
                   this.addComForm.auditStatus = 3;
                   this.addComForm.details = details;
                   const res = await this.$http.post(baseURL_.mallUrl+'/products/update',this.$qs.stringify(this.addComForm));

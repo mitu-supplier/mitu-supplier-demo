@@ -208,21 +208,24 @@
                 }
             },
             view(index,row){
+                var id = Base64.encode(row.id);
                 this.$router.push({
                     path: '/auditDetails',
                     name:'auditDetails',
-                    params: {
-                        id: row.id
+                    query: {
+                        id: id
                     }
                 });
             },
             toAudit(index,row){
+                var id = Base64.encode(row.id);
+                var state = Base64.encode('10');
                 this.$router.push({
                     path: '/auditDetails',
                     name:'auditDetails',
-                    params: {
-                        id: row.id,
-                        state:10
+                    query: {
+                        id: id,
+                        state:state
                     }
                 });
             },

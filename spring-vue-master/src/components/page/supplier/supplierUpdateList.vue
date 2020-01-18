@@ -206,21 +206,24 @@
                 }
             },
             view(index,item){
+                var id = Base64.encode(item.id);
                 this.$router.push({
                     path: '/supplierUpdateView',
                     name: 'supplierUpdateView',
-                    params: {
-                        id: item.id
+                    query: {
+                        id: id
                     }
                 });
             },
             toAudit(index,item){
+                var id = Base64.encode(item.id);
+                var status = Base64.encode(item.status);
                 this.$router.push({
                     path: '/supplierUpdateView',
                     name: 'supplierUpdateView',
-                    params: {
-                        id: item.id,
-                        state:item.status
+                    query: {
+                        id: id,
+                        state:status
                     }
                 });
             },

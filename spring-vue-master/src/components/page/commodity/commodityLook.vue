@@ -157,15 +157,19 @@
                 catalogId:'',
                 isSupplier: 1,
                 dialogVisible:false,
-                dialogImageUrl:''
+                dialogImageUrl:'',
+                detailsId:''
             }
         },
         created() {
-          this.getData();
+          
           this.getSelectForm();
           this.vaIsSupplier();
         },
         mounted() {
+          var id = this.$route.query.id;
+          this.detailsId = Base64.decode(id);
+          this.getData();
           UE.delEditor("editor");
           ueditor_.methods.loadComponent("editor");
           // UE.getEditor('editor').setDisabled('fullscreen');
@@ -174,7 +178,7 @@
         methods: {
             // 数据回显
             async getData(){
-              var id = this.$route.params.id;
+              var id = this.detailsId;
               const res = await this.$http.get(baseURL_.mallUrl+'/products/getById',{
                 params: {
                     'id': id

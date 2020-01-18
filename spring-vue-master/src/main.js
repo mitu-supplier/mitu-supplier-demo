@@ -24,6 +24,7 @@ import ueConfig from '../src/assets/js/ueConfig.js';
 
 import http from '@/utils/request.js';
 
+import Base64 from 'js-base64';
 import qs from 'qs'
 Vue.prototype.$qs = qs;
 
@@ -31,6 +32,7 @@ Vue.prototype.$qs = qs;
 Vue.config.productionTip = false;
 Vue.prototype.$ueConfig = ueConfig;
 Vue.use(VueI18n);
+Vue.use(Base64);
 Vue.use(http);
 Vue.use(ElementUI, {
     size: 'small'

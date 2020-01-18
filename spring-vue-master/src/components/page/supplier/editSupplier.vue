@@ -466,19 +466,12 @@
         },
         created() {
             this.getData(); 
-            this.getCode(); 
         },
         mounted(){
-          this.editId = this.$route.params.id;
-          if(this.editId != null && this.editId != ''){
-            sessionStorage.setItem('editId',this.editId);
-          }else{
-            this.editId = sessionStorage.getItem('editId');
-          }
+          var edid = this.$route.query.id;
+          this.editId = Base64.decode(edid); 
+          
           this.getById();
-        },
-        destroyed(){
-          sessionStorage.removeItem('editId');
         },
         methods: {
             async getById(){
@@ -542,10 +535,6 @@
                 if(res.data.data.sanitaryPermit){
                   this.permitList = [{url:res.data.data.sanitaryPermit}]
                 }
-            },
-            async getCode(){
-              const res = await this.$http.get(baseURL_.mallUrl+'/supplier/getSupplierCode');
-              this.newRuleForm.code = res.data.data;
             },
             toFix(){
               this.newRuleForm.sales = Number(this.newRuleForm.sales).toFixed(4);

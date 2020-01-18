@@ -99,18 +99,21 @@
                 // editorContent: ''
                 content:'',
                 catalogId:'',
+                detailsId:'',
             }
         },
         created() {
-          this.getData();
+          
         },
         mounted() {
-
+          var id = this.$route.query.id;
+          this.detailsId = Base64.decode(id);
+          this.getData();
         },
         methods: {
             // 数据回显
             async getData(){
-              var id = this.$route.params.id;
+              var id = this.detailsId;
               const res = await this.$http.get(baseURL_.mallUrl+'/orders/getById',{
                 params: {
                     'id': id

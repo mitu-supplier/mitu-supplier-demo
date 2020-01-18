@@ -330,7 +330,7 @@
             return {
                 activeName: 'first',
 
-                activeShow: this.$route.params.state,
+                activeShow: '',
                 action:1,
                 page:1,
                 total:1000,
@@ -425,12 +425,19 @@
                 permitList:[],
                 legalCardList:[],
                 dialogVisible:false,
-                dialogImageUrl:''
+                dialogImageUrl:'',
+                editId:''
             }
         },
         created() {
             this.getData();
-            this.getSupplierData();
+        },
+        mounted(){
+          var id = this.$route.query.id;
+          var state = this.$route.query.state;
+          this.activeShow = Base64.decode(state);
+          this.editId = Base64.decode(id);
+          this.getSupplierData();
         },
         methods: {
             handleClick(tab, event) {
@@ -461,7 +468,7 @@
             async getSupplierData(){
                 const res = await this.$http.get(baseURL_.mallUrl+'/supplier_update/view',{
                   params:{
-                    id:this.$route.params.id
+                    id:this.editId
                   }
                 });
                 this.supplier_id = res.data.data.id;
@@ -532,13 +539,13 @@
             
             
             auditAdopt(){
-                var id = this.$route.params.id;
+                var id = this.editId;
                 this.$confirm('确认审核通过').then( e=> {
                     this.confimAudit(id,1);
                 }).catch(_ => {});
             },
             auditReject(){
-                var id = this.$route.params.id;
+                var id = this.editId;
                 this.$prompt('请输入审核失败理由：', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',

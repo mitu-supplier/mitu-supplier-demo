@@ -477,29 +477,15 @@
             
         },
         mounted(){
-            this.auditId = this.$route.params.id;
-            if(this.auditId != null && this.auditId != ''){
-              sessionStorage.setItem('auditId',this.auditId);
-            }else{
-              this.auditId = sessionStorage.getItem('auditId');
+            var id = this.$route.query.id;
+            this.auditId = Base64.decode(id);
+
+            var state = this.$route.query.state;
+            if(state != null){
+              this.activeShow = Base64.decode(state);
             }
             
-            this.activeShow = this.$route.params.state;
-            if(this.activeShow != null){
-              sessionStorage.setItem('activeShow',this.activeShow);
-            }else{
-              var newactiveShow = sessionStorage.getItem('activeShow');
-              if(newactiveShow != null && newactiveShow != ''){
-                this.activeShow = newactiveShow;
-              }else{
-                this.activeShow = '';
-              }
-            }
             this.getSupplierData();
-        },
-        destroyed(){
-          sessionStorage.removeItem('auditId');
-          sessionStorage.removeItem('activeShow');
         },
         methods: {
             handleClick(tab, event) {
@@ -606,7 +592,8 @@
 
             },
             back() {
-                this.$router.push({ path: "/supplierAuditList" });
+              this.$router.go(-1);
+                // this.$router.push({ path: "/supplierAuditList" });
             },
             
             

@@ -145,7 +145,7 @@
                 addComForm:{
 
                 },
-                auditType:this.$route.params.state,
+                auditType:'',
                 rules: {
                     password: [{ required: true, message: "请输入密码", trigger: "blur" }],
                     confirmPassword: [{ required: true, message: "请输入密码", trigger: "blur" }]
@@ -176,22 +176,31 @@
                 productId:'',
                 deliveryTypeCodeList:[],
                 dialogVisible:false,
-                dialogImageUrl:''
+                dialogImageUrl:'',
+                detailsId:''
             }
         },
         created() {
+          
+        },
+        mounted() {
+          var state = this.$route.query.state;
+          var id = this.$route.query.id;
+          if(state != null){
+              this.auditType = Base64.decode(state);
+          }
+          this.detailsId = Base64.decode(id);
           this.getData();
           this.getSelectForm();
-        },
-        
-        mounted() {
+
           UE.delEditor("editor");
           ueditor_.methods.loadComponent("editor");
+          
         },
         methods: {
             // 数据回显
             async getData(){
-              var id = this.$route.params.id;
+              var id = this.detailsId;
               const res = await this.$http.get(baseURL_.mallUrl+'/products_audit/getById',{
                 params: {
                     'id': id

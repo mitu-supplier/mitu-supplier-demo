@@ -186,7 +186,8 @@
                 }
             },
             handleUpdate(index, row){
-                this.$router.push({path:'/commodityEdit',name:"commodityEdit", params: {id: row.id}});
+                var id = Base64.encode(row.id);
+                this.$router.push({path:'/commodityEdit',name:"commodityEdit", query: {id: id}});
             },
             async updateStatus(index, row, status){
                 var product = {
@@ -200,11 +201,12 @@
                 }
             },
             handleLook(index, row){
+                var id = Base64.encode(row.id);
                 this.$router.push({
                     path: '/commodityLook',
                     name: 'commodityLook',
-                    params: {
-                        id: row.id
+                    query: {
+                        id: id
                     }
                 });
             },

@@ -69,23 +69,23 @@
         </div>
         <el-dialog title="审核记录" class="dialogBox" :visible.sync="editVisible" width="40%">
             
-           <el-table :data="auditData" border class="table" >
+            <el-table :data="auditData" border class="table" >
                 <el-table-column type="index" label="序号" width="55" align="center" ></el-table-column>
                 <el-table-column prop="auditUserName" label="审核人"  align="center" width="80"></el-table-column>
                 <el-table-column prop="createTime" label="审核时间"  align="center" width="150"></el-table-column>
                 <el-table-column prop="auditReason" label="审核意见"  align="center" width="">
-                   <template slot-scope="scope">
-                         <span v-if="scope.row.auditResult=='1'">通过</span>
-                         <span v-if="scope.row.auditResult=='2'">{{scope.row.auditReason}}</span>
+                <template slot-scope="scope">
+                        <span v-if="scope.row.auditResult=='1'">通过</span>
+                        <span v-if="scope.row.auditResult=='2'">{{scope.row.auditReason}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="auditResult" label="审核状态"  align="center" width="">
-                   <template slot-scope="scope">
-                         <span v-if="scope.row.auditResult=='1'">通过</span>
-                         <span v-if="scope.row.auditResult=='2'">不通过</span>
+                <template slot-scope="scope">
+                        <span v-if="scope.row.auditResult=='1'">通过</span>
+                        <span v-if="scope.row.auditResult=='2'">不通过</span>
                     </template>
                 </el-table-column>
-           </el-table>
+            </el-table>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="editVisible = false">取 消</el-button>
             </span>
@@ -147,7 +147,6 @@
                         'pageSize':this.pageSize,
                         'name':this.formInline.name,
                         'status':this.formInline.status
-                        
                     }
                 });
                 if(products.data.statusCode==200){
@@ -160,11 +159,12 @@
                 this.multipleSelection = val;
             },
             view(index,item){
+                var id = Base64.encode(item.id);
                 this.$router.push({
                     path: '/supplierSee',
                     name: 'supplierSee',
-                    params: {
-                        id: item.id
+                    query: {
+                        id: id
                     }
                 });
             },
@@ -173,11 +173,12 @@
               this.isSupplier = res.data.data;
             },
             handleUpdate(index, row){
+                var id = Base64.encode(row.id);
                 this.$router.push({
                     path: '/editSupplier',
                     name: 'editSupplier',
-                    params: {
-                        id: row.id
+                    query: {
+                        id: id
                     }
                 });
             },

@@ -38,6 +38,13 @@ Vue.prototype.$jsEncrypt=JsEncrypt;
                 
             }
         },
+        // mounted(){
+            // alert(Base64.decode(null));
+            // var baseEncode = Base64.encode('1');
+            // alert(baseEncode);
+            // var baseDecode = Base64.decode('MQ=='); 
+            // alert(baseDecode);
+        // },
         methods: {
             async submitForm() {
                 let jse=this.$jsEncrypt;
