@@ -187,6 +187,12 @@ export default new Router({
                     meta: { title: '商户修改详情' }
                 },
                 {
+                    path: '/physicalList',
+                    name: 'physicalList',
+                    component: resolve => require(['../components/page/inventory/physicalList.vue'], resolve),
+                    meta: { title: '实物库存' }
+                },
+                {
                     path: '/404',
                     component: resolve => require(['../components/page/404.vue'], resolve),
                     meta: { title: '404' }

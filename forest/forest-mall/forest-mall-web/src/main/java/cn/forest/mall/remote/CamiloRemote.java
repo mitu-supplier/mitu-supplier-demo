@@ -39,5 +39,5 @@ public interface CamiloRemote {
     Object recordList(Map<String, Object> map);
 
     @RequestMapping("/camilo/batchImport")
-    Object batchImport(@RequestBody List<Map<String, Object>> list);
+    Object batchImport(@RequestBody Map<String, ?> map);
 }

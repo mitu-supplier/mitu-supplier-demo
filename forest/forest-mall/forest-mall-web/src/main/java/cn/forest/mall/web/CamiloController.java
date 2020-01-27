@@ -32,12 +32,11 @@ public class CamiloController {
      * excel导入卡密
      *
      * @param request
-     * @param response
      * @return
      */
     @RequestMapping(value = "/importExcel")
-    public Map<String, Object> importExcel(HttpServletRequest request, HttpServletResponse response) {
-        return camiloService.importExcel(request, response);
+    public Map<String, Object> importExcel(HttpServletRequest request) throws IOException{
+        return camiloService.importExcel(request);
     }
 
     /**

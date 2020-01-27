@@ -1,8 +1,8 @@
 package cn.forest.file.service.Impl;
 
+import cn.forest.common.util.FreemarkerUtils;
 import cn.forest.common.warpper.FileInfo;
 import cn.forest.file.service.FileService;
-import cn.forest.file.util.FreemarkerUtils;
 import freemarker.template.TemplateException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;

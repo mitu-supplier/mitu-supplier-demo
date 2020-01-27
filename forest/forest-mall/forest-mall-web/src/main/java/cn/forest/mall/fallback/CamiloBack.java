@@ -52,7 +52,7 @@ public class CamiloBack implements CamiloRemote {
     }
 
     @Override
-    public Object batchImport(List<Map<String, Object>> list) {
+    public Object batchImport(Map<String, ?> map) {
         return null;
     }
 }

@@ -2,7 +2,7 @@
     <div class="table">
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-lx-cascades"></i> 卡密入库记录</el-breadcrumb-item>
+                <el-breadcrumb-item><i class="el-icon-lx-cascades"></i> 实物库存</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class="container">
@@ -12,23 +12,29 @@
                         <el-input v-model="formInline.catalogName" placeholder="类目名称"></el-input>
                     </el-form-item>
                     <el-form-item label="商品名称">
-                        <el-input v-model="formInline.productName" placeholder="商品名称"></el-input>
+                        <el-input v-model="formInline.name" placeholder="商品名称"></el-input>
                     </el-form-item>
                     <el-form-item>
                         <el-button type="primary" @click="onSubmit">查询</el-button>
+                        <el-button type="primary" @click="onReset">重置</el-button>
                     </el-form-item>
                 </el-form>
             </div>
+            <div class="handle-box canahead">
+            </div>
+
             <el-table :data="tableData" border class="table" ref="multipleTable">
                 <el-table-column type="index" label="序号" width="55" align="center" ></el-table-column>
                 <el-table-column prop="catalogName" label="商品类目"  align="center" width=""></el-table-column>
-                <el-table-column prop="productName" label="商品名称"  align="center" width=""></el-table-column>
+                <el-table-column prop="name" label="商品名称"  align="center" width=""></el-table-column>
                 <el-table-column prop="supplierName" label="商户名称"  align="center" width=""></el-table-column>
-                <el-table-column prop="num" label="数量"  align="center" width=""></el-table-column>
-                <el-table-column prop="price" label="商品金额" align="center"  width=""></el-table-column>
-                <el-table-column prop="fileName" label="文件" align="center"  width=""></el-table-column>
-                <el-table-column prop="createdAt" label="入库时间" align="center"  width=""></el-table-column>
-                <el-table-column prop="userName" label="入库人员" align="center"  width=""></el-table-column>
+                <el-table-column prop="stock" label="剩余库存" align="center"  width=""></el-table-column>
+                <el-table-column prop="" label="库存告急" align="center"  width="">
+                    <!-- <template slot-scope="scope">
+                        <span type="text" v-if="scope.row.stock <= scope.row.inventoryAlertNum" class="red">库存不足</span>
+                        <span type="text" v-else></span>
+                    </template> -->
+                </el-table-column>
             </el-table>
             <div class="pagination">
                 <el-pagination
@@ -57,18 +63,23 @@
                 pageSize:10,
                 tableData: [],
                 formInline:{
-                    productName:'',
+                    name:'',
                     catalogName:''
                 },
-                productId:''
+                myHeaders: {
+                    'token': ''
+                }
             }
         },
         created() {
-            this.productId=this.$route.query.id;
             this.getData();
         },
         methods: {
             onSubmit(){
+                this.getData();
+            },
+            onReset(){
+                this.formInline = {};
                 this.getData();
             },
             //改变每页页数
@@ -83,13 +94,12 @@
             },
             // 初始化数据
             async getData() {
-                const products = await this.$http.get(baseURL_.mallUrl+'/camilo/recordList',{ 
+                const products = await this.$http.get(baseURL_.mallUrl+'/physical/list',{ 
                     params: {
                         'page':this.page,
                         'pageSize':this.pageSize,
-                        'productName':this.formInline.productName,
-                        'catalogName':this.formInline.catalogName,
-                        'productId': this.productId
+                        'name':this.formInline.name,
+                        'catalogName':this.formInline.catalogName
                     }
                 });
                 if(products.data.statusCode==200){
@@ -137,4 +147,16 @@
     .input-width{
         width:60%;
     }
+    .inline-block {
+        display: inline-block;
+    } 
+</style>
+<style>
+.canahead .upload-excel-file .el-upload--text {    
+    border: none !important;
+    display: inline-block;
+    width: 110px;
+    height: 40px;
+    float: left;
+  }
 </style>

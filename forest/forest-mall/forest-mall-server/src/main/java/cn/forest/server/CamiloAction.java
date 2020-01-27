@@ -3,6 +3,7 @@ package cn.forest.server;
 import cn.forest.common.service.utils.ResultPage;
 import cn.forest.common.service.utils.ResultSave;
 import cn.forest.common.util.DateUtil;
+import cn.forest.common.util.JsonUtil;
 import cn.forest.common.util.ResultMessage;
 import cn.forest.common.util.StringUtil;
 import cn.forest.mall.entity.Camilo;
@@ -65,8 +66,8 @@ public class CamiloAction {
     public Object selectByProductId(@RequestParam("productId") Long productId) {
         QueryWrapper<Camilo> qw = new QueryWrapper<>();
         qw.eq("product_id", productId);
-        qw.gt("failure_time",DateUtil.parseDateToStr(new Date(), DateUtil.DATE_FORMAT_YYYY_MM_DD));
-        qw.orderByAsc(new String[]{"failure_time","id"});
+        qw.gt("failure_time", DateUtil.parseDateToStr(new Date(), DateUtil.DATE_FORMAT_YYYY_MM_DD));
+        qw.orderByAsc(new String[]{"failure_time", "id"});
         return camiloService.list(qw);
     }
 
@@ -75,7 +76,7 @@ public class CamiloAction {
         QueryWrapper<Camilo> qw = new QueryWrapper<>();
         qw.eq("product_id", productId);
         List<Camilo> list = camiloService.list(qw);
-        qw.gt("failure_time",DateUtil.parseDateToStr(new Date(), DateUtil.DATE_FORMAT_YYYY_MM_DD));
+        qw.gt("failure_time", DateUtil.parseDateToStr(new Date(), DateUtil.DATE_FORMAT_YYYY_MM_DD));
         if (!CollectionUtils.isEmpty(list)) {
             return list.size();
         }
@@ -86,22 +87,22 @@ public class CamiloAction {
     public Object selectProductCamiloList(@RequestBody Map<String, Object> map) {
         if (StringUtil.toString(map.get("page")) != null && StringUtil.toString(map.get("pageSize")) != null) {
             PageHelper.startPage(Integer.parseInt(map.get("page").toString()), Integer.parseInt(map.get("pageSize").toString()));
-            map.put("deliveryCode","D_KM");
+            map.put("deliveryCode", "D_KM");
             map.put("auditStatus", 1);
             List<Products> products = productsMapper.selectListByMap(map);
-            if(!CollectionUtils.isEmpty(products)){
-                for (Products product : products){
+            if (!CollectionUtils.isEmpty(products)) {
+                for (Products product : products) {
                     // 卡密数量 失效时间
                     QueryWrapper<Camilo> qw = new QueryWrapper<>();
                     qw.eq("product_id", product.getId());
                     qw.eq("use_flag", 0);
-                    qw.gt("failure_time",DateUtil.parseDateToStr(new Date(), DateUtil.DATE_FORMAT_YYYY_MM_DD));
-                    qw.orderByAsc(new String[]{"failure_time","id"});
+                    qw.gt("failure_time", DateUtil.parseDateToStr(new Date(), DateUtil.DATE_FORMAT_YYYY_MM_DD));
+                    qw.orderByAsc(new String[]{"failure_time", "id"});
                     List<Camilo> list = camiloService.list(qw);
-                    if(!CollectionUtils.isEmpty(list)){
+                    if (!CollectionUtils.isEmpty(list)) {
                         product.setStock(list.size());
                         product.setFailureTime(list.get(0).getFailureTime());
-                    }else{
+                    } else {
                         product.setStock(0);
                         product.setFailureTime("--");
                     }
@@ -114,7 +115,7 @@ public class CamiloAction {
     }
 
     @RequestMapping("/recordList")
-    public Object recordList(@RequestBody Map<String, Object> map){
+    public Object recordList(@RequestBody Map<String, Object> map) {
         if (StringUtil.toString(map.get("page")) != null && StringUtil.toString(map.get("pageSize")) != null) {
             PageHelper.startPage(Integer.parseInt(map.get("page").toString()), Integer.parseInt(map.get("pageSize").toString()));
             List<CamiloRecord> recordlist = camiloRecodeService.recordlist(map);
@@ -125,33 +126,42 @@ public class CamiloAction {
     }
 
     @RequestMapping("/batchImport")
-    public Object importCamilo(@RequestBody List<Camilo> list){
-        if(!CollectionUtils.isEmpty(list)){
-            for (Camilo camilo : list){
+    public Object importCamilo(@RequestBody Map<String, Object> map) {
+        List list = (List) map.get("list");
+        String fileName = StringUtil.isBlank(map.get("fileName")) ? null : map.get("fileName").toString();
+        String filePath = StringUtil.isBlank(map.get("filePath")) ? null : map.get("filePath").toString();
+        if (!CollectionUtils.isEmpty(list)) {
+            Camilo camilo = null;
+            List<Camilo> camiloList = new ArrayList<>();
+            for (Object obj : list) {
+                camilo = JsonUtil.toObject(JsonUtil.toJson(obj), Camilo.class);
                 Products products = productsMapper.selectByCode(camilo.getProductCode(), camilo.getCatalogCode());
-                if(products == null){
-                    return ResultMessage.error("未找到对应商品，品目编号："+camilo.getCatalogCode()+"，商品编号"+camilo.getProductCode());
+                if (products == null) {
+                    return ResultMessage.error("未找到对应商品，品目编号：" + camilo.getCatalogCode() + "，商品编号" + camilo.getProductCode());
                 }
                 camilo.setProductId(products.getId());
+                camiloList.add(camilo);
             }
-            boolean b = camiloService.saveBatch(list);
-            if(b){
-                Map<Long, List<Camilo>> mapList = list.stream().collect(Collectors.groupingBy(Camilo::getProductId));
-                if(!CollectionUtils.isEmpty(mapList)){
+            boolean b = camiloService.saveBatch(camiloList);
+            if (b) {
+                Map<Long, List<Camilo>> mapList = camiloList.stream().collect(Collectors.groupingBy(Camilo::getProductId));
+                if (!CollectionUtils.isEmpty(mapList)) {
                     List<CamiloRecord> recordList = new ArrayList<>();
                     CamiloRecord camiloRecord = null;
                     Iterator it = mapList.entrySet().iterator();
-                    while (it.hasNext()){
+                    while (it.hasNext()) {
                         Map.Entry entry = (Map.Entry) it.next();
                         camiloRecord = new CamiloRecord();
                         camiloRecord.setProductId(Long.parseLong(entry.getKey().toString()));
-                        List<Camilo> cList = (List<Camilo>)entry.getValue();
+                        List<Camilo> cList = (List<Camilo>) entry.getValue();
                         camiloRecord.setNum(cList.size());
-                        if(cList.size() > 0){
+                        if (cList.size() > 0) {
                             camiloRecord.setPrice(cList.get(0).getSupplyPrice());
                             camiloRecord.setUserId(cList.get(0).getUserId());
                             camiloRecord.setUserName(cList.get(0).getUserName());
                         }
+                        camiloRecord.setFileName(fileName);
+                        camiloRecord.setFilePath(filePath);
                         recordList.add(camiloRecord);
                     }
                     camiloRecodeService.saveBatch(recordList);

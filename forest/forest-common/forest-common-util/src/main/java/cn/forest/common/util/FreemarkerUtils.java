@@ -1,7 +1,6 @@
-package cn.forest.file.util;
+package cn.forest.common.util;
 
 
-import cn.forest.common.util.SpringUtil;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;

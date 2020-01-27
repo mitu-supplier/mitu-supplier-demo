@@ -53,6 +53,18 @@ public class CamiloRecord implements Serializable {
     @TableLogic
     private Integer isDelete;
 
+    /**
+     * 导入文件名称
+     */
+    @TableField("file_name")
+    private String fileName;
+
+    /**
+     * 导入文件路径
+     */
+    @TableField("file_path")
+    private String filePath;
+
     //  ============== 查询使用字段
     /**
      * 商品名称
@@ -166,5 +178,21 @@ public class CamiloRecord implements Serializable {
 
     public void setSupplierName(String supplierName) {
         this.supplierName = supplierName;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 }
