@@ -264,9 +264,10 @@
             },
             // 暂存
             async staging(){
-              this.$refs['addComForm'].validate(async valid => {
-                if (valid) {
+              // this.$refs['addComForm'].validate(async valid => {
+              //   if (valid) {
                   var details = UE.getEditor('editor').getContent();
+                  this.addComForm.protalDetails = details;
                   this.addComForm.catalogId = this.catalogId;
                   this.addComForm.details = details;
                   this.addComForm.auditStatus = 3;
@@ -275,8 +276,8 @@
                   if(res.data.statusCode==200){
                     this.$router.push('/productList');
                   }
-                }
-              })
+              //   }
+              // })
             },
             // Logo上传
             uploadUrl() {
