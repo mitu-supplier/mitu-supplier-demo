@@ -131,7 +131,8 @@
                     auditStatus:''
                 },
                 msgTips:'',
-                auditReason:''
+                auditReason:'',
+                auditData:''
             }
         },
         created() {

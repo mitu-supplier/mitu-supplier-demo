@@ -588,7 +588,8 @@
                 if(res.data.data.sanitaryPermit){
                   this.permitList = [{url:res.data.data.sanitaryPermit}]
                 }
-                
+                // 签约公司
+                this.auditFormList.signCompany = res.data.data.signCompany;
 
             },
             back() {

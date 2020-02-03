@@ -102,7 +102,7 @@ public class ProductsController {
 
     @RequestMapping("/getCatalogs")
     public Map<String, Object> getCatalogs() {
-        Object list = catalogsRemote.getAll();
+        Object list = catalogsRemote.getAllUseable();
         if (list != null) {
             return ResultMessage.success(list);
         }

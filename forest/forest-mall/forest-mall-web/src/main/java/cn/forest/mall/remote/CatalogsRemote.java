@@ -22,13 +22,30 @@ public interface CatalogsRemote {
 
     @RequestMapping("/catalogs/getById")
     Object getById(@RequestParam(value = "id") Long id);
-    
+
     @RequestMapping("/catalogs/disable")
     int disable(@RequestParam(value = "id") Long id);
-    
+
     @RequestMapping("/catalogs/delete")
     int delete(@RequestParam(value = "id") Long id);
-    
+
     @RequestMapping("/catalogs/getAll")
     Object getAll();
+
+    @RequestMapping("/catalogs/getAllUseable")
+    Object getAllUseable();
+
+    /**
+     * 校验名称编码重复
+     *
+     * @param id
+     * @param name
+     * @param code
+     * @return
+     */
+    @RequestMapping("/catalogs/vaNameOrCode")
+    boolean vaNameOrCode(@RequestParam(value = "id", required = false) Long id,
+                         @RequestParam(value = "name", required = false) String name,
+                         @RequestParam(value = "code", required = false) String code,
+                         @RequestParam(value = "parentId", required = false) Long parentId);
 }

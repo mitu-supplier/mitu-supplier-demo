@@ -20,6 +20,12 @@
             <if test="supplierId != null and supplierId!=''">
                 AND ss.id = #{supplierId}
             </if>
+            <if test="startTime != null and startTime != ''">
+                AND sbr.created_at &gt;= #{startTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                AND sbr.created_at &lt;= #{endTime}
+            </if>
         ORDER BY created_at DESC
     </select>
 

@@ -71,6 +71,7 @@
                     <template slot-scope="scope">
                         <el-button type="text" icon="el-icon-search" @click="view(scope.$index, scope.row)">查看</el-button>
                         <el-button type="text"  icon="el-icon-edit" class="red" @click="handleUpdate(scope.$index, scope.row)">修改</el-button>
+                        <el-button type="text" icon="el-icon-document" v-if="scope.row.status != '0'"  @click="lookAudit(scope.$index, scope.row)">审核记录</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -101,9 +102,9 @@
                 </el-table-column>
                 <el-table-column prop="auditResult" label="审核状态"  align="center" width="">
                 <template slot-scope="scope">
-                        <span v-if="scope.row.auditResult=='1'">通过</span>
-                        <span v-if="scope.row.auditResult=='2'">不通过</span>
-                    </template>
+                    <span v-if="scope.row.auditResult=='1'">通过</span>
+                    <span v-if="scope.row.auditResult=='2'">不通过</span>
+                </template>
                 </el-table-column>
             </el-table>
             <span slot="footer" class="dialog-footer">
@@ -217,6 +218,13 @@
             async getEnterTypeList(){
                 const res = await this.$http.get(baseURL_.mallUrl+'/supplier/getEnterType');
                 this.enterTypeList = res.data.data; 
+            },
+            async lookAudit(index,row){
+                const audit = await this.$http.get(baseURL_.mallUrl+'/supplier_audit/getAuditList',{ 
+                    params:{'businessId':row.id}
+                })
+                this.auditData=audit.data.data;
+                this.editVisible=true;
             }
         }
     }

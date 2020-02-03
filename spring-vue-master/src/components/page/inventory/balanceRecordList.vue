@@ -14,6 +14,23 @@
                     <el-form-item label="入库人员">
                         <el-input v-model="formInline.userName" placeholder="入库人员"></el-input>
                     </el-form-item>
+                    <el-form-item label="入库时间">
+                        <el-date-picker
+                            v-model="formInline.startTime"
+                            type="datetime"
+                            format="yyyy-MM-dd HH:mm:ss"
+                            value-format="yyyy-MM-dd HH:mm:ss"
+                            placeholder="选择开始时间">
+                        </el-date-picker>
+                        -
+                        <el-date-picker
+                            v-model="formInline.endTime"
+                            type="datetime"
+                            format="yyyy-MM-dd HH:mm:ss"
+                            value-format="yyyy-MM-dd HH:mm:ss"
+                            placeholder="选择结束时间">
+                        </el-date-picker>
+                    </el-form-item>
                     <el-form-item>
                         <el-button type="primary" icon="el-icon-search" @click="onSubmit">查询</el-button>
                         <el-button type="primary" icon="el-icon-refresh" @click="onReset">重置</el-button>
@@ -61,7 +78,9 @@
                 supplierId:'',
                 formInline:{
                     supplierName:'',
-                    userName:''
+                    userName:'',
+                    startTime:'',
+                    endTime:''
                 }   
             }
         },
@@ -91,7 +110,9 @@
                         'pageSize':this.pageSize,
                         'supplierName':this.formInline.supplierName,
                         'supplierId':this.supplierId,
-                        'userName':this.formInline.userName
+                        'userName':this.formInline.userName,
+                        'startTime':this.formInline.startTime,
+                        'endTime':this.formInline.endTime
                     }
                 });
                 if(products.data.statusCode==200){

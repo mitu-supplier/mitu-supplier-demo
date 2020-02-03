@@ -133,11 +133,34 @@ public class CamiloAction {
         if (!CollectionUtils.isEmpty(list)) {
             Camilo camilo = null;
             List<Camilo> camiloList = new ArrayList<>();
+            QueryWrapper<Camilo> qw = null;
             for (Object obj : list) {
                 camilo = JsonUtil.toObject(JsonUtil.toJson(obj), Camilo.class);
+                // 检验空值
+                if (StringUtil.isBlank(camilo.getCatalogCode())) {
+                    return ResultMessage.error("品目编号不能为空");
+                }
+                if (StringUtil.isBlank(camilo.getProductCode())) {
+                    return ResultMessage.error("商品编号不能为空");
+                }
+                if (StringUtil.isBlank(camilo.getCardNumber())) {
+                    return ResultMessage.error("卡号不能为空");
+                }
+                if (StringUtil.isBlank(camilo.getCardPassword())) {
+                    return ResultMessage.error("密码不能为空");
+                }
+                // 校验商品是否存在
                 Products products = productsMapper.selectByCode(camilo.getProductCode(), camilo.getCatalogCode());
                 if (products == null) {
                     return ResultMessage.error("未找到对应商品，品目编号：" + camilo.getCatalogCode() + "，商品编号" + camilo.getProductCode());
+                }
+                // 校验卡密是否重复
+                qw = new QueryWrapper<>();
+                qw.eq("product_id", products.getId());
+                qw.eq("card_number", camilo.getCardNumber());
+                List<Camilo> selectList = camiloService.list(qw);
+                if (!CollectionUtils.isEmpty(selectList)) {
+                    return ResultMessage.error("同一商品编号下的卡密不能重复，商品编号：" + camilo.getProductCode());
                 }
                 camilo.setProductId(products.getId());
                 camiloList.add(camilo);

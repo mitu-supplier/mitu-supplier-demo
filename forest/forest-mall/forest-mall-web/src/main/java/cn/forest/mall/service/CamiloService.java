@@ -107,6 +107,7 @@ public class CamiloService {
             fieldsMap.put("供货价", "supplyPrice");
             JSONArray excelData = ExcelUtils.getExcelData(multipartFile.getOriginalFilename(), multipartFile.getInputStream(), fieldsMap);
             if (excelData != null) {
+                // 转换excel导入信息
                 List<Map<String, Object>> mapList = new ArrayList<>();
                 Map<String, Object> camiloMap = null;
                 for (int i = 0; i < excelData.size(); i++) {

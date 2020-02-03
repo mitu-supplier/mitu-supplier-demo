@@ -62,7 +62,8 @@
                         <span type="text" v-if="scope.row.auditStatus == '3'">暂存</span>
                         <span type="text" v-if="scope.row.auditStatus == '0'">待审核</span>
                         <span type="text" v-if="scope.row.auditStatus == '1'">审核通过</span>
-                        <span type="text" class="red hand" v-if="scope.row.auditStatus == '2'" @click="showAuditReason(scope.row.id)" >审核失败  <i class="el-icon-info"></i></span>
+                        <span type="text" class="red" v-if="scope.row.auditStatus == '2'">审核失败</span>
+                        <!-- <span type="text" class="red hand" v-if="scope.row.auditStatus == '2'" @click="showAuditReason(scope.row.id)" >审核失败  <i class="el-icon-info"></i></span> -->
                     </template>
                 </el-table-column>
                 <el-table-column label="操作" width="" align="center">

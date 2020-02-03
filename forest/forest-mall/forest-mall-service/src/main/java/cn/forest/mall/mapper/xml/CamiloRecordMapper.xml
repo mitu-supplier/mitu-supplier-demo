@@ -30,6 +30,12 @@
             <if test="productId != null and productId != ''">
                 AND p.id = #{productId}
             </if>
+            <if test="startTime != null and startTime != ''">
+                AND cr.created_at &gt;= #{startTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                AND cr.created_at &lt;= #{endTime}
+            </if>
             <if test="userName != null and userName != ''">
                 AND cr.user_name LIKE CONCAT('%',#{userName},'%')
             </if>

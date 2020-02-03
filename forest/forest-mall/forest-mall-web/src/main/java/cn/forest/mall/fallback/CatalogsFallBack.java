@@ -42,4 +42,14 @@ public class CatalogsFallBack implements CatalogsRemote {
     public int delete(Long id) {
       return 0;
     }
+
+    @Override
+    public Object getAllUseable() {
+        return null;
+    }
+
+    @Override
+    public boolean vaNameOrCode(Long id, String name, String code, Long parentId) {
+        return false;
+    }
 }
