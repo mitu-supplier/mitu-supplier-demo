@@ -52,7 +52,7 @@
         <el-dialog :title="titleName" :visible.sync="editVisible" width="25%">
             <el-form ref="form" :model="form" label-width="70px">
                 <el-form-item label="ID">
-                <el-input v-model="form.code" class="input"></el-input>
+                    <el-input v-model="form.code" readonly class="input"></el-input>
                 </el-form-item>
                 <el-form-item label="公司名称">
                     <el-input v-model="form.name" class="input"></el-input>
@@ -177,8 +177,10 @@
                 }
                  this.editVisible=true;
             },
-            add(){
+            async add(){
+                var codeResult = await this.$http.get(baseURL_.mallUrl+'/company/getCompanyCode');
                 this.form={};
+                this.form.code=codeResult.data.data;
                 this.editVisible=true;
                 this.titleName="添加";
             },
@@ -186,10 +188,6 @@
                 var addOrEdit={};
                 var code = this.form.code;
                 var name = this.form.name;
-                if(code == null || code.trim() == ''){
-                    this.$message("请输入ID");
-                    return;
-                }
                 if(name == null || name.trim() == ''){
                     this.$message("请输入公司名称");
                     return;

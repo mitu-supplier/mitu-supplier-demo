@@ -37,6 +37,9 @@
             <if test="id != null and id != ''">
                 AND s.id = #{id}
             </if>
+            <if test="enterType != null and enterType != ''">
+                AND s.enter_type = #{enterType}
+            </if>
         ORDER BY s.status, s.id desc
     </select>
 

@@ -26,8 +26,8 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item>
-                        <el-button type="primary" @click="onSubmit">查询</el-button>
-                        <el-button type="primary" @click="onReset">重置</el-button>
+                        <el-button type="primary" icon="el-icon-search" @click="onSubmit">查询</el-button>
+                        <el-button type="primary" icon="el-icon-refresh" @click="onReset">重置</el-button>
                     </el-form-item>
                 </el-form>
             </div>
@@ -46,13 +46,15 @@
                     <template slot-scope="scope">
                         <span type="text" v-if="scope.row.auditStatus == '0'">待审核</span>
                         <span type="text" v-if="scope.row.auditStatus == '1'">审核通过</span>
-                        <span type="text" class="red hand" v-if="scope.row.auditStatus == '2'" @click="showAuditReason(scope.row.id)" >审核失败  <i class="el-icon-info"></i></span>
+                        <!-- <span type="text" class="red hand" v-if="scope.row.auditStatus == '2'" @click="showAuditReason(scope.row.id)" >审核失败  <i class="el-icon-info"></i></span> -->
+                        <span type="text" class="red" v-if="scope.row.auditStatus == '2'">审核失败</span>
                     </template>
                 </el-table-column>
                 <el-table-column label="操作" width="" align="center">
                     <template slot-scope="scope">
                         <el-button type="text" @click="view(scope.$index, scope.row)">查看详情</el-button>
                         <el-button type="text" v-if="scope.row.auditStatus == '0'" @click="toAudit(scope.$index, scope.row)">审核</el-button>
+                        <el-button type="text" v-if="scope.row.auditStatus != '0'" @click="lookAudit(scope.$index, scope.row)">审核记录</el-button>
                         <!-- <el-button type="text" v-if="scope.row.auditStatus == '0'" @click="auditAdopt(scope.row.id)">审核通过</el-button>
                         <el-button type="text" v-if="scope.row.auditStatus == '0'" class="red" @click="auditReject(scope.row.id)" >审核失败</el-button> -->
                     </template>
@@ -69,17 +71,6 @@
                     :total="total" >
                  </el-pagination>
             </div>
-            <!-- <loding v-if="aaa"></loding> -->
-            <el-dialog
-                :title="msgTips"
-                :visible.sync="dialogVisible"
-                width="30%">
-                <span>这是一段信息</span>
-                <span slot="footer" class="dialog-footer">
-                    <el-button @click="dialogVisible = false">取 消</el-button>
-                    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-                </span>
-            </el-dialog>
         </div>
         <!-- 审核不通过原因提示框 -->
         <el-dialog
@@ -92,6 +83,30 @@
                 <el-button type="primary" @click="reasonVisible = false">取消</el-button>
             </span>
         </el-dialog>
+
+        <el-dialog title="审核记录" class="dialogBox" :visible.sync="editVisible" width="40%">
+           <el-table :data="auditData" border class="table" >
+                <el-table-column type="index" label="序号" width="55" align="center" ></el-table-column>
+                <el-table-column prop="auditUserName" label="审核人"  align="center" width="80"></el-table-column>
+                <el-table-column prop="createTime" label="审核时间"  align="center" width="150"></el-table-column>
+                <el-table-column prop="auditReason" label="审核意见"  align="center" width="">
+                   <template slot-scope="scope">
+                         <span v-if="scope.row.auditResult=='1'">通过</span>
+                         <span v-if="scope.row.auditResult=='2'">{{scope.row.auditReason}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="auditResult" label="审核状态"  align="center" width="">
+                   <template slot-scope="scope">
+                         <span v-if="scope.row.auditResult=='1'">通过</span>
+                         <span v-if="scope.row.auditResult=='2'">不通过</span>
+                    </template>
+                </el-table-column>
+           </el-table>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="editVisible = false">取 消</el-button>
+                
+            </span>
+        </el-dialog>
     </div>
 </template>
   
@@ -102,8 +117,8 @@
         name: 'basetable',
         data() {
             return {
-                dialogVisible:false,
                 reasonVisible:false,
+                editVisible:false,
                 page:1,
                 total:0,
                 pageSize:10,
@@ -244,7 +259,14 @@
                     }
                     this.reasonVisible = true;
                 }
-            }
+            },
+            async lookAudit(index,row){
+                const audit = await this.$http.get(baseURL_.mallUrl+'/products_audit/getAuditList',{ 
+                    params:{'businessId':row.id}
+                })
+                this.auditData=audit.data.data;
+                this.editVisible=true;
+            },
         }
     }
 

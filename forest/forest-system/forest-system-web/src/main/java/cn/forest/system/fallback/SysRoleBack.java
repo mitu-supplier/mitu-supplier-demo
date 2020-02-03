@@ -44,4 +44,8 @@ public class SysRoleBack implements SysRoleRemote {
     return null;
   }
 
+  @Override
+  public int vaNameOrCode(Long id, String roleName, String roleCode) {
+    return 0;
+  }
 }

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.forest.common.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -65,6 +66,22 @@ public class SysRoleService {
   }
   
   public Map<String, Object> add(Map<String, ?> map) {
+    if(StringUtil.isBlank(map.get("roleName"))){
+      return ResultMessage.error("请输入角色名称");
+    }else{
+      int result = sysRoleRemote.vaNameOrCode(null, map.get("roleName").toString(), null);
+      if(result > 0){
+        return ResultMessage.error("角色名称已存在");
+      }
+    }
+    if(StringUtil.isBlank(map.get("roleCode"))){
+      return ResultMessage.error("请输入角色编码");
+    }else{
+      int result = sysRoleRemote.vaNameOrCode(null, null,  map.get("roleCode").toString());
+      if(result > 0){
+        return ResultMessage.error("角色编码已存在");
+      }
+    }
     int add = sysRoleRemote.add(map);
     if (add > 0) {
       return ResultMessage.result("添加成功");
@@ -89,6 +106,22 @@ public class SysRoleService {
   }
   
   public Map<String, Object> update(Map<String, ?> map) {
+    if(StringUtil.isBlank(map.get("roleName"))){
+      return ResultMessage.error("请输入角色名称");
+    }else{
+      int result = sysRoleRemote.vaNameOrCode(Long.parseLong(map.get("id").toString()), map.get("roleName").toString(), null);
+      if(result > 0){
+        return ResultMessage.error("角色名称已存在");
+      }
+    }
+    if(StringUtil.isBlank(map.get("roleCode"))){
+      return ResultMessage.error("请输入角色编码");
+    }else{
+      int result = sysRoleRemote.vaNameOrCode(Long.parseLong(map.get("id").toString()), null,  map.get("roleCode").toString());
+      if(result > 0){
+        return ResultMessage.error("角色编码已存在");
+      }
+    }
     int add = sysRoleRemote.update(map);
     if (add > 0) {
       return ResultMessage.result("修改成功");

@@ -22,7 +22,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/supplier_update")
-public class SuppliersUpdateMapperAction {
+public class SuppliersUpdateAction {
 
     @Autowired
     private SuppliersUpdateMapper suppliersUpdateMapper;

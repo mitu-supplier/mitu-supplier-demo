@@ -8,14 +8,18 @@
         <div class="container">
             <div style="background:#f6f6f6;padding:20px 10px 0;margin-bottom:20px;">
                 <el-form :inline="true" :model="formInline" class="demo-form-inline">
+                    <el-form-item label="商户名称">
+                        <el-input v-model="formInline.supplierName" placeholder="商户名称"></el-input>
+                    </el-form-item>
                     <el-form-item label="类目名称">
                         <el-input v-model="formInline.catalogName" placeholder="类目名称"></el-input>
                     </el-form-item>
-                    <el-form-item label="商品名称">
-                        <el-input v-model="formInline.productName" placeholder="商品名称"></el-input>
+                    <el-form-item label="入库人员">
+                        <el-input v-model="formInline.userName" placeholder="入库人员"></el-input>
                     </el-form-item>
                     <el-form-item>
-                        <el-button type="primary" @click="onSubmit">查询</el-button>
+                        <el-button type="primary" icon="el-icon-search" @click="onSubmit">查询</el-button>
+                        <el-button type="primary" icon="el-icon-refresh" @click="onReset">重置</el-button>
                     </el-form-item>
                 </el-form>
             </div>
@@ -25,9 +29,14 @@
                 <el-table-column prop="productName" label="商品名称"  align="center" width=""></el-table-column>
                 <el-table-column prop="supplierName" label="商户名称"  align="center" width=""></el-table-column>
                 <el-table-column prop="num" label="数量"  align="center" width=""></el-table-column>
-                <el-table-column prop="price" label="商品金额" align="center"  width=""></el-table-column>
-                <el-table-column prop="fileName" label="文件" align="center"  width=""></el-table-column>
+                <el-table-column prop="price" label="供货价（元）" align="center"  width=""></el-table-column>
+                <el-table-column label="总金额（元）" align="center"  width="">
+                    <template slot-scope="scope">
+                        <span type="text">{{(scope.row.price*scope.row.num).toFixed(2)}}</span>
+                    </template>
+                </el-table-column>
                 <el-table-column prop="createdAt" label="入库时间" align="center"  width=""></el-table-column>
+                <el-table-column prop="fileName" label="文件" align="center"  width=""></el-table-column>
                 <el-table-column prop="userName" label="入库人员" align="center"  width=""></el-table-column>
             </el-table>
             <div class="pagination">
@@ -57,8 +66,9 @@
                 pageSize:10,
                 tableData: [],
                 formInline:{
-                    productName:'',
-                    catalogName:''
+                    supplierName:'',
+                    catalogName:'',
+                    userName:''
                 },
                 productId:''
             }
@@ -87,9 +97,10 @@
                     params: {
                         'page':this.page,
                         'pageSize':this.pageSize,
-                        'productName':this.formInline.productName,
+                        'supplierName':this.formInline.supplierName,
                         'catalogName':this.formInline.catalogName,
-                        'productId': this.productId
+                        'productId': this.productId,
+                        'userName': this.formInline.userName
                     }
                 });
                 if(products.data.statusCode==200){
@@ -97,7 +108,11 @@
                   this.total=products.data.data.total;
                   this.page=products.data.data.page;
                 }
-            }
+            },
+            onReset(){
+                this.formInline = {};
+                this.getData();
+            },
         }
     }
 

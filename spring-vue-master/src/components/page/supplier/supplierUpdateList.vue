@@ -12,7 +12,22 @@
                     <el-form-item label="商户名称">
                         <el-input v-model="formInline.name" placeholder="商户名称"></el-input>
                     </el-form-item>
-                    
+                    <el-form-item label="联系人">
+                        <el-input v-model="formInline.contactName" placeholder="联系人"></el-input>
+                    </el-form-item>
+                    <el-form-item label="商户号">
+                        <el-input v-model="formInline.code" placeholder="商户号"></el-input>
+                    </el-form-item>
+                    <el-form-item label="入驻类型">
+                        <el-select v-model="formInline.enterType" placeholder="请选择">
+                            <el-option
+                                v-for="item in enterTypeList"
+                                :key="item.id"
+                                :label="item.name"
+                                :value="item.id">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
                     <el-form-item label="审核状态">
                          <el-select v-model="formInline.status" placeholder="审核状态">
                             <el-option label="待审核" value="0"></el-option>
@@ -28,6 +43,7 @@
             </div>
             <div class="handle-box">
                 <el-button type="primary" icon="el-icon-check" @click="batchAudit(1)" >审核通过</el-button>
+                <el-button type="primary" icon="el-icon-close" @click="batchAudit(2)" >审核失败</el-button>
             </div>
             <el-table :data="tableData" border class="table" ref="multipleTable" @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
@@ -110,14 +126,19 @@
                 editVisible:false,
                 multipleSelection: [],
                 auditData:[],
+                enterTypeList:[],
                 formInline:{
                     name:'',
-                    status:''
+                    status:'',
+                    contactName:'',
+                    code:'',
+                    enterType:''
                 }
             }
         },
         created() {
             this.getData();
+            this.getEnterTypeList();
         },
         methods: {
             async lookAudit(index,row){
@@ -128,8 +149,7 @@
                 this.editVisible=true;
             },
             onReset(){
-              this.formInline.name="";
-              this.formInline.status="";
+              this.formInline={};
               this.getData();
             },
             onSubmit(){
@@ -152,8 +172,10 @@
                         'page':this.page,
                         'pageSize':this.pageSize,
                         'name':this.formInline.name,
-                        'status':this.formInline.status
-                        
+                        'status':this.formInline.status,
+                        'contactName':this.formInline.contactName,
+                        'code':this.formInline.code,
+                        'enterType':this.formInline.enterType
                     }
                 });
                 if(products.data.statusCode==200){
@@ -185,19 +207,29 @@
                         flag ++;
                     }
                 });
-                if(flag == 0){
+                if(flag == 0 && audit == 1){
                     this.$confirm('确认'+msg+'？').then( e=> {
-                        this.audit(ids.join(','), audit);
+                        this.audit(ids.join(','), audit, null);
 
                     }).catch(_ => {});
+                }else if(flag == 0 && audit == 2){
+                    this.$prompt('请输入审核失败理由：', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        inputPattern: /^[\s\S]*.*[^\s][\s\S]*$/,
+                        inputErrorMessage: '理由不能为空'
+                    }).then(({ value }) => {
+                        this.audit(ids.join(','),audit,value)
+                    }).catch(() => { }); 
                 }else{
                     this.$message("不能重复审核！");
                 }
             },
-            async audit(ids, auditStatus){
+            async audit(ids, auditStatus, auditReason){
                 var params = {
                     'ids': ids,
-                    'status': auditStatus
+                    'status': auditStatus,
+                    'auditReason': auditReason
                 }
                 var auditResult = await this.$http.put(baseURL_.mallUrl+'/supplier_update/batchAudit', this.$qs.stringify(params));
                 this.$message(auditResult.data.data);
@@ -254,6 +286,10 @@
                 if(auditResult.data.statusCode==200){
                     this.getData();
                 }
+            },
+            async getEnterTypeList(){
+                const res = await this.$http.get(baseURL_.mallUrl+'/supplier/getEnterType');
+                this.enterTypeList = res.data.data; 
             }
         }
     }

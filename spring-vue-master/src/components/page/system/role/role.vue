@@ -206,6 +206,8 @@
             },
             add(){
                this.form={};
+               this.form.isAdmin = '0',
+               this.form.isBuiltIn = '0',
                this.editVisible=true;
                this.titleName="添加";
             },

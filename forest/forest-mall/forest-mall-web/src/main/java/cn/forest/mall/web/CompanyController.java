@@ -1,6 +1,7 @@
 package cn.forest.mall.web;
 
 import cn.forest.common.util.RequestMap;
+import cn.forest.common.util.ResultMessage;
 import cn.forest.mall.service.CompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -54,5 +55,14 @@ public class CompanyController {
     @RequestMapping("/batchDelete")
     public Map<String, Object> batchDelete(@RequestParam("ids") String ids) {
         return companyService.batchDelete(ids);
+    }
+
+    /**
+     * 获取公司id
+     * @return
+     */
+    @RequestMapping("/getCompanyCode")
+    public Map<String, Object> getCompanyCode(){
+        return ResultMessage.success(companyService.getCompanyCode());
     }
 }

@@ -14,9 +14,19 @@
                     <el-form-item label="类目名称">
                         <el-input v-model="formInline.catalogName" placeholder="类目名称"></el-input>
                     </el-form-item>
+                    <el-form-item label="发货类型">
+                        <el-select v-model="formInline.deliveryType" placeholder="请选择">
+                            <el-option
+                                v-for="item in deliveryTypeList"
+                                :key="item.id"
+                                :label="item.name"
+                                :value="item.id">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                    
                     <el-form-item label="审核状态">
                          <el-select v-model="formInline.auditStatus" placeholder="审核状态">
-                            <el-option label="请选择" value=""></el-option>
                             <el-option label="暂存" value="3"></el-option>
                             <el-option label="待审核" value="0"></el-option>
                             <el-option label="审核通过" value="1"></el-option>
@@ -24,8 +34,8 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item>
-                        <el-button type="primary" @click="onSubmit">查询</el-button>
-                        <el-button type="primary" @click="onReset">重置</el-button>
+                        <el-button type="primary" icon="el-icon-search" @click="onSubmit">查询</el-button>
+                        <el-button type="primary" icon="el-icon-refresh" @click="onReset">重置</el-button>
                     </el-form-item>
                 </el-form>
             </div>
@@ -105,10 +115,12 @@
                 pageSize:10,
                 tableData: [],
                 multipleSelection: [],
+                deliveryTypeList:[],
                 formInline:{
                     name:'',
                     catalogName:'',
-                    auditStatus:''
+                    auditStatus:'',
+                    deliveryType:''
                 },
                 auditReason:'',
                 productId:''
@@ -116,6 +128,7 @@
         },
         created() {
             this.getData();
+            this.getDeliveryTypeList();
         },
         methods: {
             onSubmit(){
@@ -123,7 +136,7 @@
             },
             onReset(){
                 this.formInline = {};
-                this.formInline.auditStatus = '';
+                // this.formInline.auditStatus = '';
                 this.getData();
             },
             //改变每页页数
@@ -144,7 +157,8 @@
                         'pageSize':this.pageSize,
                         'name':this.formInline.name,
                         'catalogName':this.formInline.catalogName,
-                        'auditStatus':this.formInline.auditStatus
+                        'auditStatus':this.formInline.auditStatus,
+                        'deliveryType':this.formInline.deliveryType
                     }
                 });
                 if(products.data.statusCode==200){
@@ -237,6 +251,11 @@
                         id: this.productId
                     }
                 });
+            },
+            async getDeliveryTypeList(){
+                const res = await this.$http.get(baseURL_.mallUrl+'/products/getDelivery_type');
+                this.deliveryTypeList = [];
+                this.deliveryTypeList = res.data.data;
             }
         }
     }

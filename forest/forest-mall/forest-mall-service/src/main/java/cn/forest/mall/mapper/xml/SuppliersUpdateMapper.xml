@@ -35,6 +35,9 @@
             <if test="supplierId != null and supplierId != ''">
                 AND su.supplier_id = #{supplierId}
             </if>
+            <if test="enterType != null and enterType != ''">
+                AND su.enter_type = #{enterType}
+            </if>
         ORDER BY su.status, su.id desc
     </select>
 

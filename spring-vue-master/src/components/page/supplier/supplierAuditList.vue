@@ -8,11 +8,25 @@
         <div class="container">
             <div style="background:#f6f6f6;padding:20px 10px 0;margin-bottom:20px;">
                 <el-form :inline="true" ref="formInline" :model="formInline" class="demo-form-inline">
-                    
+                    <el-form-item label="商户号">
+                        <el-input v-model="formInline.code" placeholder="商户号"></el-input>
+                    </el-form-item>
                     <el-form-item label="商户名称">
                         <el-input v-model="formInline.name" placeholder="商户名称"></el-input>
                     </el-form-item>
-                    
+                    <el-form-item label="联系人">
+                        <el-input v-model="formInline.contactName" placeholder="联系人"></el-input>
+                    </el-form-item>
+                    <el-form-item label="入驻类型">
+                        <el-select v-model="formInline.enterType" placeholder="请选择">
+                            <el-option
+                                v-for="item in enterTypeList"
+                                :key="item.id"
+                                :label="item.name"
+                                :value="item.id">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
                     <el-form-item label="审核状态">
                          <el-select v-model="formInline.status" placeholder="审核状态">
                             <el-option label="待审核" value="0"></el-option>
@@ -111,14 +125,19 @@
                 editVisible:false,
                 multipleSelection: [],
                 auditData:[],
+                enterTypeList:[],
                 formInline:{
                     name:'',
-                    status:''
+                    status:'',
+                    contactName:'',
+                    code:'',
+                    enterType:''
                 }
             }
         },
         created() {
             this.getData();
+            this.getEnterTypeList();
         },
         methods: {
             async lookAudit(index,row){
@@ -129,8 +148,7 @@
                 this.editVisible=true;
             },
             onReset(){
-              this.formInline.name="";
-              this.formInline.status="";
+              this.formInline={};
               this.getData();
             },
             onSubmit(){
@@ -153,8 +171,10 @@
                         'page':this.page,
                         'pageSize':this.pageSize,
                         'name':this.formInline.name,
-                        'status':this.formInline.status
-                        
+                        'status':this.formInline.status,
+                        'contactName':this.formInline.contactName,
+                        'code':this.formInline.code,
+                        'enterType':this.formInline.enterType
                     }
                 });
                 if(products.data.statusCode==200){
@@ -255,6 +275,10 @@
                 if(auditResult.data.statusCode==200){
                     this.getData();
                 }
+            },
+            async getEnterTypeList(){
+                const res = await this.$http.get(baseURL_.mallUrl+'/supplier/getEnterType');
+                this.enterTypeList = res.data.data; 
             }
         }
     }

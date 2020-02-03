@@ -64,7 +64,7 @@ public class SuppliersUpdateService {
     public Map<String, Object> updateRegisterInfo(Map<String, Object> map) {
         int num = 0;
         map.put("supplierId", map.get("id"));
-        map.put("id", null);
+        map.remove("id");
         Object save = suppliersUpdateRemote.save(map);
         if (save != null) {
             Map result = (Map) save;
@@ -165,6 +165,7 @@ public class SuppliersUpdateService {
             ids = paramMap.get("ids").toString();
         }
         Integer status = Integer.parseInt(paramMap.get("status").toString());
+        String auditReason = StringUtil.toString(paramMap.get("auditReason"));
         if (ids != null) {
             int auditStatus = suppliersUpdateRemote.batchAudit(ids, status);
             if(auditStatus > 0){
@@ -196,6 +197,7 @@ public class SuppliersUpdateService {
                     auditMap.put("auditResult", paramMap.get("status"));
                     auditMap.put("businessId", Long.parseLong(str));
                     auditMap.put("auditType", 3);
+                    auditMap.put("auditReason", auditReason);
                     auditRecodeList.add(auditMap);
                 }
                 if(status != null && status == 1){

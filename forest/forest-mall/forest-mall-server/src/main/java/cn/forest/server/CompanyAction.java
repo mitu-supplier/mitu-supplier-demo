@@ -8,12 +8,14 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @RestController
@@ -83,5 +85,19 @@ public class CompanyAction {
             return 1;
         }
         return 0;
+    }
+
+    @RequestMapping("vaName")
+    public int vaName(@RequestParam(value = "id", required = false) Long id, @RequestParam(value = "name") String name){
+        QueryWrapper<Company> qw = new QueryWrapper<>();
+        qw.eq("name", name);
+        if(id != null){
+            qw.ne("id", id);
+        }
+        List<Company> companies = companyMapper.selectList(qw);
+        if(CollectionUtils.isEmpty(companies)){
+            return 0;
+        }
+        return companies.size();
     }
 }

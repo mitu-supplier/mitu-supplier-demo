@@ -11,8 +11,12 @@
                     <el-form-item label="商户名称">
                         <el-input v-model="formInline.supplierName" placeholder="商户名称"></el-input>
                     </el-form-item>
+                    <el-form-item label="入库人员">
+                        <el-input v-model="formInline.userName" placeholder="入库人员"></el-input>
+                    </el-form-item>
                     <el-form-item>
                         <el-button type="primary" icon="el-icon-search" @click="onSubmit">查询</el-button>
+                        <el-button type="primary" icon="el-icon-refresh" @click="onReset">重置</el-button>
                     </el-form-item>
                 </el-form>
             </div>
@@ -56,7 +60,8 @@
                 tableData: [],
                 supplierId:'',
                 formInline:{
-                    supplierName:''
+                    supplierName:'',
+                    userName:''
                 }   
             }
         },
@@ -85,7 +90,8 @@
                         'page':this.page,
                         'pageSize':this.pageSize,
                         'supplierName':this.formInline.supplierName,
-                        'supplierId':this.supplierId
+                        'supplierId':this.supplierId,
+                        'userName':this.formInline.userName
                     }
                 });
                 if(products.data.statusCode==200){
@@ -93,7 +99,11 @@
                   this.total=products.data.data.total;
                   this.page=products.data.data.page;
                 }
-            }
+            },
+            onReset(){
+                this.formInline = {};
+                this.getData();
+            },
         }
     }
 

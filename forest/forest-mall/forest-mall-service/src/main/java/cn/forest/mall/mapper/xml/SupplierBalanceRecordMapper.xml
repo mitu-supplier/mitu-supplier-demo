@@ -14,6 +14,9 @@
             <if test="supplierName != null and supplierName != ''">
                 AND ss.name LIKE CONCAT('%',#{supplierName},'%')
             </if>
+            <if test="userName != null and userName != ''">
+                AND sbr.user_name LIKE CONCAT('%',#{userName},'%')
+            </if>
             <if test="supplierId != null and supplierId!=''">
                 AND ss.id = #{supplierId}
             </if>

@@ -462,6 +462,7 @@
                 dialogVisible:false,
                 imgUrl:'',
                 editId:'',
+                status:''
             }
         },
         created() {
@@ -486,9 +487,9 @@
               // }
               this.newRuleForm.loginName = res.data.data.user.loginName;
               this.$set(this.newRuleForm,'phone',res.data.data.user.phone)
-              this.$set(this.newRuleForm,'userName',res.data.data.user.userName)
+              this.$set(this.newRuleForm,'userName',res.data.data.user.name)
               this.$set(this.newRuleForm,'email',res.data.data.user.email)
-              
+              this.status = res.data.data.status;
                 if(res.data.data.legalCardDateStart!=null){
                   this.value2 = [res.data.data.legalCardDateStart,res.data.data.legalCardDateEnd];
                 }
@@ -594,19 +595,27 @@
                 }
               })
               if(contentType == 0){
-                  const role = await this.$http.post(baseURL_.mallUrl+'/supplier/update',this.$qs.stringify(this.newRuleForm));
-                  if(role.data.statusCode==200){
-                    this.$message({
-                      type: "success",
-                      message: role.data.data || "保存成功"
-                    });
-                    this.$router.push({ path: "/supplierList" });
-                  }else{
-                    this.$message({
-                      type: "error",
-                      message: role.data.data || "保存失败"
-                    });
-                  }
+                var updateUrl = '';
+                if(this.status == 1){
+                  // 审核通过
+                  updateUrl = baseURL_.mallUrl+'/supplier_update/updateRegisterInfo';
+                }else{
+                  // 待审核   审核不通过
+                  updateUrl = baseURL_.mallUrl+'/supplier/update';
+                }
+                const role = await this.$http.post(updateUrl, this.$qs.stringify(this.newRuleForm));
+                if(role.data.statusCode==200){
+                  this.$message({
+                    type: "success",
+                    message: role.data.data || "保存成功"
+                  });
+                  this.$router.push({ path: "/supplierList" });
+                }else{
+                  this.$message({
+                    type: "error",
+                    message: role.data.data || "保存失败"
+                  });
+                }
               }
               
             },

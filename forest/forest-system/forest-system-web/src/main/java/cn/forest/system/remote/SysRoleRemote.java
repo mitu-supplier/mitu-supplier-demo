@@ -33,7 +33,7 @@ public interface SysRoleRemote {
   
   @RequestMapping("/sys_role/getRoleByUserId")
   public Object getRoleByUserId(@RequestParam(value = "userId") Long userId);
-  
-  
-  
+
+  @RequestMapping("/sys_role/vaNameOrCode")
+  int vaNameOrCode(@RequestParam(value = "id") Long id, @RequestParam("roleName") String roleName, @RequestParam("roleCode") String roleCode);
 }

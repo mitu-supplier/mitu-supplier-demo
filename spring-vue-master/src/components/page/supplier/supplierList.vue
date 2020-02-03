@@ -8,18 +8,39 @@
         <div class="container">
             <div style="background:#f6f6f6;padding:20px 10px 0;margin-bottom:20px;">
                 <el-form :inline="true" ref="formInline" :model="formInline" class="demo-form-inline">
-                    
+                    <el-form-item label="商户号">
+                        <el-input v-model="formInline.code" placeholder="商户号"></el-input>
+                    </el-form-item>
                     <el-form-item label="商户名称">
                         <el-input v-model="formInline.name" placeholder="商户名称"></el-input>
                     </el-form-item>
+                    <el-form-item label="商户简称">
+                        <el-input v-model="formInline.shortName" placeholder="商户简称"></el-input>
+                    </el-form-item>
+                    <el-form-item label="联系人">
+                        <el-input v-model="formInline.contactName" placeholder="联系人"></el-input>
+                    </el-form-item>
+                    <el-form-item label="联系电话">
+                        <el-input v-model="formInline.contactMobile" placeholder="联系电话"></el-input>
+                    </el-form-item>
+                    <el-form-item label="入驻类型">
+                        <el-select v-model="formInline.enterType" placeholder="请选择">
+                            <el-option
+                                v-for="item in enterTypeList"
+                                :key="item.id"
+                                :label="item.name"
+                                :value="item.id">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
                     
-                    <el-form-item label="审核状态">
+                    <!-- <el-form-item label="审核状态">
                          <el-select v-model="formInline.status" placeholder="审核状态">
                             <el-option label="待审核" value="0"></el-option>
                             <el-option label="审核通过" value="1"></el-option>
                             <el-option label="审核失败" value="2"></el-option>
                         </el-select>
-                    </el-form-item>
+                    </el-form-item> -->
                     <el-form-item>
                         <el-button type="primary" icon="el-icon-search" @click="onSubmit">查询</el-button>
                         <el-button type="primary" icon="el-icon-refresh" @click="onReset">重置</el-button>
@@ -34,8 +55,8 @@
                 <el-table-column type="index" label="序号" width="55" align="center" ></el-table-column>
                 <el-table-column prop="code" label="商户号"  align="center" width=""></el-table-column>
                 <el-table-column prop="name" label="商户名称"  align="center" width=""></el-table-column>
+                <el-table-column prop="shortName" label="商户简称"  align="center" width=""></el-table-column>
                 <el-table-column prop="registerAddress" label="商户地址"  align="center" width=""></el-table-column>
-                
                 <el-table-column prop="enterTypeName" label="入驻类型" align="center"  width=""></el-table-column>
                 <el-table-column prop="contactName" label="联系人" align="center"  width="80"></el-table-column>
                 <el-table-column prop="contactMobile" label="联系电话" align="center"  width=""></el-table-column>
@@ -50,7 +71,6 @@
                     <template slot-scope="scope">
                         <el-button type="text" icon="el-icon-search" @click="view(scope.$index, scope.row)">查看</el-button>
                         <el-button type="text"  icon="el-icon-edit" class="red" @click="handleUpdate(scope.$index, scope.row)">修改</el-button>
-                        <!-- v-if="isSupplier == '1'" -->
                     </template>
                 </el-table-column>
             </el-table>
@@ -110,20 +130,25 @@
                 multipleSelection: [],
                 auditData:[],
                 formInline:{
+                    code:'',
                     name:'',
-                    status:''
+                    shortName:'',
+                    contactName:'',
+                    contactMobile:'',
+                    enterType:''
                 },
-                isSupplier:1
+                isSupplier:1,
+                enterTypeList:[]
             }
         },
         created() {
             this.getData();
             this.vaIsSupplier();
+            this.getEnterTypeList();
         },
         methods: {
             onReset(){
-              this.formInline.name="";
-              this.formInline.status="";
+              this.formInline={};
               this.getData();
             },
             onSubmit(){
@@ -145,8 +170,12 @@
                     params: {
                         'page':this.page,
                         'pageSize':this.pageSize,
+                        'code':this.formInline.code,
                         'name':this.formInline.name,
-                        'status':this.formInline.status
+                        'shortName':this.formInline.shortName,
+                        'contactName':this.formInline.contactName,
+                        'contactMobile':this.formInline.contactMobile,
+                        'enterType':this.formInline.enterType
                     }
                 });
                 if(products.data.statusCode==200){
@@ -184,6 +213,10 @@
             },
             add_supplier(){
                 this.$router.push('/addSupplier');
+            },
+            async getEnterTypeList(){
+                const res = await this.$http.get(baseURL_.mallUrl+'/supplier/getEnterType');
+                this.enterTypeList = res.data.data; 
             }
         }
     }

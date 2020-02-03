@@ -33,4 +33,7 @@ public interface CompanyRemote {
     @RequestMapping("/company/batchDelete")
     int batchDelete(@RequestParam("ids") String ids);
 
+    @RequestMapping("/company/vaName")
+    int vaName(@RequestParam(value = "id", required = false) Long id, @RequestParam(value = "name") String name);
+
 }

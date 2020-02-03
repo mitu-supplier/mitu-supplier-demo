@@ -42,4 +42,9 @@ public class CompanyBack implements CompanyRemote {
     public int batchDelete(String ids) {
         return 0;
     }
+
+    @Override
+    public int vaName(Long id, String name) {
+        return 0;
+    }
 }

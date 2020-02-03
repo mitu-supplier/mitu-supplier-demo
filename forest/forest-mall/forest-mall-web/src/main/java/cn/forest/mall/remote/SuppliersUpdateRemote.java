@@ -19,7 +19,7 @@ public interface SuppliersUpdateRemote {
      * @return
      */
     @RequestMapping("/supplier_update/getBySupplierId")
-    public Object getBySupplierId(@RequestParam("supplierId") Long supplierId, @RequestParam(value = "status", required = false) Integer status);
+    Object getBySupplierId(@RequestParam("supplierId") Long supplierId, @RequestParam(value = "status", required = false) Integer status);
 
     /**
      * 保存
@@ -28,7 +28,7 @@ public interface SuppliersUpdateRemote {
      * @return
      */
     @RequestMapping("/supplier_update/save")
-    public Object save(@RequestBody Map<String, ?> map);
+    Object save(@RequestBody Map<String, ?> map);
 
     /**
      * 根据id修改
@@ -37,7 +37,7 @@ public interface SuppliersUpdateRemote {
      * @return
      */
     @RequestMapping("/supplier_update/update")
-    public int update(@RequestBody Map<String, ?> map);
+    int update(@RequestBody Map<String, ?> map);
 
     /**
      * 分页查询修改审核记录
@@ -46,7 +46,7 @@ public interface SuppliersUpdateRemote {
      * @return
      */
     @RequestMapping("/supplier_update/selectUpdateRecodeList")
-    public Object selectUpdateRecodeList(@RequestBody Map<String, Object> map);
+    Object selectUpdateRecodeList(@RequestBody Map<String, Object> map);
 
     /**
      * 根据ID查询
@@ -55,7 +55,7 @@ public interface SuppliersUpdateRemote {
      * @return
      */
     @RequestMapping("/supplier_update/getById")
-    public Object getById(@RequestParam("id") Long id);
+    Object getById(@RequestParam("id") Long id);
 
     /**
      * 批量审核
