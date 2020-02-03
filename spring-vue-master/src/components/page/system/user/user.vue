@@ -67,17 +67,20 @@
 
         <!-- 编辑弹出框 -->
         <el-dialog :title="titleName"  :visible.sync="editVisible" width="26%">
-            <el-form ref="form" :model="form" label-width="70px">
+            <el-form ref="form" :model="form" label-width="70px" :rules="rules">
                 <el-form-item label="姓名">
                 <el-input v-model="form.name" class="input"></el-input>
                 </el-form-item>
-                <el-form-item label="登录名">
+                <el-form-item label="登录名" prop="loginName">
                     <el-input v-model="form.loginName" class="input"></el-input>
                 </el-form-item>
-                <el-form-item label="手机号">
-                <el-input v-model="form.phone" class="input"></el-input>
+                <el-form-item label="密码" prop="password" v-if="addFlag">
+                    <el-input v-model="form.password" type="password" class="input"></el-input>
                 </el-form-item>
-                <el-form-item label="邮箱">
+                <el-form-item label="手机号" prop="phone">
+                    <el-input v-model="form.phone" class="input"></el-input>
+                </el-form-item>
+                <el-form-item label="邮箱" prop="email">
                     <el-input v-model="form.email" class="input"></el-input>
                 </el-form-item>
             </el-form>
@@ -101,6 +104,35 @@
 <script>
     import { fetchData } from '../../../../api/index';
     import baseURL_ from '@/utils/baseUrl.js';
+
+    // 手机号校验
+    var validPhone = (rule, value,callback)=>{
+        if (!value){
+            callback()
+        }else{
+            const reg = /^1[3|4|5|6|7|8|9][0-9]\d{8}$/
+            if (reg.test(value)) {
+                callback()
+            } else {
+                return callback(new Error('请输入正确的手机号'))
+            }
+        }
+    }
+     
+    // 邮箱格式校验
+    var validEmail = (rule, value,callback)=>{
+        if (!value){
+            callback()
+        }else{
+            var reg = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+            if(!reg.test(value)){
+                callback(new Error('请输入正确的邮箱'));
+            }else{
+                callback()
+            }
+        }
+    }
+
     export default {
         name: 'basetable',
         data() {
@@ -120,7 +152,15 @@
                    name:'',
                    loginName:'',
                    phone:'',
-                   email:''
+                   email:'',
+                   password:''
+                },
+                addFlag: false,
+                rules: {
+                    loginName: [{ required: true, message: "请输入登录名", trigger: "blur" }],
+                    password: [{ required: true, message: "请输入密码", trigger: "blur" }],
+                    phone: [{ validator: validPhone, trigger: 'blur' }],
+                    email: [{ validator: validEmail, trigger: 'blur' }],
                 },
                  setting:{
                     data: {
@@ -179,17 +219,21 @@
                  
             },
             async saveEdit(){
-                var addOrEdit={};
-                if(this.form.id!=null){
-                   addOrEdit= await this.$http.post(baseURL_.sysUrl+'/sysUser/update',this.$qs.stringify(this.form));
-                }else{
-                    addOrEdit= await this.$http.post(baseURL_.sysUrl+'/sysUser/add',this.$qs.stringify(this.form));
-                }
-                this.$message(addOrEdit.data.data);
-                if(addOrEdit.data.statusCode==200){
-                    this.editVisible=false;
-                }
-                this.getData();
+                this.$refs['form'].validate(async valid => {
+                    if (valid) {
+                        var addOrEdit={};
+                        if(this.form.id!=null){
+                        addOrEdit= await this.$http.post(baseURL_.sysUrl+'/sysUser/update',this.$qs.stringify(this.form));
+                        }else{
+                            addOrEdit= await this.$http.post(baseURL_.sysUrl+'/sysUser/add',this.$qs.stringify(this.form));
+                        }
+                        this.$message(addOrEdit.data.data);
+                        if(addOrEdit.data.statusCode==200){
+                            this.editVisible=false;
+                        }
+                        this.getData();
+                    }
+                })
             },
             async delete(id){
                 const del = await this.$http.get(baseURL_.sysUrl+'/sysUser/delete',{ 
@@ -206,6 +250,7 @@
             },
             async handleEdit(index, row) {
                 this.titleName="修改";
+                this.addFlag = false;
                 const user = await this.$http.get(baseURL_.sysUrl+'/sysUser/getById',{ 
                     params: {'id':row.id}
                 });
@@ -220,6 +265,7 @@
             },
             add(){
                this.form={};
+               this.addFlag = true;
                this.editVisible=true;
                this.titleName="添加";
             },
@@ -292,6 +338,18 @@
                  this.ztreeEditVisible=false;
                  this.role_id="";
                }
+            },
+            checkPhone(rule, value, callback) {
+                if (value != null && value != '') {
+                    const reg = /^1[3|4|5|6|7|8|9][0-9]\d{8}$/
+                    if (reg.test(value)) {
+                        callback()
+                    } else {
+                        return callback(new Error('请输入正确的手机号'))
+                    }
+                }else{
+                   callback() 
+                }
             }
             
         }
