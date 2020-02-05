@@ -40,7 +40,12 @@
                 <el-table-column prop="phone" label="手机"  align="center" width="100"></el-table-column>
                 <el-table-column prop="email" label="邮箱" align="center" width="150"> </el-table-column>
                 <el-table-column prop="createTime" label="创建时间" align="center"  width="150"></el-table-column>
-                <el-table-column prop="isStatus" label="是否有效" align="center" width="100"></el-table-column>
+                <el-table-column prop="isStatus" label="是否启用" align="center" width="70">
+                  <template slot-scope="scope">
+                         <span v-if="scope.row.isStatus=='0'">启用</span>
+                         <span v-if="scope.row.isStatus=='1'">禁用</span>
+                    </template>
+                </el-table-column>
                 <el-table-column prop="loginTime" label="登录时间"  align="center" width="130"></el-table-column>
                 <el-table-column prop="ip" label="登录ip"  align="center" width="100"></el-table-column>
                 <el-table-column label="操作" width="" align="center">
@@ -82,6 +87,10 @@
                 </el-form-item>
                 <el-form-item label="邮箱" prop="email">
                     <el-input v-model="form.email" class="input"></el-input>
+                </el-form-item>
+                 <el-form-item label="是否启用">
+                   <el-radio v-model="form.isStatus" label="0">启用</el-radio>
+                   <el-radio v-model="form.isStatus" label="1">禁用</el-radio>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
@@ -223,15 +232,16 @@
                     if (valid) {
                         var addOrEdit={};
                         if(this.form.id!=null){
-                        addOrEdit= await this.$http.post(baseURL_.sysUrl+'/sysUser/update',this.$qs.stringify(this.form));
+                            addOrEdit= await this.$http.post(baseURL_.sysUrl+'/sysUser/update',this.$qs.stringify(this.form));
                         }else{
                             addOrEdit= await this.$http.post(baseURL_.sysUrl+'/sysUser/add',this.$qs.stringify(this.form));
                         }
                         this.$message(addOrEdit.data.data);
                         if(addOrEdit.data.statusCode==200){
                             this.editVisible=false;
+                            this.getData();
                         }
-                        this.getData();
+                        
                     }
                 })
             },

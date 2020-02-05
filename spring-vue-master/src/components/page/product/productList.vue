@@ -73,6 +73,7 @@
                         <el-button type="text" v-if="scope.row.status == '1' && scope.row.auditStatus == '1'" icon="el-icon-edit" class="red" @click="updateStatus(scope.$index, scope.row, 2)">下架</el-button>
                         <el-button type="text" v-if="scope.row.auditStatus == '2' || scope.row.auditStatus == '3'" icon="el-icon-edit" class="red" @click="handleUpdate(scope.$index, scope.row)">修改</el-button>
                         <el-button type="text" v-if="scope.row.auditStatus == '2' || scope.row.auditStatus == '3'" icon="el-icon-delete" class="red" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                        <el-button type="text" v-if="scope.row.auditStatus != '0' && scope.row.auditStatus != '3'" icon="el-icon-document" class="red" @click="lookAudit(scope.$index, scope.row)">审核记录</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -100,6 +101,30 @@
                 <el-button type="primary" @click="updatePro()">修改</el-button>
             </span>
         </el-dialog>
+
+        <el-dialog title="审核记录" class="dialogBox" :visible.sync="editVisible" width="40%">
+           <el-table :data="auditData" border class="table" >
+                <el-table-column type="index" label="序号" width="55" align="center" ></el-table-column>
+                <el-table-column prop="auditUserName" label="审核人"  align="center" width="80"></el-table-column>
+                <el-table-column prop="createTime" label="审核时间"  align="center" width="150"></el-table-column>
+                <el-table-column prop="auditReason" label="审核意见"  align="center" width="">
+                   <template slot-scope="scope">
+                         <span v-if="scope.row.auditResult=='1'">通过</span>
+                         <span v-if="scope.row.auditResult=='2'">{{scope.row.auditReason}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="auditResult" label="审核状态"  align="center" width="">
+                   <template slot-scope="scope">
+                         <span v-if="scope.row.auditResult=='1'">通过</span>
+                         <span v-if="scope.row.auditResult=='2'">不通过</span>
+                    </template>
+                </el-table-column>
+           </el-table>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="editVisible = false">取 消</el-button>
+                
+            </span>
+        </el-dialog>
     </div>
 </template>
   
@@ -117,6 +142,7 @@
                 tableData: [],
                 multipleSelection: [],
                 deliveryTypeList:[],
+                editVisible:false,
                 formInline:{
                     name:'',
                     catalogName:'',
@@ -132,6 +158,13 @@
             this.getDeliveryTypeList();
         },
         methods: {
+             async lookAudit(index,row){
+                const audit = await this.$http.get(baseURL_.mallUrl+'/products_audit/getAuditList',{ 
+                    params:{'businessId':row.id}
+                })
+                this.auditData=audit.data.data;
+                this.editVisible=true;
+            },
             onSubmit(){
                 this.getData();
             },

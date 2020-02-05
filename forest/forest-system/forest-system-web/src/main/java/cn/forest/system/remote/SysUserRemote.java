@@ -33,4 +33,9 @@ public interface SysUserRemote {
   
   @RequestMapping("/sys_user/saveRole")
   public int saveRole(Map<String, ?> map);
+  
+  @RequestMapping("/sys_user/getLoginName")
+  public Object getLoginName(Map<String, ?> map);
+  
+  
 }

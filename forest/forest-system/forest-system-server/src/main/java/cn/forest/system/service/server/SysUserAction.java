@@ -122,4 +122,14 @@ public class SysUserAction {
     qw.eq("type_id", typeId);
     return sysUserMapper.selectList(qw);
   }
+  
+  @RequestMapping("/getLoginName")
+  public Object getLoginName(String loginName) {
+    QueryWrapper<SysUser> sysUserQueryWrapper = new QueryWrapper<>();
+    sysUserQueryWrapper.eq("login_name", loginName);
+    return sysUserMapper.selectOne(sysUserQueryWrapper);
+    
+  }
+  
+  
 }
