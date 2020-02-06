@@ -43,4 +43,9 @@ public class SuppliersBack implements SuppliersRemote {
     public int batchUpdate(List<Map<String, Object>> list) {
         return 0;
     }
+
+    @Override
+    public Object selectList(Integer status, Long id) {
+        return null;
+    }
 }

@@ -4,6 +4,9 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 import cn.forest.system.entity.SysLoginLogs;
 
+import java.util.List;
+
 public interface SysLoginLogsMapper extends BaseMapper<SysLoginLogs> {
 
+    List<SysLoginLogs> count7Days();
 }

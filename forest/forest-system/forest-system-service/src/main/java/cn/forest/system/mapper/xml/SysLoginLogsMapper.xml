@@ -2,5 +2,15 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.forest.system.mapper.SysLoginLogsMapper">
 
-
+    <select id="count7Days" resultType="cn.forest.system.entity.SysLoginLogs">
+        SELECT
+            date( create_time ) AS createTime,
+            count( * ) AS num
+        FROM
+            sys_login_logs
+        WHERE
+            DATE_SUB( CURDATE( ), INTERVAL 7 DAY ) &lt;= date( create_time )
+        GROUP BY
+            date( create_time )
+    </select>
 </mapper>

@@ -2,6 +2,7 @@ package cn.forest.system.service.server;
 
 import cn.forest.common.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,6 +15,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import cn.forest.common.service.utils.ResultPage;
 import cn.forest.system.entity.SysLoginLogs;
 import cn.forest.system.mapper.SysLoginLogsMapper;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("sys_login_logs")
@@ -39,4 +42,14 @@ public class SysLoginLogsAction {
     return new ResultPage<SysLoginLogs>(selectPage);
   }
 
+  @RequestMapping("/count7Days")
+  public Object count7Days(){
+    List<SysLoginLogs> sysLoginLogs = sysLoginLogsMapper.count7Days();
+    if(!CollectionUtils.isEmpty(sysLoginLogs)){
+      for (SysLoginLogs sysLoginLog : sysLoginLogs) {
+        sysLoginLog.setCreateTime(sysLoginLog.getCreateTime().replaceAll("-", "/"));
+      }
+    }
+    return sysLoginLogs;
+  }
 }

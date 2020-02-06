@@ -33,4 +33,8 @@ public interface ProductsRemote {
 
     @RequestMapping("/products/batchDelete")
     int batchDelete(@RequestParam("ids") String ids);
+
+    @RequestMapping("/products/selectList")
+    Object selectList(@RequestParam(value = "auditStatus", required = false) Integer auditStatus,
+                               @RequestParam(value = "supplierId", required = false) Long supplierId);
 }

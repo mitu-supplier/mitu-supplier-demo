@@ -37,4 +37,9 @@ public class SuppliersUpdateBack implements SuppliersUpdateRemote {
     public int batchAudit(String ids, Integer status) {
         return 0;
     }
+
+    @Override
+    public Object selectList(Integer status, Long supplierId) {
+        return null;
+    }
 }

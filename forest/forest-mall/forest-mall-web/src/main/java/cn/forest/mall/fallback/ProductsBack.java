@@ -47,4 +47,9 @@ public class ProductsBack implements ProductsRemote {
     public int batchDelete(String ids) {
         return 0;
     }
+
+    @Override
+    public Object selectList(Integer auditStatus, Long supplierId) {
+        return null;
+    }
 }

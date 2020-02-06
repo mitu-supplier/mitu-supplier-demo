@@ -31,4 +31,8 @@ public interface SuppliersRemote {
 
     @RequestMapping("/suppliers/batchUpdate")
     int batchUpdate(List<Map<String, Object>> list);
+
+    @RequestMapping("/suppliers/selectList")
+    Object selectList(@RequestParam(value = "status", required = false) Integer status,
+                               @RequestParam(value = "id", required = false) Long id);
 }

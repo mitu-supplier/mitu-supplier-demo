@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -117,4 +118,19 @@ public class ProductsAction {
         }
         return 0;
     }
+
+    @RequestMapping("/selectList")
+    public Object selectList(@RequestParam(value = "auditStatus", required = false) Integer auditStatus,
+                               @RequestParam(value = "supplierId", required = false) Long supplierId){
+        QueryWrapper<Products> qw = new QueryWrapper<>();
+        if(supplierId != null){
+            qw.eq("supplier_id", supplierId);
+        }
+        if(auditStatus != null){
+            qw.eq("audit_status", auditStatus);
+        }
+        return productsMapper.selectList(qw);
+    }
+
+
 }

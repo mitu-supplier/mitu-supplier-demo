@@ -1,35 +1,39 @@
 <template>
     <div>
         <el-row :gutter="20">
-            <el-col :span="8">
+            <el-col :span="12">
                 <el-card shadow="hover" class="mgb20" style="height:252px;">
                     <div class="user-info">
                         <img src="../../assets/img/img.jpg" class="user-avator" alt="">
                         <div class="user-info-cont">
-                            <div class="user-info-name">{{name}}</div>
-                            <div>{{role}}</div>
+                            <div class="user-info-name">{{userInfo.name}}</div>
+                            <div>{{userInfo.roleName}}</div>
                         </div>
                     </div>
-                    <div class="user-info-list">上次登录时间：<span>2019-01-01</span></div>
-                    <div class="user-info-list">上次登录地点：<span>北京</span></div>
+                    <div class="user-info-list">上次登录时间：<span>{{userInfo.loginTime}}</span></div>
+                    <div class="user-info-list">上次登录地点：<span>{{userInfo.loginAddress}}</span></div>
                 </el-card>
                 <el-card shadow="hover" style="height:252px;">
                     <div slot="header" class="clearfix">
-                        <span>语言详情</span>
+                        <h3>审核统计</h3>
                     </div>
-                    Vue
-                    <el-progress :percentage="71.3" color="#42b983"></el-progress>
-                    JavaScript
-                    <el-progress :percentage="24.1" color="#f1e05a"></el-progress>
-                    CSS
-                    <el-progress :percentage="3.7"></el-progress>
-                    HTML
-                    <el-progress :percentage="0.9" color="#f56c6c"></el-progress>
+                    <div class="">
+                        商户入驻待审核：<span>{{auditNum.supplierAuditNum}}</span>
+                    </div>
+                    <div class="mt20">
+                        商户信息修改待审核：<span>{{auditNum.supplierUpdateAuditNum}}</span>
+                    </div>
+                    <div class="mt20">
+                        新增商品待审核：<span>{{auditNum.productAuditNum}}</span>
+                    </div>
+                    <div class="mt20">
+                        商品信息修改待审核：<span>{{auditNum.productUpdateAuditNum}}</span>
+                    </div>
                 </el-card>
             </el-col>
-            <el-col :span="16">
+            <el-col :span="12">
                 <el-row :gutter="20" class="mgb20">
-                    <el-col :span="8">
+                    <!-- <el-col :span="8">
                         <el-card shadow="hover" :body-style="{padding: '0px'}">
                             <div class="grid-content grid-con-1">
                                 <i class="el-icon-lx-people grid-con-icon"></i>
@@ -50,14 +54,14 @@
                                 </div>
                             </div>
                         </el-card>
-                    </el-col>
-                    <el-col :span="8">
+                    </el-col> -->
+                    <el-col :span="24">
                         <el-card shadow="hover" :body-style="{padding: '0px'}">
                             <div class="grid-content grid-con-3">
                                 <i class="el-icon-lx-goods grid-con-icon"></i>
                                 <div class="grid-cont-right">
-                                    <div class="grid-num">5000</div>
-                                    <div>数量</div>
+                                    <div class="grid-num">{{productNum}}</div>
+                                    <div>商品数量</div>
                                 </div>
                             </div>
                         </el-card>
@@ -65,26 +69,26 @@
                 </el-row>
                 <el-card shadow="hover" style="height:403px;">
                     <div slot="header" class="clearfix">
-                        <span>待办事项</span>
-                        <el-button style="float: right; padding: 3px 0" type="text">添加</el-button>
+                        <h3>待办事项</h3>
+                        <!-- <el-button style="float: right; padding: 3px 0" type="text">添加</el-button> -->
                     </div>
                     <el-table :data="todoList" :show-header="false" height="304" style="width: 100%;font-size:14px;">
-                        <el-table-column width="40">
+                        <!-- <el-table-column width="40">
                             <template slot-scope="scope">
                                 <el-checkbox v-model="scope.row.status"></el-checkbox>
                             </template>
-                        </el-table-column>
+                        </el-table-column> -->
                         <el-table-column>
                             <template slot-scope="scope">
-                                <div class="todo-item" :class="{'todo-item-del': scope.row.status}">{{scope.row.title}}</div>
+                                <div class="todo-item" @click="toAudit(scope.row)">{{scope.row.title}}</div>
                             </template>
                         </el-table-column>
-                        <el-table-column width="60">
+                        <!-- <el-table-column width="60">
                             <template slot-scope="scope">
-                                <i class="el-icon-edit"></i>
-                                <i class="el-icon-delete"></i>
+                                <i class="el-icon-edit" @click="editTodo(scope.row.id)"></i>
+                                <i class="el-icon-delete ml5" @click="deleteTodo(scope.row.id)"></i>
                             </template>
-                        </el-table-column>
+                        </el-table-column> -->
                     </el-table>
                 </el-card>
             </el-col>
@@ -95,7 +99,7 @@
                     <schart ref="bar" class="schart" canvasId="bar" :data="data" type="bar" :options="options"></schart>
                 </el-card>
             </el-col>
-            <el-col :span="12">
+             <el-col :span="12">
                 <el-card shadow="hover">
                     <schart ref="line" class="schart" canvasId="line" :data="data" type="line" :options="options2"></schart>
                 </el-card>
@@ -105,37 +109,28 @@
 </template>
 
 <script>
+    import baseURL_ from '@/utils/baseUrl.js';
     import Schart from 'vue-schart';
     import bus from '../common/bus';
     export default {
-        name: 'dashboard',
+        name: 'home',
         data() {
             return {
-                name: localStorage.getItem('ms_username'),
-                todoList: [{
-                        title: '今天要修复100个bug',
-                        status: false,
-                    },
-                    {
-                        title: '今天要修复100个bug',
-                        status: false,
-                    },
-                    {
-                        title: '今天要写100行代码加几个bug吧',
-                        status: false,
-                    }, {
-                        title: '今天要修复100个bug',
-                        status: false,
-                    },
-                    {
-                        title: '今天要修复100个bug',
-                        status: true,
-                    },
-                    {
-                        title: '今天要写100行代码加几个bug吧',
-                        status: true,
-                    }
-                ],
+                userInfo: {
+                    name:'',
+                    roleName:'',
+                    loginName:'',
+                    loginTime:'',
+                    loginAddress:''
+                },
+                auditNum: {
+                    supplierAuditNum: 0,
+                    supplierUpdateAuditNum: 0,
+                    productAuditNum: 0,
+                    productUpdateAuditNum: 0
+                },
+                productNum: 0,
+                todoList: [],
                 data: [{
                         name: '2018/09/04',
                         value: 1083
@@ -187,11 +182,11 @@
             Schart
         },
         computed: {
-            role() {
-                return this.name === 'admin' ? '超级管理员' : '普通用户';
-            }
+            
         },
         created(){
+            this.getUserInfo();
+            this.getAuditInfo();
             this.handleListener();
             this.changeDate();
         },
@@ -203,12 +198,86 @@
             bus.$off('collapse', this.handleBus);
         },
         methods: {
-            changeDate(){
-                const now = new Date().getTime();
-                this.data.forEach((item, index) => {
-                    const date = new Date(now - (6 - index) * 86400000);
-                    item.name = `${date.getFullYear()}/${date.getMonth()+1}/${date.getDate()}`
+            async getUserInfo(){
+                const res = await this.$http.get(baseURL_.mallUrl+'/home/getUserInfo');
+                if(res.data.statusCode == 200){
+                    this.userInfo = res.data.data;
+                }
+            },
+            async getAuditInfo(){
+                const res = await this.$http.get(baseURL_.mallUrl+'/home/getAuditInfo');
+                if(res.data.statusCode == 200){
+                    this.auditNum = res.data.data;
+                    this.productNum = res.data.data.productNum;
+                    this.todoList = res.data.data.todoList;
+                }
+            },
+            async changeDate(){
+                const res = await this.$http.get(baseURL_.mallUrl+'/home/count7Days');
+                if(res.data.statusCode == 200){
+                    const now = new Date().getTime();
+                    this.data.forEach((item, index) => {
+                        const date = new Date(now - (6 - index) * 86400000);
+                        var yearStr = `${date.getFullYear()}`;
+                        var monthStr = `${date.getMonth()+1}` + '';
+                        var dateStr = `${date.getDate()}` + '';
+                        if(monthStr.length == 1){
+                            monthStr = '0' + monthStr; 
+                        }
+                        if(dateStr.length == 1){
+                            dateStr = '0' + dateStr;
+                        }
+                        item.name = yearStr + '/' + monthStr + '/' + dateStr;
+                        item.value = this.getNum(item.name, res.data.data);
+                    })
+                    this.renderChart();
+                }
+            },
+            getNum(dateStr, list){
+                var result = 0;
+                list.forEach((item, index) => {
+                    if(item.createTime == dateStr){
+                        result = item.num;
+                    }
                 })
+                return result;
+            },
+            toAudit(row){
+                var type = row.type;
+                if(type == 1){
+                    var id = Base64.encode(row.id);
+                    var status = Base64.encode(0);
+                    this.$router.push({
+                        path: '/supplierSee',
+                        name: 'supplierSee',
+                        query: {
+                            id: id,
+                            state:status
+                        }
+                    });
+                }else if(type == 2){
+                    var id = Base64.encode(row.id);
+                    var status = Base64.encode(0);
+                    this.$router.push({
+                        path: '/supplierUpdateView',
+                        name: 'supplierUpdateView',
+                        query: {
+                            id: id,
+                            state:status
+                        }
+                });
+                }else if(type == 3){
+                    var id = Base64.encode(row.id);
+                    var state = Base64.encode('10');
+                    this.$router.push({
+                        path: '/auditDetails',
+                        name:'auditDetails',
+                        query: {
+                            id: id,
+                            state:state
+                        }
+                    });
+                }
             },
             handleListener(){
                 bus.$on('collapse', this.handleBus);
@@ -318,10 +387,6 @@
         line-height: 25px;
     }
 
-    .user-info-list span {
-        margin-left: 70px;
-    }
-
     .mgb20 {
         margin-bottom: 20px;
     }
@@ -340,4 +405,11 @@
         height: 300px;
     }
 
+    .mt20 {
+        margin-top: 20px;
+    }
+
+    .ml5 {
+        margin-left: 5px;
+    }
 </style>

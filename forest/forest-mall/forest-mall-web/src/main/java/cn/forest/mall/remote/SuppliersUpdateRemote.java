@@ -66,4 +66,15 @@ public interface SuppliersUpdateRemote {
      */
     @RequestMapping("/supplier_update/batchAudit")
     int batchAudit(@RequestParam("ids") String ids, @RequestParam("status") Integer status);
+
+    /**
+     * 根据审核状态查询
+     *
+     * @param status
+     * @param supplierId
+     * @return
+     */
+    @RequestMapping("/supplier_update/selectList")
+    Object selectList(@RequestParam(value = "status", required = false) Integer status,
+                        @RequestParam(value = "supplierId", required = false) Long supplierId);
 }

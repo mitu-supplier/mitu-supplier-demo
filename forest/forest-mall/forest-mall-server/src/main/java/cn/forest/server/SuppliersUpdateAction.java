@@ -3,6 +3,7 @@ package cn.forest.server;
 import cn.forest.common.service.utils.ResultPage;
 import cn.forest.common.service.utils.ResultSave;
 import cn.forest.common.util.StringUtil;
+import cn.forest.mall.entity.Suppliers;
 import cn.forest.mall.entity.SuppliersUpdate;
 import cn.forest.mall.mapper.SuppliersUpdateMapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -104,6 +105,7 @@ public class SuppliersUpdateAction {
 
     /**
      * 批量审核
+     *
      * @param ids
      * @param status
      * @return
@@ -119,5 +121,25 @@ public class SuppliersUpdateAction {
             return suppliersUpdateMapper.batchAudit(idList, status);
         }
         return 0;
+    }
+
+    /**
+     * 根据审核状态查询
+     *
+     * @param status
+     * @param supplierId
+     * @return
+     */
+    @RequestMapping("/selectList")
+    public Object selectList(@RequestParam(value = "status", required = false) Integer status,
+                               @RequestParam(value = "supplierId", required = false) Long supplierId) {
+        QueryWrapper<SuppliersUpdate> qw = new QueryWrapper<>();
+        if (supplierId != null) {
+            qw.eq("supplier_id", supplierId);
+        }
+        if (status != null) {
+            qw.eq("status", status);
+        }
+        return suppliersUpdateMapper.selectList(qw);
     }
 }
