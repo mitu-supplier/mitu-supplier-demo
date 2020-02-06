@@ -76,6 +76,7 @@
                 pageSize:10,
                 tableData: [],
                 supplierId:'',
+                operationType:'',
                 formInline:{
                     supplierName:'',
                     userName:'',
@@ -86,6 +87,7 @@
         },
         created() {
             this.supplierId=this.$route.query.id;
+            this.operationType=this.$route.query.operationType;
             this.getData();
         },
         methods: {
@@ -112,7 +114,8 @@
                         'supplierId':this.supplierId,
                         'userName':this.formInline.userName,
                         'startTime':this.formInline.startTime,
-                        'endTime':this.formInline.endTime
+                        'endTime':this.formInline.endTime,
+                        'operationType':this.operationType
                     }
                 });
                 if(products.data.statusCode==200){

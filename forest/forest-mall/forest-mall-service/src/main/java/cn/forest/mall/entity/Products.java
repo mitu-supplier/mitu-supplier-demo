@@ -94,6 +94,9 @@ public class Products implements Serializable {
     @TableField(value = "delivery_type_code")
     private String deliveryTypeCode;
 
+    /**
+     * 库存报警阀值
+     */
     @TableField(value = "inventory_alert_num")
     private Integer inventoryAlertNum;
 
@@ -116,6 +119,41 @@ public class Products implements Serializable {
     @TableLogic
     private Integer isDelete;
 
+    /**
+     * 使用说明
+     */
+    @TableField(value = "use_directions")
+    private String useDirections;
+
+    /**
+     * 维护配置开始时间
+     */
+    @TableField(value = "maintain_config_start")
+    private String maintainConfigStart;
+
+    /**
+     * 维护配置结束时间
+     */
+    @TableField(value = "maintain_config_end")
+    private String maintainConfigEnd;
+
+    /**
+     * 维护配置提示语
+     */
+    @TableField(value = "maintain_message")
+    private String maintainMessage;
+
+    /**
+     * 库存售卖阀值
+     */
+    @TableField(value = "Inventory_selling_threshold")
+    private Integer InventorySellingThreshold;
+
+    /**
+     * 库存不足提示语
+     */
+    @TableField(value = "inventory_alert_message")
+    private String inventoryAlertMessage;
 
     // ==========  查询返回字段
 
@@ -332,5 +370,53 @@ public class Products implements Serializable {
 
     public void setStock(Integer stock) {
         this.stock = stock;
+    }
+
+    public String getUseDirections() {
+        return useDirections;
+    }
+
+    public void setUseDirections(String useDirections) {
+        this.useDirections = useDirections;
+    }
+
+    public String getMaintainConfigStart() {
+        return maintainConfigStart;
+    }
+
+    public void setMaintainConfigStart(String maintainConfigStart) {
+        this.maintainConfigStart = maintainConfigStart;
+    }
+
+    public String getMaintainConfigEnd() {
+        return maintainConfigEnd;
+    }
+
+    public void setMaintainConfigEnd(String maintainConfigEnd) {
+        this.maintainConfigEnd = maintainConfigEnd;
+    }
+
+    public String getMaintainMessage() {
+        return maintainMessage;
+    }
+
+    public void setMaintainMessage(String maintainMessage) {
+        this.maintainMessage = maintainMessage;
+    }
+
+    public Integer getInventorySellingThreshold() {
+        return InventorySellingThreshold;
+    }
+
+    public void setInventorySellingThreshold(Integer inventorySellingThreshold) {
+        InventorySellingThreshold = inventorySellingThreshold;
+    }
+
+    public String getInventoryAlertMessage() {
+        return inventoryAlertMessage;
+    }
+
+    public void setInventoryAlertMessage(String inventoryAlertMessage) {
+        this.inventoryAlertMessage = inventoryAlertMessage;
     }
 }

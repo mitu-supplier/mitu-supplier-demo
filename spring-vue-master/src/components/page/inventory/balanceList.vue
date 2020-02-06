@@ -22,14 +22,16 @@
                 <el-table-column prop="name" label="商户名称"  align="center" width=""></el-table-column>
                 <el-table-column label="账户余额（元）" align="center" width="">
                     <template slot-scope="scope">
-                        <span type="text" v-if="scope.row.balance == null" class="red">0.00</span>
-                        <span type="text" v-else>{{scope.row.balance.toFixed(2)}}</span>
+                        <span type="text" v-if="scope.row.balance == null" class="red">0.000</span>
+                        <span type="text" v-else>{{scope.row.balance.toFixed(3)}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column label="操作" width="" align="center">
                     <template slot-scope="scope">
                         <el-button type="text" icon="el-icon-edit" @click="addBalance(scope.$index, scope.row)">充值</el-button>
-                        <el-button type="text" icon="el-icon-document" @click="look(scope.$index, scope.row)">充值记录</el-button>
+                        <el-button type="text" icon="el-icon-document" @click="look(scope.$index, scope.row, 1)">充值记录</el-button>
+                        <el-button type="text" icon="el-icon-edit" @click="subtractBalance(scope.$index, scope.row)">扣减</el-button>
+                        <el-button type="text" icon="el-icon-document" @click="look(scope.$index, scope.row, 2)">扣减记录</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -83,7 +85,8 @@
                 form:{
                     supplierName:'',
                     supplierId:'',
-                    money:''
+                    money:'',
+                    operationType:''
                 }
             }
         },
@@ -91,8 +94,8 @@
             this.getData();
         },
         methods: {
-            look(index, row){
-              this.$router.push({path:'/balanceRecordList',query:{id:row.id}});
+            look(index, row, type){
+              this.$router.push({path:'/balanceRecordList',query:{id:row.id, operationType:type}});
             },
             onSubmit(){
                 this.getData();
@@ -130,6 +133,7 @@
                 this.form = {};
                 this.form.supplierId = row.id;
                 this.form.supplierName = row.name;
+                this.form.operationType = 1;
                 this.editVisible=true;
                 this.titleName="充值";
             },
@@ -139,6 +143,10 @@
                     this.$message("请输入金额");
                     return;
                 }
+                if(this.form.operationType && this.form.operationType == 2){
+                    this.form.money = 0 - money;
+                }
+                
                 var add = await this.$http.post(baseURL_.mallUrl+'/supplierBalanceRecord/save',this.$qs.stringify(this.form));
                 this.$message(add.data.data);
                 if(add.data.statusCode==200){
@@ -147,8 +155,16 @@
                 this.getData();
             },
             toFix(){
-                this.form.money = Number(this.form.money).toFixed(2);
+                this.form.money = Number(this.form.money).toFixed(3);
             },
+            subtractBalance(index, row){
+                this.form = {};
+                this.form.supplierId = row.id;
+                this.form.supplierName = row.name;
+                this.form.operationType = 2;
+                this.editVisible=true;
+                this.titleName="扣减";
+            }
         }
     }
 

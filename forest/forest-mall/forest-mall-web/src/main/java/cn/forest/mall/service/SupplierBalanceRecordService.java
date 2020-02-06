@@ -89,7 +89,6 @@ public class SupplierBalanceRecordService {
             paramMap.put("userId", userInfoMap.get("id"));
             paramMap.put("userName", userInfoMap.get("name"));
         }
-        paramMap.put("operationType", 1);
         int save = supplierBalanceRecordRemote.save(paramMap);
         return ResultMessage.result(save, "操作成功","操作失败");
     }

@@ -20,19 +20,22 @@ import java.util.Map;
 public class ProductsService {
 
     @Autowired
+    private RedisDao redisDao;
+
+    @Autowired
     private ProductsRemote productsRemote;
 
     @Autowired
     private AuditRecodeRemote auditRecodeRemote;
 
     @Autowired
-    private CatalogsRemote catalogsRemote;
-
-    @Autowired
-    private RedisDao redisDao;
-
-    @Autowired
     private SysSequenceRemote sysSequenceRemote;
+
+    @Autowired
+    private ProductDeliveryStatusRemote productDeliveryStatusRemote;
+
+    @Autowired
+    private ProductDeliveryStatusDataRemote productDeliveryStatusDataRemote;
 
     public Map<String, Object> list(HttpServletRequest request, String listType) {
         Map<String, Object> paramMap = RequestMap.requestToMap(request);
@@ -46,7 +49,7 @@ public class ProductsService {
                 paramMap.put("supplierId", typeId);
             }
         }
-        if(listType != null){
+        if (listType != null) {
             paramMap.put("listType", listType);
         }
         Object obj = productsRemote.list(paramMap);
@@ -69,29 +72,40 @@ public class ProductsService {
         String header = request.getHeader(Constant.HEADER_TOKEN_STRING);
         HashMap userInfoMap = (HashMap) redisDao.getValue(header);
         if (userInfoMap != null) {
-            if(!StringUtil.isBlank(userInfoMap.get("type")) && Integer.parseInt(userInfoMap.get("type").toString()) == 1){
+            if (!StringUtil.isBlank(userInfoMap.get("type")) && Integer.parseInt(userInfoMap.get("type").toString()) == 1) {
                 paramMap.put("supplierId", userInfoMap.get("typeId"));
             }
         }
-        if(StringUtil.isNotBlank(paramMap.get("auditStatus")) && Integer.parseInt(paramMap.get("auditStatus").toString()) == 0){
-            if(StringUtil.isBlank(paramMap.get("supplierId"))){
+        if (StringUtil.isNotBlank(paramMap.get("auditStatus")) && Integer.parseInt(paramMap.get("auditStatus").toString()) == 0) {
+            if (StringUtil.isBlank(paramMap.get("supplierId"))) {
                 return ResultMessage.error("请选择商户信息");
             }
         }
         Object save = productsRemote.save(paramMap);
         if (save != null) {
+            // 保存商品发货状态
+            String deliveryStatus = StringUtil.toString(paramMap.get("deliveryStatus"));
+            Long productId = Long.parseLong(save.toString());
+            productDeliveryStatusRemote.saveByProductId(productId, deliveryStatus);
             return ResultMessage.success("操作成功");
         }
         return ResultMessage.error("操作失败");
     }
 
     public Map<String, Object> update(Map<String, Object> map) {
-        if(StringUtil.isNotBlank(map.get("auditStatus")) && Integer.parseInt(map.get("auditStatus").toString()) == 0){
-            if(StringUtil.isBlank(map.get("supplierId"))){
+        if (StringUtil.isNotBlank(map.get("auditStatus")) && Integer.parseInt(map.get("auditStatus").toString()) == 0) {
+            if (StringUtil.isBlank(map.get("supplierId"))) {
                 return ResultMessage.error("请选择商户信息");
             }
         }
         int update = productsRemote.update(map);
+        if(update > 0){
+            // 保存商品发货状态
+            String deliveryStatus = StringUtil.toString(map.get("deliveryStatus"));
+            Long productId = Long.parseLong(StringUtil.toString(map.get("id")));
+            productDeliveryStatusRemote.deleteByProductId(productId);
+            productDeliveryStatusRemote.saveByProductId(productId, deliveryStatus);
+        }
         return ResultMessage.result(update, "操作成功", "操作失败");
     }
 
@@ -161,7 +175,7 @@ public class ProductsService {
         return ResultMessage.error("操作提交失败");
     }
 
-    public Map<String, Object> batchDelete(String ids){
+    public Map<String, Object> batchDelete(String ids) {
         int i = productsRemote.batchDelete(ids);
         return ResultMessage.result(i, "删除成功", "删除失败");
     }
@@ -183,11 +197,12 @@ public class ProductsService {
 
     /**
      * 修改上下架状态   1上架    2下架
+     *
      * @param id
      * @param status
      * @return
      */
-    public Map<String, Object> updateStatus(Long id, Integer status){
+    public Map<String, Object> updateStatus(Long id, Integer status) {
         Map<String, Object> productMap = new HashMap<>();
         productMap.put("id", id);
         productMap.put("status", status);
@@ -212,5 +227,35 @@ public class ProductsService {
             sysSequenceRemote.save(map);
         }
         return name + sysSequenceRemote.getSeqValue(name);
+    }
+
+    /**
+     * 获取商品发货状态
+     *
+     * @return
+     */
+    public Map<String, Object> getDeliveryStatus() {
+        Object list = productDeliveryStatusDataRemote.list();
+        if (list != null) {
+            return ResultMessage.success(list);
+        }
+        return null;
+    }
+
+    /**
+     * 保存商品发货状态
+     *
+     * @param request
+     * @return
+     */
+    public Map<String, Object> saveDeliveryStatus(HttpServletRequest request) {
+        Map<String, Object> paramMap = RequestMap.requestToMap(request);
+        String header = request.getHeader(Constant.HEADER_TOKEN_STRING);
+        HashMap userInfoMap = (HashMap) redisDao.getValue(header);
+        if (userInfoMap != null) {
+            paramMap.put("userId", userInfoMap.get("id"));
+        }
+        int save = productDeliveryStatusDataRemote.save(paramMap);
+        return ResultMessage.result(save, "保存成功", "保存失败");
     }
 }

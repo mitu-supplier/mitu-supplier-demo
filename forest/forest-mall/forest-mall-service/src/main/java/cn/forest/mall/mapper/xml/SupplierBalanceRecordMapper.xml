@@ -26,6 +26,9 @@
             <if test="endTime != null and endTime != ''">
                 AND sbr.created_at &lt;= #{endTime}
             </if>
+            <if test="operationType != null and operationType != ''">
+                AND sbr.operation_type = #{operationType}
+            </if>
         ORDER BY created_at DESC
     </select>
 

@@ -3,12 +3,9 @@ package cn.forest.mall.web;
 import cn.forest.common.util.RequestMap;
 import cn.forest.common.util.ResultMessage;
 import cn.forest.mall.remote.CatalogsRemote;
-import cn.forest.mall.remote.SuppliersRemote;
 import cn.forest.mall.remote.SysDictionaryDataRemote;
-import cn.forest.mall.remote.SysSequenceRemote;
 import cn.forest.mall.service.ProductsService;
 import cn.forest.mall.service.SuppliersService;
-import org.json.HTTP;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -119,21 +116,21 @@ public class ProductsController {
     }
 
     @RequestMapping("/getSuppliers")
-    public Map<String, Object> getSuppliers(){
+    public Map<String, Object> getSuppliers() {
         return suppliersService.getAll();
     }
 
     @RequestMapping("/isSupplier")
-    public Map<String, Object> isSupplier(HttpServletRequest request){
-        if(suppliersService.isSupplier(request)){
+    public Map<String, Object> isSupplier(HttpServletRequest request) {
+        if (suppliersService.isSupplier(request)) {
             return ResultMessage.success(1);
         }
         return ResultMessage.success(0);
     }
 
     @RequestMapping("/updateStatus")
-    public Map<String, Object> updateStatus(Long id, Integer status){
-        return  productsService.updateStatus(id, status);
+    public Map<String, Object> updateStatus(Long id, Integer status) {
+        return productsService.updateStatus(id, status);
     }
 
     /**
@@ -144,5 +141,27 @@ public class ProductsController {
     @RequestMapping("/getProductCode")
     public Map<String, Object> getProductCode() {
         return ResultMessage.success(productsService.getProductCode());
+    }
+
+    /**
+     * 获取商品发货状态
+     *
+     * @return
+     */
+    @RequestMapping("/getDeliveryStatus")
+    public Map<String, Object> getDeliveryStatus() {
+        return productsService.getDeliveryStatus();
+    }
+
+
+    /**
+     * 保存商品发货状态
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping("/saveDeliveryStatus")
+    public Map<String, Object> saveDeliveryStatus(HttpServletRequest request) {
+        return productsService.saveDeliveryStatus(request);
     }
 }

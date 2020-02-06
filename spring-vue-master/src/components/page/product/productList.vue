@@ -209,13 +209,21 @@
                     this.$message("请先选择商品");
                     return ;
                 }
-                this.$confirm('确认删除？').then( e=> {
-                    var ids = [];
-                    this.multipleSelection.forEach(e => {
-                        ids.push(e.id);
-                    });
-                    this.delete(ids.join(','));
-                }).catch(_ => {});
+                var flag = 0;
+                var ids = [];
+                this.multipleSelection.forEach(e => {
+                    ids.push(e.id);
+                    if(e.auditStatus != '2' && e.auditStatus != '3'){
+                        flag ++;
+                    }
+                });
+                if(flag == 0){
+                    this.$confirm('确认删除？').then( e=> {
+                        this.delete(ids.join(','));
+                    }).catch(_ => {});
+                }else{
+                    this.$message("审核通过不允许删除！");
+                }
             },
             handleDelete(index, row){
                 this.$confirm('确认删除？').then( e=> {
