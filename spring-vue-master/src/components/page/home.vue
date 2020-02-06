@@ -6,8 +6,8 @@
                     <div class="user-info">
                         <img src="../../assets/img/img.jpg" class="user-avator" alt="">
                         <div class="user-info-cont">
-                            <div class="user-info-name">{{userInfo.name}}</div>
-                            <div>{{userInfo.roleName}}</div>
+                            <div class="user-info-name">{{userInfo.loginName}}</div>
+                            <div>{{userInfo.name}}</div>
                         </div>
                     </div>
                     <div class="user-info-list">上次登录时间：<span>{{userInfo.loginTime}}</span></div>
@@ -33,31 +33,9 @@
             </el-col>
             <el-col :span="12">
                 <el-row :gutter="20" class="mgb20">
-                    <!-- <el-col :span="8">
-                        <el-card shadow="hover" :body-style="{padding: '0px'}">
-                            <div class="grid-content grid-con-1">
-                                <i class="el-icon-lx-people grid-con-icon"></i>
-                                <div class="grid-cont-right">
-                                    <div class="grid-num">1234</div>
-                                    <div>用户访问量</div>
-                                </div>
-                            </div>
-                        </el-card>
-                    </el-col>
-                    <el-col :span="8">
-                        <el-card shadow="hover" :body-style="{padding: '0px'}">
-                            <div class="grid-content grid-con-2">
-                                <i class="el-icon-lx-notice grid-con-icon"></i>
-                                <div class="grid-cont-right">
-                                    <div class="grid-num">321</div>
-                                    <div>系统消息</div>
-                                </div>
-                            </div>
-                        </el-card>
-                    </el-col> -->
                     <el-col :span="24">
                         <el-card shadow="hover" :body-style="{padding: '0px'}">
-                            <div class="grid-content grid-con-3">
+                            <div class="grid-content grid-con-1">
                                 <i class="el-icon-lx-goods grid-con-icon"></i>
                                 <div class="grid-cont-right">
                                     <div class="grid-num">{{productNum}}</div>
@@ -70,25 +48,13 @@
                 <el-card shadow="hover" style="height:403px;">
                     <div slot="header" class="clearfix">
                         <h3>待办事项</h3>
-                        <!-- <el-button style="float: right; padding: 3px 0" type="text">添加</el-button> -->
                     </div>
                     <el-table :data="todoList" :show-header="false" height="304" style="width: 100%;font-size:14px;">
-                        <!-- <el-table-column width="40">
-                            <template slot-scope="scope">
-                                <el-checkbox v-model="scope.row.status"></el-checkbox>
-                            </template>
-                        </el-table-column> -->
                         <el-table-column>
                             <template slot-scope="scope">
-                                <div class="todo-item" @click="toAudit(scope.row)">{{scope.row.title}}</div>
+                                <div class="todo-item show-hand" @click="toAudit(scope.row)">{{scope.row.title}}</div>
                             </template>
                         </el-table-column>
-                        <!-- <el-table-column width="60">
-                            <template slot-scope="scope">
-                                <i class="el-icon-edit" @click="editTodo(scope.row.id)"></i>
-                                <i class="el-icon-delete ml5" @click="deleteTodo(scope.row.id)"></i>
-                            </template>
-                        </el-table-column> -->
                     </el-table>
                 </el-card>
             </el-col>
@@ -411,5 +377,9 @@
 
     .ml5 {
         margin-left: 5px;
+    }
+
+    .show-hand{
+        cursor: pointer;
     }
 </style>
