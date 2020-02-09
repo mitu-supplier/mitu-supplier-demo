@@ -96,13 +96,8 @@
                     <el-input v-model="addComForm.price" size="mini" class="w50"></el-input>
                 </el-form-item>
 
-                <el-form-item label="供货价(元)" prop="">
+                <el-form-item label="供货价(元)" prop="supplyPrice">
                     <el-input v-model="addComForm.supplyPrice" size="mini" class="w50"></el-input>
-                </el-form-item>
-
-                <el-form-item label="状态" prop="">
-                    <el-radio v-model="addComForm.status" :label="1">上架</el-radio>
-                    <el-radio v-model="addComForm.status" :label="2">下架</el-radio>
                 </el-form-item>
 
                 <el-form-item label="商品详情" prop="protalDetails">
@@ -110,6 +105,58 @@
                     <div class="editor-container">
                       <div id="editor"></div>
                     </div>
+                </el-form-item>
+
+                <el-form-item label="使用说明" prop="useDirections">
+                    <input type="hidden" v-model="addComForm.useDirections">
+                    <div class="editor-container">
+                      <div id="useDirections_editor"></div>
+                    </div>
+                </el-form-item>
+
+                <el-form-item label="维护配置" prop="">
+                    <el-date-picker
+                      size="mini"              
+                      v-model="maintainConfig"
+                      type="datetimerange"
+                      range-separator="至"
+                      format="yyyy-MM-dd HH:mm:ss"
+                      value-format="yyyy-MM-dd HH:mm:ss"
+                      start-placeholder="开始时间"
+                      end-placeholder="结束时间">
+                    </el-date-picker>
+                </el-form-item>
+
+                <el-form-item label="维护提示语" prop="">
+                    <el-input v-model="addComForm.maintainMessage" size="mini" class="w50"></el-input>
+                </el-form-item>
+
+                <el-form-item label="库存售卖阈值" prop="">
+                    <el-input v-model="addComForm.inventorySellingThreshold" size="mini" class="w50" oninput="value=value.replace(/[^\d]/g,'')"></el-input>
+                </el-form-item>
+
+                <el-form-item label="库存不足提示语" prop="">
+                    <el-input v-model="addComForm.inventoryAlertMessage" size="mini" class="w50"></el-input>
+                </el-form-item>
+
+                <el-form-item label="库存报警阈值" prop="">
+                    <el-input v-model="addComForm.inventoryAlertNum" size="mini" class="w50" oninput="value=value.replace(/[^\d]/g,'')"></el-input>
+                </el-form-item>
+
+                <el-form-item label="发货状态" prop="">
+                    <el-select v-model="deliveryStatus" multiple placeholder="请选择">
+                      <el-option
+                        v-for="item in deliveryStatusList"
+                        :key="item.id"
+                        :label="item.deliveryStatus"
+                        :value="item.deliveryStatus">
+                      </el-option>
+                    </el-select>
+                </el-form-item>
+
+                 <el-form-item label="状态" prop="">
+                    <el-radio v-model="addComForm.status" :label="1">上架</el-radio>
+                    <el-radio v-model="addComForm.status" :label="2">下架</el-radio>
                 </el-form-item>
 
                 <el-form-item>
@@ -133,6 +180,10 @@
                 addComForm:{
                     orgNames2:'',
                     protalDetails:'',
+                    useDirections:'',
+                    deliveryStatus:'',
+                    maintainConfigStart:'',
+                    maintainConfigEnd:''
                 },
                 rules: {
                     deliveryType: [{ required: true, message: "请选择发货类型", trigger: "change" }],
@@ -141,6 +192,8 @@
                     name: [{ required: true, message: "请输入商品名称", trigger: "blur" }],
                     price: [{ required: true, message: "请输入市场价", trigger: "blur" }],
                     protalDetails: [{ required: true, message: "请输入商品详情", trigger: "change" }],
+                    supplyPrice: [{ required: true, message: "请输入供货价", trigger: "blur" }],
+                    useDirections: [{ required: true, message: "请输入使用说明", trigger: "change" }],
                 },
                 options: [],
                 fileList:[],
@@ -166,7 +219,10 @@
                 catalogId:'',
                 isSupplier: 1,
                 suppliers:[],
-                detailsId:''
+                detailsId:'',
+                maintainConfig: [],
+                deliveryStatus: [],
+                deliveryStatusList: []
             }
         },
         created() {
@@ -174,6 +230,7 @@
           this.getSelectForm();
           this.vaIsSupplier();
           this.getSuppliers();
+          this.getDeliveryStatus();
         },
         mounted() {
           var id = this.$route.query.id;
@@ -181,6 +238,11 @@
           this.getData();
           UE.delEditor("editor");
           ueditor_.methods.loadComponent("editor");
+
+          // 使用说明
+          UE.delEditor("useDirections_editor");
+          ueditor_.methods.loadComponent("useDirections_editor");
+
         },
         methods: {
             // 数据回显
@@ -206,6 +268,17 @@
                   usd.setHeight(366);
                   usd.setContent(details);
                 });
+                var useDirections = this.addComForm.useDirections;
+                var useDirectionsEditor = UE.getEditor("useDirections_editor");
+                useDirectionsEditor.ready(function() {
+                  useDirectionsEditor.setHeight(366);
+                  useDirectionsEditor.setContent(useDirections);
+                });
+                this.maintainConfig = [this.addComForm.maintainConfigStart, this.addComForm.maintainConfigEnd];
+                var deliveryStatus = this.addComForm.deliveryStatus;
+                if(deliveryStatus != null || deliveryStatus != ''){
+                  this.deliveryStatus = deliveryStatus.split(',');
+                }
               }else{
                 this.$message(res.data.data);
               }
@@ -252,10 +325,18 @@
             async submitAddCom(){
               var details = UE.getEditor('editor').getContent();
               this.addComForm.protalDetails = details;
+              var useDirections = UE.getEditor('useDirections_editor').getContent();
+              this.addComForm.useDirections = useDirections;
               this.$refs['addComForm'].validate(async valid => {
                 if (valid) {
                   this.addComForm.catalogId = this.catalogId;
                   this.addComForm.id = this.detailsId;
+                  this.addComForm.deliveryStatus = this.deliveryStatus.join(",");
+                  var maintainConfigs = this.maintainConfig;
+                  if(maintainConfigs != null && maintainConfigs.length == 2){
+                    this.addComForm.maintainConfigStart = maintainConfigs[0];
+                    this.addComForm.maintainConfigEnd = maintainConfigs[1];
+                  }
                   this.addComForm.auditStatus = 0;
                   this.addComForm.details = details;
                   const res = await this.$http.post(baseURL_.mallUrl+'/products/update',this.$qs.stringify(this.addComForm));
@@ -268,11 +349,19 @@
             },
             // 暂存
             async staging(){
-              this.$refs['addComForm'].validate(async valid => {
-                if (valid) {
+              var useDirections = UE.getEditor('useDirections_editor').getContent();
+              // this.$refs['addComForm'].validate(async valid => {
+                // if (valid) {
                   var details = UE.getEditor('editor').getContent();
                   this.addComForm.catalogId = this.catalogId;
                   this.addComForm.id = this.detailsId;
+                  this.addComForm.useDirections = useDirections;
+                  this.addComForm.deliveryStatus = this.deliveryStatus.join(",");
+                  var maintainConfigs = this.maintainConfig;
+                  if(maintainConfigs != null && maintainConfigs.length == 2){
+                    this.addComForm.maintainConfigStart = maintainConfigs[0];
+                    this.addComForm.maintainConfigEnd = maintainConfigs[1];
+                  }
                   this.addComForm.auditStatus = 3;
                   this.addComForm.details = details;
                   const res = await this.$http.post(baseURL_.mallUrl+'/products/update',this.$qs.stringify(this.addComForm));
@@ -280,8 +369,8 @@
                   if(res.data.statusCode==200){
                     this.$router.push('/productList');
                   }
-                }
-              })
+                // }
+              // })
             },
             // Logo上传
             uploadUrl() {
@@ -326,6 +415,11 @@
               this.suppliers = [];
               this.suppliers = res.data.data;
             },
+            async getDeliveryStatus(){
+              var res = await this.$http.get(baseURL_.mallUrl+'/products/getDeliveryStatus');
+              this.deliveryStatusList = [];
+              this.deliveryStatusList = res.data.data;
+            }
         }
     }
 

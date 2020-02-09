@@ -40,8 +40,7 @@ public class SysUserBack implements SysUserRemote {
   }
 
   @Override
-  public Object getLoginName(Map<String, ?> map) {
+  public Object getLoginName(String loginName) {
     return null;
   }
-
 }

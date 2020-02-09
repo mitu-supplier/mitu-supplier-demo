@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import cn.forest.commom.redis.RedisDao;
 import cn.forest.common.Constant;
+import cn.forest.common.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +41,11 @@ public class SysUserService {
   }
 
   public Map<String, Object> add(Map<String, ?> map) {
+    String loginName = StringUtil.toString(map.get("loginName"));
+    Object queryLoginName = sysUserRemote.getLoginName(loginName);
+    if(queryLoginName != null){
+      return ResultMessage.error("登录名已存在");
+    }
     Object add = sysUserRemote.add(map);
     if(add != null){
       Map result = (Map) add;
@@ -52,6 +58,15 @@ public class SysUserService {
   }
 
   public Map<String, Object> update(Map<String, ?> map) {
+    String loginName = StringUtil.toString(map.get("loginName"));
+    Object queryLoginName = sysUserRemote.getLoginName(loginName);
+    if(queryLoginName != null){
+      Map userMap = (Map) queryLoginName;
+      String id = StringUtil.toString(userMap.get("id"));
+      if(id == null || !id.equals(StringUtil.toString(map.get("id")))){
+        return ResultMessage.error("登录名已存在");
+      }
+    }
     int delete = sysUserRemote.update(map);
     if (delete > 0) {
       return ResultMessage.result("修改成功");

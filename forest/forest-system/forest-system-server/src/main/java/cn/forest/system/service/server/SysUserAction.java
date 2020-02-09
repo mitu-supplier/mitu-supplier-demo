@@ -7,6 +7,7 @@ import cn.forest.common.service.utils.ResultSave;
 import cn.forest.common.util.BCrypt;
 import cn.forest.common.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -124,10 +125,14 @@ public class SysUserAction {
   }
   
   @RequestMapping("/getLoginName")
-  public Object getLoginName(String loginName) {
+  public Object getLoginName(@RequestParam("loginName") String loginName) {
     QueryWrapper<SysUser> sysUserQueryWrapper = new QueryWrapper<>();
     sysUserQueryWrapper.eq("login_name", loginName);
-    return sysUserMapper.selectOne(sysUserQueryWrapper);
+    List<SysUser> sysUsers = sysUserMapper.selectList(sysUserQueryWrapper);
+    if(!CollectionUtils.isEmpty(sysUsers)){
+      return sysUsers.get(0);
+    }
+    return null;
     
   }
   

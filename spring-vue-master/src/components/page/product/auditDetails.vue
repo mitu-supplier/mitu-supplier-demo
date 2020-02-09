@@ -92,15 +92,63 @@
                     <el-input v-model="addComForm.supplyPrice" size="mini" readonly class="w50"></el-input>
                 </el-form-item>
 
-                <el-form-item label="状态" prop="">
-                    <el-radio v-model="addComForm.status" disabled readonly :label="1">上架</el-radio>
-                    <el-radio v-model="addComForm.status" disabled readonly :label="2">下架</el-radio>
-                </el-form-item>
-
                 <el-form-item label="商品详情" prop="">
                     <div class="editor-container">
                       <div id="editor"></div>
                     </div>
+                </el-form-item>
+
+                <el-form-item label="使用说明" prop="useDirections">
+                    <div class="editor-container">
+                      <div id="useDirections_editor"></div>
+                    </div>
+                </el-form-item>
+
+                <el-form-item label="维护配置" prop="">
+                    <el-date-picker
+                      disabled
+                      size="mini"              
+                      v-model="maintainConfig"
+                      type="datetimerange"
+                      range-separator="至"
+                      format="yyyy-MM-dd HH:mm:ss"
+                      value-format="yyyy-MM-dd HH:mm:ss"
+                      start-placeholder="开始时间"
+                      end-placeholder="结束时间">
+                    </el-date-picker>
+                </el-form-item>
+
+                <el-form-item label="维护提示语" prop="">
+                    <el-input v-model="addComForm.maintainMessage" readonly size="mini" class="w50"></el-input>
+                </el-form-item>
+
+                <el-form-item label="库存售卖阈值" prop="">
+                    <el-input v-model="addComForm.inventorySellingThreshold" readonly size="mini" class="w50" oninput="value=value.replace(/[^\d]/g,'')"></el-input>
+                </el-form-item>
+
+                <el-form-item label="库存不足提示语" prop="">
+                    <el-input v-model="addComForm.inventoryAlertMessage" readonly size="mini" class="w50"></el-input>
+                </el-form-item>
+
+                <el-form-item label="库存报警阈值" prop="">
+                    <el-input v-model="addComForm.inventoryAlertNum" size="mini" readonly class="w50" oninput="value=value.replace(/[^\d]/g,'')"></el-input>
+                </el-form-item>
+
+                <el-form-item label="发货状态" prop="">
+                    <el-select v-model="deliveryStatus" multiple placeholder="请选择">
+                      <el-option
+                        disabled
+                        v-for="item in deliveryStatusList"
+                        :key="item.id"
+                        :label="item.deliveryStatus"
+                        :value="item.deliveryStatus">
+                      </el-option>
+                    </el-select>
+                </el-form-item>
+
+                <el-form-item label="状态" prop="">
+                    <el-radio v-model="addComForm.status" disabled readonly :label="1">上架</el-radio>
+                    <el-radio v-model="addComForm.status" disabled readonly :label="2">下架</el-radio>
                 </el-form-item>
 
                 <el-form-item v-if="auditType =='10'" label="发货代号" prpo="">
@@ -177,7 +225,10 @@
                 deliveryTypeCodeList:[],
                 dialogVisible:false,
                 dialogImageUrl:'',
-                detailsId:''
+                detailsId:'',
+                maintainConfig: [],
+                deliveryStatus: [],
+                deliveryStatusList: []
             }
         },
         created() {
@@ -192,10 +243,12 @@
           this.detailsId = Base64.decode(id);
           this.getData();
           this.getSelectForm();
-
+          this.getDeliveryStatus();
           UE.delEditor("editor");
           ueditor_.methods.loadComponent("editor");
-          
+          // 使用说明
+          UE.delEditor("useDirections_editor");
+          ueditor_.methods.loadComponent("useDirections_editor");
         },
         methods: {
             // 数据回显
@@ -220,6 +273,18 @@
                   usd.setDisabled();
                 });
                 this.getDeliveryTypeCode();
+                var useDirections = this.addComForm.useDirections;
+                var useDirectionsEditor = UE.getEditor("useDirections_editor");
+                useDirectionsEditor.ready(function() {
+                  useDirectionsEditor.setHeight(366);
+                  useDirectionsEditor.setContent(useDirections);
+                  useDirectionsEditor.setDisabled();
+                });
+                this.maintainConfig = [this.addComForm.maintainConfigStart, this.addComForm.maintainConfigEnd];
+                var deliveryStatus = this.addComForm.deliveryStatus;
+                if(deliveryStatus != null || deliveryStatus != ''){
+                  this.deliveryStatus = deliveryStatus.split(',');
+                }
               }else{
                 this.$message(res.data.data);
               }
@@ -373,6 +438,11 @@
                   this.addComForm.deliveryTypeCode = deliveryTypeCode;
                   this.getDeliveryTypeCode();
                 }
+            },
+            async getDeliveryStatus(){
+              var res = await this.$http.get(baseURL_.mallUrl+'/products/getDeliveryStatus');
+              this.deliveryStatusList = [];
+              this.deliveryStatusList = res.data.data;
             }
         }
     }

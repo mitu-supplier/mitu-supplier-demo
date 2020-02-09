@@ -4,9 +4,11 @@ package cn.forest.server;
 import cn.forest.common.service.utils.ResultPage;
 import cn.forest.common.util.StringUtil;
 import cn.forest.mall.entity.Catalogs;
+import cn.forest.mall.entity.ProductDeliveryStatus;
 import cn.forest.mall.entity.Products;
 import cn.forest.mall.entity.Suppliers;
 import cn.forest.mall.mapper.CatalogsMapper;
+import cn.forest.mall.mapper.ProductDeliveryStatusMapper;
 import cn.forest.mall.mapper.ProductsMapper;
 import cn.forest.mall.mapper.SuppliersMapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -23,6 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/products")
@@ -36,6 +39,9 @@ public class ProductsAction {
 
     @Autowired
     private SuppliersMapper suppliersMapper;
+
+    @Autowired
+    private ProductDeliveryStatusMapper productDeliveryStatusMapper;
 
     @RequestMapping("/list")
     public Object list(@RequestBody Map<String, Object> map) {
@@ -61,6 +67,13 @@ public class ProductsAction {
             if(supplierId != null){
                 Suppliers suppliers = suppliersMapper.selectById(supplierId);
                 products.setSupplierName(suppliers == null ? null : suppliers.getName());
+            }
+            QueryWrapper<ProductDeliveryStatus> qw = new QueryWrapper<>();
+            qw.eq("product_id", id);
+            List<ProductDeliveryStatus> productDeliveryStatuses = productDeliveryStatusMapper.selectList(qw);
+            if(productDeliveryStatuses != null){
+                List<Long> collect = productDeliveryStatuses.stream().map(ProductDeliveryStatus::getDeliveryStatus).collect(Collectors.toList());
+                products.setDeliveryStatus(StringUtils.join(collect.toArray(), ","));
             }
         }
         return products;

@@ -150,7 +150,8 @@
                     deliveryType:''
                 },
                 auditReason:'',
-                productId:''
+                productId:'',
+                auditData:[]
             }
         },
         created() {

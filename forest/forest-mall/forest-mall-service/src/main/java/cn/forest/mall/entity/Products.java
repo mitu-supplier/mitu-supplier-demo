@@ -187,6 +187,12 @@ public class Products implements Serializable {
     @TableField(exist = false)
     private Integer stock;
 
+    /**
+     * 发货状态
+     */
+    @TableField(exist = false)
+    private String deliveryStatus;
+
 
     public Long getId() {
         return id;
@@ -418,5 +424,13 @@ public class Products implements Serializable {
 
     public void setInventoryAlertMessage(String inventoryAlertMessage) {
         this.inventoryAlertMessage = inventoryAlertMessage;
+    }
+
+    public String getDeliveryStatus() {
+        return deliveryStatus;
+    }
+
+    public void setDeliveryStatus(String deliveryStatus) {
+        this.deliveryStatus = deliveryStatus;
     }
 }
