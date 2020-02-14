@@ -14,17 +14,9 @@
                     </el-tooltip>
                 </div>
                 <!-- 消息中心 -->
-                <div class="btn-bell">
-                    <el-tooltip effect="dark" :content="message?`有${message}条未读消息`:`消息中心`" placement="bottom">
-                    <i class="el-icon-bell"></i>
-                        <!-- <router-link to="/tabs">
-                            <i class="el-icon-bell"></i>
-                        </router-link> -->
-                    </el-tooltip>
-                    <span class="btn-bell-badge" v-if="message"></span>
-                </div>
+                
                 <!-- 用户头像 -->
-                <div class="user-avator"><img src="../../assets/img/img.jpg"></div>
+                <div class="user-avator"><img src="../../assets/img/people.png"></div>
                 <!-- 用户名下拉菜单 -->
                 <el-dropdown class="user-name" trigger="click" @command="handleCommand">
                     <span class="el-dropdown-link">
