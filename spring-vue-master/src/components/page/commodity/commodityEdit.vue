@@ -165,6 +165,12 @@
                     <el-button type="danger" @click="back">返回</el-button>
                 </el-form-item>
             </el-form>
+
+            <el-row class="tipsBoxImg">
+              <el-dialog :visible.sync="dialogVisible" size="tiny" style="text-align:center;">
+                <img  :src="dialogImageUrl" style="padding-bottom: 50px;"/>
+              </el-dialog>
+            </el-row>
         </div>
     </div>
 </template>
@@ -223,7 +229,9 @@
                 detailsId:'',
                 maintainConfig: [],
                 deliveryStatus: [],
-                deliveryStatusList: []
+                deliveryStatusList: [],
+                dialogVisible:false,
+                dialogImageUrl:''
             }
         },
         created() {
@@ -387,10 +395,6 @@
                 return false;
               }
             },
-            handlePictureCardPreview(file) {
-              this.dialogImageUrl = file.url;
-              // this.dialogVisible = true;
-            },
             fileSuccess(res, file) {
               this.$message({
                 type: "success",
@@ -420,6 +424,10 @@
               var res = await this.$http.get(baseURL_.mallUrl+'/products/getDeliveryStatus');
               this.deliveryStatusList = [];
               this.deliveryStatusList = res.data.data;
+            },
+            handlePictureCardPreview(file) {
+              this.dialogImageUrl = file.url;
+              this.dialogVisible = true;
             }
         }
     }

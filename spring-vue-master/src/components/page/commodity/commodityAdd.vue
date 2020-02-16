@@ -80,7 +80,6 @@
                         accept=".jpg, .png"
                         list-type="picture-card"
                         :action="uploadUrl()"
-                        :on-change="changeImg"
                         :on-preview="handlePictureCardPreview"
                         :on-remove="handleRemove"
                         :on-success="fileSuccess"
@@ -168,6 +167,12 @@
                     <el-button type="danger" @click="back">返回</el-button>
                 </el-form-item>
             </el-form>
+
+            <el-row class="tipsBoxImg">
+              <el-dialog :visible.sync="dialogVisible" size="tiny" style="text-align:center;">
+                <img  :src="dialogImageUrl" style="padding-bottom: 50px;"/>
+              </el-dialog>
+            </el-row>
         </div>
     </div>
 </template>
@@ -233,7 +238,9 @@
                 suppliers:[],
                 maintainConfig: [],
                 deliveryStatus: [],
-                deliveryStatusList: []
+                deliveryStatusList: [],
+                dialogVisible:false,
+                dialogImageUrl:''
             }
         },
         created() {
@@ -260,9 +267,6 @@
 
         },
         methods: {
-            changeImg(){
-              console.log(666)
-            },
             async getSelectForm(){
               const res = await this.$http.get(baseURL_.mallUrl+'/products/getDelivery_type');
               this.options = [];
@@ -363,7 +367,6 @@
             },
             // Logo上传
             uploadUrl() {
-              console.log(1111)
               return baseURL_.fileUrl+'/file/upload';
             },
             beforeUpload(file) {
@@ -377,9 +380,8 @@
               }
             },
             handlePictureCardPreview(file) {
-              console.log(556677)
               this.dialogImageUrl = file.url;
-              // this.dialogVisible = true;
+              this.dialogVisible = true;
             },
             fileSuccess(res, file) {
               this.$message({
@@ -391,7 +393,6 @@
             },
             //限制文件的上传数量
             handleExceed(files) {
-              console.log(222)
               this.$message.warning(
                 `当前已经上传了${files.length} 个文件，如需上传新的文件，请先删除之前的文件`
               );
