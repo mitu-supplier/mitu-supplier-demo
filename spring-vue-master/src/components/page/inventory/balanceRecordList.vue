@@ -106,6 +106,14 @@
             },
             // 初始化数据
             async getData() {
+                var st = this.formInline.startTime;
+                var et = this.formInline.endTime;
+                if(st != null && st != '' && et != null && et != ''){
+                    if(st > et){
+                        this.$message("开始时间不能大于结束时间");
+                        return;
+                    }
+                }
                 const products = await this.$http.get(baseURL_.mallUrl+'/supplierBalanceRecord/recordList',{ 
                     params: {
                         'page':this.page,

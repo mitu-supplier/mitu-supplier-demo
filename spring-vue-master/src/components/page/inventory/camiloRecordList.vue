@@ -11,8 +11,11 @@
                     <el-form-item label="商户名称">
                         <el-input v-model="formInline.supplierName" placeholder="商户名称"></el-input>
                     </el-form-item>
-                    <el-form-item label="类目名称">
-                        <el-input v-model="formInline.catalogName" placeholder="类目名称"></el-input>
+                    <el-form-item label="商品名称">
+                        <el-input v-model="formInline.productName" placeholder="商品名称"></el-input>
+                    </el-form-item>
+                    <el-form-item label="商品编码">
+                        <el-input v-model="formInline.productCode" placeholder="商品编码"></el-input>
                     </el-form-item>
                     <el-form-item label="入库人员">
                         <el-input v-model="formInline.userName" placeholder="入库人员"></el-input>
@@ -44,6 +47,7 @@
                 <el-table-column type="index" label="序号" width="55" align="center" ></el-table-column>
                 <el-table-column prop="catalogName" label="商品类目"  align="center" width=""></el-table-column>
                 <el-table-column prop="productName" label="商品名称"  align="center" width=""></el-table-column>
+                <el-table-column prop="productCode" label="商品编码"  align="center" width=""></el-table-column>
                 <el-table-column prop="supplierName" label="商户名称"  align="center" width=""></el-table-column>
                 <el-table-column prop="num" label="数量"  align="center" width=""></el-table-column>
                 <el-table-column prop="price" label="供货价（元）" align="center"  width=""></el-table-column>
@@ -87,7 +91,9 @@
                     catalogName:'',
                     userName:'',
                     startTime:'',
-                    endTime:''
+                    endTime:'',
+                    productName:'',
+                    productCode:''
                 },
                 productId:''
             }
@@ -112,6 +118,14 @@
             },
             // 初始化数据
             async getData() {
+                var st = this.formInline.startTime;
+                var et = this.formInline.endTime;
+                if(st != null && st != '' && et != null && et != ''){
+                    if(st > et){
+                        this.$message("开始时间不能大于结束时间");
+                        return;
+                    }
+                }
                 const products = await this.$http.get(baseURL_.mallUrl+'/camilo/recordList',{ 
                     params: {
                         'page':this.page,
@@ -121,7 +135,9 @@
                         'productId': this.productId,
                         'userName': this.formInline.userName,
                         'startTime':this.formInline.startTime,
-                        'endTime':this.formInline.endTime
+                        'endTime':this.formInline.endTime,
+                        'productName':this.formInline.productName,
+                        'productCode':this.formInline.productCode
                     }
                 });
                 if(products.data.statusCode==200){

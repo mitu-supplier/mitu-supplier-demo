@@ -5,6 +5,9 @@ import cn.forest.common.Constant;
 import cn.forest.common.util.RequestMap;
 import cn.forest.common.util.ResultMessage;
 import cn.forest.mall.remote.SupplierBalanceRecordRemote;
+import cn.forest.mall.remote.SuppliersRemote;
+import com.google.common.base.Suppliers;
+import com.sun.net.httpserver.HttpsConfigurator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +20,9 @@ public class SupplierBalanceRecordService {
 
     @Autowired
     private SupplierBalanceRecordRemote supplierBalanceRecordRemote;
+
+    @Autowired
+    private SuppliersRemote suppliersRemote;
 
     @Autowired
     private RedisDao redisDao;
@@ -91,5 +97,10 @@ public class SupplierBalanceRecordService {
         }
         int save = supplierBalanceRecordRemote.save(paramMap);
         return ResultMessage.result(save, "操作成功","操作失败");
+    }
+
+    public Map<String, Object> updateAlertBalance(Map<String, Object> map){
+        int update = suppliersRemote.update(map);
+        return ResultMessage.result(update, "保存成功", "保存失败");
     }
 }

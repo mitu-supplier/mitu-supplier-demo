@@ -260,12 +260,18 @@ public class FileUtilEx extends org.apache.commons.io.FileUtils {
      * @return
      * @data 2019年5月9日
      */
-    public static boolean downloadFile(InputStream in, HttpServletResponse response, String fileName) {
+    public static boolean downloadFile(HttpServletRequest request, InputStream in, HttpServletResponse response, String fileName) {
         response.reset();
         OutputStream out = null;
+        String userAgent = request.getHeader("User-Agent");
         try {
+            if (userAgent.contains("MSIE") || userAgent.contains("Trident")) {
+                fileName = java.net.URLEncoder.encode(fileName, "UTF-8");
+            } else {
+                fileName = new String(fileName.getBytes("UTF-8"), "ISO-8859-1");
+            }
             response.setContentType("application/octet-stream");
-            response.setHeader("Content-Disposition", "attachment;" + "filename=" + new String(fileName.getBytes("UTF8"), "ISO8859-1"));
+            response.setHeader("Content-Disposition", String.format("attachment; filename=\"%s\"", fileName));
             response.setCharacterEncoding("UTF-8");
             out = new BufferedOutputStream(response.getOutputStream());
             IOUtils.copy(in, out);

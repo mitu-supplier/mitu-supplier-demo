@@ -8,6 +8,9 @@
         <div class="container">
             <div style="background:#f6f6f6;padding:20px 10px 0;margin-bottom:20px;">
                 <el-form :inline="true" :model="formInline" class="demo-form-inline">
+                    <el-form-item label="商户名称">
+                        <el-input v-model="formInline.supplierName" placeholder="商户名称"></el-input>
+                    </el-form-item>
                     <el-form-item label="商品名称">
                         <el-input v-model="formInline.name" placeholder="商品名称"></el-input>
                     </el-form-item>
@@ -46,6 +49,7 @@
             <el-table :data="tableData" border class="table" ref="multipleTable" @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
                 <el-table-column type="index" label="序号" width="55" align="center" ></el-table-column>
+                <el-table-column prop="supplierName" label="商户名称"  align="center" width=""></el-table-column>
                 <el-table-column prop="catalogName" label="商品类目"  align="center" width=""></el-table-column>
                 <el-table-column prop="name" label="商品名称"  align="center" width=""></el-table-column>
                 <el-table-column prop="price" label="市场价（元）" align="center"  width=""></el-table-column>
@@ -72,7 +76,7 @@
                         <el-button type="text" v-if="scope.row.status == '2'" icon="el-icon-edit" class="red" @click="updateStatus(scope.$index, scope.row, 1)">上架</el-button>
                         <el-button type="text" v-if="scope.row.status == '1' && scope.row.auditStatus == '1'" icon="el-icon-edit" class="red" @click="updateStatus(scope.$index, scope.row, 2)">下架</el-button>
                         <el-button type="text" v-if="scope.row.auditStatus == '2' || scope.row.auditStatus == '3'" icon="el-icon-edit" class="red" @click="handleUpdate(scope.$index, scope.row)">修改</el-button>
-                        <el-button type="text" v-if="scope.row.auditStatus == '2' || scope.row.auditStatus == '3'" icon="el-icon-delete" class="red" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                        <el-button type="text" v-if="(scope.row.auditStatus == '2' && scope.row.status == '2' ) || scope.row.auditStatus == '3'" icon="el-icon-delete" class="red" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
                         <el-button type="text" v-if="scope.row.auditStatus != '0' && scope.row.auditStatus != '3'" icon="el-icon-document" class="red" @click="lookAudit(scope.$index, scope.row)">审核记录</el-button>
                     </template>
                 </el-table-column>
@@ -147,7 +151,8 @@
                     name:'',
                     catalogName:'',
                     auditStatus:'',
-                    deliveryType:''
+                    deliveryType:'',
+                    supplierName:''
                 },
                 auditReason:'',
                 productId:'',
@@ -193,7 +198,8 @@
                         'name':this.formInline.name,
                         'catalogName':this.formInline.catalogName,
                         'auditStatus':this.formInline.auditStatus,
-                        'deliveryType':this.formInline.deliveryType
+                        'deliveryType':this.formInline.deliveryType,
+                        'supplierName':this.formInline.supplierName
                     }
                 });
                 if(products.data.statusCode==200){

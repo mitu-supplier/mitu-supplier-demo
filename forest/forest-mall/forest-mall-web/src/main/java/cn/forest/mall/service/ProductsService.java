@@ -77,8 +77,24 @@ public class ProductsService {
             }
         }
         if (StringUtil.isNotBlank(paramMap.get("auditStatus")) && Integer.parseInt(paramMap.get("auditStatus").toString()) == 0) {
+            // 提交审核需要校验
             if (StringUtil.isBlank(paramMap.get("supplierId"))) {
                 return ResultMessage.error("请选择商户信息");
+            }
+            if(StringUtil.isBlank(paramMap.get("deliveryStatus"))){
+                return ResultMessage.error("请选择发货状态");
+            }
+            if(StringUtil.isBlank(paramMap.get("code"))){
+                String code = getProductCode();
+                while (productsRemote.vaProductCode(null, code, Long.parseLong(StringUtil.toString(paramMap.get("supplierId")))) > 0){
+                    code = getProductCode();
+                }
+                paramMap.put("code", code);
+            }else{
+                int i = productsRemote.vaProductCode(null, StringUtil.toString(paramMap.get("code")), Long.parseLong(StringUtil.toString(paramMap.get("supplierId"))));
+                if(i > 0){
+                    return ResultMessage.error("商品编号已存在");
+                }
             }
         }
         Object save = productsRemote.save(paramMap);
@@ -86,6 +102,7 @@ public class ProductsService {
             // 保存商品发货状态
             String deliveryStatus = StringUtil.toString(paramMap.get("deliveryStatus"));
             Long productId = Long.parseLong(save.toString());
+            productDeliveryStatusRemote.deleteByProductId(productId);
             productDeliveryStatusRemote.saveByProductId(productId, deliveryStatus);
             return ResultMessage.success("操作成功");
         }
@@ -96,6 +113,21 @@ public class ProductsService {
         if (StringUtil.isNotBlank(map.get("auditStatus")) && Integer.parseInt(map.get("auditStatus").toString()) == 0) {
             if (StringUtil.isBlank(map.get("supplierId"))) {
                 return ResultMessage.error("请选择商户信息");
+            }
+            if(StringUtil.isBlank(map.get("deliveryStatus"))){
+                return ResultMessage.error("请选择发货状态");
+            }
+            if(StringUtil.isBlank(map.get("code"))){
+                String code = getProductCode();
+                while (productsRemote.vaProductCode(Long.parseLong(StringUtil.toString(map.get("id"))), code, Long.parseLong(StringUtil.toString(map.get("supplierId")))) > 0){
+                    code = getProductCode();
+                }
+                map.put("code", code);
+            }else{
+                int i = productsRemote.vaProductCode(Long.parseLong(StringUtil.toString(map.get("id"))), StringUtil.toString(map.get("code")), Long.parseLong(StringUtil.toString(map.get("supplierId"))));
+                if(i > 0){
+                    return ResultMessage.error("商品编号已存在");
+                }
             }
         }
         int update = productsRemote.update(map);

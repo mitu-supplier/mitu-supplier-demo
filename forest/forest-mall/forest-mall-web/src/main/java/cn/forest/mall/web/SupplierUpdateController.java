@@ -30,7 +30,7 @@ public class SupplierUpdateController {
      */
     @RequestMapping("/updateRegisterInfo")
     public Map<String, Object> updateRegisterInfo(HttpServletRequest request) {
-        return suppliersUpdateService.updateRegisterInfo(RequestMap.requestToMap(request));
+        return suppliersUpdateService.updateRegisterInfo(request);
     }
 
     /**

@@ -155,6 +155,13 @@ public class Products implements Serializable {
     @TableField(value = "inventory_alert_message")
     private String inventoryAlertMessage;
 
+    /**
+     * 实物库存数量
+     */
+    @TableField(value = "inventory_num")
+    private Integer inventoryNum;
+
+
     // ==========  查询返回字段
 
     /**
@@ -432,5 +439,13 @@ public class Products implements Serializable {
 
     public void setDeliveryStatus(String deliveryStatus) {
         this.deliveryStatus = deliveryStatus;
+    }
+
+    public Integer getInventoryNum() {
+        return inventoryNum;
+    }
+
+    public void setInventoryNum(Integer inventoryNum) {
+        this.inventoryNum = inventoryNum;
     }
 }

@@ -30,7 +30,7 @@
                 </el-form-item>
 
                 <el-form-item label="编码" prop="">
-                    <el-input v-model="addComForm.code" readonly size="mini" class="w50"></el-input>
+                    <el-input v-model="addComForm.code" size="mini" class="w50"></el-input>
                 </el-form-item>
 
                 <el-form-item v-if="isSupplier != '1'" label="所属商户" prop="supplierId">
@@ -154,7 +154,7 @@
                     </el-select>
                 </el-form-item>
 
-                 <el-form-item label="状态" prop="">
+                 <el-form-item label="状态" prop="status">
                     <el-radio v-model="addComForm.status" :label="1">上架</el-radio>
                     <el-radio v-model="addComForm.status" :label="2">下架</el-radio>
                 </el-form-item>
@@ -194,6 +194,7 @@
                     protalDetails: [{ required: true, message: "请输入商品详情", trigger: "change" }],
                     supplyPrice: [{ required: true, message: "请输入供货价", trigger: "blur" }],
                     useDirections: [{ required: true, message: "请输入使用说明", trigger: "change" }],
+                    status: [{ required: true, message: "请选择状态", trigger: "blur" }],
                 },
                 options: [],
                 fileList:[],

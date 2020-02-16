@@ -1,11 +1,13 @@
 package cn.forest.mall.web;
 
+import cn.forest.common.util.RequestMap;
 import cn.forest.mall.service.SupplierBalanceRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/supplierBalanceRecord")
@@ -37,7 +39,18 @@ public class SupplierBalanceRecordController {
     }
 
     @RequestMapping("/save")
-    public Object save(HttpServletRequest request){
+    public Object save(HttpServletRequest request) {
         return supplierBalanceRecordService.save(request);
+    }
+
+    /**
+     * 修改商户余额报警值
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping("/updateAlertBalance")
+    public Map<String, Object> updateAlertBalance(HttpServletRequest request) {
+        return supplierBalanceRecordService.updateAlertBalance(RequestMap.requestToMap(request));
     }
 }

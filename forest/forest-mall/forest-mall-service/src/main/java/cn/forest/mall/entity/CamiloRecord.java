@@ -84,6 +84,9 @@ public class CamiloRecord implements Serializable {
     @TableField(exist = false)
     private String supplierName;
 
+    @TableField(exist = false)
+    private String productCode;
+
     public Long getId() {
         return id;
     }
@@ -194,5 +197,13 @@ public class CamiloRecord implements Serializable {
 
     public void setFilePath(String filePath) {
         this.filePath = filePath;
+    }
+
+    public String getProductCode() {
+        return productCode;
+    }
+
+    public void setProductCode(String productCode) {
+        this.productCode = productCode;
     }
 }

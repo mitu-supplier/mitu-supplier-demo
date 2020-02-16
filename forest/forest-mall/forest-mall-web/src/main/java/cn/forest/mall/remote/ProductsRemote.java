@@ -37,4 +37,26 @@ public interface ProductsRemote {
     @RequestMapping("/products/selectList")
     Object selectList(@RequestParam(value = "auditStatus", required = false) Integer auditStatus,
                                @RequestParam(value = "supplierId", required = false) Long supplierId);
+
+    /**
+     * 校验商品code是否重复
+     *
+     * @param id
+     * @param code
+     * @param supplierId
+     * @return
+     */
+    @RequestMapping("/products/vaProductCode")
+    int vaProductCode(@RequestParam(value = "id", required = false) Long id,
+                             @RequestParam(value = "code", required = false) String code,
+                             @RequestParam(value = "supplierId", required = false) Long supplierId);
+
+    /**
+     * 修改商品库存数量
+     * @param id
+     * @param inventoryNum
+     * @return
+     */
+    @RequestMapping("/products/updateInventory")
+    int updateInventory(@RequestParam("id") Long id, @RequestParam("inventoryNum") Integer inventoryNum);
 }

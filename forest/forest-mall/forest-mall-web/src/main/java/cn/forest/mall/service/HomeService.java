@@ -2,14 +2,12 @@ package cn.forest.mall.service;
 
 import cn.forest.commom.redis.RedisDao;
 import cn.forest.common.Constant;
-import cn.forest.common.util.RequestMap;
 import cn.forest.common.util.ResultMessage;
 import cn.forest.common.util.StringUtil;
 import cn.forest.mall.remote.ProductsRemote;
 import cn.forest.mall.remote.SuppliersRemote;
 import cn.forest.mall.remote.SuppliersUpdateRemote;
 import cn.forest.mall.remote.SysLoginLogsRemote;
-import com.sun.tools.corba.se.idl.InterfaceGen;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

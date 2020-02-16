@@ -16,6 +16,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -57,21 +58,21 @@ public class ProductsAction {
     @RequestMapping("/getById")
     public Object getById(@RequestParam("id") Long id) {
         Products products = productsMapper.selectById(id);
-        if(products != null){
+        if (products != null) {
             Long catalogId = products.getCatalogId();
-            if(catalogId != null){
+            if (catalogId != null) {
                 Catalogs catalogs = catalogsMapper.selectById(catalogId);
                 products.setCatalogName(catalogs == null ? null : catalogs.getName());
             }
             Long supplierId = products.getSupplierId();
-            if(supplierId != null){
+            if (supplierId != null) {
                 Suppliers suppliers = suppliersMapper.selectById(supplierId);
                 products.setSupplierName(suppliers == null ? null : suppliers.getName());
             }
             QueryWrapper<ProductDeliveryStatus> qw = new QueryWrapper<>();
             qw.eq("product_id", id);
             List<ProductDeliveryStatus> productDeliveryStatuses = productDeliveryStatusMapper.selectList(qw);
-            if(productDeliveryStatuses != null){
+            if (!CollectionUtils.isEmpty(productDeliveryStatuses)) {
                 List<Long> collect = productDeliveryStatuses.stream().map(ProductDeliveryStatus::getDeliveryStatus).collect(Collectors.toList());
                 products.setDeliveryStatus(StringUtils.join(collect.toArray(), ","));
             }
@@ -134,16 +135,54 @@ public class ProductsAction {
 
     @RequestMapping("/selectList")
     public Object selectList(@RequestParam(value = "auditStatus", required = false) Integer auditStatus,
-                               @RequestParam(value = "supplierId", required = false) Long supplierId){
+                             @RequestParam(value = "supplierId", required = false) Long supplierId) {
         QueryWrapper<Products> qw = new QueryWrapper<>();
-        if(supplierId != null){
+        if (supplierId != null) {
             qw.eq("supplier_id", supplierId);
         }
-        if(auditStatus != null){
+        if (auditStatus != null) {
             qw.eq("audit_status", auditStatus);
         }
         return productsMapper.selectList(qw);
     }
 
+    /**
+     * 校验商品code是否重复
+     *
+     * @param id
+     * @param code
+     * @param supplierId
+     * @return
+     */
+    @RequestMapping("/vaProductCode")
+    public int vaProductCode(@RequestParam(value = "id", required = false) Long id,
+                             @RequestParam(value = "code", required = false) String code,
+                             @RequestParam(value = "supplierId", required = false) Long supplierId) {
+        QueryWrapper<Products> qw = new QueryWrapper<>();
+        qw.eq("supplier_id", supplierId);
+        qw.eq("code", code);
+        if (id != null) {
+            qw.ne("id", id);
+        }
+        List<Products> products = productsMapper.selectList(qw);
+        if (CollectionUtils.isEmpty(products)) {
+            return 0;
+        }
+        return products.size();
+    }
+
+    /**
+     * 修改商品库存数量
+     * @param id
+     * @param inventoryNum
+     * @return
+     */
+    @RequestMapping("/updateInventory")
+    public int updateInventory(@RequestParam("id") Long id, @RequestParam("inventoryNum") Integer inventoryNum){
+        Products products = new Products();
+        products.setId(id);
+        products.setInventoryNum(inventoryNum);
+        return productsMapper.updateById(products);
+    }
 
 }

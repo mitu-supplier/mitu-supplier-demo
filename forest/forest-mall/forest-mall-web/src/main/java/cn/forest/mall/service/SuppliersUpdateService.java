@@ -45,7 +45,7 @@ public class SuppliersUpdateService {
             Object typeId = userInfoMap.get("typeId");
             if (type != null && Integer.parseInt(type.toString()) == 1) {
                 // 供应商
-                map.put("supplier_id", typeId);
+                map.put("supplierId", typeId);
             }
         }
         Object obj = suppliersUpdateRemote.selectUpdateRecodeList(map);
@@ -58,17 +58,31 @@ public class SuppliersUpdateService {
     /**
      * 修改商户注册信息
      *
-     * @param map
+     * @param request
      * @return
      */
-    public Map<String, Object> updateRegisterInfo(Map<String, Object> map) {
+    public Map<String, Object> updateRegisterInfo(HttpServletRequest request) {
         int num = 0;
-        map.put("supplierId", map.get("id"));
-        map.remove("id");
-        Object save = suppliersUpdateRemote.save(map);
-        if (save != null) {
-            Map result = (Map) save;
-            num = Integer.parseInt(result.get(Constant.RESULT_NUM).toString());
+        Map<String, Object> map = RequestMap.requestToMap(request);
+        String header = request.getHeader(Constant.HEADER_TOKEN_STRING);
+        HashMap userInfoMap = (HashMap) redisDao.getValue(header);
+        if (userInfoMap != null) {
+            Object type = userInfoMap.get("type");
+            Object typeId = userInfoMap.get("typeId");
+            if (type != null && Integer.parseInt(type.toString()) == 1) {
+                // 供应商
+                map.put("supplierId", map.get("id"));
+                map.remove("id");
+                Object save = suppliersUpdateRemote.save(map);
+                if (save != null) {
+                    Map result = (Map) save;
+                    num = Integer.parseInt(result.get(Constant.RESULT_NUM).toString());
+                }
+            }else{
+                // 管理员修改
+                map.put("status", 1);
+                num = suppliersRemote.update(map);
+            }
         }
         return ResultMessage.result(num, "修改成功", "修改失败");
     }

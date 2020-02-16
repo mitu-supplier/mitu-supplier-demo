@@ -65,7 +65,7 @@
                 <el-table-column label="操作" width="" align="center">
                     <template slot-scope="scope">
                         <el-button type="text" icon="el-icon-search" @click="view(scope.$index, scope.row)">查看</el-button>
-                        <el-button type="text" icon="el-icon-edit" v-if="scope.row.status == '0'"  @click="toAudit(scope.$index, scope.row)">审核</el-button>
+                        <el-button type="text" icon="el-icon-edit" v-if="isSupplier != '1' && scope.row.status == '0'"  @click="toAudit(scope.$index, scope.row)">审核</el-button>
                         <el-button type="text" icon="el-icon-document" v-if="scope.row.status != '0'"  @click="lookAudit(scope.$index, scope.row)">审核记录</el-button>
                     </template>
                 </el-table-column>
@@ -133,12 +133,14 @@
                     contactName:'',
                     code:'',
                     enterType:''
-                }
+                },
+                isSupplier:1
             }
         },
         created() {
             this.getData();
             this.getEnterTypeList();
+            this.vaIsSupplier();
         },
         methods: {
             async lookAudit(index,row){
@@ -147,6 +149,10 @@
                 })
                 this.auditData=audit.data.data;
                 this.editVisible=true;
+            },
+            async vaIsSupplier(){
+              var res = await this.$http.get(baseURL_.mallUrl+'/supplier/isSupplier');
+              this.isSupplier = res.data.data;
             },
             onReset(){
               this.formInline={};
@@ -239,11 +245,13 @@
             },
             view(index,item){
                 var id = Base64.encode(item.id);
+                var status = Base64.encode('');
                 this.$router.push({
                     path: '/supplierUpdateView',
                     name: 'supplierUpdateView',
                     query: {
-                        id: id
+                        id: id,
+                        state:status
                     }
                 });
             },

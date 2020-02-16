@@ -149,10 +149,10 @@ public class CamiloService {
      * @param response
      * @throws IOException
      */
-    public void doemloadTemplate(HttpServletResponse response) throws IOException {
+    public void doemloadTemplate(HttpServletRequest request, HttpServletResponse response) throws IOException {
         ClassPathResource classPathResource = new ClassPathResource("templateExample/camiloTemplate.xlsx");
         InputStream inputStream = classPathResource.getInputStream();
-        FileUtilEx.downloadFile(inputStream, response, "卡密导入模板.xlsx");
+        FileUtilEx.downloadFile(request, inputStream, response, "卡密导入模板.xlsx");
     }
 
 

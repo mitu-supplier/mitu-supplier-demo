@@ -235,6 +235,7 @@
           
         },
         mounted() {
+          console.log(8888)
           var state = this.$route.query.state;
           var id = this.$route.query.id;
           if(state != null){
@@ -341,6 +342,7 @@
             // },
             // Logo上传
             uploadUrl() {
+              console.log(78788)
               return baseURL_.fileUrl+'/file/upload';
             },
             beforeUpload(file) {
@@ -354,10 +356,12 @@
               }
             },
             handlePictureCardPreview(file) {
+              console.log(5555)
               this.dialogImageUrl = file.url;
               this.dialogVisible = true;
             },
             fileSuccess(res, file) {
+              console.log(99999)
               this.$message({
                 type: "success",
                 message: "上传成功",

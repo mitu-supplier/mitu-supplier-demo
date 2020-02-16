@@ -6,6 +6,7 @@
         SELECT
             cr.*,
             p.NAME AS productName,
+            p.code AS productCode,
             cc.NAME AS catalogName,
             ss.name AS supplierName
         FROM
@@ -17,6 +18,9 @@
             cr.is_delete = 0
             <if test="productName != null and productName != ''">
                 AND p.name LIKE CONCAT('%',#{productName},'%')
+            </if>
+            <if test="productCode != null and productCode != ''">
+                AND p.code LIKE CONCAT('%',#{productCode},'%')
             </if>
             <if test="catalogName != null and catalogName != ''">
                 AND cc.name LIKE CONCAT('%',#{catalogName},'%')

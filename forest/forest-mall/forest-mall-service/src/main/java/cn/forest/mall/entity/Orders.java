@@ -13,7 +13,6 @@ public class Orders implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-
     @TableField(value = "id")
     private Long id;
 

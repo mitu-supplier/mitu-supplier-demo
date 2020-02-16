@@ -28,12 +28,12 @@
                 <el-table-column prop="catalogName" label="商品类目"  align="center" width=""></el-table-column>
                 <el-table-column prop="name" label="商品名称"  align="center" width=""></el-table-column>
                 <el-table-column prop="supplierName" label="商户名称"  align="center" width=""></el-table-column>
-                <el-table-column prop="stock" label="剩余库存" align="center"  width=""></el-table-column>
+                <el-table-column prop="inventoryNum" label="剩余库存" align="center"  width=""></el-table-column>
                 <el-table-column prop="" label="库存告急" align="center"  width="">
-                    <!-- <template slot-scope="scope">
-                        <span type="text" v-if="scope.row.stock <= scope.row.inventoryAlertNum" class="red">库存不足</span>
+                    <template slot-scope="scope">
+                        <span type="text" v-if="scope.row.inventoryNum <= scope.row.inventoryAlertNum" class="red">库存不足</span>
                         <span type="text" v-else></span>
-                    </template> -->
+                    </template>
                 </el-table-column>
             </el-table>
             <div class="pagination">

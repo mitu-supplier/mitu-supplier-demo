@@ -30,7 +30,7 @@
                 </el-form-item>
 
                 <el-form-item label="编码" prop="">
-                    <el-input v-model="addComForm.code" readonly size="mini" class="w50"></el-input>
+                    <el-input v-model="addComForm.code" size="mini" class="w50"></el-input>
                 </el-form-item>
 
                 <el-form-item v-if="isSupplier != '1'" label="所属商户" prop="supplierId">
@@ -80,6 +80,7 @@
                         accept=".jpg, .png"
                         list-type="picture-card"
                         :action="uploadUrl()"
+                        :on-change="changeImg"
                         :on-preview="handlePictureCardPreview"
                         :on-remove="handleRemove"
                         :on-success="fileSuccess"
@@ -156,7 +157,7 @@
                     </el-select>
                 </el-form-item>
 
-                <el-form-item label="状态" prop="">
+                <el-form-item label="状态" prop="status">
                     <el-radio v-model="addComForm.status" label="1">上架</el-radio>
                     <el-radio v-model="addComForm.status" label="2">下架</el-radio>
                 </el-form-item>
@@ -206,6 +207,7 @@
                     supplyPrice: [{ required: true, message: "请输入供货价", trigger: "blur" }],
                     protalDetails: [{ required: true, message: "请输入商品详情", trigger: "change" }],
                     useDirections: [{ required: true, message: "请输入使用说明", trigger: "change" }],
+                    status: [{ required: true, message: "请选择状态", trigger: "blur" }],
                 },
                 options: [],
                 fileList:[],
@@ -236,7 +238,6 @@
         },
         created() {
           this.getSelectForm();
-          this.getparentCode();
           this.vaIsSupplier();
           this.getSuppliers();
           this.getDeliveryStatus();
@@ -259,14 +260,13 @@
 
         },
         methods: {
+            changeImg(){
+              console.log(666)
+            },
             async getSelectForm(){
               const res = await this.$http.get(baseURL_.mallUrl+'/products/getDelivery_type');
               this.options = [];
               this.options = res.data.data;
-            },
-            async getparentCode(){
-              var res = await this.$http.get(baseURL_.mallUrl+'/products/getProductCode');
-              this.addComForm.code = res.data.data;
             },
             async vaIsSupplier(){
               var res = await this.$http.get(baseURL_.mallUrl+'/products/isSupplier');
@@ -363,6 +363,7 @@
             },
             // Logo上传
             uploadUrl() {
+              console.log(1111)
               return baseURL_.fileUrl+'/file/upload';
             },
             beforeUpload(file) {
@@ -376,6 +377,7 @@
               }
             },
             handlePictureCardPreview(file) {
+              console.log(556677)
               this.dialogImageUrl = file.url;
               // this.dialogVisible = true;
             },
@@ -389,6 +391,7 @@
             },
             //限制文件的上传数量
             handleExceed(files) {
+              console.log(222)
               this.$message.warning(
                 `当前已经上传了${files.length} 个文件，如需上传新的文件，请先删除之前的文件`
               );

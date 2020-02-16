@@ -40,4 +40,11 @@ public class PhysicalService {
         }
         return null;
     }
+
+    public Map<String, Object> updateInventory(Map<String, Object> paramsMap){
+        Long id = paramsMap.get("productId") == null ? null : Long.parseLong(StringUtil.toString(paramsMap.get("productId")));
+        Integer inventoryNum = paramsMap.get("inventoryNum") == null ? null : Integer.parseInt(StringUtil.toString(paramsMap.get("inventoryNum")));
+        int i = productsRemote.updateInventory(id, inventoryNum);
+        return ResultMessage.result(i, "修改成功", "修改失败");
+    }
 }

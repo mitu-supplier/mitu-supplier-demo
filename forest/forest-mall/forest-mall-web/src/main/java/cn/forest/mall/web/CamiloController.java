@@ -35,7 +35,7 @@ public class CamiloController {
      * @return
      */
     @RequestMapping(value = "/importExcel")
-    public Map<String, Object> importExcel(HttpServletRequest request) throws IOException{
+    public Map<String, Object> importExcel(HttpServletRequest request) throws IOException {
         return camiloService.importExcel(request);
     }
 
@@ -46,7 +46,7 @@ public class CamiloController {
      * @throws IOException
      */
     @RequestMapping(value = "/downloadTemplate")
-    public void downloadTemplate(HttpServletResponse response) throws IOException {
-        camiloService.doemloadTemplate(response);
+    public void downloadTemplate(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        camiloService.doemloadTemplate(request, response);
     }
 }

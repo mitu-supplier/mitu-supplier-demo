@@ -52,4 +52,14 @@ public class ProductsBack implements ProductsRemote {
     public Object selectList(Integer auditStatus, Long supplierId) {
         return null;
     }
+
+    @Override
+    public int vaProductCode(Long id, String code, Long supplierId) {
+        return 0;
+    }
+
+    @Override
+    public int updateInventory(Long id, Integer inventoryNum) {
+        return 0;
+    }
 }

@@ -247,7 +247,8 @@ public class Suppliers implements Serializable {
     /**
      * 商户余额
      */
-    private BigDecimal balance;
+    @TableField(value = "alert_balance")
+    private BigDecimal alertBalance;
 
     /**
      * 注册时间
@@ -270,6 +271,9 @@ public class Suppliers implements Serializable {
     // =====查询字段
     @TableField(exist = false)
     private String enterTypeName;
+
+    @TableField(exist = false)
+    private BigDecimal balance;
 
     public Long getId() {
         return id;
@@ -591,12 +595,12 @@ public class Suppliers implements Serializable {
         this.legalCardF = legalCardF;
     }
 
-    public BigDecimal getBalance() {
-        return balance;
+    public BigDecimal getAlertBalance() {
+        return alertBalance;
     }
 
-    public void setBalance(BigDecimal balance) {
-        this.balance = balance;
+    public void setAlertBalance(BigDecimal alertBalance) {
+        this.alertBalance = alertBalance;
     }
 
     public String getEnterTypeName() {
@@ -613,5 +617,13 @@ public class Suppliers implements Serializable {
 
     public void setRegisterStep(Integer registerStep) {
         this.registerStep = registerStep;
+    }
+
+    public BigDecimal getBalance() {
+        return balance;
+    }
+
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
     }
 }

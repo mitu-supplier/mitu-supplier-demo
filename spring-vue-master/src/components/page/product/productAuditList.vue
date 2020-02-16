@@ -53,7 +53,7 @@
                 <el-table-column label="操作" width="" align="center">
                     <template slot-scope="scope">
                         <el-button type="text" @click="view(scope.$index, scope.row)">查看详情</el-button>
-                        <el-button type="text" v-if="scope.row.auditStatus == '0'" @click="toAudit(scope.$index, scope.row)">审核</el-button>
+                        <el-button type="text" v-if="isSupplier != '1' && scope.row.auditStatus == '0'" @click="toAudit(scope.$index, scope.row)">审核</el-button>
                         <el-button type="text" v-if="scope.row.auditStatus != '0'" @click="lookAudit(scope.$index, scope.row)">审核记录</el-button>
                         <!-- <el-button type="text" v-if="scope.row.auditStatus == '0'" @click="auditAdopt(scope.row.id)">审核通过</el-button>
                         <el-button type="text" v-if="scope.row.auditStatus == '0'" class="red" @click="auditReject(scope.row.id)" >审核失败</el-button> -->
@@ -132,13 +132,19 @@
                 },
                 msgTips:'',
                 auditReason:'',
-                auditData:''
+                auditData:'',
+                isSupplier:1
             }
         },
         created() {
             this.getData();
+            this.vaIsSupplier();
         },
         methods: {
+            async vaIsSupplier(){
+              var res = await this.$http.get(baseURL_.mallUrl+'/supplier/isSupplier');
+              this.isSupplier = res.data.data;
+            },
             onSubmit(){
                 this.getData();
             },
