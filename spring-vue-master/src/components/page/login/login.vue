@@ -19,6 +19,7 @@
                 <p class="login-tips right-supplier" style="text-align:right;" ><span style="cursor: pointer;" @click="registed()">供应商入驻</span></p>
             </el-form>
         </div>
+        <remote-js src="http://pv.sohu.com/cityjson?ie=utf-8" ></remote-js>
     </div>
     
 </template>
@@ -45,8 +46,21 @@ Vue.prototype.$jsEncrypt=JsEncrypt;
             // var baseDecode = Base64.decode('MQ=='); 
             // alert(baseDecode);
         // },
+        components: {
+            'remote-js': {
+                render(createElement) {
+                    return createElement('script', { attrs: { type: 'text/javascript', src: this.src }});
+                },
+                props: {
+                    src: { type: String, required: true },
+                },
+            },
+        },
         methods: {
             async submitForm() {
+                var ip = returnCitySN["cip"];
+                var name = returnCitySN["cname"];
+                localStorage.setItem('forestToken_address',ip+"_"+name);
                 let jse=this.$jsEncrypt;
                 jse.prototype.setPublicKey(baseURL_.public_key);
                 let passwordDeg = jse.prototype.encrypt(this.ruleForm.password);

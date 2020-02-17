@@ -47,12 +47,19 @@ const i18n = new VueI18n({
 axios.interceptors.request.use(
     config => {
       let url = config.url;
+      var addres = localStorage.getItem("forestToken_address");
       if(url.indexOf("login/do")==-1){
         const token = localStorage.getItem('forestToken');
         if(token){
-            config.headers.token = token;
+            config.headers["token"] = token;
         }
       }
+      if(addres){
+        var ip=addres.split("_")[0];
+        var city= encodeURIComponent(addres.split("_")[1]);
+        config.headers["addressIp"] = ip;
+        config.headers["addressCity"] = city;
+     }
       return config;
     },
     err => {

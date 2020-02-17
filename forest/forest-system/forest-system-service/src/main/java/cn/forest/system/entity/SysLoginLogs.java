@@ -36,6 +36,10 @@ public class SysLoginLogs {
     @TableField(value = "user_name")
     private String userName;
 
+    @TableField(value = "city")
+    private String city;
+    
+    
     /**
      * 统计最近7日数量
      */
@@ -121,4 +125,13 @@ public class SysLoginLogs {
     public void setNum(Integer num) {
         this.num = num;
     }
+
+    public String getCity() {
+      return city;
+    }
+
+    public void setCity(String city) {
+      this.city = city;
+    }
+    
 }

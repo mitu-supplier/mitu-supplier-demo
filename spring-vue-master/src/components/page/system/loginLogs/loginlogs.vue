@@ -28,7 +28,7 @@
                 <el-table-column prop="roleName" label="角色名"  align="center" ></el-table-column>
                 <el-table-column prop="createTime" label="登录时间" align="center"  ></el-table-column>
                 <el-table-column prop="ip" label="IP" align="center" ></el-table-column>
-               
+                <el-table-column prop="city" label="登录地址" align="center" ></el-table-column>
             </el-table>
           
             <div class="pagination">

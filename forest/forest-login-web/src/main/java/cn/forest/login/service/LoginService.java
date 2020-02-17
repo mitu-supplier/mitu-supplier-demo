@@ -1,5 +1,7 @@
 package cn.forest.login.service;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -62,7 +64,6 @@ public class LoginService {
               
                   String token = TokenAuthenticationService.addAuthentication(StringUtil.toString(object.get("loginName")));
                   HashMap userInfoMap = selectUserRoles(object);
-                  addSysLoginLogs(object, request, userInfoMap);
                   updateUser(object, request);
                   Object type = userInfoMap.get("type");
                   Object typeId = userInfoMap.get("typeId");
@@ -94,7 +95,7 @@ public class LoginService {
                   } else {
                       resultMap.put("isSupplier", 0);
                   }
-               
+                addSysLoginLogs(object, request, userInfoMap);
                 // 查询当前用户的角色权限
                 redisDao.setKey(token, userInfoMap, TokenAuthenticationService.EXPIRATIONTIME);
                 resultMap.put("token", token);
@@ -127,6 +128,11 @@ public class LoginService {
         logsMap.put("ip", AddressIpUtil.getIpAddr(request));
         logsMap.put("loginName", map.get("loginName"));
         logsMap.put("userName", map.get("name"));
+        try {
+          logsMap.put("city", URLDecoder.decode(request.getHeader("addressCity"), "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+          e.printStackTrace();
+        }
         logsMap.put("roleName", roleName);
         return sysLoginLogsRemote.add(logsMap);
     }
