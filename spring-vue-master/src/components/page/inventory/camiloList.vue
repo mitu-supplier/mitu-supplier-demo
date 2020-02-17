@@ -33,10 +33,12 @@
                     :on-success="handleSuccess">
                     <el-button size="small" type="primary" icon="el-icon-upload2">批量导入</el-button>
                 </el-upload>
+                <el-button type="primary" @click="exportExcel" icon="el-icon-download">批量导出</el-button> 
                 <el-button type="primary" @click="exportTemplate" icon="el-icon-download">下载模板</el-button> 
             </div>
 
-            <el-table :data="tableData" border class="table" ref="multipleTable">
+            <el-table :data="tableData" border class="table" ref="multipleTable"  @selection-change="handleSelectionChange">
+                <el-table-column type="selection" width="55" align="center"></el-table-column>
                 <el-table-column type="index" label="序号" width="55" align="center" ></el-table-column>
                 <el-table-column prop="catalogName" label="商品类目"  align="center" width=""></el-table-column>
                 <el-table-column prop="name" label="商品名称"  align="center" width=""></el-table-column>
@@ -81,6 +83,7 @@
                 total:0,
                 pageSize:10,
                 tableData: [],
+                 multipleSelection: [],
                 formInline:{
                     name:'',
                     catalogName:''
@@ -102,6 +105,9 @@
             onReset(){
                 this.formInline = {};
                 this.getData();
+            },
+             handleSelectionChange(val) {
+                this.multipleSelection = val;
             },
             //改变每页页数
             handleSizeChange(val){
@@ -160,6 +166,18 @@
             },
             exportTemplate(){
                 window.location.href = baseURL_.mallUrl+'/camilo/downloadTemplate';
+            },
+            exportExcel(){
+                if(this.multipleSelection.length>0){
+                    var ids=[];
+                    for(var i=0;i<this.multipleSelection.length;i++){
+                       ids.push(this.multipleSelection[i].id);
+                    }
+                 window.location.href = baseURL_.mallUrl+'/camilo/exportExcel?productIds='+ids.join(",");
+                }else{
+                   this.$message("请选中一条或多条数据");
+                }
+                  
             }
         }
     }

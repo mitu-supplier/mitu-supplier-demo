@@ -37,6 +37,7 @@ public class CatalogsServiceImpl extends ServiceImpl<CatalogsMapper, Catalogs> i
         if (parent == null) {
             // 根节点
             catalogs.setTreeDepth(0);
+            catalogs.setParentId(0l);
         } else {
             catalogs.setTreeDepth(parent.getTreeDepth() + 1);
             
@@ -47,8 +48,14 @@ public class CatalogsServiceImpl extends ServiceImpl<CatalogsMapper, Catalogs> i
         }
         int insert = catalogsMapper.insert(catalogs);
         if (insert > 0) {
-          catalogs.setTreeIds(parent.getTreeIds()+""+catalogs.getId()+"-");
-          catalogs.setTreeNames(parent.getTreeNames()+""+catalogs.getName()+"-");
+          
+          if (parent != null) {
+            catalogs.setTreeIds(parent.getTreeIds()+""+catalogs.getId()+"-");
+            catalogs.setTreeNames(parent.getTreeNames()+""+catalogs.getName()+"-");
+          }else {
+            catalogs.setTreeIds("-"+catalogs.getId()+"-");
+            catalogs.setTreeNames("-"+catalogs.getName()+"-");
+          }
           catalogsMapper.updateById(catalogs);
         }
         return insert;

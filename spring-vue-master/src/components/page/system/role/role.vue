@@ -33,18 +33,7 @@
                 <el-table-column prop="roleName" label="角色名称"  align="center" width="200"></el-table-column>
                 <el-table-column prop="roleCode" label="CODE"  align="center" width="150"></el-table-column>
                 <el-table-column prop="createTime" label="创建时间" align="center"  width="200"></el-table-column>
-                <el-table-column prop="isAdmin" label="是否管理员" align="center" width="150">
-                     <template slot-scope="scope">
-                         <i v-if="scope.row.isAdmin=='0'" red class="el-icon-error red"></i>
-                         <i v-if="scope.row.isAdmin!='0'" class="el-icon-success red"></i>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="isBuiltIn" label="是否内置"  align="center" width="150">
-                    <template slot-scope="scope">
-                         <i v-if="scope.row.isBuiltIn=='0'" red class="el-icon-error red"></i>
-                         <i v-if="scope.row.isBuiltIn!='0'" class="el-icon-success red"></i>
-                    </template>
-                </el-table-column>
+                
                 <el-table-column label="操作" width="" align="center">
                     <template slot-scope="scope">
                         <el-button type="text" icon="el-icon-setting" @click="ztreeEdit(scope.$index, scope.row)">设置权限</el-button>
@@ -75,15 +64,7 @@
                 <el-form-item label="角色编码" >
                     <el-input v-model="form.roleCode"  class="input input-width"></el-input>
                 </el-form-item>
-                <el-form-item label="是否管理">
-                   <el-radio v-model="form.isAdmin" label="0">否</el-radio>
-                   <el-radio v-model="form.isAdmin" label="1">是</el-radio>
-                </el-form-item>
-                <el-form-item label="是否内置">
-                    <el-radio v-model="form.isBuiltIn" label="0">否</el-radio>
-                    <el-radio v-model="form.isBuiltIn" label="1">是</el-radio>
-                    
-                </el-form-item>
+                
                 
             </el-form>
             <span slot="footer" class="dialog-footer">

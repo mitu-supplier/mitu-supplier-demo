@@ -162,7 +162,8 @@
                    loginName:'',
                    phone:'',
                    email:'',
-                   password:''
+                   password:'',
+                   isStatus:'0'
                 },
                 addFlag: false,
                 rules: {
@@ -270,6 +271,8 @@
                     this.form.loginName=user.data.data.loginName;
                     this.form.phone=user.data.data.phone;
                     this.form.email=user.data.data.email;
+                    this.form.isStatus=user.data.data.isStatus+"";
+                    this.form.password=user.data.data.password;
                 }
                  this.editVisible=true;
             },
@@ -278,6 +281,7 @@
                this.addFlag = true;
                this.editVisible=true;
                this.titleName="添加";
+               this.form.isStatus='0';
             },
             // 获取 easy-mock 的模拟数据
             async getData() {

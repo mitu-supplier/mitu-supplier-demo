@@ -68,7 +68,7 @@
         WHERE
             p.is_delete = 0
             AND p.code = #{productCode}
-            AND cc.code = #{catalogCode}
+            <!-- AND cc.code = #{catalogCode} -->
         ORDER BY
             p.id DESC
             LIMIT 1

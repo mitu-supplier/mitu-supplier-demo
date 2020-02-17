@@ -8,6 +8,7 @@
         <ul>
             <li class="li-left">
                 <div class="container">
+                  
                     <ul id="ztree" class="ztree"></ul>
                 </div>
             </li>
@@ -21,7 +22,7 @@
                             <el-input v-model="form.code" class="input" style="width:200px;"></el-input>
                         </el-form-item>
                         <el-form-item label="父节点名称">
-                            <el-input v-model="form.parentName" class="input" style="width:200px;"></el-input>
+                            <el-input v-model="form.parentName"   class="input" style="width:200px;"></el-input>
                         </el-form-item>
                         <el-form-item label="排序">
                             <el-input v-model="form.priority" class="input" style="width:200px;"></el-input>
@@ -60,7 +61,8 @@
                    priority:'',
                    usable:'',
                    treeIds:'',
-                   pic:''
+                   pic:'',
+                   parentId:''
                    
                 },
                  setting:{
@@ -144,9 +146,12 @@
             },
             async saveEdit(){
                  var addOrEdit={};
-                 if(this.form.id!=null){
+                 if(this.form.id!=null&&this.form.id!=''){
+                     
                      addOrEdit= await this.$http.post(baseURL_.mallUrl+'/catalogs/update',this.$qs.stringify(this.form));
                  }else{
+                    
+                    
                      addOrEdit= await this.$http.post(baseURL_.mallUrl+'/catalogs/save',this.$qs.stringify(this.form));
                      
                  }
@@ -170,7 +175,9 @@
                 var zTree = $.fn.zTree.getZTreeObj("ztree");
                 zTree.selectNode(this.clickNode);
                 //zTree.expandNode(this.clickNode, true, true, true);//指定选中ID节点展开
-            }
+            },
+
+           
             
         }
     }

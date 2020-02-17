@@ -58,44 +58,50 @@ public class LoginService {
                 e.printStackTrace();
             }
             if (pass != null && BCrypt.checkpw(password, pass)) {
-                String token = TokenAuthenticationService.addAuthentication(StringUtil.toString(object.get("loginName")));
-                HashMap userInfoMap = selectUserRoles(object);
-                addSysLoginLogs(object, request, userInfoMap);
-                updateUser(object, request);
-                Object type = userInfoMap.get("type");
-                Object typeId = userInfoMap.get("typeId");
-                if (type != null && Integer.parseInt(type.toString()) == 1) {
-                    // 供应商
-                    if (typeId == null) {
-                        return ResultMessage.error("未查到供应商信息");
-                    }
-                    Object supplier = suppliersRemote.getById(Long.parseLong(typeId.toString()));
-                    if (supplier == null) {
-                        return ResultMessage.error("未查到供应商信息");
-                    }
-                    resultMap.put("isSupplier", 1);
-                    JsonNode supplierJsonNode = JsonUtil.readTree(supplier);
-                    int status = supplierJsonNode.path("status").asInt();
-                    userInfoMap.put("supplierStatus", status);
-                    resultMap.put("status", status);
-                    if (status == 0) {
-                        // 待审核
-                        resultMap.put("message", "您的账号24h完成审核，请耐心等待");
-                    } else if (status == 2) {
-                        // 审核不通过
-                        resultMap.put("message", "商户信息有误，请确认后重新提交");
-                    } else if (status == -1) {
-                        // 未填写完毕
-                        resultMap.put("registerStep", supplierJsonNode.path("registerStep").asInt());
-                        resultMap.put("message", "商户信息未填写完毕，请继续填写");
-                    }
-                } else {
-                    resultMap.put("isSupplier", 0);
-                }
+                if("0".contentEquals(object.get("isStatus").toString())) {
+              
+                  String token = TokenAuthenticationService.addAuthentication(StringUtil.toString(object.get("loginName")));
+                  HashMap userInfoMap = selectUserRoles(object);
+                  addSysLoginLogs(object, request, userInfoMap);
+                  updateUser(object, request);
+                  Object type = userInfoMap.get("type");
+                  Object typeId = userInfoMap.get("typeId");
+                  if (type != null && Integer.parseInt(type.toString()) == 1) {
+                      // 供应商
+                      if (typeId == null) {
+                          return ResultMessage.error("未查到供应商信息");
+                      }
+                      Object supplier = suppliersRemote.getById(Long.parseLong(typeId.toString()));
+                      if (supplier == null) {
+                          return ResultMessage.error("未查到供应商信息");
+                      }
+                      resultMap.put("isSupplier", 1);
+                      JsonNode supplierJsonNode = JsonUtil.readTree(supplier);
+                      int status = supplierJsonNode.path("status").asInt();
+                      userInfoMap.put("supplierStatus", status);
+                      resultMap.put("status", status);
+                      if (status == 0) {
+                          // 待审核
+                          resultMap.put("message", "您的账号24h完成审核，请耐心等待");
+                      } else if (status == 2) {
+                          // 审核不通过
+                          resultMap.put("message", "商户信息有误，请确认后重新提交");
+                      } else if (status == -1) {
+                          // 未填写完毕
+                          resultMap.put("registerStep", supplierJsonNode.path("registerStep").asInt());
+                          resultMap.put("message", "商户信息未填写完毕，请继续填写");
+                      }
+                  } else {
+                      resultMap.put("isSupplier", 0);
+                  }
+               
                 // 查询当前用户的角色权限
                 redisDao.setKey(token, userInfoMap, TokenAuthenticationService.EXPIRATIONTIME);
                 resultMap.put("token", token);
                 return ResultMessage.success(resultMap);
+              }else {
+                return ResultMessage.error("用户被禁用，请联系管理员！");
+              }
             } else {
                 return ResultMessage.error("用户或密码错误");
             }

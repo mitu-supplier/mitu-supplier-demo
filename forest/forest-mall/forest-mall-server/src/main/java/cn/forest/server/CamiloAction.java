@@ -137,9 +137,10 @@ public class CamiloAction {
             for (Object obj : list) {
                 camilo = JsonUtil.toObject(JsonUtil.toJson(obj), Camilo.class);
                 // 检验空值
-                if (StringUtil.isBlank(camilo.getCatalogCode())) {
-                    return ResultMessage.error("品目编号不能为空");
-                }
+        /*
+         * if (StringUtil.isBlank(camilo.getCatalogCode())) { return
+         * ResultMessage.error("品目编号不能为空"); }
+         */
                 if (StringUtil.isBlank(camilo.getProductCode())) {
                     return ResultMessage.error("商品编号不能为空");
                 }
@@ -150,9 +151,9 @@ public class CamiloAction {
                     return ResultMessage.error("密码不能为空");
                 }
                 // 校验商品是否存在
-                Products products = productsMapper.selectByCode(camilo.getProductCode(), camilo.getCatalogCode());
+                Products products = productsMapper.selectByCode(camilo.getProductCode(), null);
                 if (products == null) {
-                    return ResultMessage.error("未找到对应商品，品目编号：" + camilo.getCatalogCode() + "，商品编号" + camilo.getProductCode());
+                    return ResultMessage.error("未找到对应商品，商品编号"+ camilo.getProductCode());
                 }
                 // 校验卡密是否重复
                 qw = new QueryWrapper<>();

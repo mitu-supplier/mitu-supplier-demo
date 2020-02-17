@@ -20,6 +20,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletResponse;
+
 public class ExcelUtils {
 
     private static final String XLSX = ".xlsx";
@@ -173,7 +175,7 @@ public class ExcelUtils {
      * @param title   表名称
      * @param rowList 导出每行数据
      */
-    public static void export(String title, List<List<Object>> rowList) {
+    public static void export(String title, List<List<Object>> rowList,String[] titles,HttpServletResponse response) {
         if (rowList == null) {
             rowList = Collections.emptyList();
         }
@@ -183,10 +185,22 @@ public class ExcelUtils {
         CellStyle style = book.createCellStyle();
         // 数据居左
         style.setAlignment(HorizontalAlignment.LEFT);
+        
+        CellStyle cellStyle = book.createCellStyle();
+        cellStyle.setAlignment(HorizontalAlignment.CENTER);  // 设置单元格水平方向对其方式
+        cellStyle.setVerticalAlignment(VerticalAlignment.CENTER); // 设置单元格垂直方向对其方式
+        
+        Row sr1 = sheet.createRow(0);
+        for (int j = 0; j < titles.length; j++) {
+          sheet.setColumnWidth(j, 3766); 
+          setExcelValue(sr1.createCell(j), titles[j], cellStyle);
+        }
+   
+        
         // 写数据
         for (int i = 0; i < rowList.size(); i++) {
             List<Object> row = rowList.get(i);
-            Row sr = sheet.createRow(i);
+            Row sr = sheet.createRow(i+1);
             for (int j = 0; j < row.size(); j++) {
                 if (row.get(j) != null && row.get(j) instanceof URL) {
                     URL url = (URL) row.get(j);
@@ -198,26 +212,16 @@ public class ExcelUtils {
             }
         }
         try {
-            if (PATH.length() > 0) {
-                File dir = new File(PATH);
-                if (!dir.exists()) {
-                    dir.mkdirs();
-                }
-            }
-            File file = new File(PATH + title + XLSX);
-            if (!file.exists()) {
-                file.createNewFile();
-            }
-            FileOutputStream fos = new FileOutputStream(file);
-            ByteArrayOutputStream ops = new ByteArrayOutputStream();
-            book.write(ops);
-            fos.write(ops.toByteArray());
-            fos.close();
+            OutputStream output=response.getOutputStream();
+            response.reset();
+            response.setHeader("Content-disposition", "attachment; filename="+new String(title.getBytes("UTF-8"), "iso8859-1")+".xls");
+            response.setContentType("application/msexcel");
+            book.write(output);
+            output.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
     /**
      * 导出写图片
      */
