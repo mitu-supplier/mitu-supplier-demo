@@ -89,8 +89,8 @@
                     <el-input v-model="form.email" class="input"></el-input>
                 </el-form-item>
                  <el-form-item label="是否启用">
-                   <el-radio v-model="form.isStatus" label="0">启用</el-radio>
-                   <el-radio v-model="form.isStatus" label="1">禁用</el-radio>
+                   <el-radio v-model="form.isStatus" :label="'0'">启用</el-radio>
+                   <el-radio v-model="form.isStatus" :label="'1'">禁用</el-radio>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
@@ -103,7 +103,7 @@
         <el-dialog :title="ztreeTitleName" class="dialog-ztree dialogBox" :visible.sync="ztreeEditVisible" width="25%">
              <ul id="ztree" class="ztree"></ul>
              <span slot="footer" class="dialog-footer">
-                <el-button @click="ztreeEditVisible = false">取 消</el-button>
+                <el-button @click="editVisiblehide">取 消</el-button>
                 <el-button type="primary" @click="saveRole" class="m_rt">确 定</el-button>
             </span>
         </el-dialog>
@@ -275,11 +275,13 @@
                     this.form.password=user.data.data.password;
                 }
                  this.editVisible=true;
+                //  this.$refs['form'].resetFields();
             },
             add(){
                this.form={};
                this.addFlag = true;
                this.editVisible=true;
+            //    this.$refs['form'].resetFields();
                this.titleName="添加";
                this.form.isStatus='0';
             },
@@ -331,6 +333,10 @@
                 });
                 this.user_id=row.id;
                 $.fn.zTree.init($("#ztree"), this.setting, permiss.data.data);
+            },
+            editVisiblehide(){
+                // this.$refs['form'].resetFields();
+                this.editVisible = false;
             },
             async saveRole(){
                var treeObj = $.fn.zTree.getZTreeObj("ztree");

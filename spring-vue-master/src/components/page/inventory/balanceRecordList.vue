@@ -15,7 +15,7 @@
                         <el-input v-model="formInline.userName" placeholder="入库人员"></el-input>
                     </el-form-item>
                     <el-form-item label="入库时间">
-                        <el-date-picker
+                        <!-- <el-date-picker
                             v-model="formInline.startTime"
                             type="datetime"
                             format="yyyy-MM-dd HH:mm:ss"
@@ -29,6 +29,15 @@
                             format="yyyy-MM-dd HH:mm:ss"
                             value-format="yyyy-MM-dd HH:mm:ss"
                             placeholder="选择结束时间">
+                        </el-date-picker> -->
+                        <el-date-picker
+                            v-model="value1"
+                            type="datetimerange"
+                            range-separator="至"
+                            format="yyyy-MM-dd HH:mm:ss"
+                            value-format="yyyy-MM-dd HH:mm:ss"
+                            start-placeholder="选择开始时间"
+                            end-placeholder="选择结束时间">
                         </el-date-picker>
                     </el-form-item>
                     <el-form-item>
@@ -82,7 +91,8 @@
                     userName:'',
                     startTime:'',
                     endTime:''
-                }   
+                },
+                value1:''
             }
         },
         created() {
@@ -92,6 +102,10 @@
         },
         methods: {
             onSubmit(){
+                if(this.value1.length >0){
+                    this.formInline.startTime = this.value1[0];
+                    this.formInline.endTime = this.value1[1];
+                }
                 this.getData();
             },
             //改变每页页数
@@ -106,14 +120,16 @@
             },
             // 初始化数据
             async getData() {
-                var st = this.formInline.startTime;
-                var et = this.formInline.endTime;
-                if(st != null && st != '' && et != null && et != ''){
-                    if(st > et){
-                        this.$message("开始时间不能大于结束时间");
-                        return;
-                    }
-                }
+
+                
+                // var st = this.formInline.startTime;
+                // var et = this.formInline.endTime;
+                // if(st != null && st != '' && et != null && et != ''){
+                //     if(st > et){
+                //         this.$message("开始时间不能大于结束时间");
+                //         return;
+                //     }
+                // }
                 const products = await this.$http.get(baseURL_.mallUrl+'/supplierBalanceRecord/recordList',{ 
                     params: {
                         'page':this.page,
@@ -133,6 +149,7 @@
                 }
             },
             onReset(){
+                this.value1 = '';
                 this.formInline = {};
                 this.getData();
             },

@@ -28,7 +28,12 @@
                 <el-table-column prop="catalogName" label="商品类目"  align="center" width=""></el-table-column>
                 <el-table-column prop="name" label="商品名称"  align="center" width=""></el-table-column>
                 <el-table-column prop="supplierName" label="商户名称"  align="center" width=""></el-table-column>
-                <el-table-column prop="inventoryNum" label="剩余库存" align="center"  width=""></el-table-column>
+                <el-table-column prop="inventoryNum" label="剩余库存" align="center"  width="">
+                    <template slot-scope="scope">
+                        <!-- v-on:focus="stockfocus(scope.row)"  -->
+                        <el-input :value="scope.row.inventoryNum" v-model="scope.row.inventoryNum" v-on:blur="stockBlur(scope.row)" ></el-input>
+                    </template>
+                </el-table-column>
                 <el-table-column prop="" label="库存告急" align="center"  width="">
                     <template slot-scope="scope">
                         <span type="text" v-if="scope.row.inventoryNum <= scope.row.inventoryAlertNum" class="red">库存不足</span>
@@ -75,6 +80,54 @@
             this.getData();
         },
         methods: {
+            // stockfocus(row){
+            //     console.log(row)
+            //     this.stockRows = row;
+            // },
+            stockBlur(row){
+                // alert(this.stockRows.inventoryNum)
+                // alert(row.inventoryNum)
+                // console.log(row.inventoryNum)
+                // if(this.stockRows.inventoryNum == row.inventoryNum){
+                //     return;
+                // }
+                // console.log(row);
+                var num = row.inventoryNum;
+                var numfist = 2;
+                if(num.length > 1){
+                    numfist = num.substring(0,1)
+                }
+                if(numfist <= 0){
+                    this.$message("第一位不能是0");
+                    return;
+                }
+                this.$confirm('确认修改剩余库存？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.editInventory(row);
+                }).catch(() => {
+                    this.getData();
+                });
+
+                
+            },
+            async editInventory(row){
+                const data = await this.$http.get(baseURL_.mallUrl+'/physical/updateInventory',{ 
+                    params: {
+                        'productId':row.id,
+                        'inventoryNum':row.inventoryNum
+                    }
+                });
+                if(data.data.statusCode==200){
+                    this.$message({
+                        type: "success",
+                        message: data.data.data
+                    });
+                    this.getData();
+                }
+            },
             onSubmit(){
                 this.getData();
             },

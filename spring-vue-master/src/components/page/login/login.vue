@@ -77,12 +77,17 @@ Vue.prototype.$jsEncrypt=JsEncrypt;
                         if(login.data.data.status == '-1'){
                             // 未提交  跳转继续填写
                             // activeId
-                            
+                            var stepNum = '';
+                            if(login.data.data.registerStep < 5){
+                                stepNum = login.data.data.registerStep + 1;
+                            }else{
+                                stepNum = login.data.data.registerStep;
+                            }
                             this.$router.push({
                                 path: '/registed',
                                 name: 'registed',
                                 params: {
-                                    activeId: login.data.data.registerStep
+                                    activeId: stepNum
                                 }
                             });
                         } else if(login.data.data.status == '0'){

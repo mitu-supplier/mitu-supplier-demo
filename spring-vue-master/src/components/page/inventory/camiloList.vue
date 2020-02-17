@@ -37,6 +37,30 @@
                 <el-button type="primary" @click="exportTemplate" icon="el-icon-download">下载模板</el-button> 
             </div>
 
+            
+            <div class="messageBox">
+                <div class="mestitle">库存报警信息接收账号</div>
+                <el-form :model="dynamicValidateForm" ref="dynamicValidateForm" label-width="100px" class="demo-dynamic">
+                    <el-form-item
+                        v-for="(domain, index) in dynamicValidateForm.domains"
+                        :label="'邮箱' + (index+1)"
+                        :key="domain.key">
+                        <el-input v-model="domain.value" class="mesInput"></el-input><el-button @click.prevent="removeDomain(domain)">删除</el-button>
+                    </el-form-item>
+                    <el-form-item
+                        v-for="(newphone, index) in dynamicValidateForm.phoneList"
+                        :label="'手机号' + (index+1)"
+                        :key="newphone.key">
+                        <el-input v-model="newphone.value" maxlength="11" class="mesInput"></el-input><el-button @click.prevent="removePhone(newphone)">删除</el-button>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" @click="submitForm">提交</el-button>
+                        <el-button @click="addDomain">新增邮箱</el-button>
+                        <el-button @click="addPhone">新增手机号</el-button>
+                        
+                    </el-form-item>
+                </el-form>
+            </div>
             <el-table :data="tableData" border class="table" ref="multipleTable"  @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
                 <el-table-column type="index" label="序号" width="55" align="center" ></el-table-column>
@@ -90,6 +114,12 @@
                 },
                 myHeaders: {
                     'token': ''
+                },
+                dynamicValidateForm: {
+                    domains: [],
+                    email: '',
+                    phone:'',
+                    phoneList:[]
                 }
             }
         },
@@ -97,8 +127,166 @@
             var token = localStorage.getItem('forestToken');
             this.myHeaders.token = token;
             this.getData();
+            this.getemails();
         },
         methods: {
+            // dynamicValidateForm: {
+                //     domains: [],
+                //     email: '',
+                //     phone:'',
+                //     phoneList:[]
+                // }
+            async getemails(){
+                const res = await this.$http.get(baseURL_.mallUrl+'/receivingAccount/list');
+                if(res.data.data.length > 0){
+                    var data = res.data.data;
+                    for(let k=0; k<data.length; k++){
+                        if(data[k].type == '1'){
+                            this.dynamicValidateForm.domains.push({'value':data[k].tValue,'key': Date.now()});
+                        }else{
+                            this.dynamicValidateForm.phoneList.push({'value':data[k].tValue,'key': Date.now()});
+                        }
+                    }
+                }else{
+                    this.dynamicValidateForm.domains = [{value: '', key: Date.now()}]
+                    this.dynamicValidateForm.phoneList = [{value: '', key: Date.now()}]
+                }
+            },
+            async submitForm() {
+                var arr = [];
+                // if(this.dynamicValidateForm.email != '' && this.dynamicValidateForm.email != null){
+                //     if(!(/^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/.test(this.dynamicValidateForm.email))){ 
+                //         this.$message({
+                //             type: "error",
+                //             message: "请输入正确的邮箱"
+                //         });
+                //         return false; 
+                //     }else{
+                //         var json = {'type':'1','tValue':this.dynamicValidateForm.email};
+                //         arr.push(json)
+                //     }
+                // }else{
+                //     this.$message({
+                //         type: "error",
+                //         message: "请输入邮箱"
+                //     });
+                //     return false; 
+                // }
+
+                if(this.dynamicValidateForm.domains.length > 0){
+                    var emails = this.dynamicValidateForm.domains;
+                    for(let i=0; i<emails.length; i++){
+                        if(emails[i].value == '' || emails[i].value == null){
+                            this.$message({
+                                type: "error",
+                                message: "请删除空标签"
+                            });
+                            return;
+                        }else{
+                            if(!(/^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/.test(emails[i].value))){ 
+                                this.$message({
+                                    type: "error",
+                                    message: "请输入正确的邮箱"
+                                });
+                                return false; 
+                            }else{
+                                var emailitem = {'type':'1','tValue':emails[i].value};
+                                arr.push(emailitem)
+                            }
+                        }
+                    }
+                }
+
+                // if(this.dynamicValidateForm.phone != '' && this.dynamicValidateForm.phone != null){
+                //     if(!(/^1[3456789]\d{9}$/.test(this.dynamicValidateForm.phone))){ 
+                //         this.$message({
+                //             type: "error",
+                //             message: "请输入正确的手机号"
+                //         });
+                //         return false; 
+                //     }else{
+                //         var phoneone = {'type':'2','tValue':this.dynamicValidateForm.phone};
+                //         arr.push(phoneone)
+                //     }
+                // }else{
+                //     this.$message({
+                //         type: "error",
+                //         message: "请输入手机号"
+                //     });
+                //     return false; 
+                // }
+
+                if(this.dynamicValidateForm.phoneList.length > 0){
+                    var phones = this.dynamicValidateForm.phoneList;
+                    for(let i=0; i<phones.length; i++){
+                        if(phones[i].value == '' || phones[i].value == null){
+                            this.$message({
+                                type: "error",
+                                message: "请删除空标签"
+                            });
+                            return;
+                        }else{
+                            if(!(/^1[3456789]\d{9}$/.test(phones[i].value))){ 
+                                this.$message({
+                                    type: "error",
+                                    message: "请输入正确的手机号"
+                                });
+                                return false; 
+                            }else{
+                                var phoneitem = {'type':'1','tValue':phones[i].value};
+                                arr.push(phoneitem)
+                            }
+                        }
+                    }
+                }
+
+                // 校验通过，调保存接口
+                // var json = [
+                //     {'type':'1','tValue':'789@qq.com'},
+                //     {'type':'1','tValue':'789@qq.com'},
+                //     {'type':'2','tValue':'13145787877'},
+                // ]
+                const res = await this.$http.post(baseURL_.mallUrl+'/receivingAccount/save',arr);
+                if(res.data.statusCode==200){
+                  this.$message({
+                    type: "success",
+                    message: res.data.data || "保存成功"
+                  });
+                }else{
+                  this.$message({
+                    type: "error",
+                    message: res.data.data || "保存失败"
+                  });
+                }
+                
+            },
+            removeDomain(item) {
+                var index = this.dynamicValidateForm.domains.indexOf(item)
+                if (index !== -1) {
+                this.dynamicValidateForm.domains.splice(index, 1)
+                }
+            },
+            removePhone(item) {
+                var index = this.dynamicValidateForm.phoneList.indexOf(item)
+                if (index !== -1) {
+                this.dynamicValidateForm.phoneList.splice(index, 1)
+                }
+            },
+            
+            addDomain() {
+                this.dynamicValidateForm.domains.push({
+                    value: '',
+                    key: Date.now()
+                });
+            },
+            addPhone() {
+                this.dynamicValidateForm.phoneList.push({
+                    value: '',
+                    key: Date.now()
+                });
+            },
+
+
             onSubmit(){
                 this.getData();
             },
@@ -221,6 +409,21 @@
     .inline-block {
         display: inline-block;
     } 
+    .messageBox{
+        width: 35%;
+        height: auto;
+        border: 1px solid #ccc;
+        padding:20px;
+        margin-bottom: 20px;
+    }
+    .messageBox .mestitle{
+        font-size: 16px;
+        color: #ff0000;
+        margin-bottom: 15px;
+    }
+    .messageBox .mesInput{
+        width: 60%;
+    }
 </style>
 <style>
 .canahead .upload-excel-file .el-upload--text {    

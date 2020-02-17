@@ -508,6 +508,24 @@
                 this.newRuleForm.legalCardDateStart = startTime;
                 this.newRuleForm.legalCardDateEnd = endTime;
               }
+              if(this.newRuleForm.phone != '' && this.newRuleForm.phone != null){
+                  if(!(/^1[3456789]\d{9}$/.test(this.newRuleForm.phone))){ 
+                      this.$message({
+                        type: "error",
+                        message: "请输入正确的手机号"
+                      });
+                      return false; 
+                  } 
+              }
+              if(this.newRuleForm.email != '' && this.newRuleForm.email != null){
+                  if(!(/^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/.test(this.newRuleForm.email))){ 
+                      this.$message({
+                        type: "error",
+                        message: "请输入正确的邮箱"
+                      });
+                      return false; 
+                  } 
+              }
               this.newRuleForm.trademarkRegistration = this.trademarkRegistration;
               this.newRuleForm.brandAuthorization = this.brandAuthorization;
               this.newRuleForm.qualityInspectionReport = this.qualityInspectionReport;
