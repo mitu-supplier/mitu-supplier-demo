@@ -135,9 +135,8 @@
                 </el-form-item>
 
                 <el-form-item label="发货状态" prop="">
-                    <el-select v-model="deliveryStatus" multiple placeholder="请选择">
+                    <el-select v-model="deliveryStatus" multiple disabled placeholder="请选择">
                       <el-option
-                        disabled
                         v-for="item in deliveryStatusList"
                         :key="item.id"
                         :label="item.deliveryStatus"
@@ -154,6 +153,7 @@
                 <el-form-item v-if="auditType =='10'" label="发货代号" prpo="">
                   <el-select v-model="addComForm.deliveryTypeCode" filterable placeholder="请选择">
                     <el-option
+                      disabled
                       v-for="item in deliveryTypeCodeList"
                       :key="item.code"
                       :label="item.label"

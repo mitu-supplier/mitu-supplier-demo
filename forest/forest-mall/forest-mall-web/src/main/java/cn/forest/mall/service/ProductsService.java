@@ -287,6 +287,7 @@ public class ProductsService {
         if (userInfoMap != null) {
             paramMap.put("userId", userInfoMap.get("id"));
         }
+        paramMap.put("isDelete", 0);
         int save = productDeliveryStatusDataRemote.save(paramMap);
         return ResultMessage.result(save, "保存成功", "保存失败");
     }

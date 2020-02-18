@@ -193,26 +193,26 @@ public class SuppliersService {
         Integer status = Integer.parseInt(map.get("auditResult").toString());
         String permissionIds = StringUtil.isBlank(map.get("permissionIds")) ? null : map.get("permissionIds").toString();
         Long signCompany = StringUtil.isBlank(map.get("signCompany")) ? null : Long.parseLong(map.get("signCompany").toString());
-        Map<String, Object> supplierInfo = new HashMap<>();
-        supplierInfo.put("id", supplierId);
-        supplierInfo.put("status", status);
-        supplierInfo.put("signCompany", signCompany);
-        int update = suppliersRemote.update(supplierInfo);
-        if (update > 0) {
-            if (status != null && status == 1) {
-                sysRoleRemote.saveSupplierRole(supplierId + "", permissionIds);
-            }
-            // 保存审核记录
-            String header = request.getHeader(Constant.HEADER_TOKEN_STRING);
-            HashMap userInfoMap = (HashMap) redisDao.getValue(header);
-            if (userInfoMap != null) {
-                map.put("auditUserId", userInfoMap.get("id"));
-                map.put("auditUserName", userInfoMap.get("name"));
-            }
-            map.put("auditType", 1);
-            auditRecodeRemote.save(map);
+        if(status == 1){
+            Map<String, Object> supplierInfo = new HashMap<>();
+            supplierInfo.put("id", supplierId);
+            supplierInfo.put("status", status);
+            supplierInfo.put("signCompany", signCompany);
+            int update = suppliersRemote.update(supplierInfo);
         }
-        return ResultMessage.result(update, "操作提交成功", "操作提交失败");
+        if (status != null && status == 1) {
+            sysRoleRemote.saveSupplierRole(supplierId + "", permissionIds);
+        }
+        // 保存审核记录
+        String header = request.getHeader(Constant.HEADER_TOKEN_STRING);
+        HashMap userInfoMap = (HashMap) redisDao.getValue(header);
+        if (userInfoMap != null) {
+            map.put("auditUserId", userInfoMap.get("id"));
+            map.put("auditUserName", userInfoMap.get("name"));
+        }
+        map.put("auditType", 1);
+        int save = auditRecodeRemote.save(map);
+        return ResultMessage.result(save, "操作提交成功", "操作提交失败");
     }
 
     /**
@@ -423,5 +423,40 @@ public class SuppliersService {
             return ResultMessage.success(all);
         }
         return null;
+    }
+
+    public Map<String, Object> batchAudit(HttpServletRequest request){
+        int result = 0;
+        Map<String, Object> map = RequestMap.requestToMap(request);
+        String ids = StringUtil.toString(map.get("ids"));
+        if(ids != null){
+            for (String id : ids.split(",")){
+                Long supplierId = Long.parseLong(id);
+                Integer status = Integer.parseInt(map.get("auditResult").toString());
+                String permissionIds = StringUtil.isBlank(map.get("permissionIds")) ? null : map.get("permissionIds").toString();
+                Long signCompany = StringUtil.isBlank(map.get("signCompany")) ? null : Long.parseLong(map.get("signCompany").toString());
+                Map<String, Object> supplierInfo = new HashMap<>();
+                supplierInfo.put("id", supplierId);
+                supplierInfo.put("status", status);
+                if(status == 1){
+                    supplierInfo.put("signCompany", signCompany);
+                }
+                int update = suppliersRemote.update(supplierInfo);
+                if (status != null && status == 1) {
+                    sysRoleRemote.saveSupplierRole(supplierId + "", permissionIds);
+                }
+                // 保存审核记录
+                String header = request.getHeader(Constant.HEADER_TOKEN_STRING);
+                HashMap userInfoMap = (HashMap) redisDao.getValue(header);
+                if (userInfoMap != null) {
+                    map.put("auditUserId", userInfoMap.get("id"));
+                    map.put("auditUserName", userInfoMap.get("name"));
+                }
+                map.put("auditType", 1);
+                map.put("businessId", id);
+                result += auditRecodeRemote.save(map);
+            }
+        }
+        return ResultMessage.result(result, "操作成功", "操作失败");
     }
 }

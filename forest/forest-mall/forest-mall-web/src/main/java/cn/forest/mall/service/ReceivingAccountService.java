@@ -15,10 +15,9 @@ public class ReceivingAccountService {
     @Autowired
     private ReceivingAccountRemote receivingAccountRemote;
 
-    public Map<String, Object> save(Map<String, Object> paramMap){
+    public Map<String, Object> save(List<Object> paramsList){
         List<Map<String, Object>> list = new ArrayList<>();
-        List paramList = (List) paramMap.get("list");
-        for (Object o : paramList) {
+        for (Object o : paramsList) {
             list.add((Map) o);
         }
         receivingAccountRemote.deleteAll();

@@ -245,7 +245,7 @@ public class Suppliers implements Serializable {
     private Integer isDelete;
 
     /**
-     * 商户余额
+     * 商户余额预警值
      */
     @TableField(value = "alert_balance")
     private BigDecimal alertBalance;

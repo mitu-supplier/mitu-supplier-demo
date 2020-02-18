@@ -152,6 +152,7 @@
                         :value="item.deliveryStatus">
                       </el-option>
                     </el-select>
+                    <el-button class="add_delivery" type="success" @click="addDelivery()">添加</el-button>
                 </el-form-item>
 
                  <el-form-item label="状态" prop="status">
@@ -428,7 +429,30 @@
             handlePictureCardPreview(file) {
               this.dialogImageUrl = file.url;
               this.dialogVisible = true;
-            }
+            },
+             // 添加发货状态
+            addDelivery(){
+                this.$prompt('请输入发货状态：', '添加发货状态', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    inputPattern: /^[\s\S]*.*[^\s][\s\S]*$/,
+                    inputErrorMessage: '发货状态不能为空'
+                }).then(({ value }) => {
+                    this.saveDelivery(value);
+                }).catch(() => { }); 
+            },
+            // 保存发货状态
+            async saveDelivery(deliveryTypeCode){
+              var params = {
+                deliveryStatus: deliveryTypeCode
+              }
+              var saveRes = await this.$http.post(baseURL_.mallUrl+'/products/saveDeliveryStatus',this.$qs.stringify(params));
+                this.$message(saveRes.data.data);
+                if(saveRes.data.statusCode==200){
+                  this.deliveryStatus.push(deliveryTypeCode);
+                  this.getDeliveryStatus();
+                }
+            },
         }
     }
 
@@ -471,5 +495,8 @@
     ::-webkit-scrollbar-thumb {
       border-radius: 4px;
       background-color: #ccc;
+    }
+    .add_delivery {
+      margin-left: 10px;
     }
 </style>

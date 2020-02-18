@@ -22,7 +22,7 @@ public class ProductDeliveryStatusData implements Serializable {
      * 发货状态
      */
     @TableField(value = "delivery_status")
-    private Long deliveryStatus;
+    private String deliveryStatus;
 
     /**
      * 添加时间
@@ -54,11 +54,11 @@ public class ProductDeliveryStatusData implements Serializable {
         this.id = id;
     }
 
-    public Long getDeliveryStatus() {
+    public String getDeliveryStatus() {
         return deliveryStatus;
     }
 
-    public void setDeliveryStatus(Long deliveryStatus) {
+    public void setDeliveryStatus(String deliveryStatus) {
         this.deliveryStatus = deliveryStatus;
     }
 

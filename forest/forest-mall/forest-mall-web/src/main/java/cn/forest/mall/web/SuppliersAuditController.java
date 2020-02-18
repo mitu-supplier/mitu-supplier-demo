@@ -80,4 +80,9 @@ public class SuppliersAuditController {
     public Map<String, Object> getPermissions() {
         return suppliersService.getPermissions();
     }
+
+    @RequestMapping("/batchAudit")
+    public Map<String, Object> batchAudit(HttpServletRequest request){
+        return suppliersService.batchAudit(request);
+    }
 }

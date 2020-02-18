@@ -40,12 +40,12 @@
                     </el-form-item>
                 </el-form>
             </div>
-            <!-- <div class="handle-box">
+            <div class="handle-box">
                 <el-button type="primary" icon="el-icon-check" @click="batchAudit(1)" >审核通过</el-button>
                 <el-button type="primary" icon="el-icon-close" @click="batchAudit(2)" >审核失败</el-button>
-            </div> -->
+            </div>
             <el-table :data="tableData" border class="table" ref="multipleTable" @selection-change="handleSelectionChange">
-                <!-- <el-table-column type="selection" width="55" align="center"></el-table-column> -->
+                <el-table-column type="selection" width="55" align="center"></el-table-column>
                 <el-table-column type="index" label="序号" width="55" align="center" ></el-table-column>
                 <el-table-column prop="code" label="商户号"  align="center" width=""></el-table-column>
                 <el-table-column prop="name" label="商户名称"  align="center" width=""></el-table-column>
@@ -66,8 +66,6 @@
                         <el-button type="text" icon="el-icon-search" @click="view(scope.$index, scope.row)">查看</el-button>
                         <el-button type="text" icon="el-icon-edit" v-if="isSupplier != '1' && scope.row.status == '0'"  @click="toAudit(scope.$index, scope.row)">审核</el-button>
                         <el-button type="text" icon="el-icon-document" v-if="scope.row.status != '0'"  @click="lookAudit(scope.$index, scope.row)">审核记录</el-button>
-                        <!-- <el-button type="text" icon="el-icon-check" v-if="scope.row.status == '0'" @click="auditAdopt(scope.row.id)">通过</el-button>
-                        <el-button type="text" icon="el-icon-close" v-if="scope.row.status == '0'" class="red" @click="auditReject(scope.row.id)">驳回</el-button> -->
                     </template>
                 </el-table-column>
             </el-table>
@@ -107,6 +105,41 @@
                 
             </span>
         </el-dialog>
+         <!-- 审核弹出框 -->
+          <el-dialog title="审核员完善信息" :close-on-click-modal="false" :visible.sync="auditVisible" width="25%">
+              <el-form ref="auditFormList" :rules="auditrules" :model="auditFormList" label-width="90px">
+                  <el-form-item label="签约公司" prop="signCompany">
+                      <el-select v-model="auditFormList.signCompany" placeholder="请选择">
+                        <el-option
+                          v-for="item in CompanyType"
+                          :key="item.id"
+                          :label="item.name"
+                          :value="item.id">
+                        </el-option>
+                      </el-select>
+                  </el-form-item>
+                  <el-form-item label="角色" prop="Permis">
+                      <el-select
+                          v-model="auditFormList.Permis"
+                          multiple
+                          filterable
+                          allow-create
+                          default-first-option
+                          placeholder="请选择角色">
+                          <el-option
+                              v-for="item in Permissions"
+                              :key="item.id"
+                              :label="item.roleName"
+                              :value="item.id">
+                          </el-option>
+                      </el-select>
+                  </el-form-item>
+              </el-form>
+              <span slot="footer" class="dialog-footer">
+                  <el-button @click="auditVisible = false">取 消</el-button>
+                  <el-button type="primary" @click="auditConfim">确 定</el-button>
+              </span>
+          </el-dialog>
     </div>
     
 </template>
@@ -133,13 +166,26 @@
                     code:'',
                     enterType:''
                 },
-                isSupplier:1
+                isSupplier:1,
+                auditFormList:{
+                  Permis:[],
+                  signCompany:'',
+                },
+                auditVisible:false,
+                Permissions:[],
+                CompanyType:[],
+                auditrules: {
+                  signCompany: [{ required: true, message: "请选择签约公司", trigger: "change" }],
+                  Permis: [{ required: true, message: "请选择角色", trigger: "change" }],
+                },
             }
         },
         created() {
             this.getData();
             this.getEnterTypeList();
             this.vaIsSupplier();
+            this.getCompany();
+            this.getRoleForm();
         },
         methods: {
             async lookAudit(index,row){
@@ -192,46 +238,48 @@
             handleSelectionChange(val){
                 this.multipleSelection = val;
             },
-            // batchAudit(audit){
-            //     if(this.multipleSelection.length == 0){
-            //         this.$message("请先选择商户");
-            //         return ;
-            //     }
-            //     var msg = "";
-            //     if(audit == 1){
-            //         msg = "审核通过";
-            //     }
-            //     if(audit == 2){
-            //         msg = "审核不通过";
-            //     }
-            //     var flag = 0;
-            //     var ids = [];
-            //     this.multipleSelection.forEach(e => {
-            //         ids.push(e.id);
-            //         if(e.status != 0){
-            //             flag ++;
-            //         }
-            //     });
-            //     if(flag == 0){
-            //         this.$confirm('确认'+msg+'？').then( e=> {
-            //             this.audit(ids.join(','), audit);
-
-            //         }).catch(_ => {});
-            //     }else{
-            //         this.$message("不能重复审核！");
-            //     }
-            // },
-            // async audit(ids, auditStatus){
-            //     var params = {
-            //         'ids': ids,
-            //         'status': auditStatus
-            //     }
-            //     var auditResult = await this.$http.put(baseURL_.mallUrl+'/supplier_audit/batchAudit', this.$qs.stringify(params));
-            //     this.$message(auditResult.data.data);
-            //     if(auditResult.data.statusCode==200){
-            //         this.getData();
-            //     }
-            // },
+            batchAudit(audit){
+                if(this.multipleSelection.length == 0){
+                    this.$message("请先选择商户");
+                    return ;
+                }
+                var flag = 0;
+                var ids = [];
+                this.multipleSelection.forEach(e => {
+                    ids.push(e.id);
+                    if(e.status != 0){
+                        flag ++;
+                    }
+                });
+                if(flag == 0){
+                    if(audit == 1){
+                        this.auditVisible = true;
+                    }
+                    if(audit == 2){
+                        this.$prompt('请输入审核失败理由：', '提示', {
+                            confirmButtonText: '确定',
+                            cancelButtonText: '取消',
+                            inputPattern: /^[\s\S]*.*[^\s][\s\S]*$/,
+                            inputErrorMessage: '理由不能为空'
+                        }).then(({ value }) => {
+                            this.confimAudit(ids.join(','), 2, value, null, null)
+                        }).catch(() => { });
+                    }
+                }else{
+                    this.$message("不能重复审核！");
+                }
+            },
+            async audit(ids, auditStatus){
+                var params = {
+                    'ids': ids,
+                    'status': auditStatus
+                }
+                var auditResult = await this.$http.put(baseURL_.mallUrl+'/supplier_audit/batchAudit', this.$qs.stringify(params));
+                this.$message(auditResult.data.data);
+                if(auditResult.data.statusCode==200){
+                    this.getData();
+                }
+            },
             view(index,item){
                 var id = Base64.encode(item.id);
                 this.$router.push({
@@ -254,38 +302,48 @@
                     }
                 });
             },
-            auditAdopt(id){
-                this.$confirm('确认审核通过').then( e=> {
-                    this.confimAudit(id,1);
-                }).catch(_ => {});
+            async getEnterTypeList(){
+                const res = await this.$http.get(baseURL_.mallUrl+'/supplier/getEnterType');
+                this.enterTypeList = res.data.data; 
             },
-            auditReject(id){
-                this.$prompt('请输入审核失败理由：', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    inputPattern: /^[\s\S]*.*[^\s][\s\S]*$/,
-                    inputErrorMessage: '理由不能为空'
-                }).then(({ value }) => {
-                    this.confimAudit(id,2,value)
-                }).catch(() => { }); 
+            async getCompany(){
+                const res = await this.$http.get(baseURL_.mallUrl+'/supplier/getCompany');
+                this.CompanyType = res.data.data;
             },
-            async confimAudit(id,auditResult,auditReason){
-                var auditResult = await this.$http.get(baseURL_.mallUrl+'/supplier_audit/audit', {
+             // 角色信息
+            async getRoleForm(){
+                this.Permissions = [];
+                const res = await this.$http.get(baseURL_.mallUrl+'/supplier_audit/getPermissions');
+                this.Permissions = res.data.data;
+            },
+            async auditConfim(){
+              this.$refs['auditFormList'].validate(async valid => {
+                if (valid) {
+                  var ids = [];
+                  this.multipleSelection.forEach(e => {
+                    ids.push(e.id);
+                  });
+                  var permissionIds = this.auditFormList.Permis.join(",");
+                  this.confimAudit(ids.join(","),1,null,this.auditFormList.signCompany,permissionIds);
+                }
+              })
+            },
+            async confimAudit(ids, auditResult, auditReason, signCompany, permissionIds){
+                var auditResult = await this.$http.get(baseURL_.mallUrl+'/supplier_audit/batchAudit', {
                     params:{
-                        businessId:id,
+                        ids:ids,
                         auditResult:auditResult,
-                        auditReason:auditReason
+                        auditReason:auditReason,
+                        signCompany:signCompany,
+                        permissionIds:permissionIds
                     }
                 });
                 this.$message(auditResult.data.data);
                 if(auditResult.data.statusCode==200){
+                    this.auditVisible = false;
                     this.getData();
                 }
             },
-            async getEnterTypeList(){
-                const res = await this.$http.get(baseURL_.mallUrl+'/supplier/getEnterType');
-                this.enterTypeList = res.data.data; 
-            }
         }
     }
 

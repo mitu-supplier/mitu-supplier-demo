@@ -14,9 +14,9 @@ public interface ReceivingAccountRemote {
     @RequestMapping("/receivingAccount/list")
     Object list(@RequestParam(value = "type", required = false) Integer type);
 
-    @RequestMapping("/saveAll")
+    @RequestMapping("/receivingAccount/saveAll")
     int saveAll(List<Map<String, Object>> mapList);
 
-    @RequestMapping("/deleteAll")
+    @RequestMapping("/receivingAccount/deleteAll")
     int deleteAll();
 }
