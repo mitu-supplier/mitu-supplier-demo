@@ -24,7 +24,7 @@ public class ProductDeliveryStatusAction {
      * @return
      */
     @RequestMapping("/saveByProductId")
-    public int saveByProductId(@RequestParam("productId") Long productId, @RequestParam("deliveryStatus") String deliveryStatus) {
+    public int saveByProductId(@RequestParam("productId") Long productId, @RequestParam("deliveryStatus") String deliveryStatus, @RequestParam("type") Integer type) {
         int result = 0;
         ProductDeliveryStatus productDeliveryStatus = null;
         if (StringUtil.isNotBlank(deliveryStatus) && productId != null) {
@@ -32,6 +32,7 @@ public class ProductDeliveryStatusAction {
                 productDeliveryStatus = new ProductDeliveryStatus();
                 productDeliveryStatus.setProductId(productId);
                 productDeliveryStatus.setDeliveryStatus(Long.parseLong(str));
+                productDeliveryStatus.setType(type);
                 result = productDeliveryStatusMapper.insert(productDeliveryStatus);
             }
         }
@@ -45,10 +46,18 @@ public class ProductDeliveryStatusAction {
      * @return
      */
     @RequestMapping("/deleteByProductId")
-    public int deleteByProductId(@RequestParam("productId") Long productId) {
+    public int deleteByProductId(@RequestParam("productId") Long productId, @RequestParam("type") Integer type) {
         QueryWrapper<ProductDeliveryStatus> qw = new QueryWrapper<>();
         qw.eq("product_id", productId);
+        qw.eq("type", type);
         return productDeliveryStatusMapper.delete(qw);
     }
 
+    @RequestMapping("/selectByProductId")
+    public Object selectByProductId(@RequestParam("productId") Long productId, @RequestParam("type") Integer type){
+        QueryWrapper<ProductDeliveryStatus> qw = new QueryWrapper<>();
+        qw.eq("product_id", productId);
+        qw.eq("type", type);
+        return productDeliveryStatusMapper.selectList(qw);
+    }
 }

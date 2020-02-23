@@ -97,7 +97,7 @@ public class CamiloService {
         MultipartFile multipartFile = multipartRequest.getFileMap().entrySet().iterator().next().getValue();
         String filename = FilenameUtils.getName(multipartFile.getOriginalFilename());
         String ctxFileUrl = upload(multipartFile, fileUploadPath, false);
-        if(StringUtil.isNotBlank(ctxFileUrl)){
+        if (StringUtil.isNotBlank(ctxFileUrl)) {
             Map<String, String> fieldsMap = new HashMap<>();
             //fieldsMap.put("品目编号", "catalogCode");
             fieldsMap.put("商品编号", "productCode");
@@ -178,34 +178,34 @@ public class CamiloService {
         }
         return null;
     }
-    
-    public void exportExcel(HttpServletResponse response, String productIds) {
-      List<Map<String, Object>> listMap=new ArrayList<Map<String, Object>>();
-      if(!StringUtils.isEmpty(productIds)) {
-        String[] productid_split = productIds.split(",");
-        for (String productId : productid_split) {
-          listMap.addAll((List<Map<String, Object>>) camiloRemote.selectByProductId(Long.parseLong(productId)));
+
+    public void exportExcel(HttpServletRequest request, HttpServletResponse response, String productIds) {
+        List<Map<String, Object>> listMap = new ArrayList<Map<String, Object>>();
+        if (!StringUtils.isEmpty(productIds)) {
+            String[] productid_split = productIds.split(",");
+            for (String productId : productid_split) {
+                listMap.addAll((List<Map<String, Object>>) camiloRemote.selectByProductId(Long.parseLong(productId)));
+            }
+            List<List<Object>> rowList = new ArrayList<List<Object>>();
+            List<Object> list = null;
+            String[] titles = {"商品名称", "商品编码", "卡号", "密码", "失效时间", "供货价", "操作人员", "导入时间"};
+            for (Map<String, Object> map : listMap) {
+                list = new ArrayList<Object>();
+                Map<String, Object> product = (Map<String, Object>) productsRemote.getById(Long.parseLong(map.get("productId").toString()));
+                list.add(product.get("name"));
+                list.add(product.get("code"));
+                list.add(map.get("cardNumber"));
+                list.add(map.get("cardPassword"));
+                list.add(map.get("failureTime"));
+                list.add(map.get("supplyPrice"));
+                list.add(map.get("userName"));
+                list.add(map.get("createdAt"));
+                rowList.add(list);
+            }
+            ExcelUtils.export("卡密导出", rowList, titles, request, response);
+
         }
-        List<List<Object>> rowList=new ArrayList<List<Object>>();
-        List<Object> list=null;
-        String[] titles= {"商品名称","商品编码","卡号","密码","失效时间","供货价","操作人员","导入时间"};
-        for (Map<String, Object> map : listMap) {
-          list=new ArrayList<Object>();
-          Map<String, Object> product = (Map<String, Object>) productsRemote.getById(Long.parseLong(map.get("productId").toString()));
-          list.add(product.get("name"));
-          list.add(product.get("code"));
-          list.add(map.get("cardNumber"));
-          list.add(map.get("cardPassword"));
-          list.add(map.get("failureTime"));
-          list.add(map.get("supplyPrice"));
-          list.add(map.get("userName"));
-          list.add(map.get("createdAt"));
-          rowList.add(list);
-        }
-        ExcelUtils.export("卡密导出", rowList, titles, response);
-        
-      }
-      
-      
+
+
     }
 }

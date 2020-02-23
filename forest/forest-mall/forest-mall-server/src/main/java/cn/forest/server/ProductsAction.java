@@ -71,6 +71,7 @@ public class ProductsAction {
             }
             QueryWrapper<ProductDeliveryStatus> qw = new QueryWrapper<>();
             qw.eq("product_id", id);
+            qw.eq("type", 1);
             List<ProductDeliveryStatus> productDeliveryStatuses = productDeliveryStatusMapper.selectList(qw);
             if (!CollectionUtils.isEmpty(productDeliveryStatuses)) {
                 List<Long> collect = productDeliveryStatuses.stream().map(ProductDeliveryStatus::getDeliveryStatus).collect(Collectors.toList());
@@ -185,4 +186,13 @@ public class ProductsAction {
         return productsMapper.updateById(products);
     }
 
+
+    @RequestMapping("/batchUpdate")
+    public int batchUpdate(@RequestBody List<Products> list){
+        int returnNum = 0;
+        for (Products products : list) {
+            returnNum += productsMapper.updateById(products);
+        }
+        return returnNum;
+    }
 }

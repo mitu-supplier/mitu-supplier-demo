@@ -5,6 +5,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
 import java.util.Map;
 
 @FeignClient(name = "forest-mall-server", fallback = ProductsBack.class)
@@ -59,4 +60,7 @@ public interface ProductsRemote {
      */
     @RequestMapping("/products/updateInventory")
     int updateInventory(@RequestParam("id") Long id, @RequestParam("inventoryNum") Integer inventoryNum);
+
+    @RequestMapping("/products/batchUpdate")
+    int batchUpdate(List<Map<String, Object>> list);
 }

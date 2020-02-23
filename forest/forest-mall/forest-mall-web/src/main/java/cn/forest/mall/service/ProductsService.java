@@ -37,6 +37,9 @@ public class ProductsService {
     @Autowired
     private ProductDeliveryStatusDataRemote productDeliveryStatusDataRemote;
 
+    @Autowired
+    private ProductPicRemote productPicRemote;
+
     public Map<String, Object> list(HttpServletRequest request, String listType) {
         Map<String, Object> paramMap = RequestMap.requestToMap(request);
         String header = request.getHeader(Constant.HEADER_TOKEN_STRING);
@@ -62,7 +65,10 @@ public class ProductsService {
     public Map<String, Object> getById(Long id) {
         Object obj = productsRemote.getById(id);
         if (obj != null) {
-            return ResultMessage.success(obj);
+            Map resultMap = (Map) obj;
+            Object o = productPicRemote.selectByProduct(id, 1);
+            resultMap.put("productPicList", o);
+            return ResultMessage.success(resultMap);
         }
         return null;
     }
@@ -97,13 +103,29 @@ public class ProductsService {
                 }
             }
         }
+        String imgPaths = StringUtil.toString(paramMap.get("img"));
+        paramMap.remove("img");
         Object save = productsRemote.save(paramMap);
         if (save != null) {
+            Long productId = Long.parseLong(save.toString());
+            //保存商品图片
+            productPicRemote.deleteByProduct(productId, 1);
+            if(imgPaths != null){
+                List<Map<String, Object>> listMap = new ArrayList<>();
+                Map<String, Object> picMap = null;
+                for(String str : imgPaths.split(",")){
+                    picMap = new HashMap<>();
+                    picMap.put("productId", productId);
+                    picMap.put("path", str);
+                    picMap.put("type", 1);
+                    listMap.add(picMap);
+                }
+                productPicRemote.save(listMap);
+            }
             // 保存商品发货状态
             String deliveryStatus = StringUtil.toString(paramMap.get("deliveryStatus"));
-            Long productId = Long.parseLong(save.toString());
-            productDeliveryStatusRemote.deleteByProductId(productId);
-            productDeliveryStatusRemote.saveByProductId(productId, deliveryStatus);
+            productDeliveryStatusRemote.deleteByProductId(productId, 1);
+            productDeliveryStatusRemote.saveByProductId(productId, deliveryStatus, 1);
             return ResultMessage.success("操作成功");
         }
         return ResultMessage.error("操作失败");
@@ -130,13 +152,29 @@ public class ProductsService {
                 }
             }
         }
+        String imgPaths = StringUtil.toString(map.get("img"));
+        map.remove("img");
         int update = productsRemote.update(map);
         if(update > 0){
+            Long productId = Long.parseLong(StringUtil.toString(map.get("id")));
+            //保存商品图片
+            productPicRemote.deleteByProduct(productId, 1);
+            if(imgPaths != null){
+                List<Map<String, Object>> listMap = new ArrayList<>();
+                Map<String, Object> picMap = null;
+                for(String str : imgPaths.split(",")){
+                    picMap = new HashMap<>();
+                    picMap.put("productId", productId);
+                    picMap.put("path", str);
+                    picMap.put("type", 1);
+                    listMap.add(picMap);
+                }
+                productPicRemote.save(listMap);
+            }
             // 保存商品发货状态
             String deliveryStatus = StringUtil.toString(map.get("deliveryStatus"));
-            Long productId = Long.parseLong(StringUtil.toString(map.get("id")));
-            productDeliveryStatusRemote.deleteByProductId(productId);
-            productDeliveryStatusRemote.saveByProductId(productId, deliveryStatus);
+            productDeliveryStatusRemote.deleteByProductId(productId, 1);
+            productDeliveryStatusRemote.saveByProductId(productId, deliveryStatus, 2);
         }
         return ResultMessage.result(update, "操作成功", "操作失败");
     }

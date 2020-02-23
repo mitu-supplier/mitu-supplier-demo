@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.forest.mall.mapper.ProductsUpdateMapper">
+
+    <select id="selectListByMap" resultType="cn.forest.mall.entity.ProductsUpdate">
+        SELECT
+        p.*,
+        cc.name AS catalogName,
+        s.name AS supplierName,
+        d.name AS deliveryName
+        FROM
+        products_update p
+        LEFT JOIN catalogs cc ON p.catalog_id = cc.id
+        LEFT JOIN suppliers s ON s.id = p.supplier_id
+        LEFT JOIN sys_dictionary_data d ON d.id = p.delivery_type
+        WHERE
+        p.is_delete = 0
+        <if test="name != null and name != ''">
+            AND p.name LIKE CONCAT('%',#{name},'%')
+        </if>
+        <if test="catalogName != null and catalogName != ''">
+            AND cc.name LIKE CONCAT('%',#{catalogName},'%')
+        </if>
+        <if test="supplierName != null and supplierName != ''">
+            AND s.name LIKE CONCAT('%',#{supplierName},'%')
+        </if>
+        <if test="supplierId != null and supplierId != ''">
+            AND p.supplier_id = #{supplierId}
+        </if>
+        <if test="auditStatus != null and auditStatus != ''">
+            AND p.audit_status = #{auditStatus}
+        </if>
+        <if test="status != null">
+            AND p.status = #{status}
+        </if>
+        <if test="deliveryCode != null and deliveryCode != ''">
+            AND d.code = #{deliveryCode}
+        </if>
+        <if test="listType != null and listType == 'audit'">
+            AND p.audit_status IN (0,1,2)
+        </if>
+        <if test="deliveryType != null and deliveryType != ''">
+            AND p.delivery_type = #{deliveryType}
+        </if>
+        <if test="productId != null and productId != ''">
+            AND p.product_id = #{productId}
+        </if>
+        order by FIELD(p.audit_status,3,0,1,2), p.id DESC
+    </select>
+
+
+    <update id="batchAudit">
+        update
+            products_update
+        set
+            audit_status = #{auditStatus}
+        where
+        id in
+        <foreach collection="idList" separator="," item="id" open="(" close=")">
+            #{id}
+        </foreach>
+    </update>
+</mapper>

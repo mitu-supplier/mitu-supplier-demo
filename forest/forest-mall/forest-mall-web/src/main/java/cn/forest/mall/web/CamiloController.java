@@ -49,7 +49,7 @@ public class CamiloController {
     public void downloadTemplate(HttpServletRequest request, HttpServletResponse response) throws IOException {
         camiloService.doemloadTemplate(request, response);
     }
-    
+
     /**
      * excel导出卡密
      *
@@ -57,7 +57,7 @@ public class CamiloController {
      * @return
      */
     @RequestMapping(value = "/exportExcel")
-    public void exportExcel(HttpServletRequest request,HttpServletResponse response, String productIds) throws IOException {
-        camiloService.exportExcel(response,productIds);
+    public void exportExcel(HttpServletRequest request, HttpServletResponse response, String productIds) throws IOException {
+        camiloService.exportExcel(request, response, productIds);
     }
 }

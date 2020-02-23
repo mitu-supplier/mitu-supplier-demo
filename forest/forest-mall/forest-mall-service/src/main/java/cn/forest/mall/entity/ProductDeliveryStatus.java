@@ -35,6 +35,11 @@ public class ProductDeliveryStatus implements Serializable {
     @TableField(value = "created_at", fill = FieldFill.INSERT)
     private String createdAt;
 
+    /**
+     * 1商品新增     2商品修改
+     */
+    private Integer type;
+
     public Long getId() {
         return id;
     }
@@ -65,5 +70,13 @@ public class ProductDeliveryStatus implements Serializable {
 
     public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
     }
 }

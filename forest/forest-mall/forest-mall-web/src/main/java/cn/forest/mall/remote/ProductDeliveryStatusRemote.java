@@ -16,7 +16,7 @@ public interface ProductDeliveryStatusRemote {
      * @return
      */
     @RequestMapping("/productDeliveryStatus/saveByProductId")
-    public int saveByProductId(@RequestParam("productId") Long productId, @RequestParam("deliveryStatus") String deliveryStatus);
+    public int saveByProductId(@RequestParam("productId") Long productId, @RequestParam("deliveryStatus") String deliveryStatus, @RequestParam("type") Integer type);
 
     /**
      * 删除商品发货状态
@@ -25,6 +25,15 @@ public interface ProductDeliveryStatusRemote {
      * @return
      */
     @RequestMapping("/productDeliveryStatus/deleteByProductId")
-    public int deleteByProductId(@RequestParam("productId") Long productId);
+    public int deleteByProductId(@RequestParam("productId") Long productId, @RequestParam("type") Integer type);
 
+    /**
+     * 根据商品查询
+     *
+     * @param productId
+     * @param type
+     * @return
+     */
+    @RequestMapping("/selectByProductId")
+    Object selectByProductId(@RequestParam("productId") Long productId, @RequestParam("type") Integer type);
 }

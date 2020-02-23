@@ -20,6 +20,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class ExcelUtils {
@@ -35,9 +36,9 @@ public class ExcelUtils {
     /**
      * 读取文件数据
      *
-     * @param fileName 文件名
+     * @param fileName    文件名
      * @param inputStream 文件流
-     * @param fieldsMap  key excel对应的列名, value 每列对应的字段名称
+     * @param fieldsMap   key excel对应的列名, value 每列对应的字段名称
      * @return 文件数据
      */
     public static JSONArray getExcelData(String fileName, InputStream inputStream, Map<String, String> fieldsMap) {
@@ -55,18 +56,18 @@ public class ExcelUtils {
             array = read(book, fieldsMap);
         } catch (Exception e) {
             e.printStackTrace();
-            if(book != null){
+            if (book != null) {
                 try {
                     book.close();
-                }catch (IOException ie){
+                } catch (IOException ie) {
                     ie.printStackTrace();
                 }
             }
         }
-        if(book != null){
+        if (book != null) {
             try {
                 book.close();
-            }catch (IOException e){
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
@@ -175,7 +176,7 @@ public class ExcelUtils {
      * @param title   表名称
      * @param rowList 导出每行数据
      */
-    public static void export(String title, List<List<Object>> rowList,String[] titles,HttpServletResponse response) {
+    public static void export(String title, List<List<Object>> rowList, String[] titles, HttpServletRequest request, HttpServletResponse response) {
         if (rowList == null) {
             rowList = Collections.emptyList();
         }
@@ -185,22 +186,22 @@ public class ExcelUtils {
         CellStyle style = book.createCellStyle();
         // 数据居左
         style.setAlignment(HorizontalAlignment.LEFT);
-        
+
         CellStyle cellStyle = book.createCellStyle();
         cellStyle.setAlignment(HorizontalAlignment.CENTER);  // 设置单元格水平方向对其方式
         cellStyle.setVerticalAlignment(VerticalAlignment.CENTER); // 设置单元格垂直方向对其方式
-        
+
         Row sr1 = sheet.createRow(0);
         for (int j = 0; j < titles.length; j++) {
-          sheet.setColumnWidth(j, 3766); 
-          setExcelValue(sr1.createCell(j), titles[j], cellStyle);
+            sheet.setColumnWidth(j, 3766);
+            setExcelValue(sr1.createCell(j), titles[j], cellStyle);
         }
-   
-        
+
+
         // 写数据
         for (int i = 0; i < rowList.size(); i++) {
             List<Object> row = rowList.get(i);
-            Row sr = sheet.createRow(i+1);
+            Row sr = sheet.createRow(i + 1);
             for (int j = 0; j < row.size(); j++) {
                 if (row.get(j) != null && row.get(j) instanceof URL) {
                     URL url = (URL) row.get(j);
@@ -212,9 +213,16 @@ public class ExcelUtils {
             }
         }
         try {
-            OutputStream output=response.getOutputStream();
+            title = title + ".xls";
+            OutputStream output = response.getOutputStream();
+            String userAgent = request.getHeader("User-Agent");
+            if (userAgent.contains("MSIE") || userAgent.contains("Trident")) {
+                title = java.net.URLEncoder.encode(title, "UTF-8");
+            } else {
+                title = new String(title.getBytes("UTF-8"), "ISO-8859-1");
+            }
             response.reset();
-            response.setHeader("Content-disposition", "attachment; filename="+new String(title.getBytes("UTF-8"), "iso8859-1")+".xls");
+            response.setHeader("Content-disposition", String.format("attachment; filename=\"%s\"", title));
             response.setContentType("application/msexcel");
             book.write(output);
             output.close();
@@ -222,6 +230,7 @@ public class ExcelUtils {
             e.printStackTrace();
         }
     }
+
     /**
      * 导出写图片
      */

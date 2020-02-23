@@ -110,6 +110,7 @@ public class SuppliersUpdateService {
                     infoMap.put("created_at", null);
                     infoMap.put("updated_at", null);
                     infoMap.put("id", infoMap.get("supplierId"));
+                    infoMap.remove("alertBalance");
                     int update1 = suppliersRemote.update(infoMap);
                     if(update1 == 0){
                         return ResultMessage.error("审核失败");
@@ -199,6 +200,7 @@ public class SuppliersUpdateService {
                             infoMap.put("created_at", null);
                             infoMap.put("updated_at", null);
                             infoMap.put("id", infoMap.get("supplierId"));
+                            infoMap.remove("alertBalance");
                             supplierList.add(infoMap);
                         }
                     }
