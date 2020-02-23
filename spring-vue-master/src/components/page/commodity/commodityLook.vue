@@ -77,7 +77,6 @@
                         :on-remove="handleRemove"
                         :on-success="fileSuccess"
                         multiple
-                        :limit="1"
                         :on-exceed="handleExceed"
                         :file-list="fileList"
                         class="upload_img_view">
@@ -142,10 +141,11 @@
                         v-for="item in deliveryStatusList"
                         :key="item.id"
                         :label="item.deliveryStatus"
-                        :value="item.deliveryStatus">
+                        :value="item.id+''">
                       </el-option>
                     </el-select>
                 </el-form-item>
+                
 
                 <el-form-item label="状态" prop="">
                     <el-radio v-model="addComForm.status" disabled readonly :label="1">上架</el-radio>
@@ -246,7 +246,14 @@
                 // obj.url=this.addComForm.img;
                 // contracArry.push(obj);
                 // this.fileList=contracArry;
-                this.fileList = [{url:this.addComForm.img}];
+                this.fileList = [];
+                if(this.addComForm.productPicList.length > 0){
+                    var json = {};
+                    for(let k=0; k<this.addComForm.productPicList.length; k++){
+                        json = {url:this.addComForm.productPicList[k].path};
+                        this.fileList.push(json);
+                    }
+                }
                 this.orgNames = this.addComForm.catalogName;
                 this.catalogId = this.addComForm.catalogId;
                 var details = this.addComForm.details

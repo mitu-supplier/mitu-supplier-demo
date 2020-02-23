@@ -84,7 +84,6 @@
                         :on-remove="handleRemove"
                         :on-success="fileSuccess"
                         multiple
-                        :limit="1"
                         :on-exceed="handleExceed"
                         :file-list="fileList">
                         <el-button size="small" type="primary">点击上传</el-button>
@@ -149,7 +148,7 @@
                         v-for="item in deliveryStatusList"
                         :key="item.id"
                         :label="item.deliveryStatus"
-                        :value="item.deliveryStatus">
+                        :value="item.id+''">
                       </el-option>
                     </el-select>
                     <el-button class="add_delivery" type="success" @click="addDelivery()">添加</el-button>
@@ -232,7 +231,8 @@
                 deliveryStatus: [],
                 deliveryStatusList: [],
                 dialogVisible:false,
-                dialogImageUrl:''
+                dialogImageUrl:'',
+                ImgfileList:[]
             }
         },
         created() {
@@ -267,7 +267,15 @@
                 this.addComForm = res.data.data;
                 this.addComForm.orgNames2 = this.addComForm.catalogId;
                 this.addComForm.protalDetails = this.addComForm.details;
-                this.fileList = [{url:this.addComForm.img}];
+                this.fileList = [];
+                if(this.addComForm.productPicList.length > 0){
+                    var json = {};
+                    for(let k=0; k<this.addComForm.productPicList.length; k++){
+                        json = {url:this.addComForm.productPicList[k].path};
+                        this.fileList.push(json);
+                    }
+                    this.ImgfileList = this.fileList;
+                }
                 this.orgNames = this.addComForm.catalogName;
                 this.catalogId = this.addComForm.catalogId;
                 var details = this.addComForm.details;
@@ -339,6 +347,25 @@
               this.addComForm.useDirections = useDirections;
               this.$refs['addComForm'].validate(async valid => {
                 if (valid) {
+                  var strlist = '';
+                  if(this.ImgfileList.length > 0){
+                    for(let i=0; i<this.ImgfileList.length; i++){
+                      if(this.ImgfileList[i].response == null){
+                        strlist+= this.ImgfileList[i].url+',';
+                      }else{
+                        strlist+= this.ImgfileList[i].response.data.path+',';
+                      }
+                    }
+                    if (strlist.length > 0) strlist = strlist.substring(0, strlist.length - 1);
+                  }else{
+                    this.$message({
+                      type: "error",
+                      message: "请上传商品图片"
+                    });
+                    return false;
+                  }
+                  this.addComForm.img = strlist;
+
                   this.addComForm.catalogId = this.catalogId;
                   this.addComForm.id = this.detailsId;
                   this.addComForm.deliveryStatus = this.deliveryStatus.join(",");
@@ -362,6 +389,20 @@
               var useDirections = UE.getEditor('useDirections_editor').getContent();
               // this.$refs['addComForm'].validate(async valid => {
                 // if (valid) {
+                  var strlist = '';
+                  if(this.ImgfileList.length > 0){
+                    for(let i=0; i<this.ImgfileList.length; i++){
+                      if(this.ImgfileList[i].response == null){
+                        strlist+= this.ImgfileList[i].url+',';
+                      }else{
+                        strlist+= this.ImgfileList[i].response.data.path+',';
+                      }
+                    }
+                    if (strlist.length > 0) strlist = strlist.substring(0, strlist.length - 1);
+                  }
+                  this.addComForm.img = strlist;
+
+
                   var details = UE.getEditor('editor').getContent();
                   this.addComForm.catalogId = this.catalogId;
                   this.addComForm.id = this.detailsId;
@@ -396,13 +437,14 @@
                 return false;
               }
             },
-            fileSuccess(res, file) {
+            fileSuccess(res, file,fileList) {
+              this.ImgfileList = fileList;
               this.$message({
                 type: "success",
                 message: "上传成功",
                 duration: 6000
               });
-              this.addComForm.img = file.response.data.path;
+              // this.addComForm.img = file.response.data.path;
             },
             //限制文件的上传数量
             handleExceed(files) {

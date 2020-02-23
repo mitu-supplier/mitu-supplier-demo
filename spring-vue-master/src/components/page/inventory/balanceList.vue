@@ -53,19 +53,7 @@
                         
                     </el-form-item>
                 </el-form>
-                <div class="mestitle">设置账户报警金额</div>
-                <el-form label-width="110px" class="demo-dynamic">
-                    <el-form-item
-                        label="账户余额（元）"
-                    >
-                        <el-input v-model="alertmoney" class="mesInput"></el-input>
-                    </el-form-item>
-
-                    <el-form-item>
-                        <el-button type="primary" @click="submitmoney">提交</el-button>
-                    </el-form-item>
-                </el-form>
-
+                
             </div>
             <el-table :data="tableData" border class="table" ref="multipleTable">
                 <el-table-column type="index" label="序号" width="55" align="center" ></el-table-column>
@@ -82,6 +70,7 @@
                         <el-button type="text" icon="el-icon-document" @click="look(scope.$index, scope.row, 1)">充值记录</el-button>
                         <el-button type="text" icon="el-icon-edit" @click="subtractBalance(scope.$index, scope.row)">扣减</el-button>
                         <el-button type="text" icon="el-icon-document" @click="look(scope.$index, scope.row, 2)">扣减记录</el-button>
+                        <el-button type="text" icon="el-icon-document" @click="SetUpMoney(scope.row.id)">设置账户报警金额</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -301,33 +290,6 @@
                     key: Date.now()
                 });
             },
-            async submitmoney(){
-                if(this.alertmoney == '' && this.alertmoney == null){
-                    this.$message({
-                        type: "warning",
-                        message: "请填写账户报警金额"
-                    });
-                    return;
-                }
-                
-                const res = await this.$http.get(baseURL_.mallUrl+'/supplierBalanceRecord/updateAlertBalance',{
-                    params:{
-                        'id':1,
-                        'alertBalance':this.alertmoney
-                    }
-                });
-                if(res.data.statusCode==200){
-                  this.$message({
-                    type: "success",
-                    message: res.data.data || "保存成功"
-                  });
-                }else{
-                  this.$message({
-                    type: "error",
-                    message: res.data.data || "保存失败"
-                  });
-                }
-            },
 
             look(index, row, type){
               this.$router.push({path:'/balanceRecordList',query:{id:row.id, operationType:type}});
@@ -399,6 +361,39 @@
                 this.form.operationType = 2;
                 this.editVisible=true;
                 this.titleName="扣减";
+            },
+            SetUpMoney(id){
+                this.$prompt('请输入账户报警金额', '提示', {
+                    confirmButtonText: '确定',  
+                    cancelButtonText: '取消',
+                    // inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
+                    // inputErrorMessage: '邮箱格式不正确'
+                }).then(({ value }) => {
+                    // this.$message({
+                    //     type: 'success',
+                    //     message: '你的邮箱是: ' + value
+                    // });
+                    this.setMoney(id,value);
+                }).catch(() => { });
+            },
+            async setMoney(id,value){
+                const res = await this.$http.get(baseURL_.mallUrl+'/supplierBalanceRecord/updateAlertBalance',{
+                    params:{
+                        'id':id,
+                        'alertBalance':value
+                    }
+                });
+                if(res.data.statusCode==200){
+                  this.$message({
+                    type: "success",
+                    message: res.data.data || "保存成功"
+                  });
+                }else{
+                  this.$message({
+                    type: "error",
+                    message: res.data.data || "保存失败"
+                  });
+                }
             }
         }
     }

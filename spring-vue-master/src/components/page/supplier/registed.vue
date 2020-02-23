@@ -48,7 +48,7 @@
                               :model="firstForm"
                               :rules="rules"
                               ref="firstForm"
-                              label-width="130px"
+                              label-width="150px"
                               inline-message
                               class="demo-ruleForm"
                           >
@@ -68,6 +68,37 @@
                             <el-form-item label="对接招商人员" >
                                 <el-input v-model="firstForm.investmentPerson" size="mini" class="w50"></el-input>
                             </el-form-item>
+
+                            <!-- <el-form-item label="库存报警接收邮箱" >
+                              <template>
+                                <div class="emailBox">
+                                  <div>
+                                    <input class="emailBoxinp"/>
+                                    <span style="display:none;">-</span>
+                                  </div>
+                                </div>
+                                <div style="cursor: pointer;" @click="addInput">+</div>
+                              </template>
+                            </el-form-item> -->
+                            <el-form-item
+                                v-for="(newemail, index) in firstForm.emailList"
+                                :label="'库存报警接收邮箱' + (index+1)"
+                                :key="newemail.key">
+                                <el-input v-model="newemail.value" maxlength="11" class="w50"></el-input><el-button @click.prevent="removeDomain(newemail)">删除</el-button>
+                            </el-form-item>
+
+                            <el-form-item
+                                v-for="(newphone, index) in firstForm.phoneList"
+                                :label="'库存报警接收手机号' + (index+1)"
+                                :key="index">
+                                <el-input v-model="newphone.value" maxlength="11" class="w50"></el-input><el-button @click.prevent="removePhone(newphone)">删除</el-button>
+                            </el-form-item>
+                            <el-form-item>
+                                <el-button @click="addDomain">新增邮箱</el-button>
+                                <el-button @click="addPhone">新增手机号</el-button>
+                            </el-form-item>
+
+                            
                             
                             <el-form-item>
                                 <el-button type="primary" @click="nextThreeDetail('firstForm')">下一步</el-button>
@@ -520,7 +551,16 @@
                   name:'',
                   phone:'',
                   email:'',
-                  investmentPerson:''
+                  investmentPerson:'',
+                  emailList:[{
+                    'value':'',
+                    'key': Date.now()
+                  }],
+                  phoneList:[{
+                    'value':'',
+                    'key': Date.now()
+                  }]
+                  
                 },
                 // 第四步注册信息
                 supplierForm:{
@@ -577,6 +617,10 @@
                 QualityList:[],
                 permitList:[],
                 legalCardList:[],
+                businessInfo:[],
+                taxRegisInfo:[],
+                taxpayerInfo:[],
+                bankAccInfo:[],
 
                 trademarkRegistration:'',
                 brandAuthorization:'',
@@ -607,7 +651,8 @@
                 userId:'',
                 supplierId:'',
                 dialogVisible:false,
-                imgUrl:''
+                imgUrl:'',
+                legalCardInfo:[],
             }
         },
         created() {
@@ -643,6 +688,31 @@
             
         },
         methods: {
+          addDomain() {
+              this.firstForm.emailList.push({
+                  value: '',
+                  key: Date.now()
+              });
+          },
+          addPhone() {
+              this.firstForm.phoneList.push({
+                  value: '',
+                  key: Date.now()
+              });
+          },
+          removeDomain(item) {
+              var index = this.firstForm.emailList.indexOf(item)
+              if (index !== -1) {
+              this.firstForm.emailList.splice(index, 1)
+              }
+          },
+          removePhone(item) {
+              var index = this.firstForm.phoneList.indexOf(item)
+              if (index !== -1) {
+              this.firstForm.phoneList.splice(index, 1)
+              }
+          },
+          
           upbtn(upNumber){
              this.active=Number(upNumber)-1;
           },
@@ -743,11 +813,82 @@
                 this.CompanyType = res.data.data;
             },
             async goFore(dataform){
+              
               if(this.value2.length > 0){
                   var startTime = this.value2[0]; 
                   var endTime = this.value2[1]; 
                   this.newRuleForm.legalCardDateStart = startTime;
                   this.newRuleForm.legalCardDateEnd = endTime;
+              }
+
+              this.businessList = [];
+              if(this.businessInfo.length >0){
+                  var json = {};
+                  if(this.businessInfo[0].response != null && this.businessInfo[0].response != undefined){
+                    json.url = this.businessInfo[0].response.data.path
+                  }else{
+                    json.url = this.businessInfo[0].url;
+                  }
+                  this.businessList.push(json);
+              }
+
+              // 税务登记证
+              this.taxRegList = [];
+              if(this.taxRegisInfo.length >0){
+                  var json = {};
+                  if(this.taxRegisInfo[0].response != null && this.taxRegisInfo[0].response != undefined){
+                    json.url = this.taxRegisInfo[0].response.data.path
+                  }else{
+                    json.url = this.taxRegisInfo[0].url;
+                  }
+                  this.newRuleForm.taxRegistration = json.url;
+                  this.taxRegList.push(json);
+              }
+
+              // 一般纳税人正面
+              this.taxpayeList = [];
+              if(this.taxpayerInfo.length >0){
+                  var json = {};
+                  if(this.taxpayerInfo[0].response != null && this.taxpayerInfo[0].response != undefined){
+                    json.url = this.taxpayerInfo[0].response.data.path
+                  }else{
+                    json.url = this.taxpayerInfo[0].url;
+                  }
+                  this.newRuleForm.taxpayerPositive = json.url;
+                  this.taxpayeList.push(json);
+              }
+
+              // 银行开户许可证
+              this.bankAccountList = [];
+              if(this.bankAccInfo.length >0){
+                  var json = {};
+                  if(this.bankAccInfo[0].response != null && this.bankAccInfo[0].response != undefined){
+                    json.url = this.bankAccInfo[0].response.data.path
+                  }else{
+                    json.url = this.bankAccInfo[0].url;
+                  }
+                  this.newRuleForm.bankAccountPermit = json.url;
+                  this.bankAccountList.push(json);
+              }
+              
+              // 法人代表身份证件上一步返回查看
+              this.legalCardList = [];
+              if(this.legalCardInfo.length > 0){
+                for(var i=0; i<this.legalCardInfo.length; i++){
+                    var json = {};
+                    if(this.legalCardInfo[i].response != null && this.legalCardInfo[i].response != undefined){
+                      json.url = this.legalCardInfo[i].response.data.path
+                    }else{
+                      json.url = this.legalCardInfo[i].url;
+                    }
+                    this.legalCardList.push(json);
+                }
+              }
+              if(this.legalCardInfo&&this.legalCardInfo.length > 0){
+                this.newRuleForm.legalCardZ = this.legalCardList[0].url;
+                if(this.legalCardInfo&&this.legalCardInfo.length > 1){
+                  this.newRuleForm.legalCardF = this.legalCardList[1].url;
+                }
               }
               
               this.newRuleForm.id = this.supplierId;
@@ -818,6 +959,24 @@
               })
             },
             async nextThreeDetail(dataform){
+              if(this.firstForm.phone != '' && this.firstForm.phone != null){
+                  if(!(/^1[3456789]\d{9}$/.test(this.firstForm.phone))){ 
+                      this.$message({
+                        type: "error",
+                        message: "请输入正确的手机号"
+                      });
+                      return false; 
+                  } 
+              }
+              if(this.firstForm.email != '' && this.firstForm.email != null){
+                  if(!(/^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/.test(this.firstForm.email))){ 
+                      this.$message({
+                        type: "error",
+                        message: "请输入正确的邮箱"
+                      });
+                      return false; 
+                  } 
+              }
               this.$refs[dataform].validate(async valid => {
                 if (valid) {
                   this.firstForm.id = this.userId;
@@ -833,7 +992,7 @@
                       this.active = 2;
                     }else{
                       this.$message({
-                        type: "success",
+                        type: "error",
                         message: role.data.data
                       });
                       return;
@@ -861,7 +1020,7 @@
                           this.active = 5;
                         }else{
                           this.$message({
-                            type: "success",
+                            type: "error",
                             message: role.data.data
                           });
                           return;
@@ -882,7 +1041,7 @@
                         this.active = 4;
                       }else{
                         this.$message({
-                          type: "success",
+                          type: "error",
                           message: role.data.data
                         });
                         return;
@@ -902,24 +1061,24 @@
               });
               this.trademarkRegistration = file.response.data.path;
             },
-            businessSuccess(res, file) {
+            businessSuccess(res, file ,fileList) {
               this.$message({
                 type: "success",
                 message: "上传成功",
                 duration: 6000
               });
+              this.businessInfo = fileList;
               this.newRuleForm.businessLicense = file.response.data.path;
             },
             legalCardSuccess(res, file, fileList) {
+              // this.legalCardList = [];
+              this.legalCardInfo = fileList;
               this.$message({
                 type: "success",
                 message: "上传成功",
                 duration: 6000
               });
-              this.newRuleForm.legalCardZ = fileList[0].response.data.path;
-              if(fileList&&fileList.length > 1){
-                this.newRuleForm.legalCardF = fileList[1].response.data.path;
-              }
+              
             },
             
             handleBrandSuccess(res, file) {
@@ -948,29 +1107,33 @@
               this.sanitaryPermit = file.response.data.path;
             },
             
-            taxRegSuccess(res, file) {
+            taxRegSuccess(res, file, fileList) {
+              this.taxRegisInfo = fileList;
+              // this.newRuleForm.taxRegistration = file.response.data.path;
               this.$message({
                 type: "success",
                 message: "上传成功",
                 duration: 6000
               });
-              this.newRuleForm.taxRegistration = file.response.data.path;
+              
             },
-            taxpayerSuccess(res, file) {
+            taxpayerSuccess(res, file,fileList) {
+              this.taxpayerInfo = fileList;
               this.$message({
                 type: "success",
                 message: "上传成功",
                 duration: 6000
               });
-              this.newRuleForm.taxpayerPositive = file.response.data.path;
+              // this.newRuleForm.taxpayerPositive = file.response.data.path;
             },
-            bankAccountSuccess(res, file) {
+            bankAccountSuccess(res, file,fileList) {
+              this.bankAccInfo = fileList;
               this.$message({
                 type: "success",
                 message: "上传成功",
                 duration: 6000
               });
-              this.newRuleForm.bankAccountPermit = file.response.data.path;
+              // this.newRuleForm.bankAccountPermit = file.response.data.path;
             },
             
             
@@ -1092,6 +1255,11 @@
       font-size: 14px;
       color:#666666;
       margin: 10px 0 30px;
+    }
+    .emailBoxinp{
+      width:100px;
+      height:30px;
+      border:1px solid #ccc;
     }
 </style>
 <style >
