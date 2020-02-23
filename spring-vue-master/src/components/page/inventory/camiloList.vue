@@ -233,7 +233,7 @@
                                 });
                                 return false; 
                             }else{
-                                var phoneitem = {'type':'1','tValue':phones[i].value};
+                                var phoneitem = {'type':'2','tValue':phones[i].value};
                                 arr.push(phoneitem)
                             }
                         }

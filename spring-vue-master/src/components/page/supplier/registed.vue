@@ -69,26 +69,15 @@
                                 <el-input v-model="firstForm.investmentPerson" size="mini" class="w50"></el-input>
                             </el-form-item>
 
-                            <!-- <el-form-item label="库存报警接收邮箱" >
-                              <template>
-                                <div class="emailBox">
-                                  <div>
-                                    <input class="emailBoxinp"/>
-                                    <span style="display:none;">-</span>
-                                  </div>
-                                </div>
-                                <div style="cursor: pointer;" @click="addInput">+</div>
-                              </template>
-                            </el-form-item> -->
                             <el-form-item
-                                v-for="(newemail, index) in firstForm.emailList"
+                                v-for="(newemail, index) in retform.emailList"
                                 :label="'库存报警接收邮箱' + (index+1)"
                                 :key="newemail.key">
-                                <el-input v-model="newemail.value" maxlength="11" class="w50"></el-input><el-button @click.prevent="removeDomain(newemail)">删除</el-button>
+                                <el-input v-model="newemail.value" class="w50"></el-input><el-button @click.prevent="removeDomain(newemail)">删除</el-button>
                             </el-form-item>
 
                             <el-form-item
-                                v-for="(newphone, index) in firstForm.phoneList"
+                                v-for="(newphone, index) in retform.phoneList"
                                 :label="'库存报警接收手机号' + (index+1)"
                                 :key="index">
                                 <el-input v-model="newphone.value" maxlength="11" class="w50"></el-input><el-button @click.prevent="removePhone(newphone)">删除</el-button>
@@ -128,7 +117,7 @@
                                     list-type="picture-card"
                                     :action="uploadUrl()"
                                     :on-preview="handlePictureCardPreview"
-                                    :on-remove="handleRemove"
+                                    :on-remove="handleRemove1"
                                     :on-success="handletradeSuccess"
                                     multiple
                                     :limit="1"
@@ -145,7 +134,7 @@
                                     list-type="picture-card"
                                     :action="uploadUrl()"
                                     :on-preview="handlePictureCardPreview"
-                                    :on-remove="handleRemove"
+                                    :on-remove="handleRemove2"
                                     multiple
                                     :limit="1"
                                     :on-exceed="handleExceed"
@@ -162,7 +151,7 @@
                                     list-type="picture-card"
                                     :action="uploadUrl()"
                                     :on-preview="handlePictureCardPreview"
-                                    :on-remove="handleRemove"
+                                    :on-remove="handleRemove3"
                                     multiple
                                     :limit="1"
                                     :on-success="qualitySuccess"
@@ -179,7 +168,7 @@
                                     list-type="picture-card"
                                     :action="uploadUrl()"
                                     :on-preview="handlePictureCardPreview"
-                                    :on-remove="handleRemove"
+                                    :on-remove="handleRemove4"
                                     :on-success="sanitarySuccess"
                                     multiple
                                     :limit="1"
@@ -304,7 +293,7 @@
                                     list-type="picture-card"
                                     :action="uploadUrl()"
                                     :on-preview="handlePictureCardPreview"
-                                    :on-remove="handleRemove"
+                                    :on-remove="handleRemove5"
                                     :on-success="businessSuccess"
                                     multiple
                                     :limit="1"
@@ -345,7 +334,7 @@
                                     list-type="picture-card"
                                     :action="uploadUrl()"
                                     :on-preview="handlePictureCardPreview"
-                                    :on-remove="handleRemove"
+                                    :on-remove="handleRemove9"
                                     :on-success="legalCardSuccess"
                                     multiple
                                     :limit="2"
@@ -400,7 +389,7 @@
                                     list-type="picture-card"
                                     :action="uploadUrl()"
                                     :on-preview="handlePictureCardPreview"
-                                    :on-remove="handleRemove"
+                                    :on-remove="handleRemove6"
                                     :on-success="taxRegSuccess"
                                     multiple
                                     :limit="1"
@@ -418,7 +407,7 @@
                                     :action="uploadUrl()"
                                     :on-success="taxpayerSuccess"
                                     :on-preview="handlePictureCardPreview"
-                                    :on-remove="handleRemove"
+                                    :on-remove="handleRemove7"
                                     multiple
                                     :limit="1"
                                     :on-exceed="handleExceed"
@@ -434,7 +423,7 @@
                                     list-type="picture-card"
                                     :action="uploadUrl()"
                                     :on-preview="handlePictureCardPreview"
-                                    :on-remove="handleRemove"
+                                    :on-remove="handleRemove8"
                                     :on-success="bankAccountSuccess"
                                     multiple
                                     :limit="1"
@@ -547,11 +536,7 @@
                   confirmPassword:''
                 },
                 // 第二步注册信息
-                firstForm:{
-                  name:'',
-                  phone:'',
-                  email:'',
-                  investmentPerson:'',
+                retform:{
                   emailList:[{
                     'value':'',
                     'key': Date.now()
@@ -560,6 +545,13 @@
                     'value':'',
                     'key': Date.now()
                   }]
+                },
+                firstForm:{
+                  name:'',
+                  phone:'',
+                  email:'',
+                  investmentPerson:'',
+                  
                   
                 },
                 // 第四步注册信息
@@ -689,27 +681,27 @@
         },
         methods: {
           addDomain() {
-              this.firstForm.emailList.push({
+              this.retform.emailList.push({
                   value: '',
                   key: Date.now()
               });
           },
           addPhone() {
-              this.firstForm.phoneList.push({
+              this.retform.phoneList.push({
                   value: '',
                   key: Date.now()
               });
           },
           removeDomain(item) {
-              var index = this.firstForm.emailList.indexOf(item)
+              var index = this.retform.emailList.indexOf(item)
               if (index !== -1) {
-              this.firstForm.emailList.splice(index, 1)
+              this.retform.emailList.splice(index, 1)
               }
           },
           removePhone(item) {
-              var index = this.firstForm.phoneList.indexOf(item)
+              var index = this.retform.phoneList.indexOf(item)
               if (index !== -1) {
-              this.firstForm.phoneList.splice(index, 1)
+              this.retform.phoneList.splice(index, 1)
               }
           },
           
@@ -728,6 +720,39 @@
                 this.userId = res.data.data.id;
 
                 // 第2步数据回显
+                // retform
+                // retform:{
+                //   emailList:[{
+                //     'value':'',
+                //     'key': Date.now()
+                //   }],
+                //   phoneList:[{
+                //     'value':'',
+                //     'key': Date.now()
+                //   }]
+                // },
+                if(res.data.data.supplier.alertEmail != null && res.data.data.supplier.alertEmail != ''){
+                  var alertEmail = res.data.data.supplier.alertEmail.split(',');
+                  if(alertEmail.length > 1){
+                    this.retform.emailList = [];
+                    for(var j =0; j<alertEmail.length; j++){
+                      this.retform.emailList.push({'value':alertEmail[j],'key':Date.now()})
+                    } 
+                  }else{
+                    this.retform.emailList = [{'value':alertEmail[0],'key':Date.now()}];
+                  }
+                }
+                if(res.data.data.supplier.alertMobile != null && res.data.data.supplier.alertMobile != ''){
+                  var phoneList = res.data.data.supplier.alertMobile.split(',');
+                  if(phoneList.length > 1){
+                    this.retform.phoneList = [];
+                    for(var q =0; q<phoneList.length; q++){
+                      this.retform.phoneList.push({'value':phoneList[q],'key':Date.now()})
+                    } 
+                  }else{
+                    this.retform.phoneList = [{'value':phoneList[0],'key':Date.now()}];
+                  }
+                }
                 for(var i in this.firstForm){
                   this.firstForm[i] = res.data.data[i];
                 }
@@ -977,6 +1002,68 @@
                       return false; 
                   } 
               }
+
+              // 邮箱
+              var emailsList = [];
+              if(this.retform.emailList.length > 0){
+                  var emails = this.retform.emailList;
+                  for(let i=0; i<emails.length; i++){
+                      if(emails[i].value == '' || emails[i].value == null){
+                          // this.$message({
+                          //     type: "error",
+                          //     message: "请删除空标签"
+                          // });
+                          // return;
+                      }else{
+                          if(!(/^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/.test(emails[i].value))){ 
+                              this.$message({
+                                  type: "error",
+                                  message: "请输入正确的邮箱"
+                              });
+                              return false; 
+                          }else{
+                            if(emails[i].value != null){
+                              emailsList.push(emails[i].value)
+                            }
+                          }
+                      }
+                  }
+              }
+
+              // 手机号
+              var phoneList = [];
+              if(this.retform.phoneList.length > 0){
+                  var phones = this.retform.phoneList;
+                  for(let i=0; i<phones.length; i++){
+                      if(phones[i].value == '' || phones[i].value == null){
+                          // this.$message({
+                          //     type: "error",
+                          //     message: "请删除空标签"
+                          // });
+                          // return;
+                      }else{
+                          if(!(/^1[3456789]\d{9}$/.test(phones[i].value))){ 
+                              this.$message({
+                                  type: "error",
+                                  message: "请输入正确的手机号"
+                              });
+                              return false; 
+                          }else{
+                            if(phones[i].value != null){
+                              phoneList.push(phones[i].value)
+                            }
+                          }
+                      }
+                  }
+              }
+              if(emailsList.length > 0){
+                this.firstForm.alertEmail = emailsList.join(',');
+              }
+              if(phoneList.length > 0){
+                this.firstForm.alertMobile = phoneList.join(',');
+              }
+
+
               this.$refs[dataform].validate(async valid => {
                 if (valid) {
                   this.firstForm.id = this.userId;
@@ -1068,10 +1155,9 @@
                 duration: 6000
               });
               this.businessInfo = fileList;
-              this.newRuleForm.businessLicense = file.response.data.path;
+              // this.newRuleForm.businessLicense = file.response.data.path;
             },
             legalCardSuccess(res, file, fileList) {
-              // this.legalCardList = [];
               this.legalCardInfo = fileList;
               this.$message({
                 type: "success",
@@ -1166,7 +1252,33 @@
               );
             },
 
-            handleRemove(file, fileList) {}
+            handleRemove1(file, fileList) {
+              this.trademarkRegistration = [];
+            },
+            handleRemove2(file, fileList) {
+              this.brandAuthorization = '';
+            },
+            handleRemove3(file, fileList) {
+              this.qualityInspectionReport = '';
+            },
+            handleRemove4(file, fileList) {
+              this.sanitaryPermit = '';
+            },
+            handleRemove5(file, fileList) {
+              this.businessInfo = [];
+            },
+            handleRemove6(file, fileList) {
+              this.taxRegisInfo = [];
+            },
+            handleRemove7(file, fileList) {
+              this.taxpayerInfo = [];
+            },
+            handleRemove8(file, fileList) {
+              this.bankAccInfo = [];
+            },
+            handleRemove9(file, fileList) {
+              this.legalCardInfo = fileList;
+            },
             
         }
     }

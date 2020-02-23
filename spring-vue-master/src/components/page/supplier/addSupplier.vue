@@ -52,6 +52,24 @@
                             <el-form-item label="对接招商人员" >
                                 <el-input v-model="newRuleForm.investmentPerson" size="mini" class="w50"></el-input>
                             </el-form-item>
+
+                            <el-form-item
+                                v-for="(newemail, index) in newtrony.emailList"
+                                :label="'库存报警接收邮箱' + (index+1)"
+                                :key="newemail.key">
+                                <el-input v-model="newemail.value" class="w50"></el-input><el-button @click.prevent="removeDomain(newemail)">删除</el-button>
+                            </el-form-item>
+
+                            <el-form-item
+                                v-for="(newphone, index) in newtrony.phoneList"
+                                :label="'库存报警接收手机号' + (index+1)"
+                                :key="index">
+                                <el-input v-model="newphone.value" maxlength="11" class="w50"></el-input><el-button @click.prevent="removePhone(newphone)">删除</el-button>
+                            </el-form-item>
+                            <el-form-item>
+                                <el-button @click="addDomain">新增邮箱</el-button>
+                                <el-button @click="addPhone">新增手机号</el-button>
+                            </el-form-item>
                             
                         </el-form>
                     </div>
@@ -422,8 +440,18 @@
             return {
                 active:0,
                 newRuleForm:{
-                    sales:''
+                    sales:'',
                 }, 
+                newtrony:{
+                    emailList:[{
+                      'value':'',
+                      'key': Date.now()
+                    }],
+                    phoneList:[{
+                      'value':'',
+                      'key': Date.now()
+                    }]
+                },
                 // 第一步注册信息
                 rules: {
                     loginName: [{ required: true, message: "请输入登录名", trigger: "blur" }],
@@ -475,6 +503,30 @@
             this.getCode(); 
         },
         methods: {
+            addDomain() {
+                this.newtrony.emailList.push({
+                    value: '',
+                    key: Date.now()
+                });
+            },
+            addPhone() {
+                this.newtrony.phoneList.push({
+                    value: '',
+                    key: Date.now()
+                });
+            },
+            removeDomain(item) {
+                var index = this.newtrony.emailList.indexOf(item)
+                if (index !== -1) {
+                  this.newtrony.emailList.splice(index, 1)
+                }
+            },
+            removePhone(item) {
+                var index = this.newtrony.phoneList.indexOf(item)
+                if (index !== -1) {
+                  this.newtrony.phoneList.splice(index, 1)
+                }
+            },
             async getCode(){
               const res = await this.$http.get(baseURL_.mallUrl+'/supplier/getSupplierCode');
               this.newRuleForm.code = res.data.data;
@@ -526,6 +578,70 @@
                       return false; 
                   } 
               }
+
+
+              // 邮箱
+              var emailsList = [];
+              if(this.newtrony.emailList.length > 0){
+                  var emails = this.newtrony.emailList;
+                  for(let i=0; i<emails.length; i++){
+                      if(emails[i].value == '' || emails[i].value == null){
+                          // this.$message({
+                          //     type: "error",
+                          //     message: "请删除空标签"
+                          // });
+                          // return;
+                      }else{
+                          if(!(/^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/.test(emails[i].value))){ 
+                              this.$message({
+                                  type: "error",
+                                  message: "请输入正确的邮箱"
+                              });
+                              return false; 
+                          }else{
+                            if(emails[i].value != null){
+                              emailsList.push(emails[i].value)
+                            }
+                          }
+                      }
+                  }
+              }
+
+              // 手机号
+              var phoneList = [];
+              if(this.newtrony.phoneList.length > 0){
+                  var phones = this.newtrony.phoneList;
+                  for(let i=0; i<phones.length; i++){
+                      if(phones[i].value == '' || phones[i].value == null){
+                          // this.$message({
+                          //     type: "error",
+                          //     message: "请删除空标签"
+                          // });
+                          // return;
+                      }else{
+                          if(!(/^1[3456789]\d{9}$/.test(phones[i].value))){ 
+                              this.$message({
+                                  type: "error",
+                                  message: "请输入正确的手机号"
+                              });
+                              return false; 
+                          }else{
+                            if(phones[i].value != null){
+                              phoneList.push(phones[i].value)
+                            }
+                          }
+                      }
+                  }
+              }
+
+              if(emailsList.length > 0){
+                this.newRuleForm.alertEmail = emailsList.join(',');
+              }
+              if(phoneList.length > 0){
+                this.newRuleForm.alertMobile = phoneList.join(',');
+              }
+
+
               this.newRuleForm.trademarkRegistration = this.trademarkRegistration;
               this.newRuleForm.brandAuthorization = this.brandAuthorization;
               this.newRuleForm.qualityInspectionReport = this.qualityInspectionReport;
@@ -671,7 +787,6 @@
               }
             },
             handlePictureCardPreview(file) {
-              console.log(file);
               if(file.url != null){
                 this.dialogVisible = true;
                 this.imgUrl = file.url;
