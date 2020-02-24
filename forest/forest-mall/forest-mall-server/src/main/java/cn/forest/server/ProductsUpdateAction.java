@@ -128,7 +128,7 @@ public class ProductsUpdateAction {
      * @return
      */
     @RequestMapping("/batchAudit")
-        public int batchAudit(@RequestParam("ids") String ids, @RequestParam("auditStatus") Integer auditStatus) {
+    public int batchAudit(@RequestParam("ids") String ids, @RequestParam("auditStatus") Integer auditStatus) {
         if (StringUtils.isNotEmpty(ids)) {
             String[] split = ids.split(",");
             List<Long> idList = new ArrayList<>();
@@ -139,4 +139,25 @@ public class ProductsUpdateAction {
         }
         return 0;
     }
+
+    /**
+     * 查询审核列表
+     *
+     * @param status
+     * @param supplierId
+     * @return
+     */
+    @RequestMapping("selectList")
+    public Object selectList(@RequestParam(value = "status", required = false) Integer status,
+                             @RequestParam(value = "supplierId", required = false) Long supplierId) {
+        QueryWrapper<ProductsUpdate> qw = new QueryWrapper<>();
+        if (status != null) {
+            qw.eq("audit_status", status);
+        }
+        if (supplierId != null) {
+            qw.eq("supplier_id", supplierId);
+        }
+        return productsUpdateMapper.selectList(qw);
+    }
+
 }

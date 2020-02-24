@@ -32,4 +32,9 @@ public class ProductsUpdateBack implements ProductsUpdateRemote {
     public int batchAudit(String ids, Integer auditStatus) {
         return 0;
     }
+
+    @Override
+    public Object selectList(Integer status, Long supplierId) {
+        return null;
+    }
 }

@@ -55,4 +55,15 @@ public interface ProductsUpdateRemote {
      */
     @RequestMapping("/product_update/batchAudit")
     int batchAudit(@RequestParam("ids") String ids, @RequestParam("auditStatus") Integer auditStatus);
+
+    /**
+     * 待审核列表查询
+     *
+     * @param status
+     * @param supplierId
+     * @return
+     */
+    @RequestMapping("/product_update/selectList")
+    Object selectList(@RequestParam(value = "status", required = false) Integer status,
+                      @RequestParam(value = "supplierId", required = false) Long supplierId);
 }

@@ -11,7 +11,7 @@
                         </div>
                     </div>
                     <div class="user-info-list">上次登录时间：<span>{{userInfo.loginTime}}</span></div>
-                    <div class="user-info-list">上次登录地点：<span>{{userInfo.loginAddress}}</span></div>
+                    <div class="user-info-list">上次登录地点：<span>{{userInfo.city}}</span></div>
                 </el-card>
                 <el-card shadow="hover" style="height:252px;">
                     <div slot="header" class="clearfix">
@@ -238,6 +238,17 @@
                     this.$router.push({
                         path: '/auditDetails',
                         name:'auditDetails',
+                        query: {
+                            id: id,
+                            state:state
+                        }
+                    });
+                }else if(type == 4){
+                    var id = Base64.encode(row.id);
+                    var state = Base64.encode('10');
+                    this.$router.push({
+                        path: '/auditUpdataView',
+                        name:'auditUpdataView',
                         query: {
                             id: id,
                             state:state

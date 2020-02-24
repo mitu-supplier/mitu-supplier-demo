@@ -10,4 +10,9 @@ public class SysLoginLogsBack implements SysLoginLogsRemote {
     public Object count7Days() {
         return null;
     }
+
+    @Override
+    public Object selectUserLastLoginInfo(Long userId) {
+        return null;
+    }
 }

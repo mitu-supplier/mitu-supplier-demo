@@ -4,10 +4,7 @@ import cn.forest.commom.redis.RedisDao;
 import cn.forest.common.Constant;
 import cn.forest.common.util.ResultMessage;
 import cn.forest.common.util.StringUtil;
-import cn.forest.mall.remote.ProductsRemote;
-import cn.forest.mall.remote.SuppliersRemote;
-import cn.forest.mall.remote.SuppliersUpdateRemote;
-import cn.forest.mall.remote.SysLoginLogsRemote;
+import cn.forest.mall.remote.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +32,9 @@ public class HomeService {
     @Autowired
     private SysLoginLogsRemote sysLoginLogsRemote;
 
+    @Autowired
+    private ProductsUpdateRemote productsUpdateRemote;
+
     /**
      * 获取当前登录人信息
      *
@@ -46,9 +46,14 @@ public class HomeService {
         String header = request.getHeader(Constant.HEADER_TOKEN_STRING);
         HashMap userInfoMap = (HashMap) redisDao.getValue(header);
         if (userInfoMap != null) {
-            resultMap.put("name", userInfoMap.get("name"));
             resultMap.put("loginName", userInfoMap.get("loginName"));
-            resultMap.put("loginTime", userInfoMap.get("loginTime"));
+            resultMap.put("name", userInfoMap.get("name"));
+            Object obj = sysLoginLogsRemote.selectUserLastLoginInfo(Long.parseLong(userInfoMap.get("id").toString()));
+            if (obj != null) {
+                Map objMap = (Map) obj;
+                resultMap.put("loginTime", userInfoMap.get("createTime"));
+                resultMap.put("city", objMap.get("city"));
+            }
         }
         return ResultMessage.success(resultMap);
     }
@@ -77,11 +82,11 @@ public class HomeService {
         // 商户待审核数量
         Integer supplierAuditNum = 0;
         Object supplierAudit = suppliersRemote.selectList(0, supplierId);
-        if(supplierAudit != null){
+        if (supplierAudit != null) {
             List suppliserAuditList = (List) supplierAudit;
             for (Object o : suppliserAuditList) {
                 Map sa = (Map) o;
-                if(todoList.size() < 7){
+                if (todoList.size() < 7) {
                     todoMap = new HashMap<>();
                     todoMap.put("id", sa.get("id"));
                     todoMap.put("title", "商户 " + StringUtil.toString(sa.get("name")) + " 入驻待审核");
@@ -96,11 +101,11 @@ public class HomeService {
         todoMap = null;
         Integer supplierUpdateAuditNum = 0;
         Object suppliersUpdate = suppliersUpdateRemote.selectList(0, supplierId);
-        if(suppliersUpdate != null){
+        if (suppliersUpdate != null) {
             List suppliersUpdateList = (List) suppliersUpdate;
             for (Object o : suppliersUpdateList) {
                 Map sa = (Map) o;
-                if(todoList.size() < 7){
+                if (todoList.size() < 7) {
                     todoMap = new HashMap<>();
                     todoMap.put("id", sa.get("id"));
                     todoMap.put("title", "商户 " + StringUtil.toString(sa.get("name")) + " 信息修改待审核");
@@ -115,11 +120,11 @@ public class HomeService {
         todoMap = null;
         Integer productAuditNum = 0;
         Object products = productsRemote.selectList(0, supplierId);
-        if(products != null){
+        if (products != null) {
             List productList = (List) products;
             for (Object o : productList) {
                 Map sa = (Map) o;
-                if(todoList.size() < 7){
+                if (todoList.size() < 7) {
                     todoMap = new HashMap<>();
                     todoMap.put("id", sa.get("id"));
                     todoMap.put("title", "商品 " + StringUtil.toString(sa.get("name")) + " 待审核");
@@ -131,11 +136,28 @@ public class HomeService {
         }
         resultMap.put("productAuditNum", productAuditNum);
         // 商品修改待审核数量
-        resultMap.put("productUpdateAuditNum", 0);
+        int productUpdateAuditNum = 0;
+        todoMap = null;
+        Object productUpdate = productsUpdateRemote.selectList(0, supplierId);
+        if(productUpdate != null){
+            List productUpdateList = (List) productUpdate;
+            for (Object o : productUpdateList) {
+                Map sa = (Map) o;
+                if (todoList.size() < 7) {
+                    todoMap = new HashMap<>();
+                    todoMap.put("id", sa.get("id"));
+                    todoMap.put("title", "商品 " + StringUtil.toString(sa.get("name")) + " 信息修改待审核");
+                    todoMap.put("type", 4);
+                    todoList.add(todoMap);
+                }
+            }
+            productUpdateAuditNum = productUpdateList.size();
+        }
+        resultMap.put("productUpdateAuditNum", productUpdateAuditNum);
         // 商品数量
         Integer productNum = 0;
         Object o = productsRemote.selectList(null, supplierId);
-        if(o != null){
+        if (o != null) {
             List productList = (List) o;
             productNum = productList.size();
         }
@@ -146,11 +168,12 @@ public class HomeService {
 
     /**
      * 最近7天访问数量
+     *
      * @return
      */
-    public Map<String, Object> count7Days(){
+    public Map<String, Object> count7Days() {
         Object o = sysLoginLogsRemote.count7Days();
-        if(o != null){
+        if (o != null) {
             return ResultMessage.success(o);
         }
         return null;
