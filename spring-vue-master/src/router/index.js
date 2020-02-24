@@ -57,6 +57,7 @@ export default new Router({
                     component: resolve => require(['../components/page/product/productList.vue'], resolve),
                     meta: { title: '商品列表' }
                 },
+                
                 {
                     path: '/commodityAdd',
                     component: resolve => require(['../components/page/commodity/commodityAdd.vue'], resolve),
@@ -68,6 +69,13 @@ export default new Router({
                     component: resolve => require(['../components/page/product/auditDetails.vue'], resolve),
                     meta: { title: '商品详情' }
                 },
+                {
+                    path: '/auditUpdataView',
+                    name: 'auditUpdataView',
+                    component: resolve => require(['../components/page/product/auditUpdataView.vue'], resolve),
+                    meta: { title: '商品修改详情' }
+                },
+                
                 {
                     path: '/commodityEdit',
                     name: 'commodityEdit',
@@ -134,6 +142,12 @@ export default new Router({
                     component: resolve => require(['../components/page/product/productAuditList.vue'], resolve),
                     meta: { title: '商品审核' }
                 },
+                {
+                    path: '/productUpdataList',
+                    component: resolve => require(['../components/page/product/productUpdataList.vue'], resolve),
+                    meta: { title: '商品修改审核' }
+                },
+                
                 {
                     path: '/catalogs',
                     component: resolve => require(['../components/page/catalog/catalogs.vue'], resolve),

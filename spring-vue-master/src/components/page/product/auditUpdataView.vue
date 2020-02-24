@@ -2,7 +2,7 @@
     <div class="table">
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-lx-cascades"></i> 修改商品</el-breadcrumb-item>
+                <el-breadcrumb-item><i class="el-icon-lx-cascades"></i> 商品修改审核详情</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class="dityAddbox">
@@ -18,8 +18,8 @@
                     <el-input v-model="addComForm.sort" size="mini" class="w50"></el-input>
                 </el-form-item> -->
 
-                <el-form-item label="发货类型" prop="deliveryType">
-                    <el-select v-model="addComForm.deliveryType" placeholder="请选择">
+                <el-form-item label="发货类型" prop="">
+                    <el-select v-model="addComForm.deliveryType" disabled readonly placeholder="请选择">
                       <el-option
                         v-for="item in options"
                         :key="item.id"
@@ -30,22 +30,14 @@
                 </el-form-item>
 
                 <el-form-item label="编码" prop="">
-                    <el-input v-model="addComForm.code" size="mini" class="w50"></el-input>
+                    <el-input v-model="addComForm.code" size="mini" readonly class="w50"></el-input>
                 </el-form-item>
 
-                <el-form-item v-if="isSupplier != '1'" label="所属商户" prop="supplierId">
-                    <el-select v-model="addComForm.supplierId" placeholder="请选择">
-                      <el-option
-                        v-for="item in suppliers"
-                        :key="item.id"
-                        :label="item.name"
-                        :value="item.id">
-                      </el-option>
-                    </el-select>
+                <el-form-item label="所属商户" prop="">
+                    <el-input v-model="addComForm.supplierName" readonly size="mini" class="w50"></el-input>
                 </el-form-item>
-                
+
                 <el-form-item label="商品分类:" prop="orgNames2" id="orgTreeBox">
-                  <input type="hidden" v-model="addComForm.orgNames2">
                   <!-- catalog_id -->
                   <input type="hidden" >
                   <!-- 所属栏目树 -->
@@ -58,7 +50,6 @@
                       class="w50"
                       v-model="orgNames"
                       style="box-sizing: border-box;"
-                      @click.native="openOrgTree"
                     ></el-input>
 
                     <input id="parentId" type="hidden">
@@ -71,43 +62,43 @@
                     </div>
                 </el-form-item>
 
-                <el-form-item label="商品名称" prop="name">
-                    <el-input v-model="addComForm.name" size="mini" class="w50"></el-input>
+                <el-form-item label="商品名称" prop="">
+                    <el-input v-model="addComForm.name" readonly size="mini" class="w50"></el-input>
                 </el-form-item>
 
                 <el-form-item label="商品图片" prop="">
                     <el-upload
                         accept=".jpg, .png"
                         list-type="picture-card"
+                        :disabled=true
                         :action="uploadUrl()"
                         :on-preview="handlePictureCardPreview"
                         :on-remove="handleRemove"
                         :on-success="fileSuccess"
                         multiple
+                        :limit="1"
                         :on-exceed="handleExceed"
-                        :file-list="fileList">
+                        :file-list="fileList"
+                        class="upload_img_view">
                         <el-button size="small" type="primary">点击上传</el-button>
-                        <div slot="tip" class="el-upload__tip " >只能上传jpg/png文件</div>
                     </el-upload>
                 </el-form-item>
 
-                <el-form-item label="市场价(元)" prop="price">
-                    <el-input v-model="addComForm.price" size="mini" class="w50"></el-input>
+                <el-form-item label="市场价(元)" prop="">
+                    <el-input v-model="addComForm.price" size="mini" readonly class="w50"></el-input>
                 </el-form-item>
 
-                <el-form-item label="供货价(元)" prop="supplyPrice">
-                    <el-input v-model="addComForm.supplyPrice" size="mini" class="w50"></el-input>
+                <el-form-item label="供货价(元)" prop="">
+                    <el-input v-model="addComForm.supplyPrice" size="mini" readonly class="w50"></el-input>
                 </el-form-item>
 
-                <el-form-item label="商品详情" prop="protalDetails">
-                  <input type="hidden" v-model="addComForm.protalDetails">
+                <el-form-item label="商品详情" prop="">
                     <div class="editor-container">
                       <div id="editor"></div>
                     </div>
                 </el-form-item>
 
                 <el-form-item label="使用说明" prop="useDirections">
-                    <input type="hidden" v-model="addComForm.useDirections">
                     <div class="editor-container">
                       <div id="useDirections_editor"></div>
                     </div>
@@ -115,6 +106,7 @@
 
                 <el-form-item label="维护配置" prop="">
                     <el-date-picker
+                      disabled
                       size="mini"              
                       v-model="maintainConfig"
                       type="datetimerange"
@@ -127,23 +119,23 @@
                 </el-form-item>
 
                 <el-form-item label="维护提示语" prop="">
-                    <el-input v-model="addComForm.maintainMessage" size="mini" class="w50"></el-input>
+                    <el-input v-model="addComForm.maintainMessage" readonly size="mini" class="w50"></el-input>
                 </el-form-item>
 
                 <el-form-item label="库存售卖阈值" prop="">
-                    <el-input v-model="addComForm.inventorySellingThreshold" size="mini" class="w50" oninput="value=value.replace(/[^\d]/g,'')"></el-input>
+                    <el-input v-model="addComForm.inventorySellingThreshold" readonly size="mini" class="w50" oninput="value=value.replace(/[^\d]/g,'')"></el-input>
                 </el-form-item>
 
                 <el-form-item label="库存不足提示语" prop="">
-                    <el-input v-model="addComForm.inventoryAlertMessage" size="mini" class="w50"></el-input>
+                    <el-input v-model="addComForm.inventoryAlertMessage" readonly size="mini" class="w50"></el-input>
                 </el-form-item>
 
                 <el-form-item label="库存报警阈值" prop="">
-                    <el-input v-model="addComForm.inventoryAlertNum" size="mini" class="w50" oninput="value=value.replace(/[^\d]/g,'')"></el-input>
+                    <el-input v-model="addComForm.inventoryAlertNum" size="mini" readonly class="w50" oninput="value=value.replace(/[^\d]/g,'')"></el-input>
                 </el-form-item>
 
                 <el-form-item label="发货状态" prop="">
-                    <el-select v-model="deliveryStatus" multiple placeholder="请选择">
+                    <el-select v-model="deliveryStatus" multiple disabled placeholder="请选择">
                       <el-option
                         v-for="item in deliveryStatusList"
                         :key="item.id"
@@ -151,26 +143,40 @@
                         :value="item.id+''">
                       </el-option>
                     </el-select>
-                    <el-button class="add_delivery" type="success" @click="addDelivery()">添加</el-button>
                 </el-form-item>
 
-                 <el-form-item label="状态" prop="status">
-                    <el-radio v-model="addComForm.status" :label="1">上架</el-radio>
-                    <el-radio v-model="addComForm.status" :label="2">下架</el-radio>
+                <el-form-item label="状态" prop="">
+                    <el-radio v-model="addComForm.status" disabled readonly :label="1">上架</el-radio>
+                    <el-radio v-model="addComForm.status" disabled readonly :label="2">下架</el-radio>
+                </el-form-item>
+
+                <el-form-item v-if="auditType =='10'" label="发货代号" prpo="">
+                  <el-select v-model="addComForm.deliveryTypeCode" filterable placeholder="请选择">
+                    <el-option
+                      v-for="item in deliveryTypeCodeList"
+                      :key="item.code"
+                      :label="item.label"
+                      :value="item.code">
+                    </el-option>
+                  </el-select>
+                  <el-button class="add_delivery" type="success" @click="addDelivery()">添加</el-button>
+                </el-form-item>
+                <el-form-item v-else label="发货代号" prpo="">
+                  <el-input v-model="addComForm.deliveryTypeCode" size="mini" readonly class="w50"></el-input>
                 </el-form-item>
 
                 <el-form-item>
-                    <el-button type="success" @click="staging('addComForm')">暂存</el-button>
-                    <el-button type="primary" @click="submitAddCom('addComForm')">提交</el-button>
+                    <el-button type="primary" v-if="auditType =='10'" @click="auditAdopt()">审核通过</el-button>
+                    <el-button type="danger" v-if="auditType =='10'" @click="auditReject()">审核失败</el-button>
                     <el-button type="danger" @click="back">返回</el-button>
                 </el-form-item>
-            </el-form>
 
-            <el-row class="tipsBoxImg">
-              <el-dialog :visible.sync="dialogVisible" size="tiny" style="text-align:center;">
-                <img  :src="dialogImageUrl" style="padding-bottom: 50px;"/>
-              </el-dialog>
-            </el-row>
+                <el-row class="tipsBoxImg">
+                  <el-dialog :visible.sync="dialogVisible" size="tiny" style="text-align:center;">
+                    <img  :src="dialogImageUrl" style="padding-bottom: 50px;"/>
+                  </el-dialog>
+                </el-row>
+            </el-form>
         </div>
     </div>
 </template>
@@ -184,23 +190,13 @@
         data() {
             return {
                 addComForm:{
-                    orgNames2:'',
-                    protalDetails:'',
-                    useDirections:'',
-                    deliveryStatus:'',
-                    maintainConfigStart:'',
-                    maintainConfigEnd:''
+
                 },
+                auditType:'',
                 rules: {
-                    deliveryType: [{ required: true, message: "请选择发货类型", trigger: "change" }],
-                    supplierId: [{ required: true, message: "请选择所属商户", trigger: "change" }],
-                    orgNames2: [{ required: true, message: "请选择商品分类", trigger: "change" }],
-                    name: [{ required: true, message: "请输入商品名称", trigger: "blur" }],
-                    price: [{ required: true, message: "请输入市场价", trigger: "blur" }],
-                    protalDetails: [{ required: true, message: "请输入商品详情", trigger: "change" }],
-                    supplyPrice: [{ required: true, message: "请输入供货价", trigger: "blur" }],
-                    useDirections: [{ required: true, message: "请输入使用说明", trigger: "change" }],
-                    status: [{ required: true, message: "请选择状态", trigger: "blur" }],
+                    password: [{ required: true, message: "请输入密码", trigger: "blur" }],
+                    confirmPassword: [{ required: true, message: "请输入密码", trigger: "blur" }]
+                    
                 },
                 options: [],
                 fileList:[],
@@ -224,50 +220,47 @@
                 // editorContent: ''
                 content:'',
                 catalogId:'',
-                isSupplier: 1,
-                suppliers:[],
+                productId:'',
+                deliveryTypeCodeList:[],
+                dialogVisible:false,
+                dialogImageUrl:'',
                 detailsId:'',
                 maintainConfig: [],
                 deliveryStatus: [],
-                deliveryStatusList: [],
-                dialogVisible:false,
-                dialogImageUrl:'',
-                ImgfileList:[],
-                auditType:''
+                deliveryStatusList: []
             }
         },
         created() {
           
-          this.getSelectForm();
-          this.vaIsSupplier();
-          this.getSuppliers();
-          this.getDeliveryStatus();
         },
         mounted() {
+          var state = this.$route.query.state;
           var id = this.$route.query.id;
+          if(state != null){
+              this.auditType = Base64.decode(state);
+          }
           this.detailsId = Base64.decode(id);
           this.getData();
+          this.getSelectForm();
+          this.getDeliveryStatus();
           UE.delEditor("editor");
           ueditor_.methods.loadComponent("editor");
-
           // 使用说明
           UE.delEditor("useDirections_editor");
           ueditor_.methods.loadComponent("useDirections_editor");
-
         },
         methods: {
             // 数据回显
             async getData(){
               var id = this.detailsId;
-              const res = await this.$http.get(baseURL_.mallUrl+'/products/getById',{
+              const res = await this.$http.get(baseURL_.mallUrl+'/products_update/view',{
                 params: {
                     'id': id
                 }
               });
               if(res.data.statusCode==200){
                 this.addComForm = res.data.data;
-                this.addComForm.orgNames2 = this.addComForm.catalogId;
-                this.addComForm.protalDetails = this.addComForm.details;
+                // this.fileList = [{url:this.addComForm.img}];
                 this.fileList = [];
                 if(this.addComForm.productPicList.length > 0){
                     var json = {};
@@ -277,22 +270,23 @@
                     }
                     this.ImgfileList = this.fileList;
                 }
-                this.auditType = res.data.data.status;
                 this.orgNames = this.addComForm.catalogName;
                 this.catalogId = this.addComForm.catalogId;
+                this.productId = this.addComForm.id;
                 var details = this.addComForm.details;
-                // UE.getEditor('editor').setContent(details);
-                // var content = this.form.content;
                 var usd = UE.getEditor("editor");
                 usd.ready(function() {
                   usd.setHeight(366);
                   usd.setContent(details);
+                  usd.setDisabled();
                 });
+                this.getDeliveryTypeCode();
                 var useDirections = this.addComForm.useDirections;
                 var useDirectionsEditor = UE.getEditor("useDirections_editor");
                 useDirectionsEditor.ready(function() {
                   useDirectionsEditor.setHeight(366);
                   useDirectionsEditor.setContent(useDirections);
+                  useDirectionsEditor.setDisabled();
                 });
                 this.maintainConfig = [this.addComForm.maintainConfigStart, this.addComForm.maintainConfigEnd];
                 var deliveryStatus = this.addComForm.deliveryStatus;
@@ -339,109 +333,20 @@
                 });
             },
             back() {
-                this.$router.push({ path: "/productList" });
+                this.$router.push({ path: "/productUpdataList" });
             },
-            // 提交审核
-            async submitAddCom(){
-              var details = UE.getEditor('editor').getContent();
-              this.addComForm.protalDetails = details;
-              var useDirections = UE.getEditor('useDirections_editor').getContent();
-              this.addComForm.useDirections = useDirections;
-              this.$refs['addComForm'].validate(async valid => {
-                if (valid) {
-                  var strlist = '';
-                  if(this.ImgfileList.length > 0){
-                    for(let i=0; i<this.ImgfileList.length; i++){
-                      if(this.ImgfileList[i].response == null){
-                        strlist+= this.ImgfileList[i].url+',';
-                      }else{
-                        strlist+= this.ImgfileList[i].response.data.path+',';
-                      }
-                    }
-                    if (strlist.length > 0) strlist = strlist.substring(0, strlist.length - 1);
-                  }else{
-                    this.$message({
-                      type: "error",
-                      message: "请上传商品图片"
-                    });
-                    return false;
-                  }
-                  this.addComForm.img = strlist;
-
-                  this.addComForm.catalogId = this.catalogId;
-                  this.addComForm.id = this.detailsId;
-                  this.addComForm.deliveryStatus = this.deliveryStatus.join(",");
-                  var maintainConfigs = this.maintainConfig;
-                  if(maintainConfigs != null && maintainConfigs.length == 2){
-                    this.addComForm.maintainConfigStart = maintainConfigs[0];
-                    this.addComForm.maintainConfigEnd = maintainConfigs[1];
-                  }
-                  this.addComForm.auditStatus = 0;
-                  this.addComForm.details = details;
-                  
-                  var updateUrl = '';
-                  if(this.auditType == 1){
-                    // 审核通过
-                    updateUrl = baseURL_.mallUrl+'/products_update/update';
-                  }else{
-                    // 待审核   审核不通过
-                    updateUrl = baseURL_.mallUrl+'/products/update';
-                  }
-                  const res = await this.$http.post(updateUrl,this.$qs.stringify(this.addComForm));
-                  this.$message(res.data.data);
-                  if(res.data.statusCode==200){
-                    this.$router.push('/productList');
-                  }
-                }
-              })
-            },
-            // 暂存
-            async staging(){
-              var useDirections = UE.getEditor('useDirections_editor').getContent();
-              // this.$refs['addComForm'].validate(async valid => {
-                // if (valid) {
-                  var strlist = '';
-                  if(this.ImgfileList.length > 0){
-                    for(let i=0; i<this.ImgfileList.length; i++){
-                      if(this.ImgfileList[i].response == null){
-                        strlist+= this.ImgfileList[i].url+',';
-                      }else{
-                        strlist+= this.ImgfileList[i].response.data.path+',';
-                      }
-                    }
-                    if (strlist.length > 0) strlist = strlist.substring(0, strlist.length - 1);
-                  }
-                  this.addComForm.img = strlist;
-
-
-                  var details = UE.getEditor('editor').getContent();
-                  this.addComForm.catalogId = this.catalogId;
-                  this.addComForm.id = this.detailsId;
-                  this.addComForm.useDirections = useDirections;
-                  this.addComForm.deliveryStatus = this.deliveryStatus.join(",");
-                  var maintainConfigs = this.maintainConfig;
-                  if(maintainConfigs != null && maintainConfigs.length == 2){
-                    this.addComForm.maintainConfigStart = maintainConfigs[0];
-                    this.addComForm.maintainConfigEnd = maintainConfigs[1];
-                  }
-                  this.addComForm.auditStatus = 3;
-                  this.addComForm.details = details;
-                  var updateUrl = '';
-                  if(this.auditType == 1){
-                    // 审核通过
-                    updateUrl = baseURL_.mallUrl+'/products_update/update';
-                  }else{
-                    // 待审核   审核不通过
-                    updateUrl = baseURL_.mallUrl+'/products/update';
-                  }
-                  const res = await this.$http.post(updateUrl,this.$qs.stringify(this.addComForm));
-                  this.$message(res.data.data);
-                  if(res.data.statusCode==200){
-                    this.$router.push('/productList');
-                  }
-                // }
-              // })
-            },
+            // async submitAddCom(){
+            //   this.$refs['addComForm'].validate(async valid => {
+            //     if (valid) {
+            //       this.addComForm.catalogId = this.catalogId;
+            //       const res = await this.$http.post(baseURL_.mallUrl+'/products/save',this.$qs.stringify(this.addComForm));
+            //       this.$message(res.data.data);
+            //       if(res.data.statusCode==200){
+            //         this.$router.push('/productList');
+            //       }
+            //     }
+            //   })
+            // },
             // Logo上传
             uploadUrl() {
               return baseURL_.fileUrl+'/file/upload';
@@ -456,14 +361,17 @@
                 return false;
               }
             },
-            fileSuccess(res, file,fileList) {
-              this.ImgfileList = fileList;
+            handlePictureCardPreview(file) {
+              this.dialogImageUrl = file.url;
+              this.dialogVisible = true;
+            },
+            fileSuccess(res, file) {
               this.$message({
                 type: "success",
                 message: "上传成功",
                 duration: 6000
               });
-              // this.addComForm.img = file.response.data.path;
+              this.addComForm.img = file.response.data.path;
             },
             //限制文件的上传数量
             handleExceed(files) {
@@ -473,47 +381,77 @@
             },
 
             handleRemove(file, fileList) {},
-            async vaIsSupplier(){
-              var res = await this.$http.get(baseURL_.mallUrl+'/products/isSupplier');
-              this.isSupplier = res.data.data;
+            // 审核
+            auditAdopt(){
+              var code = this.addComForm.deliveryTypeCode;
+              if(code == null || code == ''){
+                this.$message("请选择发货代号");
+                return;
+              }
+              this.confimAudit(this.productId,1,null,code);
             },
-            async getSuppliers(){
-              var res = await this.$http.get(baseURL_.mallUrl+'/products/getSuppliers');
-              this.suppliers = [];
-              this.suppliers = res.data.data;
+            auditReject(){
+                this.$prompt('请输入审核失败理由：', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    inputPattern: /^[\s\S]*.*[^\s][\s\S]*$/,
+                    inputErrorMessage: '理由不能为空'
+                }).then(({ value }) => {
+                    this.confimAudit(this.productId,2,value,null)
+                }).catch(() => { }); 
+            },
+            async confimAudit(id,auditStatus,auditReason,deliveryTypeCode){
+                var auditResult = await this.$http.get(baseURL_.mallUrl+'/products_update/audit', {
+                    params:{
+                        businessId:id,
+                        auditResult:auditStatus,
+                        auditReason:auditReason,
+                        deliveryTypeCode:deliveryTypeCode
+                    }
+                });
+                this.$message(auditResult.data.data);
+                if(auditResult.data.statusCode==200){
+                    this.back();
+                }
+            },
+            async getDeliveryTypeCode(){
+              var deliveryCodeRes = await this.$http.get(baseURL_.mallUrl+'/deliveryCode/select',{
+                params:{
+                  supplierId:this.addComForm.supplierId
+                }
+              });
+              this.deliveryTypeCodeList = [];
+              this.deliveryTypeCodeList = deliveryCodeRes.data.data;
+            },
+            // 添加发货代号
+            addDelivery(){
+                this.$prompt('请输入发货代号：', '添加发货代号', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    inputPattern: /^[\s\S]*.*[^\s][\s\S]*$/,
+                    inputErrorMessage: '发货代号不能为空'
+                }).then(({ value }) => {
+                    this.saveDelivery(this.addComForm.supplierid, value);
+                }).catch(() => { }); 
+            },
+            // 保存发货代号
+            async saveDelivery(supplierId, deliveryTypeCode){
+              var params = {
+                supplierId:this.addComForm.supplierId,
+                code: deliveryTypeCode
+              }
+              var saveRes = await this.$http.post(baseURL_.mallUrl+'/deliveryCode/save',this.$qs.stringify(params));
+                this.$message(saveRes.data.data);
+                if(saveRes.data.statusCode==200){
+                  this.addComForm.deliveryTypeCode = deliveryTypeCode;
+                  this.getDeliveryTypeCode();
+                }
             },
             async getDeliveryStatus(){
               var res = await this.$http.get(baseURL_.mallUrl+'/products/getDeliveryStatus');
               this.deliveryStatusList = [];
               this.deliveryStatusList = res.data.data;
-            },
-            handlePictureCardPreview(file) {
-              this.dialogImageUrl = file.url;
-              this.dialogVisible = true;
-            },
-             // 添加发货状态
-            addDelivery(){
-                this.$prompt('请输入发货状态：', '添加发货状态', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    inputPattern: /^[\s\S]*.*[^\s][\s\S]*$/,
-                    inputErrorMessage: '发货状态不能为空'
-                }).then(({ value }) => {
-                    this.saveDelivery(value);
-                }).catch(() => { }); 
-            },
-            // 保存发货状态
-            async saveDelivery(deliveryTypeCode){
-              var params = {
-                deliveryStatus: deliveryTypeCode
-              }
-              var saveRes = await this.$http.post(baseURL_.mallUrl+'/products/saveDeliveryStatus',this.$qs.stringify(params));
-                this.$message(saveRes.data.data);
-                if(saveRes.data.statusCode==200){
-                  this.deliveryStatus.push(deliveryTypeCode);
-                  this.getDeliveryStatus();
-                }
-            },
+            }
         }
     }
 
@@ -527,7 +465,7 @@
         box-sizing: border-box;
     }
     .w50{
-      width:20%;
+      width:30%;
     }
     .zTreeStyle {
       width: 240px;
@@ -560,4 +498,10 @@
     .add_delivery {
       margin-left: 10px;
     }
+    
+</style>
+<style >
+  .tipsBoxImg .el-dialog__header{
+      padding: 20px 20px 30px !important;
+  }
 </style>

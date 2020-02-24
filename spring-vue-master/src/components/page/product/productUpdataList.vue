@@ -2,7 +2,7 @@
     <div class="table">
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-lx-cascades"></i> 商品列表</el-breadcrumb-item>
+                <el-breadcrumb-item><i class="el-icon-lx-cascades"></i> 商品修改审核</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class="container">
@@ -17,20 +17,9 @@
                     <el-form-item label="类目名称">
                         <el-input v-model="formInline.catalogName" placeholder="类目名称"></el-input>
                     </el-form-item>
-                    <el-form-item label="发货类型">
-                        <el-select v-model="formInline.deliveryType" placeholder="请选择">
-                            <el-option
-                                v-for="item in deliveryTypeList"
-                                :key="item.id"
-                                :label="item.name"
-                                :value="item.id">
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                    
                     <el-form-item label="审核状态">
                          <el-select v-model="formInline.auditStatus" placeholder="审核状态">
-                            <el-option label="暂存" value="3"></el-option>
+                            <el-option label="请选择" value=""></el-option>
                             <el-option label="待审核" value="0"></el-option>
                             <el-option label="审核通过" value="1"></el-option>
                             <el-option label="审核失败" value="2"></el-option>
@@ -43,41 +32,31 @@
                 </el-form>
             </div>
             <div class="handle-box">
-                <el-button type="primary" @click="add" icon="el-icon-plus" >添加商品</el-button>
-                <el-button type="primary" @click="batchDelete" icon="el-icon-delete" >批量删除</el-button>
+                <el-button type="primary" @click="batchAudit(1)" >审核通过</el-button>
+                <el-button type="primary" @click="batchAudit(2)" >审核失败</el-button>
             </div>
             <el-table :data="tableData" border class="table" ref="multipleTable" @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
                 <el-table-column type="index" label="序号" width="55" align="center" ></el-table-column>
-                <el-table-column prop="supplierName" label="商户名称"  align="center" width=""></el-table-column>
                 <el-table-column prop="catalogName" label="商品类目"  align="center" width=""></el-table-column>
+                <el-table-column prop="supplierName" label="商户名称"  align="center" width=""></el-table-column>
                 <el-table-column prop="name" label="商品名称"  align="center" width=""></el-table-column>
                 <el-table-column prop="price" label="市场价（元）" align="center"  width=""></el-table-column>
-                <el-table-column prop="supplyPrice" label="供货价（元）" align="center"  width=""></el-table-column>
-                <el-table-column prop="deliveryName" label="发货类型" align="center"  width=""></el-table-column>
-                <el-table-column label="上下架状态" align="center"  width="">
-                    <template slot-scope="scope">
-                        <span type="text" v-if="scope.row.status == '1'">上架</span>
-                        <span type="text" v-if="scope.row.status == '2'">下架</span>
-                    </template>
-                </el-table-column>
                 <el-table-column label="审核状态" align="center"  width="">
                     <template slot-scope="scope">
-                        <span type="text" v-if="scope.row.auditStatus == '3'">暂存</span>
                         <span type="text" v-if="scope.row.auditStatus == '0'">待审核</span>
                         <span type="text" v-if="scope.row.auditStatus == '1'">审核通过</span>
-                        <span type="text" class="red" v-if="scope.row.auditStatus == '2'">审核失败</span>
                         <!-- <span type="text" class="red hand" v-if="scope.row.auditStatus == '2'" @click="showAuditReason(scope.row.id)" >审核失败  <i class="el-icon-info"></i></span> -->
+                        <span type="text" class="red" v-if="scope.row.auditStatus == '2'">审核失败</span>
                     </template>
                 </el-table-column>
                 <el-table-column label="操作" width="" align="center">
                     <template slot-scope="scope">
-                        <el-button type="text" icon="el-icon-search" class="red" @click="handleLook(scope.$index, scope.row)">查看</el-button>
-                        <el-button type="text" v-if="scope.row.status == '2'" icon="el-icon-edit" class="red" @click="updateStatus(scope.$index, scope.row, 1)">上架</el-button>
-                        <el-button type="text" v-if="scope.row.status == '1' && scope.row.auditStatus == '1'" icon="el-icon-edit" class="red" @click="updateStatus(scope.$index, scope.row, 2)">下架</el-button>
-                        <el-button type="text"  icon="el-icon-edit" class="red" @click="handleUpdate(scope.$index, scope.row)">修改</el-button>
-                        <el-button type="text" v-if="(scope.row.auditStatus == '2' && scope.row.status == '2' ) || scope.row.auditStatus == '3' || scope.row.auditStatus == '0'" icon="el-icon-delete" class="red" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-                        <el-button type="text" v-if="scope.row.auditStatus != '0' && scope.row.auditStatus != '3'" icon="el-icon-document" class="red" @click="lookAudit(scope.$index, scope.row)">审核记录</el-button>
+                        <el-button type="text" @click="view(scope.$index, scope.row)">查看详情</el-button>
+                        <el-button type="text" v-if="isSupplier != '1' && scope.row.auditStatus == '0'" @click="toAudit(scope.$index, scope.row)">审核</el-button>
+                        <el-button type="text" v-if="scope.row.auditStatus != '0'" @click="lookAudit(scope.$index, scope.row)">审核记录</el-button>
+                        <!-- <el-button type="text" v-if="scope.row.auditStatus == '0'" @click="auditAdopt(scope.row.id)">审核通过</el-button>
+                        <el-button type="text" v-if="scope.row.auditStatus == '0'" class="red" @click="auditReject(scope.row.id)" >审核失败</el-button> -->
                     </template>
                 </el-table-column>
             </el-table>
@@ -101,8 +80,7 @@
             center>
             <span>{{ this.auditReason }}</span>
             <span slot="footer" class="dialog-footer">
-                <el-button type="" @click="reasonVisible = false">取消</el-button>
-                <el-button type="primary" @click="updatePro()">修改</el-button>
+                <el-button type="primary" @click="reasonVisible = false">取消</el-button>
             </span>
         </el-dialog>
 
@@ -140,43 +118,39 @@
         data() {
             return {
                 reasonVisible:false,
+                editVisible:false,
                 page:1,
                 total:0,
                 pageSize:10,
                 tableData: [],
                 multipleSelection: [],
-                deliveryTypeList:[],
-                editVisible:false,
                 formInline:{
+                    supplierName:'',
                     name:'',
                     catalogName:'',
-                    auditStatus:'',
-                    deliveryType:'',
-                    supplierName:''
+                    auditStatus:''
                 },
+                msgTips:'',
                 auditReason:'',
-                productId:'',
-                auditData:[]
+                auditData:'',
+                isSupplier:1
             }
         },
         created() {
             this.getData();
-            this.getDeliveryTypeList();
+            this.vaIsSupplier();
         },
         methods: {
-             async lookAudit(index,row){
-                const audit = await this.$http.get(baseURL_.mallUrl+'/products_audit/getAuditList',{ 
-                    params:{'businessId':row.id}
-                })
-                this.auditData=audit.data.data;
-                this.editVisible=true;
+            async vaIsSupplier(){
+              var res = await this.$http.get(baseURL_.mallUrl+'/supplier/isSupplier');
+              this.isSupplier = res.data.data;
             },
             onSubmit(){
                 this.getData();
             },
             onReset(){
                 this.formInline = {};
-                // this.formInline.auditStatus = '';
+                this.formInline.auditStatus = '';
                 this.getData();
             },
             //改变每页页数
@@ -191,14 +165,13 @@
             },
             // 初始化数据
             async getData() {
-                const products = await this.$http.get(baseURL_.mallUrl+'/products/list',{ 
+                const products = await this.$http.get(baseURL_.mallUrl+'/products_update/list',{ 
                     params: {
                         'page':this.page,
                         'pageSize':this.pageSize,
                         'name':this.formInline.name,
                         'catalogName':this.formInline.catalogName,
                         'auditStatus':this.formInline.auditStatus,
-                        'deliveryType':this.formInline.deliveryType,
                         'supplierName':this.formInline.supplierName
                     }
                 });
@@ -211,7 +184,7 @@
             handleSelectionChange(val){
                 this.multipleSelection = val;
             },
-            batchDelete(){
+            batchAudit(audit){
                 if(this.multipleSelection.length == 0){
                     this.$message("请先选择商品");
                     return ;
@@ -220,61 +193,63 @@
                 var ids = [];
                 this.multipleSelection.forEach(e => {
                     ids.push(e.id);
-                    if(!((e.auditStatus == '2' && e.status == '2' ) || e.auditStatus == '3' || e.auditStatus == '0')){
+                    if(e.auditStatus != 0){
                         flag ++;
                     }
                 });
                 if(flag == 0){
-                    this.$confirm('确认删除？').then( e=> {
-                        this.delete(ids.join(','));
+                    if(audit == 1){
+                        this.$confirm('确认审核通过？').then( e=> {
+                        this.audit(ids.join(','), audit, "");
                     }).catch(_ => {});
-                }else{
-                    this.$message("该状态不允许删除！");
-                }
-            },
-            handleDelete(index, row){
-                this.$confirm('确认删除？').then( e=> {
-                   this.delete(row.id);
-                }).catch(_ => {});
-            },
-            async delete(ids){
-                var delResult = await this.$http.delete(baseURL_.mallUrl+'/products/batchDelete',{ 
-                    params: {
-                        'ids': ids
                     }
-                });
-                this.$message(delResult.data.data);
-                if(delResult.data.statusCode==200){
+                    if(audit == 2){
+                        this.$prompt('请输入审核失败理由：', '提示', {
+                            confirmButtonText: '确定',
+                            cancelButtonText: '取消',
+                            inputPattern: /^[\s\S]*.*[^\s][\s\S]*$/,
+                            inputErrorMessage: '理由不能为空'
+                        }).then(({ value }) => {
+                            this.audit(ids.join(','),2,value)
+                        }).catch(() => { }); 
+                    }
+                }else{
+                    this.$message("不能重复审核！");
+                }
+            },
+            async audit(ids, auditStatus, auditReason){
+                var params = {
+                    'ids': ids,
+                    'status': auditStatus,
+                    'auditReason': auditReason
+                }
+                var auditResult = await this.$http.put(baseURL_.mallUrl+'/products_update/batchAudit', this.$qs.stringify(params));
+                this.$message(auditResult.data.data);
+                if(auditResult.data.statusCode==200){
                     this.getData();
                 }
             },
-            handleUpdate(index, row){
-                var id = Base64.encode(row.id);
-                this.$router.push({path:'/commodityEdit',name:"commodityEdit", query: {id: id}});
-            },
-            async updateStatus(index, row, status){
-                var product = {
-                    'id': row.id,
-                    'status': status
-                };
-                var res = await this.$http.put(baseURL_.mallUrl+'/products/updateStatus',this.$qs.stringify(product));
-                this.$message(res.data.data);
-                if(res.data.statusCode==200){
-                    this.getData();
-                }
-            },
-            handleLook(index, row){
+            view(index,row){
                 var id = Base64.encode(row.id);
                 this.$router.push({
-                    path: '/commodityLook',
-                    name: 'commodityLook',
+                    path: '/auditUpdataView',
+                    name:'auditUpdataView',
                     query: {
                         id: id
                     }
                 });
             },
-            add(){
-                this.$router.push('/commodityAdd');
+            toAudit(index,row){
+                var id = Base64.encode(row.id);
+                var state = Base64.encode('10');
+                this.$router.push({
+                    path: '/auditUpdataView',
+                    name:'auditUpdataView',
+                    query: {
+                        id: id,
+                        state:state
+                    }
+                });
             },
             async showAuditReason(id){
                 var res = await this.$http.get(baseURL_.mallUrl+'/products_audit/getAuditList',{ 
@@ -289,23 +264,16 @@
                     if(auditlist.length > 0){
                         this.auditReason = auditlist[0].auditReason;
                     }
-                    this.productId = id;
                     this.reasonVisible = true;
                 }
             },
-            updatePro(){
-                this.$router.push({
-                    path: '/commodityEdit',
-                    query: {
-                        id: this.productId
-                    }
-                });
+            async lookAudit(index,row){
+                const audit = await this.$http.get(baseURL_.mallUrl+'/products_update/getAuditList',{ 
+                    params:{'id':row.id}
+                })
+                this.auditData=audit.data.data;
+                this.editVisible=true;
             },
-            async getDeliveryTypeList(){
-                const res = await this.$http.get(baseURL_.mallUrl+'/products/getDelivery_type');
-                this.deliveryTypeList = [];
-                this.deliveryTypeList = res.data.data;
-            }
         }
     }
 

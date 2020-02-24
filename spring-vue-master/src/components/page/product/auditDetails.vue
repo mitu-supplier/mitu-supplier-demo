@@ -140,7 +140,7 @@
                         v-for="item in deliveryStatusList"
                         :key="item.id"
                         :label="item.deliveryStatus"
-                        :value="item.deliveryStatus">
+                        :value="item.id+''">
                       </el-option>
                     </el-select>
                 </el-form-item>
@@ -261,7 +261,16 @@
               });
               if(res.data.statusCode==200){
                 this.addComForm = res.data.data;
-                this.fileList = [{url:this.addComForm.img}];
+                // this.fileList = [{url:this.addComForm.img}];
+                this.fileList = [];
+                if(this.addComForm.productPicList.length > 0){
+                    var json = {};
+                    for(let k=0; k<this.addComForm.productPicList.length; k++){
+                        json = {url:this.addComForm.productPicList[k].path};
+                        this.fileList.push(json);
+                    }
+                    this.ImgfileList = this.fileList;
+                }
                 this.orgNames = this.addComForm.catalogName;
                 this.catalogId = this.addComForm.catalogId;
                 this.productId = this.addComForm.id;
