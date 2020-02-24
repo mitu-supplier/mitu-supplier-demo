@@ -29,7 +29,7 @@ public class ProductsUpdateBack implements ProductsUpdateRemote {
     }
 
     @Override
-    public int updateStatus(String ids, Integer auditStatus) {
+    public int batchAudit(String ids, Integer auditStatus) {
         return 0;
     }
 }

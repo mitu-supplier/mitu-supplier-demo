@@ -3,6 +3,7 @@ package cn.forest.mall.fallback;
 import cn.forest.mall.remote.ProductsRemote;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -60,6 +61,11 @@ public class ProductsBack implements ProductsRemote {
 
     @Override
     public int updateInventory(Long id, Integer inventoryNum) {
+        return 0;
+    }
+
+    @Override
+    public int batchUpdate(List<Map<String, Object>> list) {
         return 0;
     }
 }

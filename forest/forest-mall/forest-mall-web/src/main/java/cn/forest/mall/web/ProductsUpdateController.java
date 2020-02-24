@@ -78,7 +78,7 @@ public class ProductsUpdateController {
      * @param request
      * @return
      */
-    @RequestMapping("/view")
+    @RequestMapping("/batchAudit")
     public Map<String, Object> batchAudit(HttpServletRequest request) {
         return productsUpdateService.batchAudit(request);
     }

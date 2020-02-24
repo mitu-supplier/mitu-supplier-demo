@@ -161,6 +161,8 @@ public class SuppliersService {
                         supplierInfo.put("id", ((Map) userInfo).get("typeId"));
                         supplierInfo.put("investmentPerson", investmentPerson);
                         supplierInfo.put("registerStep", map.get("registerStep"));
+                        supplierInfo.put("alertEmail", map.get("alertEmail"));
+                        supplierInfo.put("alertMobile", map.get("alertMobile"));
                         suppliersRemote.update(supplierInfo);
                     }
                 }

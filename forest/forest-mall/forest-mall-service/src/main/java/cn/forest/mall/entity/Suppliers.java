@@ -268,6 +268,18 @@ public class Suppliers implements Serializable {
     @TableField(value = "register_step")
     private Integer registerStep;
 
+    /**
+     * 库存报警提示邮箱
+     */
+    @TableField(value = "alert_email")
+    private String alertEmail;
+
+    /**
+     * 库存报警提示手机号
+     */
+    @TableField(value = "alert_mobile")
+    private String alertMobile;
+
     // =====查询字段
     @TableField(exist = false)
     private String enterTypeName;
@@ -625,5 +637,21 @@ public class Suppliers implements Serializable {
 
     public void setBalance(BigDecimal balance) {
         this.balance = balance;
+    }
+
+    public String getAlertEmail() {
+        return alertEmail;
+    }
+
+    public void setAlertEmail(String alertEmail) {
+        this.alertEmail = alertEmail;
+    }
+
+    public String getAlertMobile() {
+        return alertMobile;
+    }
+
+    public void setAlertMobile(String alertMobile) {
+        this.alertMobile = alertMobile;
     }
 }

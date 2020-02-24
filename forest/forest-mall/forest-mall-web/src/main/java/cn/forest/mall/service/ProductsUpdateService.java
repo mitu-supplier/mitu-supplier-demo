@@ -37,6 +37,9 @@ public class ProductsUpdateService {
     private ProductDeliveryStatusRemote productDeliveryStatusRemote;
 
     @Autowired
+    private ProductsService productsService;
+
+    @Autowired
     private RedisDao redisDao;
 
     public Map<String, Object> list(HttpServletRequest request) {
@@ -77,7 +80,7 @@ public class ProductsUpdateService {
                 if (save != null) {
                     Map result = (Map) save;
                     num = Integer.parseInt(result.get(Constant.RESULT_NUM).toString());
-                    JsonNode saveJsonNode = JsonUtil.readTree(result.get(Constant.RESULT));
+                    JsonNode saveJsonNode = JsonUtil.readTree(result.get(Constant.RESULT).toString());
                     Long updateId = saveJsonNode.path("id").asLong();
                     // 处理商品图片
                     productPicRemote.deleteByProduct(updateId, 2);
@@ -101,7 +104,7 @@ public class ProductsUpdateService {
             } else {
                 // 管理员修改
                 map.put("status", 1);
-                num = productsRemote.update(map);
+                return productsService.update(map);
             }
         }
         return ResultMessage.result(num, "修改成功", "修改失败");
@@ -155,8 +158,14 @@ public class ProductsUpdateService {
     }
 
     public Map<String, Object> view(Long id) {
-        Object byId = productsUpdateRemote.getById(id);
-        return ResultMessage.success(byId);
+        Object obj = productsUpdateRemote.getById(id);
+        if (obj != null) {
+            Map resultMap = (Map) obj;
+            Object o = productPicRemote.selectByProduct(id, 2);
+            resultMap.put("productPicList", o);
+            return ResultMessage.success(obj);
+        }
+        return null;
     }
 
     public Map<String, Object> batchAudit(HttpServletRequest request) {
