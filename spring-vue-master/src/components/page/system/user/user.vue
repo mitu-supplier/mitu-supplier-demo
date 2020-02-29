@@ -103,7 +103,7 @@
         <el-dialog :title="ztreeTitleName" class="dialog-ztree dialogBox" :visible.sync="ztreeEditVisible" width="25%">
              <ul id="ztree" class="ztree"></ul>
              <span slot="footer" class="dialog-footer">
-                <el-button @click="editVisiblehide">取 消</el-button>
+                <el-button @click="editVisiblehide = false">取 消</el-button>
                 <el-button type="primary" @click="saveRole" class="m_rt">确 定</el-button>
             </span>
         </el-dialog>
