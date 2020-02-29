@@ -68,7 +68,6 @@ public class ProductsUpdateService {
         HashMap userInfoMap = (HashMap) redisDao.getValue(header);
         if (userInfoMap != null) {
             Object type = userInfoMap.get("type");
-            Object typeId = userInfoMap.get("typeId");
             if (type != null && Integer.parseInt(type.toString()) == 1) {
                 // 保存商品修改信息
                 Long productId = Long.parseLong(map.get("id").toString());
@@ -84,10 +83,10 @@ public class ProductsUpdateService {
                     Long updateId = saveJsonNode.path("id").asLong();
                     // 处理商品图片
                     productPicRemote.deleteByProduct(updateId, 2);
-                    if(imgPaths != null){
+                    if (imgPaths != null) {
                         List<Map<String, Object>> listMap = new ArrayList<>();
                         Map<String, Object> picMap = null;
-                        for(String str : imgPaths.split(",")){
+                        for (String str : imgPaths.split(",")) {
                             picMap = new HashMap<>();
                             picMap.put("productId", updateId);
                             picMap.put("path", str);
@@ -103,7 +102,7 @@ public class ProductsUpdateService {
                 }
             } else {
                 // 管理员修改
-                map.put("status", 1);
+                map.put("auditStatus", 1);
                 return productsService.update(map);
             }
         }
@@ -121,16 +120,16 @@ public class ProductsUpdateService {
         // 审核通过修改之前的信息
         if (update > 0) {
             if (status != null && status == 1) {
-                Object supplierUpdate = productsUpdateRemote.getById(id);
-                if (supplierUpdate != null) {
-                    Map infoMap = (Map) supplierUpdate;
+                Object productUpdate = productsUpdateRemote.getById(id);
+                if (productUpdate != null) {
+                    Map infoMap = (Map) productUpdate;
                     infoMap.put("created_at", null);
                     infoMap.put("updated_at", null);
                     infoMap.put("id", infoMap.get("productId"));
                     int update1 = productsRemote.update(infoMap);
                     if (update1 == 0) {
                         return ResultMessage.error("审核失败");
-                    }else{
+                    } else {
                         updateProductPicAndDelivery(Long.parseLong(infoMap.get("productId").toString()), id);
                     }
                 }
@@ -214,7 +213,6 @@ public class ProductsUpdateService {
                 if (status != null && status == 1) {
                     // 修改商品信息
                     productsRemote.batchUpdate(productList);
-
                 }
                 // 保存审核记录
                 auditRecodeRemote.batchSave(auditRecodeList);
@@ -227,13 +225,14 @@ public class ProductsUpdateService {
 
     /**
      * 处理商品图片  以及发货状态
+     *
      * @param productId
      * @param updateId
      */
-    public void updateProductPicAndDelivery(Long productId, Long updateId){
+    public void updateProductPicAndDelivery(Long productId, Long updateId) {
         // 商品图片
         Object o = productPicRemote.selectByProduct(updateId, 2);
-        if(o != null){
+        if (o != null) {
             productPicRemote.deleteByProduct(productId, 1);
             List<Map<String, Object>> picMapList = new ArrayList<>();
             Map<String, Object> paramMap = null;
@@ -250,7 +249,7 @@ public class ProductsUpdateService {
         }
         // 商品发货状态
         Object o1 = productDeliveryStatusRemote.selectByProductId(updateId, 2);
-        if(o1 != null){
+        if (o1 != null) {
             productDeliveryStatusRemote.deleteByProductId(productId, 1);
             List<Long> list = new ArrayList<>();
             List productDeliveryList = (List) o1;
