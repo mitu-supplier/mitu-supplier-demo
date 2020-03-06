@@ -70,6 +70,11 @@ public class SuppliersUpdateService {
             Object type = userInfoMap.get("type");
             Object typeId = userInfoMap.get("typeId");
             if (type != null && Integer.parseInt(type.toString()) == 1) {
+                // 保存供应商修改信息
+                Map<String, Object> supplierInfoMap = new HashMap<>();
+                supplierInfoMap.put("id", map.get("id"));
+                supplierInfoMap.put("updateAuditStatus", 0);
+                suppliersRemote.update(supplierInfoMap);
                 // 供应商
                 map.put("supplierId", map.get("id"));
                 map.remove("id");
@@ -103,18 +108,27 @@ public class SuppliersUpdateService {
         int update = suppliersUpdateRemote.update(supplierUpdateInfo);
         // 审核通过修改之前的供应商信息
         if (update > 0) {
-            if(status != null && status == 1){
-                Object supplierUpdate = suppliersUpdateRemote.getById(id);
-                if (supplierUpdate != null) {
-                    Map infoMap = (Map) supplierUpdate;
+            Object supplierUpdate = suppliersUpdateRemote.getById(id);
+            Long supplierId = null;
+            if (supplierUpdate != null) {
+                Map infoMap = (Map) supplierUpdate;
+                supplierId = Long.parseLong(infoMap.get("supplierId").toString());
+                if(status != null && status == 1){
                     infoMap.put("created_at", null);
                     infoMap.put("updated_at", null);
-                    infoMap.put("id", infoMap.get("supplierId"));
+                    infoMap.put("id", supplierId);
+                    infoMap.put("updateAuditStatus", 1);
+                    infoMap.put("status", 1);
                     infoMap.remove("alertBalance");
                     int update1 = suppliersRemote.update(infoMap);
                     if(update1 == 0){
                         return ResultMessage.error("审核失败");
                     }
+                }else{
+                    Map<String, Object> supplierInfoMap = new HashMap<>();
+                    supplierInfoMap.put("id", supplierId);
+                    supplierInfoMap.put("updateAuditStatus", status);
+                    suppliersRemote.update(supplierInfoMap);
                 }
             }
             // 保存审核记录
@@ -125,6 +139,7 @@ public class SuppliersUpdateService {
                 map.put("auditUserName", userInfoMap.get("name"));
             }
             map.put("auditType", 3);
+            map.put("businessId", supplierId);
             auditRecodeRemote.save(map);
             return ResultMessage.success("审核成功");
         }
@@ -138,7 +153,7 @@ public class SuppliersUpdateService {
      * @return
      */
     public Map<String, Object> getAuditList(Long id) {
-        Object obj = auditRecodeRemote.selectByBusinessId(id, 3);
+        Object obj = auditRecodeRemote.selectByBusinessId(id, "3");
         if (obj != null) {
             return ResultMessage.success(obj);
         }
@@ -193,15 +208,24 @@ public class SuppliersUpdateService {
                 for (String str : ids.split(",")) {
                     Long id = Long.parseLong(str);
                     // 供应商信息
-                    if(status != null && status == 1){
-                        Object supplierUpdate = suppliersUpdateRemote.getById(id);
-                        if (supplierUpdate != null) {
-                            infoMap = (Map) supplierUpdate;
+                    Object supplierUpdate = suppliersUpdateRemote.getById(id);
+                    Long supplierId = null;
+                    if (supplierUpdate != null) {
+                        infoMap = (Map) supplierUpdate;
+                        supplierId = Long.parseLong(infoMap.get("supplierId").toString());
+                        if(status != null && status == 1){
                             infoMap.put("created_at", null);
                             infoMap.put("updated_at", null);
-                            infoMap.put("id", infoMap.get("supplierId"));
+                            infoMap.put("id", supplierId);
+                            infoMap.put("updateAuditStatus", 1);
+                            infoMap.put("status", 1);
                             infoMap.remove("alertBalance");
                             supplierList.add(infoMap);
+                        }else {
+                            Map<String, Object> supplierInfoMap = new HashMap<>();
+                            supplierInfoMap.put("id", supplierId);
+                            supplierInfoMap.put("updateAuditStatus", status);
+                            supplierList.add(supplierInfoMap);
                         }
                     }
                     // 审核记录
@@ -211,15 +235,13 @@ public class SuppliersUpdateService {
                         auditMap.put("auditUserName", userInfoMap.get("name"));
                     }
                     auditMap.put("auditResult", paramMap.get("status"));
-                    auditMap.put("businessId", Long.parseLong(str));
+                    auditMap.put("businessId", supplierId);
                     auditMap.put("auditType", 3);
                     auditMap.put("auditReason", auditReason);
                     auditRecodeList.add(auditMap);
                 }
-                if(status != null && status == 1){
-                    // 修改供应商信息
-                    suppliersRemote.batchUpdate(supplierList);
-                }
+                // 修改供应商信息
+                suppliersRemote.batchUpdate(supplierList);
                 // 保存审核记录
                 auditRecodeRemote.batchSave(auditRecodeList);
                 return ResultMessage.success("操作成功");

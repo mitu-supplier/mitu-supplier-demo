@@ -153,7 +153,6 @@
                 <el-form-item v-if="auditType =='10'" label="发货代号" prpo="">
                   <el-select v-model="addComForm.deliveryTypeCode" filterable placeholder="请选择">
                     <el-option
-                      disabled
                       v-for="item in deliveryTypeCodeList"
                       :key="item.code"
                       :label="item.label"

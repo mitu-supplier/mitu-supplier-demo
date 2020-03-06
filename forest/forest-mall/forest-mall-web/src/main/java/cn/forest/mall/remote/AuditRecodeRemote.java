@@ -24,5 +24,5 @@ public interface AuditRecodeRemote {
     int batchSave(List<Map<String, Object>> list);
 
     @RequestMapping("/auditRecode/selectByBusinessId")
-    Object selectByBusinessId(@RequestParam("businessId") Long businessId, @RequestParam("auditType") Integer auditType);
+    Object selectByBusinessId(@RequestParam("businessId") Long businessId, @RequestParam("auditTypes") String auditTypes);
 }

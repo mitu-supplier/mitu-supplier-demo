@@ -69,8 +69,13 @@ public class ProductsUpdateService {
         if (userInfoMap != null) {
             Object type = userInfoMap.get("type");
             if (type != null && Integer.parseInt(type.toString()) == 1) {
-                // 保存商品修改信息
                 Long productId = Long.parseLong(map.get("id").toString());
+                // 保存商品修改审核状态
+                Map<String, Object> productInfoMap = new HashMap<>();
+                productInfoMap.put("id", productId);
+                productInfoMap.put("updateAuditStatus", 0);
+                productsRemote.update(productInfoMap);
+                // 保存商品修改信息
                 map.put("productId", productId);
                 map.remove("id");
                 String imgPaths = StringUtil.toString(map.get("img"));
@@ -119,19 +124,30 @@ public class ProductsUpdateService {
         int update = productsUpdateRemote.updateById(productUpdateInfo);
         // 审核通过修改之前的信息
         if (update > 0) {
-            if (status != null && status == 1) {
-                Object productUpdate = productsUpdateRemote.getById(id);
-                if (productUpdate != null) {
-                    Map infoMap = (Map) productUpdate;
+            Long productId = null;
+            Object productUpdate = productsUpdateRemote.getById(id);
+            if (productUpdate != null) {
+                Map infoMap = (Map) productUpdate;
+                productId = Long.parseLong(infoMap.get("productId").toString());
+                if (status != null && status == 1) {
+                    // 审核通过
                     infoMap.put("created_at", null);
                     infoMap.put("updated_at", null);
-                    infoMap.put("id", infoMap.get("productId"));
+                    infoMap.put("id", productId);
+                    infoMap.put("updateAuditStatus", 1);
+                    infoMap.put("auditStatus", 1);
                     int update1 = productsRemote.update(infoMap);
                     if (update1 == 0) {
                         return ResultMessage.error("审核失败");
                     } else {
                         updateProductPicAndDelivery(Long.parseLong(infoMap.get("productId").toString()), id);
                     }
+                } else {
+                    // 不通过
+                    Map<String, Object> productInfoMap = new HashMap<>();
+                    productInfoMap.put("id", productId);
+                    productInfoMap.put("updateAuditStatus", status);
+                    productsRemote.update(productInfoMap);
                 }
             }
             // 保存审核记录
@@ -142,6 +158,7 @@ public class ProductsUpdateService {
                 map.put("auditUserName", userInfoMap.get("name"));
             }
             map.put("auditType", 4);
+            map.put("businessId", productId);
             auditRecodeRemote.save(map);
             return ResultMessage.success("审核成功");
         }
@@ -149,7 +166,7 @@ public class ProductsUpdateService {
     }
 
     public Map<String, Object> getAuditList(Long id) {
-        Object obj = auditRecodeRemote.selectByBusinessId(id, 4);
+        Object obj = auditRecodeRemote.selectByBusinessId(id, "4");
         if (obj != null) {
             return ResultMessage.success(obj);
         }
@@ -186,16 +203,26 @@ public class ProductsUpdateService {
                 Map<String, Object> auditMap = null;
                 for (String str : ids.split(",")) {
                     Long id = Long.parseLong(str);
+                    Long productId = null;
                     // 商品信息
-                    if (status != null && status == 1) {
-                        Object supplierUpdate = productsUpdateRemote.getById(id);
-                        if (supplierUpdate != null) {
-                            infoMap = (Map) supplierUpdate;
+                    Object productUpdate = productsUpdateRemote.getById(id);
+                    if (productUpdate != null) {
+                        infoMap = (Map) productUpdate;
+                        productId = Long.parseLong(infoMap.get("productId").toString());
+                        if (status != null && status == 1) {
                             infoMap.put("created_at", null);
                             infoMap.put("updated_at", null);
-                            infoMap.put("id", infoMap.get("productId"));
+                            infoMap.put("id", productId);
+                            infoMap.put("updateAuditStatus", 1);
+                            infoMap.put("auditStatus", 1);
                             productList.add(infoMap);
                             updateProductPicAndDelivery(Long.parseLong(infoMap.get("productId").toString()), id);
+                        }else{
+                            // 不通过
+                            infoMap = new HashMap<>();
+                            infoMap.put("id", productId);
+                            infoMap.put("updateAuditStatus", status);
+                            productList.add(infoMap);
                         }
                     }
                     // 审核记录
@@ -205,15 +232,13 @@ public class ProductsUpdateService {
                         auditMap.put("auditUserName", userInfoMap.get("name"));
                     }
                     auditMap.put("auditResult", paramMap.get("status"));
-                    auditMap.put("businessId", Long.parseLong(str));
+                    auditMap.put("businessId", productId);
                     auditMap.put("auditType", 4);
                     auditMap.put("auditReason", auditReason);
                     auditRecodeList.add(auditMap);
                 }
-                if (status != null && status == 1) {
-                    // 修改商品信息
-                    productsRemote.batchUpdate(productList);
-                }
+                // 修改商品信息
+                productsRemote.batchUpdate(productList);
                 // 保存审核记录
                 auditRecodeRemote.batchSave(auditRecodeList);
                 return ResultMessage.success("操作成功");

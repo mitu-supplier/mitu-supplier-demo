@@ -28,8 +28,8 @@
                         </el-select>
                     </el-form-item>
                     
-                    <el-form-item label="审核状态">
-                         <el-select v-model="formInline.auditStatus" placeholder="审核状态">
+                    <el-form-item label="新增状态">
+                         <el-select v-model="formInline.auditStatus" placeholder="新增状态">
                             <el-option label="暂存" value="3"></el-option>
                             <el-option label="待审核" value="0"></el-option>
                             <el-option label="审核通过" value="1"></el-option>
@@ -52,6 +52,7 @@
                 <el-table-column prop="supplierName" label="商户名称"  align="center" width=""></el-table-column>
                 <el-table-column prop="catalogName" label="商品类目"  align="center" width=""></el-table-column>
                 <el-table-column prop="name" label="商品名称"  align="center" width=""></el-table-column>
+                <el-table-column prop="code" label="商品编码"  align="center" width=""></el-table-column>
                 <el-table-column prop="price" label="市场价（元）" align="center"  width=""></el-table-column>
                 <el-table-column prop="supplyPrice" label="供货价（元）" align="center"  width=""></el-table-column>
                 <el-table-column prop="deliveryName" label="发货类型" align="center"  width=""></el-table-column>
@@ -61,13 +62,20 @@
                         <span type="text" v-if="scope.row.status == '2'">下架</span>
                     </template>
                 </el-table-column>
-                <el-table-column label="审核状态" align="center"  width="">
+                <el-table-column label="新增状态" align="center"  width="">
                     <template slot-scope="scope">
                         <span type="text" v-if="scope.row.auditStatus == '3'">暂存</span>
                         <span type="text" v-if="scope.row.auditStatus == '0'">待审核</span>
                         <span type="text" v-if="scope.row.auditStatus == '1'">审核通过</span>
                         <span type="text" class="red" v-if="scope.row.auditStatus == '2'">审核失败</span>
-                        <!-- <span type="text" class="red hand" v-if="scope.row.auditStatus == '2'" @click="showAuditReason(scope.row.id)" >审核失败  <i class="el-icon-info"></i></span> -->
+                    </template>
+                </el-table-column>
+                <el-table-column label="修改状态" align="center"  width="">
+                    <template slot-scope="scope">
+                        <span type="text" v-if="scope.row.updateAuditStatus == '0'">待审核</span>
+                        <span type="text" v-else-if="scope.row.updateAuditStatus == '1'">审核通过</span>
+                        <span type="text" class="red" v-else-if="scope.row.updateAuditStatus == '2'">审核失败</span>
+                        <span type="text" v-else>暂无</span>
                     </template>
                 </el-table-column>
                 <el-table-column label="操作" width="" align="center">
@@ -123,6 +131,12 @@
                          <span v-if="scope.row.auditResult=='2'">不通过</span>
                     </template>
                 </el-table-column>
+                <el-table-column prop="auditType" label="审核类型"  align="center" width="">
+                   <template slot-scope="scope">
+                         <span v-if="scope.row.auditType=='2'">新增审核</span>
+                         <span v-if="scope.row.auditType=='4'">修改审核</span>
+                    </template>
+                </el-table-column>
            </el-table>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="editVisible = false">取 消</el-button>
@@ -166,7 +180,7 @@
         methods: {
              async lookAudit(index,row){
                 const audit = await this.$http.get(baseURL_.mallUrl+'/products_audit/getAuditList',{ 
-                    params:{'businessId':row.id}
+                    params:{'businessId':row.id, 'auditTypes':"2,4"}
                 })
                 this.auditData=audit.data.data;
                 this.editVisible=true;

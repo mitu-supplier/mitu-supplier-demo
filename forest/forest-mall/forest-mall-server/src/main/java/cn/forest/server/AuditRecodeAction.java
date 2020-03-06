@@ -61,11 +61,18 @@ public class AuditRecodeAction {
         return b ? 1 : 0;
     }
 
+    /**
+     * 根据业务id查询审核记录
+     *
+     * @param businessId 业务id
+     * @param auditTypes 审核类型   多个用,隔开
+     * @return
+     */
     @RequestMapping("/selectByBusinessId")
-    public Object selectByBusinessId(@RequestParam("businessId") Long businessId, @RequestParam("auditType") Integer auditType) {
+    public Object selectByBusinessId(@RequestParam("businessId") Long businessId, @RequestParam("auditTypes") String auditTypes) {
         QueryWrapper<AuditRecode> queryWrapper = new QueryWrapper<AuditRecode>();
         queryWrapper.eq("business_id", businessId);
-        queryWrapper.eq("audit_type", auditType);
+        queryWrapper.in("audit_type", auditTypes.split(","));
         queryWrapper.orderByDesc("create_time");
         return auditRecodeService.list(queryWrapper);
     }

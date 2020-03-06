@@ -41,6 +41,7 @@
                 <el-table-column prop="catalogName" label="商品类目"  align="center" width=""></el-table-column>
                 <el-table-column prop="supplierName" label="商户名称"  align="center" width=""></el-table-column>
                 <el-table-column prop="name" label="商品名称"  align="center" width=""></el-table-column>
+                <el-table-column prop="code" label="商品编码"  align="center" width=""></el-table-column>
                 <el-table-column prop="price" label="市场价（元）" align="center"  width=""></el-table-column>
                 <el-table-column label="审核状态" align="center"  width="">
                     <template slot-scope="scope">
@@ -269,7 +270,7 @@
             },
             async lookAudit(index,row){
                 const audit = await this.$http.get(baseURL_.mallUrl+'/products_audit/getAuditList',{ 
-                    params:{'businessId':row.id}
+                    params:{'businessId':row.id, 'auditTypes':"2"}
                 })
                 this.auditData=audit.data.data;
                 this.editVisible=true;

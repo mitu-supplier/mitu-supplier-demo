@@ -30,7 +30,7 @@ public class AuditRecodeBack implements AuditRecodeRemote {
     }
 
     @Override
-    public Object selectByBusinessId(Long businessId, Integer auditType) {
+    public Object selectByBusinessId(Long businessId, String auditTypes) {
         return null;
     }
 }

@@ -190,7 +190,7 @@
         methods: {
             async lookAudit(index,row){
                 const audit = await this.$http.get(baseURL_.mallUrl+'/supplier_audit/getAuditList',{ 
-                    params:{'businessId':row.id}
+                    params:{'businessId':row.id, 'auditTypes':"1"}
                 })
                 this.auditData=audit.data.data;
                 this.editVisible=true;

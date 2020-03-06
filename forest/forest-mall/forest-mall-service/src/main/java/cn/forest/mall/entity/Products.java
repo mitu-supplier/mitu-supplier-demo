@@ -83,7 +83,7 @@ public class Products implements Serializable {
     private String details;
 
     /**
-     * 审核状态  0待审核  1审核通过  2审核不通过  3暂存
+     * 新增审核状态  0待审核  1审核通过  2审核不通过  3暂存
      */
     @TableField(value = "audit_status")
     private Integer auditStatus;
@@ -160,6 +160,13 @@ public class Products implements Serializable {
      */
     @TableField(value = "inventory_num")
     private Integer inventoryNum;
+
+
+    /**
+     * 商品修改审核状态  0待审核  1审核通过  2审核不通过
+     */
+    @TableField(value = "update_audit_status")
+    private Integer updateAuditStatus;
 
 
     // ==========  查询返回字段
@@ -447,5 +454,13 @@ public class Products implements Serializable {
 
     public void setInventoryNum(Integer inventoryNum) {
         this.inventoryNum = inventoryNum;
+    }
+
+    public Integer getUpdateAuditStatus() {
+        return updateAuditStatus;
+    }
+
+    public void setUpdateAuditStatus(Integer updateAuditStatus) {
+        this.updateAuditStatus = updateAuditStatus;
     }
 }

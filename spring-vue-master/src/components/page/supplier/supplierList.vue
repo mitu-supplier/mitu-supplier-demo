@@ -60,11 +60,19 @@
                 <el-table-column prop="enterTypeName" label="入驻类型" align="center"  width=""></el-table-column>
                 <el-table-column prop="contactName" label="联系人" align="center"  width="80"></el-table-column>
                 <el-table-column prop="contactMobile" label="联系电话" align="center"  width=""></el-table-column>
-                <el-table-column label="状态" align="center"  width="80">
+                <el-table-column label="新增状态" align="center"  width="80">
                     <template slot-scope="scope">
                         <span type="text" v-if="scope.row.status == '0'">待审核</span>
                         <span type="text" v-if="scope.row.status == '1'">审核通过</span>
                         <span type="text" class="red" v-if="scope.row.status == '2'">审核失败</span>
+                    </template>
+                </el-table-column> 
+                <el-table-column label="修改状态" align="center"  width="80">
+                    <template slot-scope="scope">
+                        <span type="text" v-if="scope.row.updateAuditStatus == '0'">待审核</span>
+                        <span type="text" v-else-if="scope.row.updateAuditStatus == '1'">审核通过</span>
+                        <span type="text" class="red" v-else-if="scope.row.updateAuditStatus == '2'">审核失败</span>
+                        <span type="text" v-else>暂无</span>
                     </template>
                 </el-table-column> 
                 <el-table-column label="操作" width="" align="center">
@@ -105,6 +113,12 @@
                     <span v-if="scope.row.auditResult=='1'">通过</span>
                     <span v-if="scope.row.auditResult=='2'">不通过</span>
                 </template>
+                </el-table-column>
+                <el-table-column prop="auditType" label="审核类型"  align="center" width="">
+                   <template slot-scope="scope">
+                         <span v-if="scope.row.auditType=='1'">新增审核</span>
+                         <span v-if="scope.row.auditType=='3'">修改审核</span>
+                    </template>
                 </el-table-column>
             </el-table>
             <span slot="footer" class="dialog-footer">
@@ -221,7 +235,7 @@
             },
             async lookAudit(index,row){
                 const audit = await this.$http.get(baseURL_.mallUrl+'/supplier_audit/getAuditList',{ 
-                    params:{'businessId':row.id}
+                    params:{'businessId':row.id, 'auditTypes':"1,3"}
                 })
                 this.auditData=audit.data.data;
                 this.editVisible=true;

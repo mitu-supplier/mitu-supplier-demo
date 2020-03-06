@@ -54,7 +54,8 @@
 		<module>forest-admin</module>
 		<module>forest-search</module>
         <module>forest-mall</module>
-    </modules>
+		<module>forest-api</module>
+	</modules>
 
 	<build>
 		<plugins>

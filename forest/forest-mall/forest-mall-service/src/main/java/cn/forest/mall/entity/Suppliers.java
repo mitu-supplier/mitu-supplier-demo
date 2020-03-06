@@ -232,7 +232,7 @@ public class Suppliers implements Serializable {
     private String investmentPerson;
 
     /**
-     * 状态 -1未提交 0待审核  1审核通过 2审核不通过
+     * 新增审核状态 -1未提交 0待审核  1审核通过 2审核不通过
      */
     @TableField(value = "status")
     private Integer status;
@@ -279,6 +279,12 @@ public class Suppliers implements Serializable {
      */
     @TableField(value = "alert_mobile")
     private String alertMobile;
+
+    /**
+     * 修改审核状态  0待审核  1审核通过 2审核不通过
+     */
+    @TableField(value = "update_audit_status")
+    private Integer updateAuditStatus;
 
     // =====查询字段
     @TableField(exist = false)
@@ -653,5 +659,13 @@ public class Suppliers implements Serializable {
 
     public void setAlertMobile(String alertMobile) {
         this.alertMobile = alertMobile;
+    }
+
+    public Integer getUpdateAuditStatus() {
+        return updateAuditStatus;
+    }
+
+    public void setUpdateAuditStatus(Integer updateAuditStatus) {
+        this.updateAuditStatus = updateAuditStatus;
     }
 }

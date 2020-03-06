@@ -257,8 +257,7 @@ public class ProductsService {
      * @return
      */
     public Map<String, Object> getAuditList(Map<String, Object> map) {
-        map.put("auditType", 2);
-        Object obj = auditRecodeRemote.list(map);
+        Object obj = auditRecodeRemote.selectByBusinessId(Long.parseLong(map.get("businessId").toString()), map.get("auditTypes").toString());
         if (obj != null) {
             return ResultMessage.success(obj);
         }
