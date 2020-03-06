@@ -130,12 +130,6 @@
             this.getemails();
         },
         methods: {
-            // dynamicValidateForm: {
-                //     domains: [],
-                //     email: '',
-                //     phone:'',
-                //     phoneList:[]
-                // }
             async getemails(){
                 const res = await this.$http.get(baseURL_.mallUrl+'/receivingAccount/list');
                 if(res.data.data.length > 0){
