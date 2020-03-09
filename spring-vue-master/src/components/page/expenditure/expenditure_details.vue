@@ -33,7 +33,7 @@
                         <tr>
                          <td class="companytitle">支出时间</td>
                         <td class="companytitle1" >
-                            {{expendData.expenditureTime}}月
+                            {{expendData.expenditureTime}}
                         </td>
                         <td class="companytitle">支出金额（元）</td>
                         <td class="companytitle1" >

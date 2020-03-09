@@ -242,7 +242,7 @@
                 });
                 this.button_role=but.data.data;
             },
-            handleLookhandleLook(index, row){
+            handleLook(index, row){
                  this.$router.push({ path:'/user_details',query: {id: row.id}})
             },
             async saveEdit(){

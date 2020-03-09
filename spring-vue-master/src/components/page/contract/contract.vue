@@ -63,8 +63,8 @@
         </div>
 
         <!-- 编辑弹出框 -->
-        <el-dialog :title="titleName"  :visible.sync="editVisible" width="35%" @close="closeDilog('form')">
-            <el-form ref="form" :model="form" :rules="rules" label-width="135px">
+        <el-dialog :title="titleName"  :visible.sync="editVisible" width="37%" @close="closeDilog('form')">
+            <el-form ref="form" :model="form" :rules="rules" label-width="145px">
                 <el-form-item label="所属科室" prop="org_value">
                     <el-select v-model="form.org_value" filterable @change="changeOrg"  style="width:300px;">
                         <el-option

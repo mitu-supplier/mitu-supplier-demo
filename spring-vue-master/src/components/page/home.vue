@@ -222,8 +222,9 @@
              this.getData();
            },
            async selectProject(row){
-              this.projectCount();
+              
               this.project_id=row;
+              this.projectCount();
               this.getData();
            },
 

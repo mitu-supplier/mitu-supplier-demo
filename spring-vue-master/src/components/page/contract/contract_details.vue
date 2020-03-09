@@ -7,8 +7,8 @@
         </div>
         
         <div class="container">
-            <el-row style="margin-bottom:20px;" v-show="type0">
-                <table width="100%;" cellspacing="0" class="Companyform" border="1">
+            <el-row style="margin-bottom:20px;" v-if="type0">
+                <table width="100%" cellspacing="0" class="Companyform" border="1">
                     <tbody>
                     <tr>
                         <td class="companytitle">合同名称</td>
@@ -83,8 +83,8 @@
                         </tbody>
                 </table>
             </el-row>
-            <el-row style="margin-bottom:20px;" v-show="type1">
-                <table width="100%;" cellspacing="0" class="Companyform" border="1">
+            <el-row style="margin-bottom:20px;" v-if="type1">
+                <table width="100%" cellspacing="0" class="Companyform" border="1">
                     <tbody>
                     <tr>
                         <td class="companytitle">资料名称</td>
