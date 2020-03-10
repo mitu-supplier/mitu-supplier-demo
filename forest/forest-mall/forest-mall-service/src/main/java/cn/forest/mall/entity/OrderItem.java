@@ -27,7 +27,7 @@ public class OrderItem implements Serializable {
     private Long catalogId;
 
     @TableField(value = "catalog_name")
-    private Long catalogName;
+    private String catalogName;
 
     @TableField(value = "num")
     private Integer num;
@@ -76,11 +76,11 @@ public class OrderItem implements Serializable {
         this.catalogId = catalogId;
     }
 
-    public Long getCatalogName() {
+    public String getCatalogName() {
         return catalogName;
     }
 
-    public void setCatalogName(Long catalogName) {
+    public void setCatalogName(String catalogName) {
         this.catalogName = catalogName;
     }
 

@@ -2,7 +2,9 @@ package cn.forest.server;
 
 import cn.forest.common.service.utils.ResultPage;
 import cn.forest.common.util.StringUtil;
+import cn.forest.mall.entity.OrderItem;
 import cn.forest.mall.entity.Orders;
+import cn.forest.mall.mapper.OrderItemMapper;
 import cn.forest.mall.mapper.OrdersMapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -25,6 +27,9 @@ public class OrdersAction {
     @Autowired
     private OrdersMapper ordersMapper;
 
+    @Autowired
+    private OrderItemMapper orderItemMapper;
+
     @RequestMapping("/list")
     public Object list(@RequestBody Map<String, Object> map) {
         QueryWrapper<Orders> catalogsQueryWrapper = new QueryWrapper<>();
@@ -32,17 +37,9 @@ public class OrdersAction {
         if(!StringUtil.isBlank(supplierId)){
             catalogsQueryWrapper.eq("supplier_id", Long.parseLong(supplierId.toString()));
         }
-        Object catalogName = map.get("catalogName");
-        if(!StringUtil.isBlank(catalogName)){
-            catalogsQueryWrapper.like("catalog_name", catalogName.toString());
-        }
         Object supplierName = map.get("supplierName");
         if(!StringUtil.isBlank(supplierName)){
             catalogsQueryWrapper.like("supplier_name", supplierName.toString());
-        }
-        Object productName = map.get("productName");
-        if(!StringUtil.isBlank(productName)){
-            catalogsQueryWrapper.like("product_name", productName.toString());
         }
         Object code = map.get("code");
         if(!StringUtil.isBlank(code)){
@@ -50,11 +47,11 @@ public class OrdersAction {
         }
         Object startTime = map.get("startTime");
         if(!StringUtil.isBlank(startTime)){
-            catalogsQueryWrapper.ge("order_time", startTime.toString());
+            catalogsQueryWrapper.ge("created_at", startTime.toString());
         }
         Object endTime = map.get("endTime");
         if(!StringUtil.isBlank(endTime)){
-            catalogsQueryWrapper.le("order_time", endTime.toString());
+            catalogsQueryWrapper.le("created_at", endTime.toString());
         }
         if (StringUtil.toString(map.get("page")) != null && StringUtil.toString(map.get("pageSize")) != null) {
             Page<Orders> ipage = new Page<Orders>(Long.parseLong(map.get("page").toString()), Long.parseLong(map.get("pageSize").toString()));
@@ -66,7 +63,14 @@ public class OrdersAction {
 
     @RequestMapping("/getById")
     public Object getById(@RequestParam("id") Long id){
-        return ordersMapper.selectById(id);
+        Orders orders = ordersMapper.selectById(id);
+        if(orders != null){
+            QueryWrapper<OrderItem> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("order_id", orders.getId());
+            List<OrderItem> orderItems = orderItemMapper.selectList(queryWrapper);
+            orders.setItemList(orderItems);
+        }
+        return orders;
     }
 
     @RequestMapping("/save")

@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.List;
 
 @TableName("orders")
 public class Orders implements Serializable {
@@ -77,6 +78,9 @@ public class Orders implements Serializable {
      */
     @TableField(value = "order_code")
     private String orderCode;
+
+    @TableField(exist = false)
+    private List<OrderItem> itemList;
 
     public Long getId() {
         return id;
@@ -164,6 +168,14 @@ public class Orders implements Serializable {
 
     public void setOrderCode(String orderCode) {
         this.orderCode = orderCode;
+    }
+
+    public List<OrderItem> getItemList() {
+        return itemList;
+    }
+
+    public void setItemList(List<OrderItem> itemList) {
+        this.itemList = itemList;
     }
 }
 

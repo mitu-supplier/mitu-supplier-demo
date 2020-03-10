@@ -8,14 +8,8 @@
         <div class="container">
             <div style="background:#f6f6f6;padding:20px 10px 0;margin-bottom:20px;">
                 <el-form :inline="true" :model="formInline" class="demo-form-inline">
-                    <el-form-item label="类目名称">
-                        <el-input v-model="formInline.catalogName" placeholder="类目名称"></el-input>
-                    </el-form-item>
                     <el-form-item label="商户名称">
                         <el-input v-model="formInline.supplierName" placeholder="商户名称"></el-input>
-                    </el-form-item>
-                    <el-form-item label="商品名称">
-                        <el-input v-model="formInline.productName" placeholder="商品名称"></el-input>
                     </el-form-item>
                     <el-form-item label="订单编号">
                         <el-input v-model="formInline.code" placeholder="订单编号"></el-input>
@@ -46,15 +40,12 @@
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
                 <el-table-column type="index" label="序号" width="55" align="center" ></el-table-column>
                 <el-table-column prop="code" label="订单编号"  align="center" width=""></el-table-column>
-                <el-table-column prop="catalogName" label="商品类目"  align="center" width=""></el-table-column>
                 <el-table-column prop="supplierName" label="店铺名称"  align="center" width=""></el-table-column>
-                <el-table-column prop="productName" label="商品名称" align="center" width=""></el-table-column>
-                <el-table-column prop="orderTime" label="下单时间" align="center" width=""></el-table-column>
-                <el-table-column prop="num" label="订单数量（份）" align="center" width=""></el-table-column>
-                <el-table-column label="售价（元）" align="center" width="">
+                <el-table-column prop="createdAt" label="下单时间" align="center" width=""></el-table-column>
+                <el-table-column label="订单总价（元）" align="center" width="">
                     <template slot-scope="scope">
-                        <span type="text" v-if="scope.row.price == null" class="red">0.00</span>
-                        <span type="text" v-else>{{scope.row.price.toFixed(2)}}</span>
+                        <span type="text" v-if="scope.row.priceTotal == null">0.00</span>
+                        <span type="text" v-else>{{scope.row.priceTotal.toFixed(3)}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column label="订单状态" align="center" width="">
@@ -106,8 +97,6 @@
                 multipleSelection: [],
                 formInline:{
                     supplierName:'',
-                    catalogName:'',
-                    productName:'',
                     code:'',
                     searchTime:[]
                 }   
@@ -139,7 +128,7 @@
             async getData() {
                 var startTime = '';
                 var endTime = '';
-                if(this.formInline.searchTime.length == 2){
+                if(this.formInline.searchTime && this.formInline.searchTime.length == 2){
                     startTime = this.formInline.searchTime[0];
                     endTime = this.formInline.searchTime[1];
                 }
@@ -148,8 +137,6 @@
                         'page':this.page,
                         'pageSize':this.pageSize,
                         'supplierName':this.formInline.supplierName,
-                        'productName':this.formInline.productName,
-                        'catalogName':this.formInline.catalogName,
                         'code':this.formInline.code,
                         'startTime':startTime,
                         'endTime':endTime
@@ -202,7 +189,7 @@
                 this.$router.push({
                     path: '/ordersDetails',
                     name: 'ordersDetails',
-                    params: {
+                    query: {
                         id: id
                     }
                 });
