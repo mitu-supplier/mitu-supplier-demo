@@ -23,7 +23,7 @@ public class Products implements Serializable {
     private Long supplierId;
 
     /**
-     * 发货类型
+     * 商品类型
      */
     @TableField(value = "delivery_type")
     private Long deliveryType;
@@ -168,6 +168,11 @@ public class Products implements Serializable {
     @TableField(value = "update_audit_status")
     private Integer updateAuditStatus;
 
+    /**
+     * 发货类型
+     */
+    @TableField(value = "delivery_kind")
+    private Long deliveryKind;
 
     // ==========  查询返回字段
 
@@ -178,10 +183,16 @@ public class Products implements Serializable {
     private String catalogName;
 
     /**
-     * 发货类型
+     * 商品类型
      */
     @TableField(exist = false)
     private String deliveryName;
+
+    /**
+     * 商品类型code
+     */
+    @TableField(exist = false)
+    private String deliveryCode;
 
     /**
      * 供应商名称
@@ -207,6 +218,11 @@ public class Products implements Serializable {
     @TableField(exist = false)
     private String deliveryStatus;
 
+    /**
+     * 发货类型名称
+     */
+    @TableField(exist = false)
+    private String deliveryKindName;
 
     public Long getId() {
         return id;
@@ -462,5 +478,29 @@ public class Products implements Serializable {
 
     public void setUpdateAuditStatus(Integer updateAuditStatus) {
         this.updateAuditStatus = updateAuditStatus;
+    }
+
+    public Long getDeliveryKind() {
+        return deliveryKind;
+    }
+
+    public void setDeliveryKind(Long deliveryKind) {
+        this.deliveryKind = deliveryKind;
+    }
+
+    public String getDeliveryCode() {
+        return deliveryCode;
+    }
+
+    public void setDeliveryCode(String deliveryCode) {
+        this.deliveryCode = deliveryCode;
+    }
+
+    public String getDeliveryKindName() {
+        return deliveryKindName;
+    }
+
+    public void setDeliveryKindName(String deliveryKindName) {
+        this.deliveryKindName = deliveryKindName;
     }
 }

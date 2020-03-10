@@ -10,4 +10,14 @@ public class SysDictionaryTypeBack implements SysDictionaryTypeRemote {
     public Object getAll() {
         return null;
     }
+
+    @Override
+    public Object selectByPrefix(String prefix) {
+        return null;
+    }
+
+    @Override
+    public Object getById(Long id) {
+        return null;
+    }
 }

@@ -75,8 +75,8 @@ public class CamiloAction {
     public int countByProductId(@RequestParam("productId") Long productId) {
         QueryWrapper<Camilo> qw = new QueryWrapper<>();
         qw.eq("product_id", productId);
-        List<Camilo> list = camiloService.list(qw);
         qw.gt("failure_time", DateUtil.parseDateToStr(new Date(), DateUtil.DATE_FORMAT_YYYY_MM_DD));
+        List<Camilo> list = camiloService.list(qw);
         if (!CollectionUtils.isEmpty(list)) {
             return list.size();
         }
@@ -154,6 +154,10 @@ public class CamiloAction {
                 Products products = productsMapper.selectByCode(camilo.getProductCode(), null);
                 if (products == null) {
                     return ResultMessage.error("未找到对应商品，商品编号"+ camilo.getProductCode());
+                }
+                // 判断商品状态
+                if(products.getAuditStatus() == null || products.getAuditStatus() != 1){
+                    return ResultMessage.error("商品编号"+ camilo.getProductCode() + "状态未审核通过");
                 }
                 // 校验卡密是否重复
                 qw = new QueryWrapper<>();

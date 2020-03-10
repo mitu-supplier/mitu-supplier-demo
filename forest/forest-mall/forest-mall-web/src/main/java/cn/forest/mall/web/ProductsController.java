@@ -164,4 +164,13 @@ public class ProductsController {
     public Map<String, Object> saveDeliveryStatus(HttpServletRequest request) {
         return productsService.saveDeliveryStatus(request);
     }
+
+    /**
+     * 获取发货类型
+     * @return
+     */
+    @RequestMapping("/getDeliveryKind")
+    public Map<String, Object> getDeliveryKind(){
+        return productsService.getDeliveryKind();
+    }
 }

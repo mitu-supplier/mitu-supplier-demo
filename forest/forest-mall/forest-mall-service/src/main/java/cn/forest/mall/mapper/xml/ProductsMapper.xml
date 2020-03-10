@@ -19,7 +19,8 @@
             p.*,
             cc.name AS catalogName,
             s.name AS supplierName,
-            d.name AS deliveryName
+            d.name AS deliveryName,
+            d.code AS deliveryCode
         FROM
             products p
             LEFT JOIN catalogs cc ON p.catalog_id = cc.id

@@ -41,8 +41,8 @@ management:
 
 
 mybatis-plus:
-  mapper-locations: cn/forest/mall/mapper/xml/*.xml
-  type-aliases-package: cn.forest.mall.entity
+  mapper-locations: cn/forest/mall/mapper/xml/*.xml,cn/forest/system/mapper/xml/*.xml
+  type-aliases-package: cn.forest.mall.entity,cn.forest.system.entity
   configuration:
     map-underscore-to-camel-case: true
     cache-enabled: false

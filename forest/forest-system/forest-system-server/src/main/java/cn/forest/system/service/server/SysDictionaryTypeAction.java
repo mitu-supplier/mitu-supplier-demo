@@ -59,4 +59,10 @@ public class SysDictionaryTypeAction {
       return sysDictionaryTypeMapper.selectList(queryWrapper);
     }
 
+    @RequestMapping("/selectByPrefix")
+    public Object selectByPrefix(@RequestParam("prefix") String prefix) {
+        QueryWrapper<SysDictionaryType> queryWrapper = new QueryWrapper<SysDictionaryType>();
+        queryWrapper.likeRight("code", prefix);
+        return sysDictionaryTypeMapper.selectList(queryWrapper);
+    }
 }

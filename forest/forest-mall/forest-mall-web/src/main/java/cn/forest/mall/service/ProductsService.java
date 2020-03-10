@@ -40,6 +40,12 @@ public class ProductsService {
     @Autowired
     private ProductPicRemote productPicRemote;
 
+    @Autowired
+    private SysDictionaryTypeRemote sysDictionaryTypeRemote;
+
+    @Autowired
+    private SysDictionaryDataRemote sysDictionaryDataRemote;
+
     public Map<String, Object> list(HttpServletRequest request, String listType) {
         Map<String, Object> paramMap = RequestMap.requestToMap(request);
         String header = request.getHeader(Constant.HEADER_TOKEN_STRING);
@@ -68,6 +74,24 @@ public class ProductsService {
             Map resultMap = (Map) obj;
             Object o = productPicRemote.selectByProduct(id, 1);
             resultMap.put("productPicList", o);
+            // 发货类型名称
+            Object deliveryKind = resultMap.get("deliveryKind");
+            if(deliveryKind != null){
+                Object byId = sysDictionaryTypeRemote.getById(Long.parseLong(deliveryKind.toString()));
+                if(byId != null){
+                    Map deliveryKindMap = (Map) byId;
+                    resultMap.put("deliveryKindName", deliveryKindMap.get("name"));
+                }
+            }
+            // 商品类型
+            Object deliveryType = resultMap.get("deliveryType");
+            if(deliveryType != null){
+                Object byId = sysDictionaryDataRemote.getById(Long.parseLong(deliveryType.toString()));
+                if(byId != null){
+                    Map deliveryTypeMap = (Map) byId;
+                    resultMap.put("deliveryName", deliveryTypeMap.get("name"));
+                }
+            }
             return ResultMessage.success(resultMap);
         }
         return null;
@@ -327,5 +351,17 @@ public class ProductsService {
         paramMap.put("isDelete", 0);
         int save = productDeliveryStatusDataRemote.save(paramMap);
         return ResultMessage.result(save, "保存成功", "保存失败");
+    }
+
+    /**
+     * 获取发货类型
+     * @return
+     */
+    public Map<String, Object> getDeliveryKind(){
+        Object o = sysDictionaryTypeRemote.selectByPrefix("DK_");
+        if(o != null){
+            return ResultMessage.success(o);
+        }
+        return null;
     }
 }

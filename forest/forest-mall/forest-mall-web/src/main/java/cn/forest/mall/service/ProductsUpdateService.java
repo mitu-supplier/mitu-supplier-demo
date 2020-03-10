@@ -8,6 +8,7 @@ import cn.forest.common.util.ResultMessage;
 import cn.forest.common.util.StringUtil;
 import cn.forest.mall.remote.*;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.netflix.discovery.converters.Auto;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,6 +42,12 @@ public class ProductsUpdateService {
 
     @Autowired
     private RedisDao redisDao;
+
+    @Autowired
+    private SysDictionaryTypeRemote sysDictionaryTypeRemote;
+
+    @Autowired
+    private SysDictionaryDataRemote sysDictionaryDataRemote;
 
     public Map<String, Object> list(HttpServletRequest request) {
         Map<String, Object> paramMap = RequestMap.requestToMap(request);
@@ -179,6 +186,24 @@ public class ProductsUpdateService {
             Map resultMap = (Map) obj;
             Object o = productPicRemote.selectByProduct(id, 2);
             resultMap.put("productPicList", o);
+            // 发货类型名称
+            Object deliveryKind = resultMap.get("deliveryKind");
+            if(deliveryKind != null){
+                Object byId = sysDictionaryTypeRemote.getById(Long.parseLong(deliveryKind.toString()));
+                if(byId != null){
+                    Map deliveryKindMap = (Map) byId;
+                    resultMap.put("deliveryKindName", deliveryKindMap.get("name"));
+                }
+            }
+            // 商品类型
+            Object deliveryType = resultMap.get("deliveryType");
+            if(deliveryType != null){
+                Object byId = sysDictionaryDataRemote.getById(Long.parseLong(deliveryType.toString()));
+                if(byId != null){
+                    Map deliveryTypeMap = (Map) byId;
+                    resultMap.put("deliveryName", deliveryTypeMap.get("name"));
+                }
+            }
             return ResultMessage.success(obj);
         }
         return null;

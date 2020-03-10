@@ -8,7 +8,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-@MapperScan("cn.forest.mall.mapper")
+@MapperScan({"cn.forest.mall.mapper","cn.forest.system.mapper"})
 public class ApplicationApiServer {
 
     public static void main(String[] args) {

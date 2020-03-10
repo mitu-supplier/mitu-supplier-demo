@@ -1,4 +1,4 @@
-package cn.forest.product.dto;
+package cn.forest.inventory.dto;
 
 import java.util.Date;
 
