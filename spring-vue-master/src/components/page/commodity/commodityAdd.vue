@@ -18,10 +18,21 @@
                     <el-input v-model="addComForm.sort" size="mini" class="w50"></el-input>
                 </el-form-item> -->
 
-                <el-form-item label="发货类型" prop="deliveryType">
-                    <el-select v-model="addComForm.deliveryType" placeholder="请选择">
+                <el-form-item label="商品类型" prop="deliveryType">
+                    <el-select v-model="addComForm.deliveryType"  @change="deliveryChange" placeholder="请选择">
                       <el-option
                         v-for="item in options"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.id+','+item.name">
+                      </el-option>
+                    </el-select>
+                </el-form-item>
+
+                <el-form-item label="发货类型" prop="deliveryKind" v-if="deliveryTypeShow">
+                    <el-select v-model="addComForm.deliveryKind" placeholder="请选择">
+                      <el-option
+                        v-for="item in deliverOptions"
                         :key="item.id"
                         :label="item.name"
                         :value="item.id">
@@ -204,7 +215,8 @@
                   maintainConfigEnd:''
                 },
                 rules: {
-                    deliveryType: [{ required: true, message: "请选择发货类型", trigger: "change" }],
+                    deliveryType: [{ required: true, message: "请选择商品类型", trigger: "change" }],
+                    deliveryKind: [{ required: true, message: "请选择发货类型", trigger: "change" }],
                     supplierId: [{ required: true, message: "请选择所属商户", trigger: "change" }],
                     orgNames2: [{ required: true, message: "请选择商品分类", trigger: "change" }],
                     name: [{ required: true, message: "请输入商品名称", trigger: "blur" }],
@@ -215,8 +227,10 @@
                     status: [{ required: true, message: "请选择状态", trigger: "blur" }],
                 },
                 options: [],
+                deliverOptions:[],
                 fileList:[],
                 orgNames:'',
+                deliveryTypeShow:false,
                 orgSetting: {
                   data: {
                     simpleData: {
@@ -246,6 +260,7 @@
         },
         created() {
           this.getSelectForm();
+          this.getDeliverForm();
           this.vaIsSupplier();
           this.getSuppliers();
           this.getDeliveryStatus();
@@ -268,11 +283,25 @@
 
         },
         methods: {
+            deliveryChange(){
+              var name = this.addComForm.deliveryType.split(',')[1];
+              if(name == '直充'){
+                this.deliveryTypeShow = true;
+              }else{
+                this.deliveryTypeShow = false;
+              }
+            },
             async getSelectForm(){
               const res = await this.$http.get(baseURL_.mallUrl+'/products/getDelivery_type');
               this.options = [];
               this.options = res.data.data;
             },
+            async getDeliverForm(){
+              const res = await this.$http.get(baseURL_.mallUrl+'/products/getDeliveryKind');
+              this.deliverOptions = [];
+              this.deliverOptions = res.data.data;
+            },
+            
             async vaIsSupplier(){
               var res = await this.$http.get(baseURL_.mallUrl+'/products/isSupplier');
               this.isSupplier = res.data.data;
@@ -323,6 +352,7 @@
               this.addComForm.useDirections = useDirections;
               this.$refs['addComForm'].validate(async valid => {
                 if (valid) {
+                  this.addComForm.deliveryType = this.addComForm.deliveryType.split(',')[0];
                   var strlist = '';
                   if(this.ImgfileList.length > 0){
                     for(let i=0; i<this.ImgfileList.length; i++){
@@ -361,6 +391,9 @@
             async staging(){
               // this.$refs['addComForm'].validate(async valid => {
               //   if (valid) {
+                if(this.addComForm.deliveryType != null && this.addComForm.deliveryType != ''){
+                  this.addComForm.deliveryType = this.addComForm.deliveryType.split(',')[0];
+                }
                   var strlist = '';
                   if(this.ImgfileList.length > 0){
                     for(let i=0; i<this.ImgfileList.length; i++){

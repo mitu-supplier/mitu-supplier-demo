@@ -18,11 +18,22 @@
                     <el-input v-model="addComForm.sort" size="mini" class="w50"></el-input>
                 </el-form-item> -->
 
-                <el-form-item label="发货类型" prop="">
+                <el-form-item label="商品类型" prop="">
                     <el-select v-model="addComForm.deliveryType" placeholder="请选择">
                       <el-option
                         disabled
                         v-for="item in options"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.id">
+                      </el-option>
+                    </el-select>
+                </el-form-item>
+
+                <el-form-item label="发货类型" prop="deliveryKind" v-if="addComForm.deliveryName == '直充'">
+                    <el-select v-model="addComForm.deliveryKind" placeholder="请选择">
+                      <el-option
+                        v-for="item in deliverOptions"
                         :key="item.id"
                         :label="item.name"
                         :value="item.id">
@@ -214,6 +225,7 @@
         created() {
           
           this.getSelectForm();
+          this.getDeliverForm();
           this.vaIsSupplier();
           this.getDeliveryStatus();
         },
@@ -230,6 +242,11 @@
           ueditor_.methods.loadComponent("useDirections_editor");
         },
         methods: {
+            async getDeliverForm(){
+              const res = await this.$http.get(baseURL_.mallUrl+'/products/getDeliveryKind');
+              this.deliverOptions = [];
+              this.deliverOptions = res.data.data;
+            },
             // 数据回显
             async getData(){
               var id = this.detailsId;

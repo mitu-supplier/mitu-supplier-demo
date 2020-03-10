@@ -18,10 +18,21 @@
                     <el-input v-model="addComForm.sort" size="mini" class="w50"></el-input>
                 </el-form-item> -->
 
-                <el-form-item label="发货类型" prop="deliveryType">
-                    <el-select v-model="addComForm.deliveryType" placeholder="请选择">
+                <el-form-item label="商品类型" prop="deliveryIdNames">
+                    <el-select v-model="addComForm.deliveryIdNames" @change="deliveryChange" placeholder="请选择">
                       <el-option
                         v-for="item in options"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.id+','+item.name">
+                      </el-option>
+                    </el-select>
+                </el-form-item>
+
+                <el-form-item label="发货类型" prop="deliveryKind" v-if="deliveryTypeShow">
+                    <el-select v-model="addComForm.deliveryKind" placeholder="请选择">
+                      <el-option
+                        v-for="item in deliverOptions"
                         :key="item.id"
                         :label="item.name"
                         :value="item.id">
@@ -192,7 +203,8 @@
                     maintainConfigEnd:''
                 },
                 rules: {
-                    deliveryType: [{ required: true, message: "请选择发货类型", trigger: "change" }],
+                    deliveryIdNames: [{ required: true, message: "请选择商品类型", trigger: "change" }],
+                    deliveryKind: [{ required: true, message: "请选择发货类型", trigger: "change" }],
                     supplierId: [{ required: true, message: "请选择所属商户", trigger: "change" }],
                     orgNames2: [{ required: true, message: "请选择商品分类", trigger: "change" }],
                     name: [{ required: true, message: "请输入商品名称", trigger: "blur" }],
@@ -205,6 +217,7 @@
                 options: [],
                 fileList:[],
                 orgNames:'',
+                deliveryTypeShow:false,
                 orgSetting: {
                   data: {
                     simpleData: {
@@ -233,12 +246,13 @@
                 dialogVisible:false,
                 dialogImageUrl:'',
                 ImgfileList:[],
-                auditType:''
+                auditType:'',
             }
         },
         created() {
           
           this.getSelectForm();
+          this.getDeliverForm();
           this.vaIsSupplier();
           this.getSuppliers();
           this.getDeliveryStatus();
@@ -256,6 +270,14 @@
 
         },
         methods: {
+            deliveryChange(){
+              var name = this.addComForm.deliveryIdNames.split(',')[1];
+              if(name == '直充'){
+                this.deliveryTypeShow = true;
+              }else{
+                this.deliveryTypeShow = false;
+              }
+            },
             // 数据回显
             async getData(){
               var id = this.detailsId;
@@ -266,6 +288,12 @@
               });
               if(res.data.statusCode==200){
                 this.addComForm = res.data.data;
+                if(this.addComForm.deliveryName == '直充'){
+                  this.deliveryTypeShow = true;
+                }else{
+                  this.deliveryTypeShow =false;
+                }
+                this.$set(this.addComForm,"deliveryIdNames",this.addComForm.deliveryType +','+ this.addComForm.deliveryName);
                 this.addComForm.orgNames2 = this.addComForm.catalogId;
                 this.addComForm.protalDetails = this.addComForm.details;
                 this.fileList = [];
@@ -309,6 +337,11 @@
               this.options = [];
               this.options = res.data.data;
             },
+            async getDeliverForm(){
+              const res = await this.$http.get(baseURL_.mallUrl+'/products/getDeliveryKind');
+              this.deliverOptions = [];
+              this.deliverOptions = res.data.data;
+            },
             zTreeOnClick(event, treeId, treeNode) {
               //给选中的节点赋值
               this.orgNames = treeNode.name;
@@ -349,6 +382,7 @@
               this.addComForm.useDirections = useDirections;
               this.$refs['addComForm'].validate(async valid => {
                 if (valid) {
+                  this.addComForm.deliveryType = this.addComForm.deliveryType.split(',')[0];
                   var strlist = '';
                   if(this.ImgfileList.length > 0){
                     for(let i=0; i<this.ImgfileList.length; i++){
@@ -400,6 +434,9 @@
               var useDirections = UE.getEditor('useDirections_editor').getContent();
               // this.$refs['addComForm'].validate(async valid => {
                 // if (valid) {
+                  if(this.addComForm.deliveryType != null && this.addComForm.deliveryType != ''){
+                    this.addComForm.deliveryType = this.addComForm.deliveryType.split(',')[0];
+                  }
                   var strlist = '';
                   if(this.ImgfileList.length > 0){
                     for(let i=0; i<this.ImgfileList.length; i++){

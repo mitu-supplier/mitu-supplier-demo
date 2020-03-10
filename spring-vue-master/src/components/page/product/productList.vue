@@ -17,7 +17,7 @@
                     <el-form-item label="类目名称">
                         <el-input v-model="formInline.catalogName" placeholder="类目名称"></el-input>
                     </el-form-item>
-                    <el-form-item label="发货类型">
+                    <el-form-item label="商品类型">
                         <el-select v-model="formInline.deliveryType" placeholder="请选择">
                             <el-option
                                 v-for="item in deliveryTypeList"
@@ -55,7 +55,7 @@
                 <el-table-column prop="code" label="商品编码"  align="center" width=""></el-table-column>
                 <el-table-column prop="price" label="市场价（元）" align="center"  width=""></el-table-column>
                 <el-table-column prop="supplyPrice" label="供货价（元）" align="center"  width=""></el-table-column>
-                <el-table-column prop="deliveryName" label="发货类型" align="center"  width=""></el-table-column>
+                <el-table-column prop="deliveryName" label="商品类型" align="center"  width=""></el-table-column>
                 <el-table-column label="上下架状态" align="center"  width="">
                     <template slot-scope="scope">
                         <span type="text" v-if="scope.row.status == '1'">上架</span>
