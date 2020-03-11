@@ -52,7 +52,6 @@
 		<module>forest-common</module>
 		<module>forest-login-web</module>
 		<module>forest-admin</module>
-		<module>forest-search</module>
         <module>forest-mall</module>
 		<module>forest-api</module>
 	</modules>
