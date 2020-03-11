@@ -1,18 +1,8 @@
-server:
-  port: 8210
- 
 spring:
+  profiles:
+    active: dev
   application:
     name: forest-file-web
-eureka:
-  instance:
-    prefer-ip-address: true
-    instance-id: localhost:${server.port}
-    lease-renewal-interval-in-seconds: 10
-    health-check-url-path: /actuator/health
-  client:
-    service-url:
-      defaultZone: http://localhost:5555/eureka/
 
 management:
   endpoint:
@@ -22,8 +12,3 @@ management:
     web:
       exposure:
         include: '*'
-
-file-site-path: http://gyswl.vipgz4.idcfengye.com/attach
-upload-base-path: /Users/yehao/dev/java_upload_file
-file-upload-path: /upload/file/
-image-upload-path: /upload/image/

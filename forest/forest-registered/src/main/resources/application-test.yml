@@ -1,0 +1,7 @@
+server:
+  port: 5555
+
+spring:
+  cloud:
+    client:
+      ipAddress: localhost

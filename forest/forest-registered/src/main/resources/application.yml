@@ -1,8 +1,9 @@
-server:
-  port: 5555
 spring:
-  cloud:    client:
-      ipAddress: localhost  application:    name: forest-registered
+  profiles:
+    active: dev
+  application:
+    name: forest-registered
+
 eureka:
   instance:
     prefer-ip-address: true
@@ -13,5 +14,3 @@ eureka:
     fetch-registry: false
     service-url:
       defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
-
-
