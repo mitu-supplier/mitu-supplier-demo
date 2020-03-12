@@ -23,7 +23,7 @@ eureka:
     health-check-url-path: /actuator/health
   client:
     service-url:
-      defaultZone: http://localhost:5555/eureka/
+      defaultZone: http://server01.i.jf180.cn:7777/eureka/eureka,http://server02.i.jf180.cn:7777/eureka/eureka
 
       
       
