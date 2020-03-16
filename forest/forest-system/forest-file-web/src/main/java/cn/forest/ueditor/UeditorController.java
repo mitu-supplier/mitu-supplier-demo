@@ -32,7 +32,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 @RequestMapping("/ueditor")
 public class UeditorController {
 
-    private static final String UPLOAD_PATH_PREFIX = "/ueditor";
+    private static final String UPLOAD_PATH_PREFIX = "ueditor";
     // 状态
     private static final String STATE = "state";
     // URL
@@ -75,7 +75,7 @@ public class UeditorController {
         } else {
             uploadPath = UPLOAD_PATH_PREFIX + imageUploadPath;
         }
-        String ctxFileUrl = fileService.upload(multipartFile, uploadPath, false);
+        String ctxFileUrl = fileService.upload(multipartFile, uploadPath, false,multipartFile.getInputStream());
         Map<String, String> map = new HashMap<>();
         map.put(STATE, "SUCCESS");
         map.put(URL, ctxFileUrl);

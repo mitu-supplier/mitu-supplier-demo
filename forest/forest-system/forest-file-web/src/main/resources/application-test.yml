@@ -13,5 +13,6 @@ eureka:
 
 file-site-path: http://gyswl.vipgz4.idcfengye.com/attach
 upload-base-path: /Users/yehao/dev/java_upload_file
+oss-path: http://oss-cn-beijing.aliyuncs.com
 file-upload-path: /upload/file/
 image-upload-path: /upload/image/

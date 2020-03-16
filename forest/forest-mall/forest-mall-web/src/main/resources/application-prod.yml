@@ -25,7 +25,7 @@ eureka:
       defaultZone: http://server01.i.jf180.cn:7777/eureka/eureka,http://server02.i.jf180.cn:7777/eureka/eureka
 
 file-site-path: http://merchant.jf.jf180.vip/attach
-upload-base-path: /Users/yehao/dev/java_upload_file
+upload-base-path: /data/java_upload_file
 file-upload-path: /upload/file/
 image-upload-path: /upload/image/
       

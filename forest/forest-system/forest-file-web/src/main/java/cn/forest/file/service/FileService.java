@@ -4,6 +4,8 @@ import cn.forest.common.warpper.FileInfo;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+
+import java.io.InputStream;
 import java.util.List;
 
 public interface FileService {
@@ -16,7 +18,7 @@ public interface FileService {
      * @param relativePath  是否返回相对路径
      * @return
      */
-    String upload(MultipartFile multipartFile, String uploadPath, boolean relativePath);
+    String upload(MultipartFile multipartFile, String uploadPath, boolean relativePath,InputStream inputStream);
 
     /**
      * 文件下载

@@ -12,6 +12,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.aliyun.oss.OSS;
+import com.aliyun.oss.OSSClientBuilder;
+import com.aliyun.oss.model.PutObjectResult;
+
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.*;
@@ -24,27 +28,32 @@ public class FileServiceImpl implements FileService {
 
     @Value("${upload-base-path}")
     private String uploadBasePath;
+    
+    @Value("${oss-path}")
+    private String ossPath;
 
     @Override
-    public String upload(MultipartFile multipartFile, String uploadPath, boolean relativePath) {
+    public String upload(MultipartFile multipartFile, String uploadPath, boolean relativePath,InputStream inputStream) {
         if (multipartFile == null) {
             return null;
         }
+        OSS ossClient=null;
         try {
-            String path = FreemarkerUtils.process(uploadPath, null) + UUID.randomUUID() + "." + FilenameUtils.getExtension(multipartFile.getOriginalFilename());
-            String destPath = uploadBasePath + path;
-            File destFile = new File(destPath);
-            if (!destFile.getParentFile().exists()) {
-                destFile.getParentFile().mkdirs();
-            }
-            FileUtils.writeByteArrayToFile(destFile, multipartFile.getBytes());
-            if (relativePath) {
-                return path;
-            }
-            String urlPath = fileSitePath + path;
+      String path = FreemarkerUtils.process(uploadPath, null) + UUID.randomUUID() + "." + FilenameUtils.getExtension(multipartFile.getOriginalFilename());
+      /*
+       * String destPath = uploadBasePath + path; File destFile = new File(destPath);
+       * if (!destFile.getParentFile().exists()) { destFile.getParentFile().mkdirs();
+       * } FileUtils.writeByteArrayToFile(destFile, multipartFile.getBytes()); if
+       * (relativePath) { return path; }
+       */
+            ossClient= new OSSClientBuilder().build(ossPath, "LTAI4Ffnknp9rjCrLiaukMp1", "pd3GaR0uJGEDVqXR6K9cYT4DPcoaSX");
+            ossClient.putObject("jft-merchant",path,inputStream);
+            String urlPath = fileSitePath +File.separator+ path;
             return urlPath;
         } catch (Exception e) {
             e.printStackTrace();
+        }finally {
+          ossClient.shutdown();
         }
         return null;
     }

@@ -12,10 +12,19 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.aliyun.oss.OSS;
+import com.aliyun.oss.OSSClientBuilder;
+import com.aliyun.oss.model.ObjectMetadata;
+import com.aliyun.oss.model.PutObjectRequest;
+import com.aliyun.oss.model.PutObjectResult;
+
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -57,7 +66,7 @@ public class FileController {
         } else {
             uploadPath = imageUploadPath;
         }
-        String ctxFileUrl = fileService.upload(multipartFile, uploadPath, false);
+        String ctxFileUrl = fileService.upload(multipartFile, uploadPath, false,multipartFile.getInputStream());
         if (StringUtils.isNotEmpty(ctxFileUrl)) {
             Map<String, Object> data = new HashMap<String, Object>();
             data.put("fileName", filename);
@@ -80,4 +89,69 @@ public class FileController {
     public void downloadFile(HttpServletResponse response, String path, String fileName) {
         fileService.downloadFile(response, path, fileName);
     }
+    
+    public static void main(String[] args) throws FileNotFoundException {
+      File file=new File("D:\\banner2.png");
+      OSS ossClient = new OSSClientBuilder().build("http://oss-cn-beijing.aliyuncs.com", "LTAI4Ffnknp9rjCrLiaukMp1", "pd3GaR0uJGEDVqXR6K9cYT4DPcoaSX");
+     //ObjectMetadata meta = new ObjectMetadata();       // 创建上传Object的Metadata
+      //meta.setContentType(contentType("png"));   // 设置上传内容类型
+      //meta.setCacheControl("no-cache");
+      PutObjectResult putObject = ossClient.putObject("jft-merchant","images/888.png",new FileInputStream(file));
+    /*
+     * OSS ossClient = new
+     * OSSClientBuilder().build("http://oss-cn-beijing.aliyuncs.com",
+     * "LTAI4Fr6Q7QG68qFQAwwxT97", "7UibbkIul6ZbYj9dADlsIhiAyWIMT2");
+     * PutObjectResult putObject =
+     * ossClient.putObject("forest-lwl","images/222.png",file);
+     * System.out.println(putObject.getETag());
+     */
+      ossClient.shutdown();
+      
+      
+      
+      
+      
+    }
+    /**
+     * 
+     * @MethodName: contentType
+     * @Description: 获取文件类型
+     * @param FileType
+     * @return String
+     */
+    private static String contentType(String fileType){
+      fileType = fileType.toLowerCase();
+      String contentType = "";
+      switch (fileType) {
+      case "bmp": contentType = "image/bmp";
+            break;
+      case "gif": contentType = "image/gif";
+            break;
+      case "png": contentType = "image/jpeg"; 
+      break;
+      case "jpeg": contentType = "image/jpeg"; 
+           break;
+      case "jpg": contentType = "image/jpeg";
+            break;
+      case "html":contentType = "text/html";
+            break;
+      case "txt": contentType = "text/plain";
+            break;
+      case "vsd": contentType = "application/vnd.visio";
+            break;
+      case "ppt": 
+      case "pptx":contentType = "application/vnd.ms-powerpoint";
+            break;
+      case "doc": 
+      case "docx":contentType = "application/msword";
+            break;
+      case "xml":contentType = "text/xml";
+            break;
+      case "mp4":contentType = "video/mp4";
+            break;
+      default: contentType = "application/octet-stream";
+            break;
+      }
+      return contentType;
+       }  
 }
