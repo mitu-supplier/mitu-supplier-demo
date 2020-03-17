@@ -195,14 +195,14 @@ public class SuppliersService {
         Integer status = Integer.parseInt(map.get("auditResult").toString());
         String permissionIds = StringUtil.isBlank(map.get("permissionIds")) ? null : map.get("permissionIds").toString();
         Long signCompany = StringUtil.isBlank(map.get("signCompany")) ? null : Long.parseLong(map.get("signCompany").toString());
-        if(status == 1){
-            Map<String, Object> supplierInfo = new HashMap<>();
-            supplierInfo.put("id", supplierId);
-            supplierInfo.put("status", status);
+        Map<String, Object> supplierInfo = new HashMap<>();
+        supplierInfo.put("id", supplierId);
+        supplierInfo.put("status", status);
+        if(status != null && status == 1){
             supplierInfo.put("signCompany", signCompany);
-            int update = suppliersRemote.update(supplierInfo);
         }
-        if (status != null && status == 1) {
+        int update = suppliersRemote.update(supplierInfo);
+        if(update > 0 && status != null && status == 1){
             sysRoleRemote.saveSupplierRole(supplierId + "", permissionIds);
         }
         // 保存审核记录
@@ -443,7 +443,7 @@ public class SuppliersService {
                     supplierInfo.put("signCompany", signCompany);
                 }
                 int update = suppliersRemote.update(supplierInfo);
-                if (status != null && status == 1) {
+                if (update > 0 && status != null && status == 1) {
                     sysRoleRemote.saveSupplierRole(supplierId + "", permissionIds);
                 }
                 // 保存审核记录
