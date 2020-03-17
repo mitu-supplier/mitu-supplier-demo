@@ -53,7 +53,7 @@
                         <el-button type="text" icon="el-icon-setting" @click="ztreeEdit(scope.$index, scope.row)">设置角色</el-button>
                         <el-button type="text" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
                         <el-button type="text" icon="el-icon-delete" class="red" @click="handleDelete(scope.$index, scope.row)" >删除</el-button>
-                        
+                        <el-button type="text" icon="el-icon-edit" @click="showEditPassword(scope.$index, scope.row)">修改密码</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -96,6 +96,22 @@
             <span slot="footer" class="dialog-footer">
                 <el-button @click="editVisible = false">取 消</el-button>
                 <el-button type="primary" @click="saveEdit">确 定</el-button>
+            </span>
+        </el-dialog>
+
+        <!-- 修改密码弹出框 -->
+        <el-dialog :title="pwdTitle"  :visible.sync="editPwdVisible" width="26%">
+            <el-form ref="editPasswordForm" :model="editPasswordForm" label-width="70px">
+                <el-form-item label="新密码" >
+                    <el-input v-model="editPasswordForm.password" type="password" class="input"></el-input>
+                </el-form-item>
+                <el-form-item label="确认密码" >
+                    <el-input v-model="editPasswordForm.newPassword" type="password" class="input"></el-input>
+                </el-form-item>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="editPwdVisible = false">取 消</el-button>
+                <el-button type="primary" @click="editPassword">确 定</el-button>
             </span>
         </el-dialog>
 
@@ -198,6 +214,13 @@
                     name:'',
                     phone:'',
                     email:''
+                },
+                pwdTitle:'',
+                editPwdVisible:false,
+                editPasswordForm:{
+                    id:'',
+                    password:'',
+                    newPassword:'',
                 }
             }
         },
@@ -370,8 +393,31 @@
                 }else{
                    callback() 
                 }
+            },
+            async editPassword(){
+                var password = this.editPasswordForm.password;
+                var newPassword = this.editPasswordForm.newPassword;
+                if(password != null && newPassword != null && password != '' && newPassword != ''){
+                    if(password == newPassword){
+                        var updatePassword= await this.$http.post(baseURL_.sysUrl+'/sysUser/updatePassword',this.$qs.stringify(this.editPasswordForm));
+                        this.$message(updatePassword.data.data);
+                        if(updatePassword.data.statusCode==200){
+                            this.editPwdVisible=false;
+                        }
+                    }else{
+                        this.$message("两次输入的密码不一致"); 
+                    }
+                }else{
+                   this.$message("请输入密码"); 
+                }
+            },
+            showEditPassword(index, row){
+                this.editPasswordForm.id = row.id;
+                this.editPasswordForm.password = '';
+                this.editPasswordForm.newPassword = '';
+                this.pwdTitle = '修改密码';
+                this.editPwdVisible = true;
             }
-            
         }
     }
 
