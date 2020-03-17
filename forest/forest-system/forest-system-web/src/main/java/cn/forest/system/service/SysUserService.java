@@ -95,6 +95,7 @@ public class SysUserService {
         Map<String, Object> user = new HashMap<String, Object>();
         Map map = (Map) redisDao.getValue(request.getHeader(Constant.HEADER_TOKEN_STRING));
         user.put("name", map.get("name"));
+        user.put("roles", map.get("roles"));
         return ResultMessage.success(user);
     }
 

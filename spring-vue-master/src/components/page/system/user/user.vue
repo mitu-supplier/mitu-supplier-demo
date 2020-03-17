@@ -53,7 +53,7 @@
                         <el-button type="text" icon="el-icon-setting" @click="ztreeEdit(scope.$index, scope.row)">设置角色</el-button>
                         <el-button type="text" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
                         <el-button type="text" icon="el-icon-delete" class="red" @click="handleDelete(scope.$index, scope.row)" >删除</el-button>
-                        <el-button type="text" icon="el-icon-edit" @click="showEditPassword(scope.$index, scope.row)">修改密码</el-button>
+                        <el-button type="text" v-if="is_pass" icon="el-icon-edit" @click="showEditPassword(scope.$index, scope.row)">修改密码</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -172,6 +172,7 @@
                 ztreeEditVisible:false,
                 ztreeTitleName:'',
                 user_id:'',
+                is_pass:false,
                 form:{
                    id:'',
                    name:'',
@@ -225,6 +226,7 @@
             }
         },
         created() {
+            this.user();
             this.getData();
         },
         computed: {
@@ -250,6 +252,16 @@
 
                 }).catch(_ => {});
                  
+            },
+            async user(){
+                const user = await this.$http.get(baseURL_.sysUrl+'/sysUser/getOnlineUser');
+                var roles=user.data.data.roles;
+                for(var i=0;i<roles.length;i++){
+                     if(roles[i].roleCode=="admin"||roles[i].roleCode=="ADMIN"){
+                        this.is_pass=true;
+                        break;
+                     }
+                }
             },
             async saveEdit(){
                 this.$refs['form'].validate(async valid => {
