@@ -1,5 +1,5 @@
 server:
-  port: 8202
+  port: 5202
  
 spring:
   redis:
@@ -23,7 +23,7 @@ eureka:
     health-check-url-path: /actuator/health
   client:
     service-url:
-      defaultZone: http://localhost:5555/eureka/
+      defaultZone: http://localhost:1111/eureka/
       
       
       

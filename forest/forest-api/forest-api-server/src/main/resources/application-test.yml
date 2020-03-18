@@ -1,5 +1,5 @@
 server:
-  port: 8501
+  port: 5501
   
 eureka:
   instance:
@@ -9,7 +9,7 @@ eureka:
     health-check-url-path: /actuator/health
   client:
     service-url:
-      defaultZone: http://localhost:5555/eureka/
+      defaultZone: http://localhost:1111/eureka/
 
 spring:
   datasource:

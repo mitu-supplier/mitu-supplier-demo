@@ -1,5 +1,5 @@
 server:
-  port: 8201
+  port: 5201
  
 spring:
   redis:
@@ -23,7 +23,7 @@ eureka:
     health-check-url-path: /actuator/health
   client:
     service-url:
-      defaultZone: http://localhost:5555/eureka/
+      defaultZone: http://localhost:1111/eureka/
 
 login-private-key: MIIBVAIBADANBgkqhkiG9w0BAQEFAASCAT4wggE6AgEAAkEAtMppEBldu28G7PZcDMQFmtiyQdN76Qi0bWITgHsHuT4OTR/Mz+LTmowvzWWsO/AxhgK7Z+B8/qwM34ktPygiqwIDAQABAkADnSAogDlNa9S5m9sPLkPmanp1smKBr/jbTuCQ6uSmoTxNXozzYWeyMBQHoX7QgkbDOdjiuqN+yec7SRAP6wwhAiEA5dk6X9gbhhVZlV/yvo/SxyIfsmKOQTiz1Bzm5XDFwEMCIQDJXEd2wJnBSdWKdb/WOJqgbF28scZE3+HwnQ5HnVABeQIgIHDynkiASgKFbGHofyEJnPWiB6mFbos0RoH1zPiH0MUCIBiZI0nIgX/xSxrdA5Bh3dHXKyRP+06SowFHzmTFPO7RAiEAm+HiRxmEKI6frQjKOmcymO99EUsAXwhBqEmXVJJs+cg=
   
