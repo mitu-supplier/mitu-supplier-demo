@@ -78,7 +78,7 @@
                 <el-table-column label="操作" width="" align="center">
                     <template slot-scope="scope">
                         <el-button type="text" icon="el-icon-search" @click="view(scope.$index, scope.row)">查看</el-button>
-                        <el-button type="text"  icon="el-icon-edit" class="red" @click="handleUpdate(scope.$index, scope.row)">修改</el-button>
+                        <el-button type="text"  icon="el-icon-edit" v-if="scope.row.updateAuditStatus != '0'" class="red" @click="handleUpdate(scope.$index, scope.row)">修改</el-button>
                         <el-button type="text" icon="el-icon-document" v-if="scope.row.status != '0'"  @click="lookAudit(scope.$index, scope.row)">审核记录</el-button>
                     </template>
                 </el-table-column>

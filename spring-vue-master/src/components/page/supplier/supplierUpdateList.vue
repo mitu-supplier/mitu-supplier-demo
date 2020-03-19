@@ -29,7 +29,7 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="审核状态">
-                         <el-select v-model="formInline.status" placeholder="审核状态">
+                         <el-select v-model="formInline.updateAuditStatus" placeholder="审核状态">
                             <el-option label="待审核" value="0"></el-option>
                             <el-option label="审核通过" value="1"></el-option>
                             <el-option label="审核失败" value="2"></el-option>
@@ -57,16 +57,16 @@
                 <el-table-column prop="contactMobile" label="联系电话" align="center"  width=""></el-table-column>
                 <el-table-column label="状态" align="center"  width="80">
                     <template slot-scope="scope">
-                        <span type="text" v-if="scope.row.status == '0'">待审核</span>
-                        <span type="text" v-if="scope.row.status == '1'">审核通过</span>
-                        <span type="text" class="red" v-if="scope.row.status == '2'">审核失败</span>
+                        <span type="text" v-if="scope.row.updateAuditStatus == '0'">待审核</span>
+                        <span type="text" v-if="scope.row.updateAuditStatus == '1'">审核通过</span>
+                        <span type="text" class="red" v-if="scope.row.updateAuditStatus == '2'">审核失败</span>
                     </template>
                 </el-table-column> 
                 <el-table-column label="操作" width="" align="center">
                     <template slot-scope="scope">
                         <el-button type="text" icon="el-icon-search" @click="view(scope.$index, scope.row)">查看</el-button>
-                        <el-button type="text" icon="el-icon-edit" v-if="isSupplier != '1' && scope.row.status == '0'"  @click="toAudit(scope.$index, scope.row)">审核</el-button>
-                        <el-button type="text" icon="el-icon-document" v-if="scope.row.status != '0'"  @click="lookAudit(scope.$index, scope.row)">审核记录</el-button>
+                        <el-button type="text" icon="el-icon-edit" v-if="isSupplier != '1' && scope.row.updateAuditStatus == '0'"  @click="toAudit(scope.$index, scope.row)">审核</el-button>
+                        <el-button type="text" icon="el-icon-document" v-if="scope.row.updateAuditStatus != '0'"  @click="lookAudit(scope.$index, scope.row)">审核记录</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -129,7 +129,7 @@
                 enterTypeList:[],
                 formInline:{
                     name:'',
-                    status:'',
+                    updateAuditStatus:'',
                     contactName:'',
                     code:'',
                     enterType:''
@@ -178,7 +178,7 @@
                         'page':this.page,
                         'pageSize':this.pageSize,
                         'name':this.formInline.name,
-                        'status':this.formInline.status,
+                        'updateAuditStatus':this.formInline.updateAuditStatus,
                         'contactName':this.formInline.contactName,
                         'code':this.formInline.code,
                         'enterType':this.formInline.enterType

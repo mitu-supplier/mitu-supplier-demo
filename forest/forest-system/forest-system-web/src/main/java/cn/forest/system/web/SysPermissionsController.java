@@ -15,56 +15,54 @@ import cn.forest.system.service.SysPermissionsService;
 
 @RestController
 @RequestMapping("sysPermissions")
-@SysLogs(desc  = "菜单管理")
+@SysLogs(desc = "菜单管理")
 public class SysPermissionsController {
-  
-  @Autowired
-  private SysPermissionsService sysPermissionsService;
 
-  
-  
-  @RequestMapping("/list")
-  @SysLogs(desc  = "菜单列表")
-  public Map<String, Object> getList() {
-    return sysPermissionsService.getSysPermissionsList();
-  }
-  
-  @RequestMapping("/getlistfirstLevel")
-  @SysLogs(desc  = "菜单一级列表")
-  public Map<String, Object> getlistfirstLevel(@RequestParam("page") Long page, @RequestParam(value = "pageSize") Long pageSize, @RequestParam(value = "name", required = false) String name) {
-    return sysPermissionsService.getlistfirstLevel(page, pageSize, name);
-  }
+    @Autowired
+    private SysPermissionsService sysPermissionsService;
 
-  @RequestMapping("/getlistChildren")
-  @SysLogs(desc  = "菜单子集列表")
-  public Map<String, Object> getlistChildren(Long parentId) {
-    return sysPermissionsService.getlistChildren(parentId);
-  }
+    @RequestMapping("/list")
+    @SysLogs(desc = "菜单列表")
+    public Map<String, Object> getList() {
+        return sysPermissionsService.getSysPermissionsList();
+    }
 
-  @RequestMapping("/add")
-  @SysLogs(desc = "添加菜单")
-  public Map<String, Object> add(HttpServletRequest request) {
-    return sysPermissionsService.add(RequestMap.requestToMap(request));
-  }
-  
-  
-  @RequestMapping("/delete")
-  @SysLogs(desc = "删除菜单")
-  public Map<String, Object> delete(Long id) {
-    return sysPermissionsService.delete(id);
-  }
-  
-  
-  @RequestMapping("/getById")
-  @SysLogs(desc = "查询菜单")
-  public Map<String, Object> getById(Long id) {
-    return sysPermissionsService.getById(id);
-  }
-  
-  @RequestMapping("/update")
-  @SysLogs(desc = "修改菜单")
-  public Map<String, Object> update(HttpServletRequest request) {
-    return sysPermissionsService.update(RequestMap.requestToMap(request));
-  }
-  
+    @RequestMapping("/getlistfirstLevel")
+    @SysLogs(desc = "菜单一级列表")
+    public Map<String, Object> getlistfirstLevel(@RequestParam("page") Long page, @RequestParam(value = "pageSize") Long pageSize, @RequestParam(value = "name", required = false) String name) {
+        return sysPermissionsService.getlistfirstLevel(page, pageSize, name);
+    }
+
+    @RequestMapping("/getlistChildren")
+    @SysLogs(desc = "菜单子集列表")
+    public Map<String, Object> getlistChildren(Long parentId) {
+        return sysPermissionsService.getlistChildren(parentId);
+    }
+
+    @RequestMapping("/add")
+    @SysLogs(desc = "添加菜单")
+    public Map<String, Object> add(HttpServletRequest request) {
+        return sysPermissionsService.add(RequestMap.requestToMap(request));
+    }
+
+
+    @RequestMapping("/delete")
+    @SysLogs(desc = "删除菜单")
+    public Map<String, Object> delete(Long id) {
+        return sysPermissionsService.delete(id);
+    }
+
+
+    @RequestMapping("/getById")
+    @SysLogs(desc = "查询菜单")
+    public Map<String, Object> getById(Long id) {
+        return sysPermissionsService.getById(id);
+    }
+
+    @RequestMapping("/update")
+    @SysLogs(desc = "修改菜单")
+    public Map<String, Object> update(HttpServletRequest request) {
+        return sysPermissionsService.update(RequestMap.requestToMap(request));
+    }
+
 }

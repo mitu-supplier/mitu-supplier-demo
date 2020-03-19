@@ -179,6 +179,18 @@ public class SuppliersService {
      * @return
      */
     public Map<String, Object> saveStepOther(Map<String, Object> map) {
+        if(!StringUtil.isBlank(map.get("name"))){
+            int i = suppliersRemote.vaNameOrShotName(map.get("name").toString(), "name", Long.parseLong(map.get("id").toString()));
+            if(i > 0){
+                return ResultMessage.error("商户名称已经被使用");
+            }
+        }
+        if(!StringUtil.isBlank(map.get("shortName"))){
+            int i = suppliersRemote.vaNameOrShotName(map.get("shortName").toString(), "short_name", Long.parseLong(map.get("id").toString()));
+            if(i > 0){
+                return ResultMessage.error("商户简称已经被使用");
+            }
+        }
         int update = suppliersRemote.update(map);
         return ResultMessage.result(update, "保存成功", "保存失败");
     }
@@ -322,6 +334,8 @@ public class SuppliersService {
                 Map userInfo = (Map) userList.get(0);
                 userInfo.put("password", null);
                 supplerInfo.put("user", userInfo);
+                supplerInfo.put("userName", userInfo.get("name"));
+                supplerInfo.put("email", userInfo.get("email"));
             }
             return ResultMessage.success(supplerInfo);
         }

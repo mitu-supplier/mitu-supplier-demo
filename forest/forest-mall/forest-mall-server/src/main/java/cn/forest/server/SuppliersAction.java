@@ -5,7 +5,9 @@ import cn.forest.common.service.utils.ResultSave;
 import cn.forest.common.util.StringUtil;
 import cn.forest.mall.entity.Products;
 import cn.forest.mall.entity.Suppliers;
+import cn.forest.mall.entity.SuppliersUpdate;
 import cn.forest.mall.mapper.SuppliersMapper;
+import cn.forest.mall.mapper.SuppliersUpdateMapper;
 import cn.forest.service.SuppliersService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.pagehelper.PageHelper;
@@ -30,6 +32,9 @@ public class SuppliersAction {
 
     @Autowired
     private SuppliersService suppliersService;
+
+    @Autowired
+    private SuppliersUpdateMapper suppliersUpdateMapper;
 
     @RequestMapping("/list")
     public Object list(@RequestBody Map<String, Object> map) {
@@ -100,5 +105,35 @@ public class SuppliersAction {
             qw.eq("status", status);
         }
         return suppliersService.list(qw);
+    }
+
+    @RequestMapping("/vaNameOrShotName")
+    public int vaNameOrShotName(@RequestParam("cValue") String cValue, @RequestParam("column")String column, @RequestParam("id")Long id){
+        int result = 0;
+        QueryWrapper<Suppliers> qw = new QueryWrapper<>();
+        if (id != null) {
+            qw.ne("id", id);
+        }
+        if (cValue != null) {
+            qw.eq(column, cValue);
+        }
+        List<Suppliers> list = suppliersService.list(qw);
+        if(list != null){
+            result += list.size();
+        }
+
+        QueryWrapper<SuppliersUpdate> suQw = new QueryWrapper<>();
+        if (id != null) {
+            suQw.ne("supplier_id", id);
+        }
+        if (cValue != null) {
+            suQw.eq(column, cValue);
+        }
+        suQw.eq("update_audit_status", 0);
+        List<SuppliersUpdate> suppliersUpdates = suppliersUpdateMapper.selectList(suQw);
+        if(suppliersUpdates != null){
+            result += suppliersUpdates.size();
+        }
+        return result;
     }
 }

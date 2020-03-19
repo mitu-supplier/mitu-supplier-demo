@@ -48,4 +48,9 @@ public class SuppliersBack implements SuppliersRemote {
     public Object selectList(Integer status, Long id) {
         return null;
     }
+
+    @Override
+    public int vaNameOrShotName(String cValue, String column, Long id) {
+        return 1;
+    }
 }

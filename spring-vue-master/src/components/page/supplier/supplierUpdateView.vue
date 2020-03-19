@@ -7,7 +7,7 @@
                 <el-form
                       :model="loginForm"
                       ref="loginForm"
-                      label-width="130px"
+                      label-width="150px"
                       inline-message
                       class="demo-ruleForm"
                   >
@@ -16,7 +16,7 @@
                     </el-form-item>
                 
                       <el-form-item label="姓名" prop="name">
-                          <el-input v-model="loginForm.name" readonly size="mini" maxlength="11" class="w50"></el-input>
+                          <el-input v-model="newRuleForm.userName" readonly size="mini" maxlength="11" class="w50"></el-input>
                       </el-form-item>
 
                       <el-form-item label="手机号" prop="phone">
@@ -24,11 +24,25 @@
                       </el-form-item>
 
                       <el-form-item label="邮箱" prop="email">
-                          <el-input v-model="loginForm.email" readonly size="mini" class="w50"></el-input>
+                          <el-input v-model="newRuleForm.email" readonly size="mini" class="w50"></el-input>
                       </el-form-item>
 
                       <el-form-item label="对接招商人员" >
                           <el-input v-model="newRuleForm.investmentPerson" readonly size="mini" class="w50"></el-input>
+                      </el-form-item>
+
+                      <el-form-item
+                          v-for="(newemail, index) in newtrony.emailList"
+                          :label="'库存报警接收邮箱' + (index+1)"
+                          :key="newemail.value">
+                          <el-input v-model="newemail.value" class="w50"></el-input>
+                      </el-form-item>
+
+                      <el-form-item
+                          v-for="(newphone, index) in newtrony.phoneList"
+                          :label="'库存报警接收手机号' + (index+1)"
+                          :key="index">
+                          <el-input v-model="newphone.value" maxlength="11" class="w50"></el-input>
                       </el-form-item>
                       
                   </el-form>
@@ -350,6 +364,16 @@
                    isAdmin:'',
                    isBuiltIn:''
                 },
+                newtrony:{
+                    emailList:[{
+                      'value':'',
+                      'key': Date.now()
+                    }],
+                    phoneList:[{
+                      'value':'',
+                      'key': Date.now()
+                    }]
+                },
                 loginForm:{
                   loginName:'',
                   name:'',
@@ -362,6 +386,8 @@
                     code:'',
                     name:'',
                     shortName:'',
+                    userName:'',
+                    email:'',
                     businessScope:'',
                     registerAddress:'',
                     legalName:'',
@@ -474,6 +500,29 @@
                 this.supplier_id = res.data.data.id;
                 for(var i in this.loginForm){
                   this.loginForm[i] = res.data.data.user[i];
+                }
+
+                if(res.data.data.alertEmail != null && res.data.data.alertEmail != ''){
+                    var alertEmail = res.data.data.alertEmail.split(',');
+                    if(alertEmail.length > 1){
+                      this.newtrony.emailList = [];
+                      for(var j =0; j<alertEmail.length; j++){
+                        this.newtrony.emailList.push({'value':alertEmail[j],'key':Date.now()})
+                      } 
+                    }else{
+                      this.newtrony.emailList = [{'value':alertEmail[0],'key':Date.now()}];
+                    }
+                } 
+                if(res.data.data.alertMobile != null && res.data.data.alertMobile != ''){
+                    var phoneList = res.data.data.alertMobile.split(',');
+                    if(phoneList.length > 1){
+                      this.newtrony.phoneList = [];
+                      for(var q =0; q<phoneList.length; q++){
+                        this.newtrony.phoneList.push({'value':phoneList[q],'key':Date.now()})
+                      } 
+                    }else{
+                      this.newtrony.phoneList = [{'value':phoneList[0],'key':Date.now()}];
+                    }
                 }
                 
                 for(var k in this.newRuleForm){

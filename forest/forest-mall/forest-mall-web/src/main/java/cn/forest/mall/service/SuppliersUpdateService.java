@@ -64,6 +64,18 @@ public class SuppliersUpdateService {
     public Map<String, Object> updateRegisterInfo(HttpServletRequest request) {
         int num = 0;
         Map<String, Object> map = RequestMap.requestToMap(request);
+        if(!StringUtil.isBlank(map.get("name"))){
+            int i = suppliersRemote.vaNameOrShotName(map.get("name").toString(), "name", Long.parseLong(map.get("id").toString()));
+            if(i > 0){
+                return ResultMessage.error("商户名称已经被使用");
+            }
+        }
+        if(!StringUtil.isBlank(map.get("shortName"))){
+            int i = suppliersRemote.vaNameOrShotName(map.get("shortName").toString(), "short_name", Long.parseLong(map.get("id").toString()));
+            if(i > 0){
+                return ResultMessage.error("商户简称已经被使用");
+            }
+        }
         String header = request.getHeader(Constant.HEADER_TOKEN_STRING);
         HashMap userInfoMap = (HashMap) redisDao.getValue(header);
         if (userInfoMap != null) {
@@ -78,6 +90,7 @@ public class SuppliersUpdateService {
                 // 供应商
                 map.put("supplierId", map.get("id"));
                 map.remove("id");
+                map.put("updateAuditStatus", 0);
                 Object save = suppliersUpdateRemote.save(map);
                 if (save != null) {
                     Map result = (Map) save;
@@ -87,6 +100,22 @@ public class SuppliersUpdateService {
                 // 管理员修改
                 map.put("status", 1);
                 num = suppliersRemote.update(map);
+                if(num > 0){
+                    // 修改姓名和邮箱
+                    Object obj = sysUserRemote.selectByTypeId(Long.parseLong(map.get("id").toString()));
+                    if(obj != null){
+                        List userList = (List) obj;
+                        if(userList.size() > 0){
+                            Object user = userList.get(0);
+                            Map userMap = (Map) user;
+                            Map<String, Object> updateMap = new HashMap<>();
+                            updateMap.put("name", map.get("userName"));
+                            updateMap.put("id", userMap.get("id"));
+                            updateMap.put("email", map.get("email"));
+                            sysUserRemote.update(updateMap);
+                        }
+                    }
+                }
             }
         }
         return ResultMessage.result(num, "修改成功", "修改失败");
@@ -123,6 +152,21 @@ public class SuppliersUpdateService {
                     int update1 = suppliersRemote.update(infoMap);
                     if(update1 == 0){
                         return ResultMessage.error("审核失败");
+                    }else{
+                        // 修改姓名和邮箱
+                        Object obj = sysUserRemote.selectByTypeId(supplierId);
+                        if(obj != null){
+                            List userList = (List) obj;
+                            if(userList.size() > 0){
+                                Object user = userList.get(0);
+                                Map userMap = (Map) user;
+                                Map<String, Object> updateMap = new HashMap<>();
+                                updateMap.put("name", infoMap.get("userName"));
+                                updateMap.put("id", userMap.get("id"));
+                                updateMap.put("email", infoMap.get("email"));
+                                sysUserRemote.update(updateMap);
+                            }
+                        }
                     }
                 }else{
                     Map<String, Object> supplierInfoMap = new HashMap<>();
@@ -221,6 +265,20 @@ public class SuppliersUpdateService {
                             infoMap.put("status", 1);
                             infoMap.remove("alertBalance");
                             supplierList.add(infoMap);
+                            // 修改姓名和邮箱
+                            Object obj = sysUserRemote.selectByTypeId(supplierId);
+                            if(obj != null){
+                                List userList = (List) obj;
+                                if(userList.size() > 0){
+                                    Object user = userList.get(0);
+                                    Map userMap = (Map) user;
+                                    Map<String, Object> updateMap = new HashMap<>();
+                                    updateMap.put("name", infoMap.get("userName"));
+                                    updateMap.put("id", userMap.get("id"));
+                                    updateMap.put("email", infoMap.get("email"));
+                                    sysUserRemote.update(updateMap);
+                                }
+                            }
                         }else {
                             Map<String, Object> supplierInfoMap = new HashMap<>();
                             supplierInfoMap.put("id", supplierId);

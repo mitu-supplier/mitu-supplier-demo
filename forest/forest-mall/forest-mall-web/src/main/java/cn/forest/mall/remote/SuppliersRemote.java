@@ -34,5 +34,8 @@ public interface SuppliersRemote {
 
     @RequestMapping("/suppliers/selectList")
     Object selectList(@RequestParam(value = "status", required = false) Integer status,
-                               @RequestParam(value = "id", required = false) Long id);
+                      @RequestParam(value = "id", required = false) Long id);
+
+    @RequestMapping("/suppliers/vaNameOrShotName")
+    int vaNameOrShotName(@RequestParam("cValue") String cValue, @RequestParam("column") String column, @RequestParam("id") Long id);
 }

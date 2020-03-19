@@ -1,6 +1,7 @@
 package cn.forest.mall.web;
 
 import cn.forest.common.util.RequestMap;
+import cn.forest.common.web.util.SysLogs;
 import cn.forest.mall.service.DeliveryCodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/deliveryCode")
+@SysLogs(desc = "发货代号管理")
 public class DeliveryCodeController {
 
     @Autowired
@@ -25,6 +27,7 @@ public class DeliveryCodeController {
      * @param code       发货代号
      * @return
      */
+    @SysLogs(desc = "发货代号列表查询")
     @RequestMapping("/list")
     public Object list(@RequestParam("page") Long page,
                        @RequestParam("pageSize") Long pageSize,
@@ -40,6 +43,7 @@ public class DeliveryCodeController {
      * @param supplierId 供应商id
      * @return
      */
+    @SysLogs(desc = "根据供应商查询发货代号")
     @RequestMapping("/select")
     public Object select(@RequestParam("supplierId") Long supplierId) {
         return deliveryCodeService.select(supplierId);
@@ -50,6 +54,7 @@ public class DeliveryCodeController {
      *
      * @return
      */
+    @SysLogs(desc = "新增发货代号")
     @RequestMapping("/save")
     public Object save(HttpServletRequest request) {
         return deliveryCodeService.save(RequestMap.requestToMap(request));

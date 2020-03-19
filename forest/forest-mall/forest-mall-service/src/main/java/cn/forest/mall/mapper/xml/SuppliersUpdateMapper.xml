@@ -14,6 +14,9 @@
             <if test="status != null and status != ''">
                 AND su.status = #{status}
             </if>
+            <if test="updateAuditStatus != null and updateAuditStatus != ''">
+                AND su.update_audit_status = #{updateAuditStatus}
+            </if>
             <if test="code != null and code != ''">
                 AND su.code LIKE CONCAT('%',#{code},'%')
             </if>

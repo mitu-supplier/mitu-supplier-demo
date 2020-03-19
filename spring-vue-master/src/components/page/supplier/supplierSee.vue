@@ -35,14 +35,14 @@
                           v-for="(newemail, index) in newtrony.emailList"
                           :label="'库存报警接收邮箱' + (index+1)"
                           :key="newemail.key">
-                          <el-input v-model="newemail.value" class="w50"></el-input><el-button @click.prevent="removeDomain(newemail)">删除</el-button>
+                          <el-input v-model="newemail.value" class="w50"></el-input>
                       </el-form-item>
 
                       <el-form-item
                           v-for="(newphone, index) in newtrony.phoneList"
                           :label="'库存报警接收手机号' + (index+1)"
                           :key="index">
-                          <el-input v-model="newphone.value" maxlength="11" class="w50"></el-input><el-button @click.prevent="removePhone(newphone)">删除</el-button>
+                          <el-input v-model="newphone.value" maxlength="11" class="w50"></el-input>
                       </el-form-item>
                       
                   </el-form>

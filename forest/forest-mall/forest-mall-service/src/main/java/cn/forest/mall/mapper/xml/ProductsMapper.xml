@@ -62,7 +62,8 @@
     <select id="selectByCode" resultType="cn.forest.mall.entity.Products">
         SELECT
             p.id,
-            p.name
+            p.name,
+            p.audit_status AS auditStatus
         FROM
             products p
             LEFT JOIN catalogs cc ON cc.id = p.catalog_id

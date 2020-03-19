@@ -286,6 +286,12 @@ public class Suppliers implements Serializable {
     @TableField(value = "update_audit_status")
     private Integer updateAuditStatus;
 
+    @TableField(value = "user_name")
+    private String userName;
+
+    @TableField(value = "email")
+    private String email;
+
     // =====查询字段
     @TableField(exist = false)
     private String enterTypeName;
@@ -667,5 +673,21 @@ public class Suppliers implements Serializable {
 
     public void setUpdateAuditStatus(Integer updateAuditStatus) {
         this.updateAuditStatus = updateAuditStatus;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

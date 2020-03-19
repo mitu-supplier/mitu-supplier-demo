@@ -74,11 +74,13 @@ public class SysUserController {
         return sysUserService.saveRole(RequestMap.requestToMap(request));
     }
 
+    @SysLogs(desc = "获取当前登录人信息")
     @RequestMapping("/getOnlineUser")
     public Map<String, Object> getOnlineUser(HttpServletRequest request) {
         return sysUserService.getOnlineUser(request);
     }
 
+    @SysLogs(desc = "修改密码")
     @RequestMapping("/updatePassword")
     public Map<String, Object> updatePassword(HttpServletRequest request){
         return sysUserService.updatePassword(RequestMap.requestToMap(request));

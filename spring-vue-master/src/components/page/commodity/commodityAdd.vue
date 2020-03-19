@@ -106,7 +106,7 @@
                     <el-input v-model="addComForm.price" size="mini" class="w50"></el-input>
                 </el-form-item>
 
-                <el-form-item label="供货价(元)" prop="supplyPrice">
+                <el-form-item label="供货价(元)">
                     <el-input v-model="addComForm.supplyPrice" size="mini" class="w50"></el-input>
                 </el-form-item>
 
@@ -458,7 +458,9 @@
               );
             },
 
-            handleRemove(file, fileList) {},
+            handleRemove(file, fileList) {
+              this.ImgfileList = fileList;
+            },
 
             async getDeliveryStatus(){
               var res = await this.$http.get(baseURL_.mallUrl+'/products/getDeliveryStatus');

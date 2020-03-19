@@ -83,7 +83,7 @@
                         <el-button type="text" icon="el-icon-search" class="red" @click="handleLook(scope.$index, scope.row)">查看</el-button>
                         <el-button type="text" v-if="scope.row.status == '2'" icon="el-icon-edit" class="red" @click="updateStatus(scope.$index, scope.row, 1)">上架</el-button>
                         <el-button type="text" v-if="scope.row.status == '1' && scope.row.auditStatus == '1'" icon="el-icon-edit" class="red" @click="updateStatus(scope.$index, scope.row, 2)">下架</el-button>
-                        <el-button type="text"  icon="el-icon-edit" class="red" @click="handleUpdate(scope.$index, scope.row)">修改</el-button>
+                        <el-button type="text"  icon="el-icon-edit" class="red" v-if="scope.row.updateAuditStatus != '0'" @click="handleUpdate(scope.$index, scope.row)">修改</el-button>
                         <el-button type="text" v-if="(scope.row.auditStatus == '2' && scope.row.status == '2' ) || scope.row.auditStatus == '3' || scope.row.auditStatus == '0'" icon="el-icon-delete" class="red" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
                         <el-button type="text" v-if="scope.row.auditStatus != '0' && scope.row.auditStatus != '3'" icon="el-icon-document" class="red" @click="lookAudit(scope.$index, scope.row)">审核记录</el-button>
                     </template>
