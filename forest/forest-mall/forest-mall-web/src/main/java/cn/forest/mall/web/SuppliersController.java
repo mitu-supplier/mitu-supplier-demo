@@ -42,7 +42,6 @@ public class SuppliersController {
      * @param request
      * @return
      */
-    @SysLogs(desc = "商户注册保存信息")
     @RequestMapping("/saveStepOneTwo")
     public Map<String, Object> saveStepOneTwo(HttpServletRequest request) {
         return suppliersService.saveStepOneTwo(RequestMap.requestToMap(request));
@@ -54,7 +53,6 @@ public class SuppliersController {
      * @param request
      * @return
      */
-    @SysLogs(desc = "商户注册保存信息")
     @RequestMapping("/register")
     public Map<String, Object> register(HttpServletRequest request) {
         return suppliersService.saveStepOther(RequestMap.requestToMap(request));
@@ -65,7 +63,6 @@ public class SuppliersController {
      *
      * @return
      */
-    @SysLogs(desc = "根据code获取字典表数据")
     @RequestMapping("/getDictionaryData")
     public Map<String, Object> getDictionaryData() {
         return suppliersService.getDictionaryData();
@@ -77,7 +74,6 @@ public class SuppliersController {
      * @param request
      * @return
      */
-    @SysLogs(desc = "获取当前注册人信息")
     @RequestMapping("/getUserInfo")
     public Map<String, Object> getUserInfo(HttpServletRequest request) {
         return suppliersService.getUserInfo(request);
@@ -88,7 +84,6 @@ public class SuppliersController {
      *
      * @return
      */
-    @SysLogs(desc = "获取商户入驻类型")
     @RequestMapping("/getEnterType")
     public Map<String, Object> getEnterType() {
         return suppliersService.getEnterType();
@@ -99,7 +94,6 @@ public class SuppliersController {
      *
      * @return
      */
-    @SysLogs(desc = "获取签约公司")
     @RequestMapping("/getCompany")
     public Map<String, Object> getCompany() {
         return companyService.getAll();
