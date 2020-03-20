@@ -6,9 +6,23 @@
             </el-breadcrumb>
         </div>
         <div class="container">
-            <div class="handle-box">
-                <el-button type="primary" icon="el-icon-plus" class="handle-del mr10" v-if="button_role&&button_role.add" @click="add">添加</el-button>
+            <div class="handle-box canahead">
+                
+                <el-upload
+                    class="upload-excel-file"
+                    ref="upload"
+                    :headers="myHeaders"
+                    :action="uploadUrl()"
+                    multiple
+                    :limit="1"
+                    :show-file-list="false"
+                    :before-upload="beforeUpload"
+                    :on-success="handleSuccess">
+                    <el-button size="small" type="primary" icon="el-icon-upload2">批量导入</el-button>
+                </el-upload>
+                <el-button type="primary"  @click="exportTemplate" icon="el-icon-download">下载模板</el-button> 
                 <el-button type="primary" icon="el-icon-document" class="handle-del mr10" v-if="button_role&&button_role.export" @click="exportq">导出</el-button>
+                <el-button type="primary" icon="el-icon-plus" class="handle-del mr10" v-if="button_role&&button_role.add" @click="add">添加</el-button>
                 项目名称：<el-input placeholder="项目名称" v-model="projectName"  class="handle-input mr10" style="width:150px;"></el-input>
                 科室名称：<el-input placeholder="科室名称" v-model="orgName"  class="handle-input mr10" style="width:150px;"></el-input>
                 负责人：<el-input placeholder="负责人" v-model="leader"  class="handle-input mr10" style="width:150px;"></el-input>
@@ -55,6 +69,7 @@
                         <el-button type="text" icon="el-icon-edit" v-if="button_role&&button_role.edit" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
                         <el-button type="text" icon="el-icon-delete" class="red" v-if="button_role&&button_role.delete" @click="handleDelete(scope.$index, scope.row)" >删除</el-button>
                         <el-button type="text" icon="el-icon-document"  v-if="button_role&&button_role.look" @click="handleLook(scope.$index, scope.row)">查看</el-button>
+                        
                     </template>
                 </el-table-column>
             </el-table>
@@ -201,18 +216,45 @@
                 
                 projectName:'',
                 orgName:'',
-                leader:''
+                leader:'',
+                isAdmin:false
 
             }
         },
         created() {
             this.button();
             this.getData();
+            this.user();
         },
         computed: {
            
         },
         methods: {
+            handleSuccess(response, file, fileList){
+                this.$refs.upload.clearFiles();
+                this.$message(response.data);
+                if(response.statusCode == 200){
+                    this.getData();
+                }
+            },
+            async user(){
+                const user = await this.$http.get(baseURL_.sysUrl+'/sysUser/getOnlineUser');
+                var roles=user.data.data.roles;
+                for(var i=0;i<roles.length;i++){
+                   if(roles[i].isAdmin==1){
+                     this.isAdmin=true;
+                   }
+                }
+             
+            },
+            uploadUrl() {
+              const token = localStorage.getItem('forestToken');
+              return baseURL_.lyjUrl+'/projects/importExcel?token='+token;
+            },
+           async exportTemplate(){
+              const token = localStorage.getItem('forestToken');
+              location.href=baseURL_.lyjUrl+'/projects/template?token='+token
+            },
            async exportq(){
                const token = localStorage.getItem('forestToken');
                location.href=baseURL_.lyjUrl+'/projects/exportList?projectName='+this.projectName+'&orgName='+this.orgName+'&leader'+this.leader+"&token="+token
@@ -230,7 +272,7 @@
                 this.multipleSelection = val;
             },
             handleDelete(index, row){
-                if(row.status=='1'){
+                if(!this.isAdmin&&row.status=='1'){
                      this.$message("归档数据不允许操作");
                      return;
                 }
@@ -304,7 +346,7 @@
                   
             },
             async handleEdit(index, row) {
-                if(row.status=='1'){
+                if(!this.isAdmin&&row.status=='1'){
                      this.$message("归档数据不允许操作");
                      return;
                 }
@@ -428,4 +470,13 @@
 #table_id .el-table__body .cell .el-table__expand-icon{
      display:inline-block !important;
     }
+</style>
+<style>
+.canahead .upload-excel-file .el-upload--text {    
+    border: none !important;
+    display: inline-block;
+    width: 110px;
+    height: 40px;
+    float: left;
+  }
 </style>

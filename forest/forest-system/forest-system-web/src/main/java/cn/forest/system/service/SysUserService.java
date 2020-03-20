@@ -105,6 +105,7 @@ public class SysUserService {
       Object orgByUserId = sysUserRemote.getOrgByUserId(Long.parseLong(map.get("id").toString()));
       user.put("org", orgByUserId);
     }
+    user.put("roles", map.get("roles"));
     return ResultMessage.success(user);
   }
   

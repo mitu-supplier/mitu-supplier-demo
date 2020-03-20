@@ -201,16 +201,28 @@
                 
                 projectName:'',
                 orgName:'',
+                isAdmin:false
             }
         },
         created() {
             this.button();
             this.getData();
+            this.user();
         },
         computed: {
            
         },
         methods: {
+             async user(){
+                const user = await this.$http.get(baseURL_.sysUrl+'/sysUser/getOnlineUser');
+                var roles=user.data.data.roles;
+                for(var i=0;i<roles.length;i++){
+                   if(roles[i].isAdmin==1){
+                     this.isAdmin=true;
+                   }
+                }
+             
+            },
             async exportq(){
                const token = localStorage.getItem('forestToken');
                location.href=baseURL_.lyjUrl+'/expenditure/exportList?projectName='+this.projectName+'&orgName='+this.orgName+"&token="+token
@@ -274,7 +286,7 @@
                 this.multipleSelection = val;
             },
             handleDelete(index, row){
-                if(row.status=='1'){
+                if(!this.isAdmin&&row.status=='1'){
                      this.$message("归档数据不允许操作");
                      return;
                 }
@@ -382,7 +394,7 @@
                   
             },
             async handleEdit(index, row) {
-                if(row.status=='1'){
+                if(!this.isAdmin&&row.status=='1'){
                      this.$message("归档数据不允许操作");
                      return;
                 }

@@ -49,4 +49,9 @@ public class OrganizationBack implements OrganizationRemote {
     return null;
   }
 
+  @Override
+  public Object code(String code) {
+    return null;
+  }
+
 }

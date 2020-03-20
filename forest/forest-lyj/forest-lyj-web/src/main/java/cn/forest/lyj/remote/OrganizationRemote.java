@@ -36,4 +36,7 @@ public interface OrganizationRemote {
   @RequestMapping("/organization/getOrgByUserId")
   public Object getOrgByUserId(@RequestParam(value = "userId") Long userId);
   
+  @RequestMapping("/organization/code")
+  public Object code(@RequestParam(value = "code") String code);
+  
 }

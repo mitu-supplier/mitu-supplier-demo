@@ -33,7 +33,9 @@ public class AccessFilter extends ZuulFilter {
     HttpServletRequest request = ctx.getRequest();
     HttpServletResponse response = ctx.getResponse();
     String pathName = request.getServletPath ();
-    if(pathName.indexOf("/login")==-1&&pathName.indexOf("/upload")==-1&&pathName.indexOf("/exportList")==-1) {
+    if(pathName.indexOf("/login")==-1&&pathName.indexOf("/upload")==-1
+        &&pathName.indexOf("/exportList")==-1&&pathName.indexOf("/template")==-1
+        &&pathName.indexOf("/importExcel")==-1) {
       String authorization = request.getHeader(Constant.HEADER_TOKEN_STRING);
       if(StringUtils.isEmpty(authorization)) {
         ctx.getResponse().setContentType("text/html;charset=UTF-8");

@@ -1,5 +1,7 @@
 package cn.forest.lyj.service;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +21,8 @@ import cn.forest.lyj.remote.ExpenditureRemote;
 import cn.forest.lyj.remote.OrganizationRemote;
 import cn.forest.lyj.remote.PlanRemote;
 import cn.forest.lyj.remote.ProjectsRemote;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 @Service("projectsService")
 public class ProjectsService {
@@ -184,5 +188,57 @@ public class ProjectsService {
     Object list = projectsRemote.exportList(userId,projectName,orgName,leader,orgIds);
     
     return list;
+  }
+  
+  
+  public Map<String, Object> save(JSONArray jsonArray,String key) {
+    Map user = (Map) redisDao.getValue(key); 
+    int result_num=0;
+    String meg="导入失败";
+    if(jsonArray!=null) {
+      List<Map<String, Object>> list=new ArrayList<Map<String,Object>>();
+      Map<String, Object> map=null;
+      for (int i = 0; i < jsonArray.size(); i++) {
+        JSONObject jsonObject = jsonArray.getJSONObject(i);
+        map=new HashMap<String, Object>();
+        if(jsonObject.get("id")!=null&&!StringUtils.isEmpty(jsonObject.get("id").toString())) {
+          Object byId = projectsRemote.getById(Long.parseLong(jsonObject.get("id").toString()));
+          if(byId!=null) {
+            map.put("id",Long.parseLong(jsonObject.get("id").toString()));
+          }else {
+            meg+=",未找到项目:"+jsonObject.get("id");
+            break;
+          }
+        }
+        if(jsonObject.get("orgCode")!=null&&!StringUtils.isEmpty(jsonObject.get("orgCode").toString())) {
+          Map<String, Object> org = (Map<String, Object>) organizationRemote.code(jsonObject.get("orgCode").toString());
+          if(org!=null) {
+            map.put("orgName",org.get("name").toString());
+            map.put("orgId",Long.parseLong(org.get("id").toString()));
+          }else {
+            meg+=",未找到部门:"+jsonObject.get("orgCode");
+            break;
+          }
+        }
+        map.put("projectName", jsonObject.get("projectName")==null?"":jsonObject.get("projectName").toString());
+        map.put("budget", jsonObject.get("total")==null?"":new BigDecimal(jsonObject.get("total").toString()));
+        map.put("projectLeader", jsonObject.get("projectUser")==null?"":jsonObject.get("projectUser").toString());
+        map.put("leaderPhone", jsonObject.get("phone")==null?"":jsonObject.get("phone").toString());
+        map.put("projectSource", jsonObject.get("source")==null?"":jsonObject.get("source").toString());
+        map.put("year", jsonObject.get("year")==null?"":Integer.parseInt(jsonObject.get("year").toString()));
+        map.put("userId",Long.parseLong(user.get("id").toString()));
+        list.add(map);
+      }
+      
+      for (Map nap : list) {
+        if(nap.get("id")!=null) {
+          result_num+=projectsRemote.update(nap);
+        }else {
+          result_num+=projectsRemote.save(nap);
+        }
+      }
+    }
+    
+    return ResultMessage.result(result_num, "导入成功", meg);
   }
 }

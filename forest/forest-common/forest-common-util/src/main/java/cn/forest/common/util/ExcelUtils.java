@@ -49,20 +49,19 @@ public class ExcelUtils {
    * @param fieldsMap  key excel对应的列名, value 每列对应的字段名称
    * @return 文件数据
    */
-  public static JSONArray getExcelData(File file, Map<String, String> fieldsMap) {
+  public static JSONArray getExcelData(String fileName,InputStream inputStream, Map<String, String> fieldsMap,int lastCellNum) {
       JSONArray array = null;
       Workbook book = null;
       try {
-          String fileName = file.getName().toLowerCase();
           if (fileName.endsWith(XLSX)) {
-              book = new XSSFWorkbook(new FileInputStream(file));
+              book = new XSSFWorkbook(inputStream);
           } else if (fileName.endsWith(XLS)) {
-              POIFSFileSystem poifsFileSystem = new POIFSFileSystem(new FileInputStream(file));
+              POIFSFileSystem poifsFileSystem = new POIFSFileSystem(inputStream);
               book = new HSSFWorkbook(poifsFileSystem);
           } else {
               return array;
           }
-          array = read(book, fieldsMap);
+          array = read(book, fieldsMap,lastCellNum);
       } catch (Exception e) {
           e.printStackTrace();
           if(book != null){
@@ -86,14 +85,14 @@ public class ExcelUtils {
   /**
    * 将文件的数据解析为JSON
    */
-  private static JSONArray read(Workbook book, Map<String, String> fieldsMap) {
+  private static JSONArray read(Workbook book, Map<String, String> fieldsMap,int lastCellNum) {
       Sheet sheet = book.getSheetAt(0);
       int rowStart = sheet.getFirstRowNum(); // 首行下标
       int rowEnd = sheet.getLastRowNum(); // 尾行下标
       // 获取第一行JSON对象键
       Row firstRow = sheet.getRow(rowStart);
       int cellStart = firstRow.getFirstCellNum();
-      int cellEnd = firstRow.getLastCellNum();
+      int cellEnd = lastCellNum;//firstRow.getLastCellNum();
       Map<Integer, String> keyMap = new HashMap<Integer, String>();
       for (int j = cellStart; j < cellEnd; j++) {
           // 表头遇到空格停止解析
@@ -102,7 +101,9 @@ public class ExcelUtils {
               cellEnd = j;
               break;
           }
-          keyMap.put(j, fieldsMap.get(val));
+          if(fieldsMap.get(val)!=null) {
+            keyMap.put(j, fieldsMap.get(val));
+          }
       }
       if (keyMap.isEmpty()) {
           return (JSONArray) Collections.emptyList();
@@ -224,7 +225,7 @@ public class ExcelUtils {
       try {
           OutputStream output=response.getOutputStream();
           response.reset();
-          response.setHeader("Content-disposition", "attachment; filename="+new String(title.getBytes("UTF-8"), "iso8859-1")+".xls");
+          response.setHeader("Content-disposition", "attachment; filename="+new String(title.getBytes("UTF-8"), "iso8859-1")+".xlsx");
           response.setContentType("application/msexcel");
           book.write(output);
           output.close();

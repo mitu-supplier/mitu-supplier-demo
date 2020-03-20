@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -100,5 +101,12 @@ public class OrganizationAction {
     Map<String, Object> map=new HashMap<String, Object>();
     map.put("userId", userId);
     return userOrgMapper.getOrgByUserId(map);
+  }
+  
+  @RequestMapping("/code")
+  public Object getOrgByUserId(String code) {
+     QueryWrapper<Organization> queryWrapper = new QueryWrapper<Organization>();
+    queryWrapper.eq("code", code);
+    return organizationMapper.selectOne(queryWrapper);
   }
 }

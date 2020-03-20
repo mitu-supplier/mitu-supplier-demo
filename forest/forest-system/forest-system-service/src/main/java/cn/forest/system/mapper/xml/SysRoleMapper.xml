@@ -20,7 +20,8 @@
    SELECT
 	sr.id,
 	sr.role_name as roleName,
-	sr.role_code as roleCode 
+	sr.role_code as roleCode,
+	sr.is_admin as isAdmin
 FROM
 	sys_user_role sur
 	INNER JOIN sys_role sr ON sur.role_id = sr.id 
