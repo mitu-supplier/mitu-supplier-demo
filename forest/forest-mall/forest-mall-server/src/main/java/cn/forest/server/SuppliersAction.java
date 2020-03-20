@@ -108,7 +108,7 @@ public class SuppliersAction {
     }
 
     @RequestMapping("/vaNameOrShotName")
-    public int vaNameOrShotName(@RequestParam("cValue") String cValue, @RequestParam("column")String column, @RequestParam("id")Long id){
+    public int vaNameOrShotName(@RequestParam("cValue") String cValue, @RequestParam("column")String column, @RequestParam(value = "id", required = false)Long id){
         int result = 0;
         QueryWrapper<Suppliers> qw = new QueryWrapper<>();
         if (id != null) {

@@ -20,7 +20,7 @@
                       </el-form-item>
 
                       <el-form-item label="手机号" prop="phone">
-                          <el-input v-model="loginForm.phone" readonly size="mini" maxlength="11" class="w50"></el-input>
+                          <el-input v-model="newRuleForm.phone" readonly size="mini" maxlength="11" class="w50"></el-input>
                       </el-form-item>
 
                       <el-form-item label="邮箱" prop="email">
@@ -388,6 +388,7 @@
                     shortName:'',
                     userName:'',
                     email:'',
+                    phone:'',
                     businessScope:'',
                     registerAddress:'',
                     legalName:'',
