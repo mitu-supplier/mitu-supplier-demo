@@ -179,15 +179,15 @@ public class SuppliersService {
      * @return
      */
     public Map<String, Object> saveStepOther(Map<String, Object> map) {
-        if(!StringUtil.isBlank(map.get("name"))){
+        if (!StringUtil.isBlank(map.get("name"))) {
             int i = suppliersRemote.vaNameOrShotName(map.get("name").toString(), "name", Long.parseLong(map.get("id").toString()));
-            if(i > 0){
+            if (i > 0) {
                 return ResultMessage.error("商户名称已经被使用");
             }
         }
-        if(!StringUtil.isBlank(map.get("shortName"))){
+        if (!StringUtil.isBlank(map.get("shortName"))) {
             int i = suppliersRemote.vaNameOrShotName(map.get("shortName").toString(), "short_name", Long.parseLong(map.get("id").toString()));
-            if(i > 0){
+            if (i > 0) {
                 return ResultMessage.error("商户简称已经被使用");
             }
         }
@@ -210,11 +210,11 @@ public class SuppliersService {
         Map<String, Object> supplierInfo = new HashMap<>();
         supplierInfo.put("id", supplierId);
         supplierInfo.put("status", status);
-        if(status != null && status == 1){
+        if (status != null && status == 1) {
             supplierInfo.put("signCompany", signCompany);
         }
         int update = suppliersRemote.update(supplierInfo);
-        if(update > 0 && status != null && status == 1){
+        if (update > 0 && status != null && status == 1) {
             sysRoleRemote.saveSupplierRole(supplierId + "", permissionIds);
         }
         // 保存审核记录
@@ -336,6 +336,7 @@ public class SuppliersService {
                 supplerInfo.put("user", userInfo);
                 supplerInfo.put("userName", userInfo.get("name"));
                 supplerInfo.put("email", userInfo.get("email"));
+                supplerInfo.put("phone", userInfo.get("phone"));
             }
             return ResultMessage.success(supplerInfo);
         }
@@ -404,6 +405,18 @@ public class SuppliersService {
         if (user != null) {
             return ResultMessage.error("该账号已注册，请登录后继续");
         }
+        if (!StringUtil.isBlank(paramMap.get("name"))) {
+            int i = suppliersRemote.vaNameOrShotName(paramMap.get("name").toString(), "name", null);
+            if (i > 0) {
+                return ResultMessage.error("商户名称已经被使用");
+            }
+        }
+        if (!StringUtil.isBlank(paramMap.get("shortName"))) {
+            int i = suppliersRemote.vaNameOrShotName(paramMap.get("shortName").toString(), "short_name", null);
+            if (i > 0) {
+                return ResultMessage.error("商户简称已经被使用");
+            }
+        }
         // 保存供应商信息
         Object save = suppliersRemote.save(paramMap);
         if (save != null) {
@@ -440,12 +453,12 @@ public class SuppliersService {
         return null;
     }
 
-    public Map<String, Object> batchAudit(HttpServletRequest request){
+    public Map<String, Object> batchAudit(HttpServletRequest request) {
         int result = 0;
         Map<String, Object> map = RequestMap.requestToMap(request);
         String ids = StringUtil.toString(map.get("ids"));
-        if(ids != null){
-            for (String id : ids.split(",")){
+        if (ids != null) {
+            for (String id : ids.split(",")) {
                 Long supplierId = Long.parseLong(id);
                 Integer status = Integer.parseInt(map.get("auditResult").toString());
                 String permissionIds = StringUtil.isBlank(map.get("permissionIds")) ? null : map.get("permissionIds").toString();
@@ -453,7 +466,7 @@ public class SuppliersService {
                 Map<String, Object> supplierInfo = new HashMap<>();
                 supplierInfo.put("id", supplierId);
                 supplierInfo.put("status", status);
-                if(status == 1){
+                if (status == 1) {
                     supplierInfo.put("signCompany", signCompany);
                 }
                 int update = suppliersRemote.update(supplierInfo);

@@ -292,6 +292,9 @@ public class Suppliers implements Serializable {
     @TableField(value = "email")
     private String email;
 
+    @TableField(value = "phone")
+    private String phone;
+
     // =====查询字段
     @TableField(exist = false)
     private String enterTypeName;
@@ -689,5 +692,13 @@ public class Suppliers implements Serializable {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }

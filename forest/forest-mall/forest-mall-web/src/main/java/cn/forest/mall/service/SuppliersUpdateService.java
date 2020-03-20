@@ -112,6 +112,7 @@ public class SuppliersUpdateService {
                             updateMap.put("name", map.get("userName"));
                             updateMap.put("id", userMap.get("id"));
                             updateMap.put("email", map.get("email"));
+                            updateMap.put("phone", map.get("phone"));
                             sysUserRemote.update(updateMap);
                         }
                     }
@@ -164,6 +165,7 @@ public class SuppliersUpdateService {
                                 updateMap.put("name", infoMap.get("userName"));
                                 updateMap.put("id", userMap.get("id"));
                                 updateMap.put("email", infoMap.get("email"));
+                                updateMap.put("phone", infoMap.get("phone"));
                                 sysUserRemote.update(updateMap);
                             }
                         }
@@ -276,6 +278,7 @@ public class SuppliersUpdateService {
                                     updateMap.put("name", infoMap.get("userName"));
                                     updateMap.put("id", userMap.get("id"));
                                     updateMap.put("email", infoMap.get("email"));
+                                    updateMap.put("phone", infoMap.get("phone"));
                                     sysUserRemote.update(updateMap);
                                 }
                             }

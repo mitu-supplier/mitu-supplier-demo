@@ -382,7 +382,8 @@
               this.addComForm.useDirections = useDirections;
               this.$refs['addComForm'].validate(async valid => {
                 if (valid) {
-                  this.addComForm.deliveryType = this.addComForm.deliveryType.split(',')[0];
+                  this.addComForm.deliveryType = this.addComForm.deliveryIdNames.split(',')[0];
+                  // this.addComForm.deliveryType = this.addComForm.deliveryType.split(',')[0];
                   var strlist = '';
                   if(this.ImgfileList.length > 0){
                     for(let i=0; i<this.ImgfileList.length; i++){
@@ -434,9 +435,13 @@
               var useDirections = UE.getEditor('useDirections_editor').getContent();
               // this.$refs['addComForm'].validate(async valid => {
                 // if (valid) {
-                  if(this.addComForm.deliveryType != null && this.addComForm.deliveryType != ''){
-                    this.addComForm.deliveryType = this.addComForm.deliveryType.split(',')[0];
+                  // if(this.addComForm.deliveryType != null && this.addComForm.deliveryType != ''){
+                  //   this.addComForm.deliveryType = this.addComForm.deliveryType.split(',')[0];
+                  // }
+                  if(this.addComForm.deliveryIdNames != null && this.addComForm.deliveryIdNames != ''){
+                    this.addComForm.deliveryType = this.addComForm.deliveryIdNames.split(',')[0];
                   }
+                  
                   var strlist = '';
                   if(this.ImgfileList.length > 0){
                     for(let i=0; i<this.ImgfileList.length; i++){
