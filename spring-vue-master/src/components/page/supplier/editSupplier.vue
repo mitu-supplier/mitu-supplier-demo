@@ -34,7 +34,7 @@
                             </el-form-item>
 
                             <el-form-item label="手机号">
-                                <el-input v-model="newRuleForm.phone" readonly size="mini" maxlength="11" class="w50"></el-input>
+                                <el-input v-model="newRuleForm.phone" size="mini" maxlength="11" class="w50"></el-input>
                             </el-form-item>
 
                             <el-form-item label="邮箱">
@@ -562,9 +562,11 @@
               
               if(res.data.data.status == '1'){
                 this.$set(this.newRuleForm,'userName',res.data.data.userName)
+                this.$set(this.newRuleForm,'phone',res.data.data.phone)
                 this.$set(this.newRuleForm,'email',res.data.data.email)
               }else{
                 this.$set(this.newRuleForm,'userName',res.data.data.user.name)
+                this.$set(this.newRuleForm,'phone',res.data.data.user.phone)
                 this.$set(this.newRuleForm,'email',res.data.data.user.email)
               }
               this.status = res.data.data.status;

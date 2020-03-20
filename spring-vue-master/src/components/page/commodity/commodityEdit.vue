@@ -171,7 +171,7 @@
                 </el-form-item>
 
                 <el-form-item>
-                    <el-button type="success" @click="staging('addComForm')">暂存</el-button>
+                    <el-button type="success" v-if="modtyType == '3'" @click="staging('addComForm')">暂存</el-button>
                     <el-button type="primary" @click="submitAddCom('addComForm')">提交</el-button>
                     <el-button type="danger" @click="back">返回</el-button>
                 </el-form-item>
@@ -247,6 +247,7 @@
                 dialogImageUrl:'',
                 ImgfileList:[],
                 auditType:'',
+                modtyType:''
             }
         },
         created() {
@@ -260,6 +261,8 @@
         mounted() {
           var id = this.$route.query.id;
           this.detailsId = Base64.decode(id);
+          var type = this.$route.query.type;
+          this.modtyType = Base64.decode(type);
           this.getData();
           UE.delEditor("editor");
           ueditor_.methods.loadComponent("editor");

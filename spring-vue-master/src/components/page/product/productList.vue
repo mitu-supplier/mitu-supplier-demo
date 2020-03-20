@@ -264,7 +264,8 @@
             },
             handleUpdate(index, row){
                 var id = Base64.encode(row.id);
-                this.$router.push({path:'/commodityEdit',name:"commodityEdit", query: {id: id}});
+                var type = Base64.encode(row.auditStatus);
+                this.$router.push({path:'/commodityEdit',name:"commodityEdit", query: {id: id,type:type}});
             },
             async updateStatus(index, row, status){
                 var product = {
