@@ -179,7 +179,7 @@
 
             <el-row class="tipsBoxImg">
               <el-dialog :visible.sync="dialogVisible" size="tiny" style="text-align:center;">
-                <img  :src="dialogImageUrl" style="padding-bottom: 50px;"/>
+                <img  :src="dialogImageUrl" style="padding-bottom: 50px;width:100%;"/>
               </el-dialog>
             </el-row>
         </div>

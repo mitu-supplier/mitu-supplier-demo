@@ -103,7 +103,7 @@
                                     list-type="picture-card"
                                     :action="uploadUrl()"
                                     :on-preview="handlePictureCardPreview"
-                                    :on-remove="handleRemove"
+                                    :on-remove="businessLicenseRemove"
                                     :on-success="businessSuccess"
                                     multiple
                                     :limit="1"
@@ -144,7 +144,7 @@
                                     list-type="picture-card"
                                     :action="uploadUrl()"
                                     :on-preview="handlePictureCardPreview"
-                                    :on-remove="handleRemove"
+                                    :on-remove="legalCardRemove"
                                     :on-success="legalCardSuccess"
                                     multiple
                                     :limit="2"
@@ -199,7 +199,7 @@
                                     list-type="picture-card"
                                     :action="uploadUrl()"
                                     :on-preview="handlePictureCardPreview"
-                                    :on-remove="handleRemove"
+                                    :on-remove="taxRegRemove"
                                     :on-success="taxRegSuccess"
                                     multiple
                                     :limit="1"
@@ -217,7 +217,7 @@
                                     :action="uploadUrl()"
                                     :on-success="taxpayerSuccess"
                                     :on-preview="handlePictureCardPreview"
-                                    :on-remove="handleRemove"
+                                    :on-remove="taxpayerRemove"
                                     multiple
                                     :limit="1"
                                     :on-exceed="handleExceed"
@@ -233,7 +233,7 @@
                                     list-type="picture-card"
                                     :action="uploadUrl()"
                                     :on-preview="handlePictureCardPreview"
-                                    :on-remove="handleRemove"
+                                    :on-remove="bankAccountRemove"
                                     :on-success="bankAccountSuccess"
                                     multiple
                                     :limit="1"
@@ -347,7 +347,7 @@
                                     list-type="picture-card"
                                     :action="uploadUrl()"
                                     :on-preview="handlePictureCardPreview"
-                                    :on-remove="handleRemove"
+                                    :on-remove="handletradeRemove"
                                     :on-success="handletradeSuccess"
                                     multiple
                                     :limit="1"
@@ -364,7 +364,7 @@
                                     list-type="picture-card"
                                     :action="uploadUrl()"
                                     :on-preview="handlePictureCardPreview"
-                                    :on-remove="handleRemove"
+                                    :on-remove="handleBrandRemove"
                                     multiple
                                     :limit="1"
                                     :on-exceed="handleExceed"
@@ -381,7 +381,7 @@
                                     list-type="picture-card"
                                     :action="uploadUrl()"
                                     :on-preview="handlePictureCardPreview"
-                                    :on-remove="handleRemove"
+                                    :on-remove="qualityRemove"
                                     multiple
                                     :limit="1"
                                     :on-success="qualitySuccess"
@@ -398,7 +398,7 @@
                                     list-type="picture-card"
                                     :action="uploadUrl()"
                                     :on-preview="handlePictureCardPreview"
-                                    :on-remove="handleRemove"
+                                    :on-remove="sanitaryRemove"
                                     :on-success="sanitarySuccess"
                                     multiple
                                     :limit="1"
@@ -422,7 +422,7 @@
             </el-row>
             <el-row class="tipsBoxImg">
               <el-dialog :visible.sync="dialogVisible" size="tiny" style="text-align:center;">
-                <img  :src="imgUrl" style="padding-bottom: 50px;"/>
+                <img  :src="imgUrl" style="padding-bottom: 50px;width:100%;"/>
               </el-dialog>
             </el-row>
             
@@ -809,7 +809,41 @@
               );
             },
 
-            handleRemove(file, fileList) {}
+            businessLicenseRemove(file, fileList) {
+              this.newRuleForm.businessLicense = '';
+            },
+            legalCardRemove(file, fileList) {
+              if(fileList&&fileList.length > 0){
+                this.newRuleForm.legalCardZ = fileList[0].response.data.path;
+              }else{
+                this.newRuleForm.legalCardZ = '';
+              }
+              this.newRuleForm.legalCardF = '';
+            },
+            taxRegRemove(){
+              this.newRuleForm.taxRegistration = '';
+            },
+            taxpayerRemove(){
+              this.newRuleForm.taxpayerPositive = '';
+            },
+            bankAccountRemove(){
+              this.newRuleForm.bankAccountPermit = '';
+            },
+
+            handletradeRemove(){
+              this.trademarkRegistration = '';
+            },
+            handleBrandRemove(){
+              this.brandAuthorization = '';
+            },
+            qualityRemove(){
+              this.qualityInspectionReport = '';
+            },
+            sanitaryRemove(){
+              this.sanitaryPermit = '';
+            }
+
+            
             
         }
     }

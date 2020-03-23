@@ -46,7 +46,7 @@
                 <el-form-item label="新密码">
                     <el-input v-model="form.newPass" class="input" type="password"></el-input>
                 </el-form-item>
-                <el-form-item label="重新密码">
+                <el-form-item label="确认密码">
                 <el-input v-model="form.passTow" class="input" type="password"></el-input>
                 </el-form-item>
             </el-form>
