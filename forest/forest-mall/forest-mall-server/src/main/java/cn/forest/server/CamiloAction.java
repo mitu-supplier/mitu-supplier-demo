@@ -137,10 +137,10 @@ public class CamiloAction {
             for (Object obj : list) {
                 camilo = JsonUtil.toObject(JsonUtil.toJson(obj), Camilo.class);
                 // 检验空值
-        /*
-         * if (StringUtil.isBlank(camilo.getCatalogCode())) { return
-         * ResultMessage.error("品目编号不能为空"); }
-         */
+                /*
+                 * if (StringUtil.isBlank(camilo.getCatalogCode())) { return
+                 * ResultMessage.error("品目编号不能为空"); }
+                 */
                 if (StringUtil.isBlank(camilo.getProductCode())) {
                     return ResultMessage.error("商品编号不能为空");
                 }
@@ -150,14 +150,25 @@ public class CamiloAction {
                 if (StringUtil.isBlank(camilo.getCardPassword())) {
                     return ResultMessage.error("密码不能为空");
                 }
+                if (StringUtil.isBlank(camilo.getFailureTime())) {
+                    return ResultMessage.error("失效时间不能为空");
+                } else {
+                    Date date = DateUtil.parseStrToDate(camilo.getFailureTime(), DateUtil.DATE_FORMAT_YYYY_MM_DD);
+                    Date nowDate = DateUtil.parseStrToDate(DateUtil.parseDateToStr(new Date(), DateUtil.DATE_FORMAT_YYYY_MM_DD), DateUtil.DATE_FORMAT_YYYY_MM_DD);
+                    if (date != null && nowDate != null) {
+                        if(date.compareTo(nowDate) <= 0){
+                            return ResultMessage.error("卡密已过期，请检查后导入");
+                        }
+                    }
+                }
                 // 校验商品是否存在
                 Products products = productsMapper.selectByCode(camilo.getProductCode(), null);
                 if (products == null) {
-                    return ResultMessage.error("未找到对应商品，商品编号"+ camilo.getProductCode());
+                    return ResultMessage.error("未找到对应商品，商品编号" + camilo.getProductCode());
                 }
                 // 判断商品状态
-                if(products.getAuditStatus() == null || products.getAuditStatus() != 1){
-                    return ResultMessage.error("商品编号"+ camilo.getProductCode() + "状态未审核通过");
+                if (products.getAuditStatus() == null || products.getAuditStatus() != 1) {
+                    return ResultMessage.error("商品编号" + camilo.getProductCode() + "状态未审核通过");
                 }
                 // 校验卡密是否重复
                 qw = new QueryWrapper<>();

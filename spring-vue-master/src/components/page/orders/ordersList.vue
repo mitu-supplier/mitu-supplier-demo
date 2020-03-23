@@ -11,6 +11,9 @@
                     <el-form-item label="商户名称">
                         <el-input v-model="formInline.supplierName" placeholder="商户名称"></el-input>
                     </el-form-item>
+                    <el-form-item label="商品编码">
+                        <el-input v-model="formInline.productCode" placeholder="商品编码"></el-input>
+                    </el-form-item>
                     <el-form-item label="订单编号">
                         <el-input v-model="formInline.code" placeholder="订单编号"></el-input>
                     </el-form-item>
@@ -98,7 +101,8 @@
                 formInline:{
                     supplierName:'',
                     code:'',
-                    searchTime:[]
+                    searchTime:[],
+                    productCode:''
                 }   
             }
         },
@@ -139,7 +143,8 @@
                         'supplierName':this.formInline.supplierName,
                         'code':this.formInline.code,
                         'startTime':startTime,
-                        'endTime':endTime
+                        'endTime':endTime,
+                        'productCode':this.formInline.productCode
                     }
                 });
                 if(products.data.statusCode==200){

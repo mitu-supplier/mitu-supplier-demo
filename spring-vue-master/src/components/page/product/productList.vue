@@ -14,6 +14,9 @@
                     <el-form-item label="商品名称">
                         <el-input v-model="formInline.name" placeholder="商品名称"></el-input>
                     </el-form-item>
+                    <el-form-item label="商品编码">
+                        <el-input v-model="formInline.code" placeholder="商品编码"></el-input>
+                    </el-form-item>
                     <el-form-item label="类目名称">
                         <el-input v-model="formInline.catalogName" placeholder="类目名称"></el-input>
                     </el-form-item>
@@ -166,7 +169,8 @@
                     catalogName:'',
                     auditStatus:'',
                     deliveryType:'',
-                    supplierName:''
+                    supplierName:'',
+                    code:''
                 },
                 auditReason:'',
                 productId:'',
@@ -213,7 +217,8 @@
                         'catalogName':this.formInline.catalogName,
                         'auditStatus':this.formInline.auditStatus,
                         'deliveryType':this.formInline.deliveryType,
-                        'supplierName':this.formInline.supplierName
+                        'supplierName':this.formInline.supplierName,
+                        'code':this.formInline.code
                     }
                 });
                 if(products.data.statusCode==200){

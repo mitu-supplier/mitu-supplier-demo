@@ -14,6 +14,9 @@
                     <el-form-item label="商品名称">
                         <el-input v-model="formInline.name" placeholder="商品名称"></el-input>
                     </el-form-item>
+                    <el-form-item label="商品编码">
+                        <el-input v-model="formInline.code" placeholder="商品编码"></el-input>
+                    </el-form-item>
                     <el-form-item>
                         <el-button type="primary" @click="onSubmit">查询</el-button>
                         <el-button type="primary" @click="onReset">重置</el-button>
@@ -66,6 +69,7 @@
                 <el-table-column type="index" label="序号" width="55" align="center" ></el-table-column>
                 <el-table-column prop="catalogName" label="商品类目"  align="center" width=""></el-table-column>
                 <el-table-column prop="name" label="商品名称"  align="center" width=""></el-table-column>
+                <el-table-column prop="code" label="商品编码"  align="center" width=""></el-table-column>
                 <el-table-column prop="supplierName" label="商户名称"  align="center" width=""></el-table-column>
                 <el-table-column prop="stock" label="剩余库存" align="center"  width=""></el-table-column>
                 <el-table-column prop="failureTime" label="失效时间" align="center"  width=""></el-table-column>
@@ -110,7 +114,8 @@
                  multipleSelection: [],
                 formInline:{
                     name:'',
-                    catalogName:''
+                    catalogName:'',
+                    code:''
                 },
                 myHeaders: {
                     'token': ''
@@ -308,7 +313,8 @@
                         'page':this.page,
                         'pageSize':this.pageSize,
                         'name':this.formInline.name,
-                        'catalogName':this.formInline.catalogName
+                        'catalogName':this.formInline.catalogName,
+                        'code':this.formInline.code
                     }
                 });
                 if(products.data.statusCode==200){
@@ -316,12 +322,6 @@
                   this.total=products.data.data.total;
                   this.page=products.data.data.page;
                 }
-            },
-            importExcel(){
-                console.log('import');
-            },
-            exportExcel(){
-                console.log('export');
             },
             uploadUrl() {
               return baseURL_.mallUrl+'/camilo/importExcel';

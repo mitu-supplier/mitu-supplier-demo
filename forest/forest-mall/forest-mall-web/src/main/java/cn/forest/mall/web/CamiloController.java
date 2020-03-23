@@ -50,7 +50,6 @@ public class CamiloController {
      * @param response
      * @throws IOException
      */
-    @SysLogs(desc = "下载卡密模版")
     @RequestMapping(value = "/downloadTemplate")
     public void downloadTemplate(HttpServletRequest request, HttpServletResponse response) throws IOException {
         camiloService.doemloadTemplate(request, response);
@@ -62,7 +61,6 @@ public class CamiloController {
      * @param request
      * @return
      */
-    @SysLogs(desc = "excel导出卡密")
     @RequestMapping(value = "/exportExcel")
     public void exportExcel(HttpServletRequest request, HttpServletResponse response, String productIds) throws IOException {
         camiloService.exportExcel(request, response, productIds);

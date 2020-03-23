@@ -2,4 +2,13 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.forest.mall.mapper.OrderItemMapper">
 
+    <select id="selectByProduct" parameterType="String" resultType="cn.forest.mall.entity.OrderItem">
+        SELECT
+            oi.*
+        FROM
+            order_item oi
+            LEFT JOIN products p ON p.id = oi.product_id
+        WHERE
+            p.code LIKE CONCAT('%',#{productCode},'%')
+    </select>
 </mapper>
