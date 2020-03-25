@@ -35,4 +35,10 @@ public class ContractBack implements ContractRemote {
     return 0;
   }
 
+  @Override
+  public Object list(Long userId, String contractName, String projectName, String orgName, String leader,
+      String orgIds) {
+    return null;
+  }
+
 }

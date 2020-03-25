@@ -106,7 +106,7 @@ public class ProjectsController {
        ExcelUtils.export("项目数据", rowList,titles,response);
   }
   
-  @SysLogs(desc = "下载模板")
+  @SysLogs(desc = "下载项目模板")
   @RequestMapping(value = "/template")
   public void  template(HttpServletRequest request,HttpServletResponse response){
     String[] titles= {"项目唯一标识","项目名称","科室编码","科室名称","年度","总预算（元）","资金来源","项目负责人","联系电话"};

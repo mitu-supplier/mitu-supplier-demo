@@ -28,6 +28,21 @@ public class ContractAction {
   @Autowired
   private ContractMapper contractMapper;
 
+  @RequestMapping("/exportList")
+  public Object list(Long userId,String contractName,String projectName,String orgName,String leader,String orgIds) {
+    Map<String, Object> map=new HashMap<String, Object>();
+    map.put("userId", userId);
+    map.put("contractName", contractName);
+    map.put("projectName", projectName);
+    map.put("orgName", orgName);
+    map.put("leader", leader);
+    if(!StringUtils.isEmpty(orgIds)) {
+      map.put("orgIds", orgIds.split(","));
+    }
+    return contractMapper.getContractList(map);
+  }
+  
+  
   @RequestMapping("/list")
   public Object list(Long page, Long pageSize,Long userId,String contractName,String projectName,String orgName,String leader,String orgIds) {
     Map<String, Object> map=new HashMap<String, Object>();

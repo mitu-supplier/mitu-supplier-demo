@@ -91,4 +91,44 @@ public class ContractService {
       int delete = contractRemote.delete(id);
       return ResultMessage.result(delete, "删除成功", "删除失败");
   }
+  
+  public Map<String, Object> exportList(HttpServletRequest request,String contractName,String projectName,String orgName,String leader) {
+    Map map = (Map) redisDao.getValue(request.getHeader(Constant.HEADER_TOKEN_STRING));
+    Long userId=Long.parseLong(map.get("id").toString());
+    List<Map<String, Object>> roles = (List) map.get("roles");
+    boolean ks_flg=false;
+    boolean gl_flg=false;
+    for (Map<String, Object> roleMap : roles) {
+      String object = roleMap.get("roleCode").toString();
+      if(object.indexOf("KS_")>-1) {
+        ks_flg=true;
+        break;
+      }
+    }
+    
+    for (Map<String, Object> roleMap : roles) {
+      String object = roleMap.get("roleCode").toString();
+      if(object.indexOf("GL_")>-1) {
+        gl_flg=true;
+        break;
+      }
+    }
+    String orgIds=null;
+    
+    if(gl_flg) {
+      userId=null;
+    }else {
+      if(ks_flg) {
+        List<?> orgList = (List) organizationRemote.getOrgByUserId(userId);
+        orgIds = orgList.stream().map(t ->((Map<String, Object>) t).get("orgId").toString()).collect(Collectors.joining(","));
+        userId=null;
+      }
+    }
+    
+    Object list = contractRemote.list(userId,contractName,projectName,orgName,leader,orgIds);
+    if (list != null) {
+        return ResultMessage.success(list);
+    }
+    return null;
+  }
 }

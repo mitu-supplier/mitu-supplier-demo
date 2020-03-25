@@ -11,6 +11,14 @@ import cn.forest.lyj.fallback.ContractBack;
 @FeignClient(name = "forest-lyj-server", fallback = ContractBack.class)
 public interface ContractRemote {
 
+  
+  
+  @RequestMapping("/contract/exportList")
+  Object list(@RequestParam(value = "userId") Long userId,@RequestParam(value = "contractName")String contractName,
+      @RequestParam(value = "projectName")String projectName,@RequestParam(value = "orgName")String orgName,
+      @RequestParam(value = "leader")String leader,@RequestParam(value = "orgIds")String orgIds);
+  
+  
   @RequestMapping("/contract/list")
   Object list(@RequestParam(value = "page") Long page, @RequestParam(value = "pageSize") Long pageSize,
       @RequestParam(value = "userId") Long userId,@RequestParam(value = "contractName")String contractName,

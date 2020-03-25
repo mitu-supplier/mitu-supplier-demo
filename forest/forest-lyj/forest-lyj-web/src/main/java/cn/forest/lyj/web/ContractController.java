@@ -1,14 +1,18 @@
 package cn.forest.lyj.web;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.forest.common.util.ExcelUtils;
 import cn.forest.common.util.RequestMap;
 import cn.forest.common.web.util.SysLogs;
 import cn.forest.lyj.service.ContractService;
@@ -50,5 +54,22 @@ public class ContractController {
   @SysLogs(desc = "删除项目资料")
   public Map<String, Object> delete(@RequestParam("id") Long id){
       return contractService.delete(id);
+  }
+  
+  
+  @SysLogs(desc = "导出项目资料")
+  @RequestMapping(value = "/exportList")
+  public void exportList(HttpServletRequest request,String contractName,String projectName,String orgName,String leader){
+    Map<String, Object> exportList = contractService.exportList(request, contractName, projectName, orgName, leader);
+    List<List<Object>> rowList=new ArrayList<List<Object>>();
+    List<Object> list=null;
+    String[] titles= {"项目资料唯一标识","项目资料名称","项目唯一标识","项目名称","科室编码","科室名称","资料类型","总金额（元）","负责人","联系方式","签订时间"};
+  }
+  
+  @SysLogs(desc = "下载项目资料模板")
+  @RequestMapping(value = "/template")
+  public void  template(HttpServletRequest request,HttpServletResponse response){
+    String[] titles= {"项目资料唯一标识","项目资料名称","项目唯一标识","项目名称","科室编码","科室名称","资料类型","总金额（元）","负责人","联系方式","签订时间"};
+    ExcelUtils.export("项目资料模板", null,titles,response);
   }
 }

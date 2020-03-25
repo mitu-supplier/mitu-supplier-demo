@@ -7,11 +7,13 @@
         </div>
         <div class="container">
             <div class="handle-box">
+                <el-button type="primary"  @click="exportTemplate" icon="el-icon-download">下载模板</el-button> 
+                <el-button type="primary" icon="el-icon-document" class="handle-del mr10" @click="exportq">导出</el-button>
                 <el-button type="primary" icon="el-icon-plus" class="handle-del mr10" v-if="button_role&&button_role.add" @click="add">添加</el-button>
-                项目名称：<el-input placeholder="项目名称" v-model="projectName"  class="handle-input mr10" style="width:150px;"></el-input>
-                合同名称：<el-input placeholder="合同名称" v-model="contractName"  class="handle-input mr10" style="width:150px;"></el-input>
-                科室名称：<el-input placeholder="科室名称" v-model="orgName"  class="handle-input mr10" style="width:150px;"></el-input>
-                负责人：<el-input placeholder="负责人" v-model="leader"  class="handle-input mr10" style="width:150px;"></el-input>
+                项目名称：<el-input placeholder="项目名称" v-model="projectName"  class="handle-input mr10" style="width:100px;"></el-input>
+                合同名称：<el-input placeholder="合同名称" v-model="contractName"  class="handle-input mr10" style="width:100px;"></el-input>
+                科室名称：<el-input placeholder="科室名称" v-model="orgName"  class="handle-input mr10" style="width:100px;"></el-input>
+                负责人：<el-input placeholder="负责人" v-model="leader"  class="handle-input mr10" style="width:100px;"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button>
                 <el-button type="primary" icon="el-icon-search" @click="rest">重置</el-button>
             </div>
@@ -238,6 +240,10 @@
            
         },
         methods: {
+            async exportTemplate(){
+              const token = localStorage.getItem('forestToken');
+              location.href=baseURL_.lyjUrl+'/contract/template?token='+token
+            },
             async user(){
                 const user = await this.$http.get(baseURL_.sysUrl+'/sysUser/getOnlineUser');
                 var roles=user.data.data.roles;
