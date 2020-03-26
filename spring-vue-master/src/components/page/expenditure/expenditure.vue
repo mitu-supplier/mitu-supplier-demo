@@ -7,8 +7,21 @@
         </div>
         <div class="container">
             <div class="handle-box">
-                <el-button type="primary" icon="el-icon-plus" class="handle-del mr10" v-if="button_role&&button_role.add" @click="add">添加</el-button>
+                <el-upload v-if="button_role&&button_role.import"
+                    class="upload-excel-file-up"
+                    ref="upload"
+                    :headers="myHeaders"
+                    :action="uploadUrl1()"
+                    multiple
+                    :limit="1"
+                    :show-file-list="false"
+                    :before-upload="beforeUpload"
+                    :on-success="handleSuccess">
+                    <el-button size="small" type="primary" icon="el-icon-upload2">批量导入</el-button>
+                </el-upload>
+                 <el-button type="primary"  @click="exportTemplate" icon="el-icon-download" v-if="button_role&&button_role.down">下载模板</el-button> 
                  <el-button type="primary" icon="el-icon-document" class="handle-del mr10" v-if="button_role&&button_role.export" @click="exportq">导出</el-button>
+                 <el-button type="primary" icon="el-icon-plus" class="handle-del mr10" v-if="button_role&&button_role.add" @click="add">添加</el-button>
                  项目名称：<el-input placeholder="项目名称" v-model="projectName"  class="handle-input mr10" style="width:150px;"></el-input>
                  科室名称：<el-input placeholder="科室名称" v-model="orgName"  class="handle-input mr10" style="width:150px;"></el-input>
                  <el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button>
@@ -222,6 +235,21 @@
                    }
                 }
              
+            },
+             handleSuccess(response, file, fileList){
+                this.$refs.upload.clearFiles();
+                this.$message(response.data);
+                if(response.statusCode == 200){
+                    this.getData();
+                }
+            },
+            uploadUrl1() {
+              const token = localStorage.getItem('forestToken');
+              return baseURL_.lyjUrl+'/expenditure/importExcel?token='+token;
+            },
+             async exportTemplate(){
+              const token = localStorage.getItem('forestToken');
+              location.href=baseURL_.lyjUrl+'/expenditure/template?token='+token
             },
             async exportq(){
                const token = localStorage.getItem('forestToken');
@@ -537,4 +565,11 @@
     }
 
 
+.upload-excel-file-up .el-upload--text {    
+    border: none !important;
+    display: inline-block;
+    width: 110px;
+    height: 40px;
+    float: left;
+  }
 </style>

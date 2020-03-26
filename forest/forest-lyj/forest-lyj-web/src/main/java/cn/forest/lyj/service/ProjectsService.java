@@ -209,6 +209,8 @@ public class ProjectsService {
             meg+=",未找到项目:"+jsonObject.get("id");
             break;
           }
+        }else {
+          map.put("userId",Long.parseLong(user.get("id").toString()));
         }
         if(jsonObject.get("orgCode")!=null&&!StringUtils.isEmpty(jsonObject.get("orgCode").toString())) {
           Map<String, Object> org = (Map<String, Object>) organizationRemote.code(jsonObject.get("orgCode").toString());
@@ -226,7 +228,6 @@ public class ProjectsService {
         map.put("leaderPhone", jsonObject.get("phone")==null?"":jsonObject.get("phone").toString());
         map.put("projectSource", jsonObject.get("source")==null?"":jsonObject.get("source").toString());
         map.put("year", jsonObject.get("year")==null?"":Integer.parseInt(jsonObject.get("year").toString()));
-        map.put("userId",Long.parseLong(user.get("id").toString()));
         list.add(map);
       }
       

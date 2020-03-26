@@ -8,7 +8,7 @@
         <div class="container">
             <div class="handle-box canahead">
                 
-                <el-upload
+                <el-upload v-if="button_role&&button_role.import"
                     class="upload-excel-file"
                     ref="upload"
                     :headers="myHeaders"
@@ -20,7 +20,7 @@
                     :on-success="handleSuccess">
                     <el-button size="small" type="primary" icon="el-icon-upload2">批量导入</el-button>
                 </el-upload>
-                <el-button type="primary"  @click="exportTemplate" icon="el-icon-download">下载模板</el-button> 
+                <el-button type="primary"  @click="exportTemplate" icon="el-icon-download" v-if="button_role&&button_role.down">下载模板</el-button> 
                 <el-button type="primary" icon="el-icon-document" class="handle-del mr10" v-if="button_role&&button_role.export" @click="exportq">导出</el-button>
                 <el-button type="primary" icon="el-icon-plus" class="handle-del mr10" v-if="button_role&&button_role.add" @click="add">添加</el-button>
                 项目名称：<el-input placeholder="项目名称" v-model="projectName"  class="handle-input mr10" style="width:150px;"></el-input>

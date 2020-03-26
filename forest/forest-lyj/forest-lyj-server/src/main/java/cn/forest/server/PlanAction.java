@@ -59,4 +59,16 @@ public class PlanAction {
     return planMapper.deleteById(id);
       
   }
+  
+  @RequestMapping("/exportList")
+  public Object exportList(Long userId,String projectName,String orgName,String orgIds) {
+    Map<String, Object> map=new HashMap<String, Object>();
+    map.put("userId", userId);
+    map.put("projectName", projectName);
+    map.put("orgName", orgName);
+    if(!StringUtils.isEmpty(orgIds)) {
+      map.put("orgIds", orgIds.split(","));
+    }
+    return planMapper.getPlanList(map);
+  }
 }

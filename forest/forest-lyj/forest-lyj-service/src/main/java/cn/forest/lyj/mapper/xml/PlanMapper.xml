@@ -7,6 +7,8 @@
   
      SELECT
 		o.`name` as orgName,
+		o.id as orgId,
+		p.project_id as projectId,
 		j.project_name as projectName,
 		p.plan_total as planTotal,
 		p.`year`,

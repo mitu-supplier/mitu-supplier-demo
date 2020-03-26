@@ -1,5 +1,7 @@
 package cn.forest.lyj.service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -8,12 +10,16 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import cn.forest.commom.redis.RedisDao;
 import cn.forest.common.Constant;
 import cn.forest.common.util.ResultMessage;
 import cn.forest.lyj.remote.ExpenditureRemote;
 import cn.forest.lyj.remote.OrganizationRemote;
+import cn.forest.lyj.remote.ProjectsRemote;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 @Service("expenditureService")
 public class ExpenditureService {
@@ -22,6 +28,9 @@ public class ExpenditureService {
   
   @Autowired
   private OrganizationRemote organizationRemote;
+  
+  @Autowired
+  private ProjectsRemote projectsRemote;
   
   @Autowired
   private RedisDao redisDao;
@@ -126,4 +135,66 @@ public class ExpenditureService {
     return list;
   }
   
+  
+  public Map<String, Object> save(JSONArray jsonArray,String key) {
+    Map user = (Map) redisDao.getValue(key); 
+    int result_num=0;
+    String meg="导入失败";
+    if(jsonArray!=null) {
+      List<Map<String, Object>> list=new ArrayList<Map<String,Object>>();
+      Map<String, Object> map=null;
+      for (int i = 0; i < jsonArray.size(); i++) {
+        JSONObject jsonObject = jsonArray.getJSONObject(i);
+        map=new HashMap<String, Object>();
+        if(jsonObject.get("id")!=null&&!StringUtils.isEmpty(jsonObject.get("id").toString())) {
+          Object byId = expenditureRemote.getById(Long.parseLong(jsonObject.get("id").toString()));
+          if(byId!=null) {
+            map.put("id",Long.parseLong(jsonObject.get("id").toString()));
+          }else {
+            meg+=",未找到执行计划:"+jsonObject.get("id");
+            break;
+          }
+        }else {
+          map.put("userId",Long.parseLong(user.get("id").toString()));
+        }
+        
+        if(jsonObject.get("projectId")!=null&&!StringUtils.isEmpty(jsonObject.get("projectId").toString())) {
+          Map<String, Object> byId = (Map<String, Object>) projectsRemote.getById(Long.parseLong(jsonObject.get("projectId").toString()));
+          if(byId!=null) {
+            map.put("projectId",Long.parseLong(jsonObject.get("projectId").toString()));
+            map.put("projectName",byId.get("projectName").toString());
+          }else {
+            meg+=",未找到项目:"+jsonObject.get("projectId");
+            break;
+          }
+        }
+        
+        if(jsonObject.get("code")!=null&&!StringUtils.isEmpty(jsonObject.get("code").toString())) {
+          Map<String, Object> org = (Map<String, Object>) organizationRemote.code(jsonObject.get("code").toString());
+          if(org!=null) {
+            map.put("orgName",org.get("name").toString());
+            map.put("orgId",Long.parseLong(org.get("id").toString()));
+          }else {
+            meg+=",未找到部门:"+jsonObject.get("code");
+            break;
+          }
+        }
+        
+        map.put("expenditureTime", jsonObject.get("expenditureTime")==null?"":jsonObject.get("expenditureTime").toString());
+        map.put("expenditureTotal", jsonObject.get("expenditureTotal")==null?"":jsonObject.get("expenditureTotal").toString());
+        map.put("expenditureUsing", jsonObject.get("expenditureUsing")==null?"":jsonObject.get("expenditureUsing").toString());
+        map.put("partyBUnits", jsonObject.get("partyBUnits")==null?"":jsonObject.get("partyBUnits").toString());
+        list.add(map);
+        
+      }
+      for (Map nap : list) {
+        if(nap.get("id")!=null) {
+          result_num+=expenditureRemote.update(nap);
+        }else {
+          result_num+=expenditureRemote.save(nap);
+        }
+      }
+    }
+    return ResultMessage.result(result_num, "导入成功", meg);
+  }
 }

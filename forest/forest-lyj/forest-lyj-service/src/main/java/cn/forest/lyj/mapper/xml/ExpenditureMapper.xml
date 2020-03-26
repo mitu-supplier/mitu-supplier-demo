@@ -7,6 +7,8 @@
      SELECT
 		 e.id,
 		 o.name as orgName,
+		 o.id as orgId,
+		 e.project_id as projectId,
 		 p.project_name as projectName,
 		 e.expenditure_time as expenditureTime,
 		 e.expenditure_total as expenditureTotal,
