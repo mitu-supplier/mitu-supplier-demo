@@ -203,4 +203,8 @@ public class PlanService {
     return ResultMessage.result(result_num, "导入成功", meg);
   }
   
+  public Object getPlanListNoUsed(Integer year,Integer month) {
+    return planRemote.getPlanListNoUsed(year, month);
+  }
+  
 }

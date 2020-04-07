@@ -21,6 +21,7 @@
                 </el-upload>
                 <el-button type="primary"  @click="exportTemplate" icon="el-icon-download" v-if="button_role&&button_role.down">下载模板</el-button> 
                 <el-button type="primary" icon="el-icon-document" class="handle-del mr10" v-if="button_role&&button_role.export" @click="exportq">导出</el-button>
+                <el-button type="primary" icon="el-icon-download" class="handle-del mr10" v-if="button_role&&button_role.downEx" @click="downEx">导出未执行计划</el-button>
                 <el-button type="primary" icon="el-icon-plus" class="handle-del mr10" v-if="button_role&&button_role.add" @click="add">添加</el-button>
                  项目名称：<el-input placeholder="项目名称" v-model="projectName"  class="handle-input mr10" style="width:150px;"></el-input>
                  科室名称：<el-input placeholder="科室名称" v-model="orgName"  class="handle-input mr10" style="width:150px;"></el-input>
@@ -138,7 +139,43 @@
                 <el-button type="primary" @click="saveEdit(1)">确 定</el-button>
             </span>
         </el-dialog>
-
+        <el-dialog title="选择"  :visible.sync="downExPage" width="35%" @close="closeDilog('forms')">
+            <el-form ref="forms" :model="forms"  label-width="130px">
+                 <el-form-item label="计划支出时间" prop="year">
+                    <el-select v-model="forms.year" filterable placeholder="年份" style="width:100px;">
+                        <el-option label="2020年" value="2020"></el-option>
+                        <el-option label="2021年" value="2021"></el-option>
+                        <el-option label="2022年" value="2022"></el-option>
+                        <el-option label="2023年" value="2023"></el-option>
+                        <el-option label="2024年" value="2024"></el-option>
+                        <el-option label="2025年" value="2025"></el-option>
+                        <el-option label="2026年" value="2026"></el-option>
+                        <el-option label="2027年" value="2027"></el-option>
+                        <el-option label="2028年" value="2028"></el-option>
+                        <el-option label="2029年" value="2029"></el-option>
+                        <el-option label="2030年" value="2030"></el-option>
+                   </el-select>
+                   <el-select v-model="forms.month" filterable placeholder="月份" style="width:100px;">
+                        <el-option label="1月" value="1"></el-option>
+                        <el-option label="2月" value="2"></el-option>
+                        <el-option label="3月" value="3"></el-option>
+                        <el-option label="4月" value="4"></el-option>
+                        <el-option label="5月" value="5"></el-option>
+                        <el-option label="6月" value="6"></el-option>
+                        <el-option label="7月" value="7"></el-option>
+                        <el-option label="8月" value="8"></el-option>
+                        <el-option label="9月" value="9"></el-option>
+                        <el-option label="10月" value="10"></el-option>
+                        <el-option label="11月" value="11"></el-option>
+                        <el-option label="12月" value="12"></el-option>
+                   </el-select>
+                </el-form-item>
+            </el-form>
+             <span slot="footer" class="dialog-footer">
+                <el-button @click="downExPage = false">取 消</el-button>
+                <el-button type="primary" @click="downOk()">确 定</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 
@@ -157,6 +194,7 @@
                 }
             };
             return {
+                downExPage:false,
                 editVisible: false,
                 page:1,
                 total:1000,
@@ -204,6 +242,10 @@
                    month:'',
                    createTime:''
                 },
+                forms:{
+                   year:'',
+                   month:'',
+                },
                 
                 projectName:'',
                 orgName:'',
@@ -219,6 +261,22 @@
            
         },
         methods: {
+            async downOk(){
+               if(this.forms.year==''){
+                  this.$message("年份不能为空");
+                  return;
+               }
+               if(this.forms.month==''){
+                 this.$message("月份不能为空");
+                 return;
+               }
+                const token = localStorage.getItem('forestToken');
+               location.href=baseURL_.lyjUrl+'/plan/importNoUsed?year='+this.forms.year+"&month="+this.forms.month+"&token="+token
+
+            },
+            downEx(){
+                  this.downExPage=true;
+            },
             handleSuccess(response, file, fileList){
                 this.$refs.upload.clearFiles();
                 this.$message(response.data);

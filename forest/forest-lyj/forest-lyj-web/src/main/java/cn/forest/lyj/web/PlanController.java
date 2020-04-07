@@ -127,4 +127,31 @@ public class PlanController {
     return null;
     
   }
+  
+  @SysLogs(desc = "导入未执行的支出计划")
+  @RequestMapping(value = "/importNoUsed")
+  public void  importNoUsed(HttpServletRequest request,HttpServletResponse response,Integer year,Integer month,String token){
+    
+    List<Map<String, Object>>  exportList = (List<Map<String, Object>>)  planService.getPlanListNoUsed(year, month);
+    List<List<Object>> rowList=new ArrayList<List<Object>>();
+    List<Object> list=null;
+    String[] titles= {"支出计划唯一标识","项目唯一标识","项目名称","科室编码","科室名称","计划支出年","计划支出月","计划支出金额（元）","用途","状态"};
+    for (Map<String, Object> map : exportList) {
+      list=new ArrayList<Object>();
+      Map<String, Object> org = organizationService.getById(Long.parseLong(map.get("orgId").toString()));
+      Map orgMap = (Map) org.get("data");
+      list.add(map.get("id"));
+      list.add(map.get("projectId"));
+      list.add(map.get("projectName"));
+      list.add(orgMap.get("code"));
+      list.add(map.get("orgName"));
+      list.add(map.get("year"));
+      list.add(map.get("month"));
+      list.add(map.get("planTotal"));
+      list.add(map.get("planUsing"));
+      list.add(Integer.parseInt(map.get("status").toString())==0?"暂存":"归档");
+      rowList.add(list);
+    }
+    ExcelUtils.export("支出计划", rowList,titles,response);
+  }
 }

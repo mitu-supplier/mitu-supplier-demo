@@ -14,4 +14,6 @@ public interface PlanMapper extends BaseMapper<Plan> {
   List<Plan> getPlanList(Map<String, Object> map);
   
   Plan getPlanById(@Param("id") Long id);
+  
+  List<Plan> getPlanListNoUsed(Map<String, Object> map);
 }

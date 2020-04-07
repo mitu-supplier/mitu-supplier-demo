@@ -3,6 +3,32 @@
 <mapper namespace="cn.forest.lyj.mapper.PlanMapper">
 
   
+  <select id="getPlanListNoUsed" parameterType="Map" resultType="cn.forest.lyj.entity.Plan">
+  
+	    SELECT
+		o.`name` AS orgName,
+		o.id AS orgId,
+		p.project_id AS projectId,
+		j.project_name AS projectName,
+		p.plan_total AS planTotal,
+		p.`year`,
+		p.`month`,
+		p.plan_using AS planUsing,
+		p.id,
+		p.STATUS
+		
+	FROM
+		plan p
+		LEFT JOIN organization o ON o.id = p.org_id
+		LEFT JOIN projects j ON j.id = p.project_id 
+	WHERE
+		p.is_delete = 0 
+		AND j.is_delete = 0 
+		AND p.`year` = ${year} 
+		AND `month` = ${month}
+		AND ( SELECT count( * ) FROM expenditure t WHERE t.project_id = j.id AND t.expenditure_time LIKE CONCAT('%',#{day},'%') ) =0
+  </select>
+  
   <select id="getPlanList" parameterType="Map" resultType="cn.forest.lyj.entity.Plan">
   
      SELECT
@@ -20,7 +46,7 @@
 		plan p
 		left  JOIN organization o ON o.id = p.org_id
 		left JOIN projects j ON j.id = p.project_id
-	where p.is_delete=0 
+	where p.is_delete=0  and j.is_delete=0
 	  <if test="userId!=null">
 	    and p.user_id=#{userId} 
 	  </if>

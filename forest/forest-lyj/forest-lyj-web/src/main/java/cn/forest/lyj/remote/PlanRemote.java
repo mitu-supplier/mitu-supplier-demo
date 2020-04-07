@@ -32,4 +32,7 @@ public interface PlanRemote {
 
   @RequestMapping("/plan/delete")
   int delete(@RequestParam("id") Long id);
+  
+  @RequestMapping("/plan/getPlanListNoUsed")
+  Object getPlanListNoUsed(@RequestParam(value = "year") Integer year, @RequestParam(value = "month") Integer month);
 }

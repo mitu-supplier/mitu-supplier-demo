@@ -39,4 +39,9 @@ public class PlanBack implements PlanRemote {
     return null;
   }
 
+  @Override
+  public Object getPlanListNoUsed(Integer year, Integer month) {
+    return null;
+  }
+
 }

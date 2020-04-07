@@ -71,4 +71,21 @@ public class PlanAction {
     }
     return planMapper.getPlanList(map);
   }
+  
+  @RequestMapping("/getPlanListNoUsed")
+  public Object list(Integer year,Integer month) {
+    Map<String, Object> map=new HashMap<String, Object>();
+    map.put("year", year);
+    map.put("month", month);
+    String day="";
+    if(month.toString().length()==1) {
+      day=year+"-"+"0"+month;
+    }else {
+      day=year+"-"+month;
+    }
+    map.put("day", day);
+    
+    List<Plan> projectsList =planMapper.getPlanListNoUsed(map);
+    return projectsList;
+  }
 }
