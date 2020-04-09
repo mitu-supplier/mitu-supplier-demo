@@ -41,7 +41,8 @@ public class CompanyController {
         return companyService.update(RequestMap.requestToMap(request));
     }
 
-    @RequestMapping("/删除公司信息")
+    @SysLogs(desc = "删除公司信息")
+    @RequestMapping("/delete")
     public Map<String, Object> delete(@RequestParam("id") Long id) {
         return companyService.delete(id);
     }
