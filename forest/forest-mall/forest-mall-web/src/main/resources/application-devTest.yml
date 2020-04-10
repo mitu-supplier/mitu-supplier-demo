@@ -1,0 +1,30 @@
+server:
+  port: 5402
+ 
+spring:
+  redis:
+    database: 0
+    host: localhost
+    port: 6379
+    password: forest
+    timeout: 2000
+    jedis:
+      pool:
+        max-idle: 8000
+        max-wait: -1
+        max-active: -1
+        min-idle: 200
+eureka:
+  instance:
+    prefer-ip-address: true
+    instance-id: localhost:${server.port}
+    lease-renewal-interval-in-seconds: 10
+    health-check-url-path: /actuator/health
+  client:
+    service-url:
+      defaultZone: http://localhost:1111/eureka/
+
+file-site-path: http://47.92.213.39:9200/attach
+upload-base-path: /data/java_upload_file
+file-upload-path: /upload/file/
+image-upload-path: /upload/image/
