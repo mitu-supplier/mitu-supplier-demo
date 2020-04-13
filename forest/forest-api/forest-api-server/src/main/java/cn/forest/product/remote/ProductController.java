@@ -3,6 +3,7 @@ package cn.forest.product.remote;
 import cn.forest.common.BusinessErrorCode;
 import cn.forest.common.RemoteResponse;
 import cn.forest.common.util.DateUtil;
+import cn.forest.common.util.StringUtil;
 import cn.forest.mall.entity.Camilo;
 import cn.forest.mall.entity.ProductPic;
 import cn.forest.mall.entity.Products;
@@ -99,7 +100,7 @@ public class ProductController {
                 // 判断商品状态
                 String maintainConfigStart = products.getMaintainConfigStart();
                 String maintainConfigEnd = products.getMaintainConfigEnd();
-                if (maintainConfigStart != null && maintainConfigEnd != null) {
+                if (StringUtil.isNotBlank(maintainConfigStart) && StringUtil.isNotBlank(maintainConfigEnd)) {
                     Date now = new Date();
                     if (now.after(DateUtil.parseStrToDate(maintainConfigStart, DateUtil.DATE_TIME_FORMAT_YYYY_MM_DD_HH_MI_SS))
                             && now.before(DateUtil.parseStrToDate(maintainConfigEnd, DateUtil.DATE_TIME_FORMAT_YYYY_MM_DD_HH_MI_SS))) {
