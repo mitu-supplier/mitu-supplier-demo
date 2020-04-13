@@ -4,7 +4,7 @@ server:
 eureka:
   instance:
     prefer-ip-address: true
-    instance-id: localhost:${server.port}
+    instance-id: ${spring.cloud.client.ip-address}:${spring.application.name}:${server.port}
     lease-renewal-interval-in-seconds: 10
     health-check-url-path: /actuator/health
   client:

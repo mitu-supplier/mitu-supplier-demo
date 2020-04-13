@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
-import cn.forest.common.BusinessErrorCode;
+import cn.forest.common.BusinessErrorCodeForest;
 import cn.forest.common.RemoteResponseForest;
 import cn.forest.common.util.DateUtil;
 import cn.forest.mall.entity.Camilo;
@@ -130,13 +130,13 @@ public class ProductController {
                     productDTO.setStatus("正常");
                     productDTO.setPrompt("");
                 }
-                result.setCode(BusinessErrorCode.SUCCESS);
+                result.setCode(BusinessErrorCodeForest.SUCCESS);
                 result.setMessage("查询成功");
                 result.setData(productDTO);
                 return result;
             }
         }
-        result.setCode(BusinessErrorCode.PRODUCT_NOT_FOUND);
+        result.setCode(BusinessErrorCodeForest.PRODUCT_NOT_FOUND);
         result.setMessage("商户商品不存在");
         return result;
     }
@@ -167,13 +167,13 @@ public class ProductController {
                     }
                 }
                 deliveryTypeDTO.setConfig(configList);
-                result.setCode(BusinessErrorCode.SUCCESS);
+                result.setCode(BusinessErrorCodeForest.SUCCESS);
                 result.setMessage("查询成功");
                 result.setData(deliveryTypeDTO);
                 return result;
             }
         }
-        result.setCode(BusinessErrorCode.ERROR);
+        result.setCode(BusinessErrorCodeForest.ERROR);
         result.setMessage("未找到对应的发货类型");
         return result;
     }
@@ -235,7 +235,7 @@ public class ProductController {
         RemoteResponseForest<List<ProductDTO>> result = new RemoteResponseForest<>();
         result.setData(resultList);
         result.setMessage("查询成功");
-        result.setCode(BusinessErrorCode.SUCCESS);
+        result.setCode(BusinessErrorCodeForest.SUCCESS);
         return result;
     }
 }

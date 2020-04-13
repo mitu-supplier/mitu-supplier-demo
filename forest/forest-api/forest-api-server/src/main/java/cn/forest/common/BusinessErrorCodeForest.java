@@ -1,6 +1,6 @@
 package cn.forest.common;
 
-public class BusinessErrorCode {
+public class BusinessErrorCodeForest {
 
     /**
      * 成功
