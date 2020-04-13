@@ -36,12 +36,12 @@ public class ProductDTO {
     /**
      * 产品面额（市场价）
      */
-    private BigDecimal productValue;
+    private Integer productValue;
 
     /**
      * 售价（供货价）
      */
-    private BigDecimal salePrice;
+    private Integer salePrice;
 
     /**
      * 库存
@@ -123,19 +123,19 @@ public class ProductDTO {
         this.merchantProductNo = merchantProductNo;
     }
 
-    public BigDecimal getProductValue() {
+    public Integer getProductValue() {
         return productValue;
     }
 
-    public void setProductValue(BigDecimal productValue) {
+    public void setProductValue(Integer productValue) {
         this.productValue = productValue;
     }
 
-    public BigDecimal getSalePrice() {
+    public Integer getSalePrice() {
         return salePrice;
     }
 
-    public void setSalePrice(BigDecimal salePrice) {
+    public void setSalePrice(Integer salePrice) {
         this.salePrice = salePrice;
     }
 

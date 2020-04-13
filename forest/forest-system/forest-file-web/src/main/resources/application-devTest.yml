@@ -1,0 +1,18 @@
+server:
+    port: 5210
+
+eureka:
+  instance:
+    prefer-ip-address: true
+    instance-id: localhost:${server.port}
+    lease-renewal-interval-in-seconds: 10
+    health-check-url-path: /actuator/health
+  client:
+    service-url:
+      defaultZone: http://localhost:1111/eureka/
+
+file-site-path: http://image.jf.jf180.vip
+upload-base-path: /data/java_upload_file
+oss-path: http://oss-cn-beijing.aliyuncs.com
+file-upload-path: upload/file/
+image-upload-path: upload/image/

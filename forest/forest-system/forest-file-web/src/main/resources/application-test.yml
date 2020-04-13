@@ -9,7 +9,7 @@ eureka:
     health-check-url-path: /actuator/health
   client:
     service-url:
-      defaultZone: http://localhost:1111/eureka/
+      defaultZone: http://test02:7777/eureka/eureka,http://test04:7777/eureka/eureka
 
 file-site-path: http://image.jf.jf180.vip
 upload-base-path: /data/java_upload_file

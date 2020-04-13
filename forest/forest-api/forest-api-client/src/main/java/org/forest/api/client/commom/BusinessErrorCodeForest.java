@@ -1,6 +1,6 @@
 package org.forest.api.client.commom;
 
-public class BusinessErrorCode {
+public class BusinessErrorCodeForest {
 
     /**
      * 成功

@@ -1,7 +1,22 @@
 package cn.forest.product.remote;
 
-import cn.forest.common.BusinessErrorCode;
-import cn.forest.common.RemoteResponse;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+
+import cn.forest.common.BusinessErrorCodeForest;
+import cn.forest.common.RemoteResponseForest;
 import cn.forest.common.util.DateUtil;
 import cn.forest.common.util.StringUtil;
 import cn.forest.mall.entity.Camilo;
@@ -19,14 +34,6 @@ import cn.forest.system.entity.SysDictionaryData;
 import cn.forest.system.entity.SysDictionaryType;
 import cn.forest.system.mapper.SysDictionaryDataMapper;
 import cn.forest.system.mapper.SysDictionaryTypeMapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.*;
 
 @RestController
 public class ProductController {
@@ -56,8 +63,8 @@ public class ProductController {
      * @return
      */
     @RequestMapping("/queryMerchantProduct")
-    public RemoteResponse<ProductDTO> queryMerchantProduct(@RequestParam(value = "merchantProductId") Integer merchantProductId) {
-        RemoteResponse<ProductDTO> result = new RemoteResponse<>();
+    public RemoteResponseForest<ProductDTO> queryMerchantProduct(@RequestParam(value = "merchantProductId") Integer merchantProductId) {
+      RemoteResponseForest<ProductDTO> result = new RemoteResponseForest<>();
         if (merchantProductId != null) {
             Products products = productsMapper.selectById(Long.parseLong(merchantProductId + ""));
             if (products != null) {
@@ -70,8 +77,8 @@ public class ProductController {
                 }
                 productDTO.setName(products.getName());
                 productDTO.setMerchantProductNo(products.getCode());
-                productDTO.setProductValue(products.getPrice());
-                productDTO.setSalePrice(products.getSupplyPrice());
+                productDTO.setProductValue(products.getPrice()==null?0:Integer.parseInt(products.getPrice().multiply(new BigDecimal(100)).toString()));
+                productDTO.setSalePrice(products.getSupplyPrice()==null?0:Integer.parseInt(products.getSupplyPrice().multiply(new BigDecimal(100)).toString()));
                 // 查询库存
                 SysDictionaryData sysDictionaryData = sysDictionaryDataMapper.selectById(products.getDeliveryType());
                 Integer stock = null;
@@ -124,13 +131,13 @@ public class ProductController {
                     productDTO.setStatus("正常");
                     productDTO.setPrompt("");
                 }
-                result.setCode(BusinessErrorCode.SUCCESS);
+                result.setCode(BusinessErrorCodeForest.SUCCESS);
                 result.setMessage("查询成功");
                 result.setData(productDTO);
                 return result;
             }
         }
-        result.setCode(BusinessErrorCode.PRODUCT_NOT_FOUND);
+        result.setCode(BusinessErrorCodeForest.PRODUCT_NOT_FOUND);
         result.setMessage("商户商品不存在");
         return result;
     }
@@ -142,8 +149,8 @@ public class ProductController {
      * @return
      */
     @RequestMapping("/queryShipCategory")
-    public RemoteResponse<DeliveryTypeDTO> queryShipCategory(@RequestParam("shipCategoryId") Integer shipCategoryId) {
-        RemoteResponse<DeliveryTypeDTO> result = new RemoteResponse<>();
+    public RemoteResponseForest<DeliveryTypeDTO> queryShipCategory(@RequestParam("shipCategoryId") Integer shipCategoryId) {
+      RemoteResponseForest<DeliveryTypeDTO> result = new RemoteResponseForest<>();
         if (shipCategoryId != null) {
             SysDictionaryType sysDictionaryType = sysDictionaryTypeMapper.selectById(Long.parseLong(shipCategoryId + ""));
             if (sysDictionaryType != null) {
@@ -161,13 +168,13 @@ public class ProductController {
                     }
                 }
                 deliveryTypeDTO.setConfig(configList);
-                result.setCode(BusinessErrorCode.SUCCESS);
+                result.setCode(BusinessErrorCodeForest.SUCCESS);
                 result.setMessage("查询成功");
                 result.setData(deliveryTypeDTO);
                 return result;
             }
         }
-        result.setCode(BusinessErrorCode.ERROR);
+        result.setCode(BusinessErrorCodeForest.ERROR);
         result.setMessage("未找到对应的发货类型");
         return result;
     }
@@ -181,7 +188,7 @@ public class ProductController {
      * @return
      */
     @RequestMapping("/searchMerchantProduct")
-    public RemoteResponse<List<ProductDTO>> searchMerchantProduct(String name, String category, String status) {
+    public RemoteResponseForest<List<ProductDTO>> searchMerchantProduct(String name, String category, String status) {
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("name", name);
         paramMap.put("catalogName", category);
@@ -200,8 +207,8 @@ public class ProductController {
                 }
                 productDTO.setName(product.getName());
                 productDTO.setMerchantProductNo(product.getCode());
-                productDTO.setProductValue(product.getPrice());
-                productDTO.setSalePrice(product.getSupplyPrice());
+                productDTO.setProductValue(product.getPrice()==null?0:Integer.parseInt(product.getPrice().multiply(new BigDecimal(10)).toString()));
+                productDTO.setSalePrice(product.getSupplyPrice()==null?0:Integer.parseInt(product.getSupplyPrice().multiply(new BigDecimal(10)).toString()));
                 List<String> imgPaths = new ArrayList<>();
                 QueryWrapper<ProductPic> qw = new QueryWrapper<>();
                 qw.eq("product_id", product.getId());
@@ -226,10 +233,10 @@ public class ProductController {
             }
         }
 
-        RemoteResponse<List<ProductDTO>> result = new RemoteResponse<>();
+        RemoteResponseForest<List<ProductDTO>> result = new RemoteResponseForest<>();
         result.setData(resultList);
         result.setMessage("查询成功");
-        result.setCode(BusinessErrorCode.SUCCESS);
+        result.setCode(BusinessErrorCodeForest.SUCCESS);
         return result;
     }
 }

@@ -1,8 +1,9 @@
 package cn.forest.inventory.remote;
 
-import cn.forest.common.RemoteResponse;
-import cn.forest.inventory.dto.CamiloDTO;
 import org.springframework.web.bind.annotation.RestController;
+
+import cn.forest.common.RemoteResponseForest;
+import cn.forest.inventory.dto.CamiloDTO;
 
 /**
  * 库存管理
@@ -20,8 +21,8 @@ public class InventoryController {
      * @param merchantProductNo 商户产品编号
      * @return
      */
-    public RemoteResponse<CamiloDTO> outStore(String businessType, String orderNo, Integer merchantId, String merchantProductNo) {
-        RemoteResponse<CamiloDTO> result = new RemoteResponse<>();
+    public RemoteResponseForest<CamiloDTO> outStore(String businessType, String orderNo, Integer merchantId, String merchantProductNo) {
+      RemoteResponseForest<CamiloDTO> result = new RemoteResponseForest<>();
 
         return result;
     }

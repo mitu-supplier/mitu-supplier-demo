@@ -4,9 +4,9 @@ server:
 spring:
   redis:
     database: 0
-    host: localhost
+    host: 192.168.2.5
     port: 6379
-    password: forest
+    password: 
     timeout: 2000
     jedis:
       pool:
@@ -23,7 +23,7 @@ eureka:
     health-check-url-path: /actuator/health
   client:
     service-url:
-      defaultZone: http://localhost:1111/eureka/
+      defaultZone: http://test02:7777/eureka/eureka,http://test04:7777/eureka/eureka
       
       
       

@@ -1,6 +1,6 @@
 package cn.forest.common;
 
-public class RemoteResponse<K> {
+public class RemoteResponseForest<K> {
 
     protected int code = 0;
 
