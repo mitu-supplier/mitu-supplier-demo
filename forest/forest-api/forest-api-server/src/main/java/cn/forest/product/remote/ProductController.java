@@ -64,7 +64,7 @@ public class ProductController {
      */
     @RequestMapping("/queryMerchantProduct")
     public RemoteResponseForest<ProductDTO> queryMerchantProduct(@RequestParam(value = "merchantProductId") Integer merchantProductId) {
-      RemoteResponseForest<ProductDTO> result = new RemoteResponseForest<>();
+        RemoteResponseForest<ProductDTO> result = new RemoteResponseForest<>();
         if (merchantProductId != null) {
             Products products = productsMapper.selectById(Long.parseLong(merchantProductId + ""));
             if (products != null) {
@@ -77,8 +77,8 @@ public class ProductController {
                 }
                 productDTO.setName(products.getName());
                 productDTO.setMerchantProductNo(products.getCode());
-                productDTO.setProductValue(products.getPrice()==null?0:Integer.parseInt(products.getPrice().multiply(new BigDecimal(100)).toString()));
-                productDTO.setSalePrice(products.getSupplyPrice()==null?0:Integer.parseInt(products.getSupplyPrice().multiply(new BigDecimal(100)).toString()));
+                productDTO.setProductValue(products.getPrice() == null ? 0 : Integer.parseInt(products.getPrice().multiply(new BigDecimal(100)).setScale(0).toString()));
+                productDTO.setSalePrice(products.getSupplyPrice() == null ? 0 : Integer.parseInt(products.getSupplyPrice().multiply(new BigDecimal(100)).setScale(0).toString()));
                 // 查询库存
                 SysDictionaryData sysDictionaryData = sysDictionaryDataMapper.selectById(products.getDeliveryType());
                 Integer stock = null;
@@ -89,8 +89,8 @@ public class ProductController {
                         qw.eq("product_id", products.getId());
                         qw.gt("failure_time", DateUtil.parseDateToStr(new Date(), DateUtil.DATE_FORMAT_YYYY_MM_DD));
                         List<Camilo> list = camiloMapper.selectList(qw);
-                        productDTO.setStockCount(list == null ? 0 : list.size());
                         stock = list == null ? 0 : list.size();
+                        productDTO.setStockCount(stock);
                         productDTO.setCardCouponType("CAMILO");
                     } else if ("D_ZC".equals(sysDictionaryData.getCode())) {
                         // 直充
@@ -99,7 +99,7 @@ public class ProductController {
                         // 实物
                         productDTO.setStockCount(products.getInventoryNum() == null ? 0 : products.getInventoryNum());
                         stock = products.getInventoryNum() == null ? 0 : products.getInventoryNum();
-                        productDTO.setCardCouponType("DIRECT_CHARGE");
+//                        productDTO.setCardCouponType("DIRECT_CHARGE");
                     }
                 }
                 productDTO.setStockThreshold(products.getInventorySellingThreshold() == null ? 0 : products.getInventorySellingThreshold());
@@ -111,25 +111,35 @@ public class ProductController {
                     Date now = new Date();
                     if (now.after(DateUtil.parseStrToDate(maintainConfigStart, DateUtil.DATE_TIME_FORMAT_YYYY_MM_DD_HH_MI_SS))
                             && now.before(DateUtil.parseStrToDate(maintainConfigEnd, DateUtil.DATE_TIME_FORMAT_YYYY_MM_DD_HH_MI_SS))) {
-                        productDTO.setStatus("服务不可用");
-                        productDTO.setPrompt(products.getMaintainMessage());
+                        productDTO.setStatus("SERVICE_INVALABLE");
+                        productDTO.setPrompt("服务不可用");
                     } else {
-                        if (stock != null) {
-                            if (stock <= productDTO.getStockThreshold()) {
-                                productDTO.setStatus("库存不足");
-                                productDTO.setPrompt(products.getInventoryAlertMessage());
+                        if (products.getStatus() != null && products.getStatus() == 1) {
+                            if (stock != null) {
+                                if (stock <= productDTO.getStockThreshold()) {
+                                    productDTO.setStatus("INVENTORY_INSUFFICIENT");
+                                    productDTO.setPrompt("库存不足");
+                                } else {
+                                    productDTO.setStatus("NOMAL");
+                                    productDTO.setPrompt("正常");
+                                }
                             } else {
-                                productDTO.setStatus("正常");
-                                productDTO.setPrompt("");
+                                productDTO.setStatus("NOMAL");
+                                productDTO.setPrompt("正常");
                             }
                         } else {
-                            productDTO.setStatus("正常");
-                            productDTO.setPrompt("");
+                            productDTO.setStatus("OFF_LINE");
+                            productDTO.setPrompt("下架");
                         }
                     }
                 } else {
-                    productDTO.setStatus("正常");
-                    productDTO.setPrompt("");
+                    if (products.getStatus() != null && products.getStatus() == 1) {
+                        productDTO.setStatus("NOMAL");
+                        productDTO.setPrompt("正常");
+                    } else {
+                        productDTO.setStatus("OFF_LINE");
+                        productDTO.setPrompt("下架");
+                    }
                 }
                 result.setCode(BusinessErrorCodeForest.SUCCESS);
                 result.setMessage("查询成功");
@@ -150,7 +160,7 @@ public class ProductController {
      */
     @RequestMapping("/queryShipCategory")
     public RemoteResponseForest<DeliveryTypeDTO> queryShipCategory(@RequestParam("shipCategoryId") Integer shipCategoryId) {
-      RemoteResponseForest<DeliveryTypeDTO> result = new RemoteResponseForest<>();
+        RemoteResponseForest<DeliveryTypeDTO> result = new RemoteResponseForest<>();
         if (shipCategoryId != null) {
             SysDictionaryType sysDictionaryType = sysDictionaryTypeMapper.selectById(Long.parseLong(shipCategoryId + ""));
             if (sysDictionaryType != null) {
@@ -207,8 +217,8 @@ public class ProductController {
                 }
                 productDTO.setName(product.getName());
                 productDTO.setMerchantProductNo(product.getCode());
-                productDTO.setProductValue(product.getPrice()==null?0:Integer.parseInt(product.getPrice().multiply(new BigDecimal(10)).toString()));
-                productDTO.setSalePrice(product.getSupplyPrice()==null?0:Integer.parseInt(product.getSupplyPrice().multiply(new BigDecimal(10)).toString()));
+                productDTO.setProductValue(product.getPrice() == null ? 0 : Integer.parseInt(product.getPrice().multiply(new BigDecimal(100)).setScale(0).toString()));
+                productDTO.setSalePrice(product.getSupplyPrice() == null ? 0 : Integer.parseInt(product.getSupplyPrice().multiply(new BigDecimal(100)).setScale(0).toString()));
                 List<String> imgPaths = new ArrayList<>();
                 QueryWrapper<ProductPic> qw = new QueryWrapper<>();
                 qw.eq("product_id", product.getId());
@@ -227,7 +237,7 @@ public class ProductController {
                     // 直充
                     productDTO.setCardCouponType("DIRECT_CHARGE");
                 }
-                productDTO.setStatus((product.getStatus() != null && product.getStatus() == 1) ? "上架" : "下架");
+                productDTO.setStatus((product.getStatus() != null && product.getStatus() == 1) ? "NORMAL" : "OFF_LINE");
                 productDTO.setDetail(product.getDetails());
                 resultList.add(productDTO);
             }
