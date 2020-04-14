@@ -1,4 +1,4 @@
-package org.forest.api.client.product.dto;
+package cn.forest.api.client.product.dto;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -82,6 +82,16 @@ public class ProductDTO {
      * 商品详情
      */
     private String detail;
+    
+    private String merchant_product_no;
+
+    public String getMerchant_product_no() {
+        return merchant_product_no;
+    }
+
+    public void setMerchant_product_no(String merchant_product_no) {
+        this.merchant_product_no = merchant_product_no;
+    }
 
     public Integer getId() {
         return id;

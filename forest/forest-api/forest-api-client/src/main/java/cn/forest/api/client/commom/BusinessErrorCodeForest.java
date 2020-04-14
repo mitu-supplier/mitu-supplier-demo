@@ -1,4 +1,4 @@
-package org.forest.api.client.commom;
+package cn.forest.api.client.commom;
 
 public class BusinessErrorCodeForest {
 
