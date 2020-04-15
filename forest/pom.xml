@@ -43,6 +43,20 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-aop</artifactId>
 		</dependency>
+		<dependency>
+	     <groupId>com.google.code.gson</groupId>
+	     <artifactId>gson</artifactId>
+	   </dependency>
+	   <!-- 发送邮件需要的2个jar -->
+		<dependency>
+		    <groupId>org.codehaus.janino</groupId>
+		    <artifactId>janino</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>javax.mail</groupId>
+		    <artifactId>mail</artifactId>
+		    <version>1.4.7</version>
+		</dependency>
 	</dependencies>
 
 	<modules>

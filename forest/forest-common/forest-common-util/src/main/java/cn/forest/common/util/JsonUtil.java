@@ -10,12 +10,18 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 
 /**
  * 工具类 - Json
  *
  */
 public class JsonUtil {
+  
+  
+  public static final Gson GSON = new Gson();
+  
+  
   /** ObjectMapper */
   private static ObjectMapper mapper = new ObjectMapper();
 
