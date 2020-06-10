@@ -60,6 +60,19 @@
                     <el-table-column type="index" label="序号" width="55" align="center" ></el-table-column>
                     <el-table-column prop="projectName" label="项目名称"  align="center" ></el-table-column>
                     <el-table-column prop="orgName" label="科室"  align="center" ></el-table-column>
+                    <el-table-column prop="budget" label="项目总金额(元)"  align="center" ></el-table-column>
+                    <el-table-column prop="et" label="已执行金额(元)"  align="center" >
+                  
+                      <template slot-scope="scope">
+                            <span>{{scope.row.et}}({{((scope.row.et/scope.row.budget)*100).toFixed(2)}}%)</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="d" label="未执行金额(元)"  align="center" >
+                        <template slot-scope="scope">
+                            <span>{{scope.row.budget-scope.row.et}}({{(((scope.row.budget-scope.row.et)/scope.row.budget)*100).toFixed(2)}}%)</span>
+                        </template>
+
+                    </el-table-column>
                     <el-table-column prop="name" label="状态"  align="center">
                        <template slot-scope="scope">
                          <span v-if="scope.row.xy=='true'">未达标</span>

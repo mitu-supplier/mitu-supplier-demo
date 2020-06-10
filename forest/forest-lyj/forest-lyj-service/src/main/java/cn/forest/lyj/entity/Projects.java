@@ -85,6 +85,12 @@ public class Projects {
   @TableField(exist = false)
   private List children;
   
+  @TableField(exist = false)
+  private BigDecimal pt;
+  
+  @TableField(exist = false)
+  private BigDecimal et;
+  
   
   
   public Long getId() {
@@ -271,6 +277,22 @@ public class Projects {
 
   public void setChildren(List children) {
     this.children = children;
+  }
+
+  public BigDecimal getPt() {
+    return pt;
+  }
+
+  public void setPt(BigDecimal pt) {
+    this.pt = pt;
+  }
+
+  public BigDecimal getEt() {
+    return et;
+  }
+
+  public void setEt(BigDecimal et) {
+    this.et = et;
   }
 
   
