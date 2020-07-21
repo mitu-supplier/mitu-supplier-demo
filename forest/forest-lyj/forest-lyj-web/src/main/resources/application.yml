@@ -4,7 +4,7 @@ server:
 spring:
   redis:
     database: 0
-    host: localhost
+    host: 172.25.72.16
     port: 6379
     password: forest
     timeout: 2000

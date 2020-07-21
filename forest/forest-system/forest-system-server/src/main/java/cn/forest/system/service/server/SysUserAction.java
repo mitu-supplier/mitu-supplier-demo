@@ -64,7 +64,7 @@ public class SysUserAction {
       wrapper.eq("type_id", typeId);
     }
     if(!StringUtils.isEmpty(name)) {
-      wrapper.like("login_name", name).or().like("name", name);
+      wrapper.like("name", name);
     }
     IPage<SysUser> selectPage = sysUserMapper.selectPage(ipage, wrapper);
     
