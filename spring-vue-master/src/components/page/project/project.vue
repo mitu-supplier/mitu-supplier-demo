@@ -29,7 +29,7 @@
                 <el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button>
                 <el-button type="primary" icon="el-icon-search" @click="rest">重置</el-button>
             </div>
-            <el-table id="table_id" row-key="id" lazy :data="tableData" border class="table"  :tree-props="{children: 'children', hasChildren: 'hasChildren'}" ref="multipleTable"  @selection-change="handleSelectionChange">
+            <el-table id="table_id" v-loading="loading" row-key="id" lazy :data="tableData" border class="table"  :tree-props="{children: 'children', hasChildren: 'hasChildren'}" ref="multipleTable"  @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55" align="center" ></el-table-column>
                 <el-table-column type="index" label="序号" width="55" align="center" >
                    <template slot-scope="scope">
@@ -173,6 +173,7 @@
                 titleName:'',
                 button_role:{},
                 options_org:[],
+                loading:false,
                 parentNameShow:false,
                 rules: {
                     org_value: [
@@ -401,6 +402,8 @@
             },
             // 获取 easy-mock 的模拟数据
             async getData() {
+                this.loading=true
+                
                 const user = await this.$http.get(baseURL_.lyjUrl+'/projects/list',{ 
                     params: {'page':this.page,'pageSize':this.pageSize,'projectName':this.projectName,
                             'orgName':this.orgName,'leader':this.leader}
@@ -410,6 +413,8 @@
                   this.total=user.data.data.total;
                   this.page=user.data.data.page;
                 }
+              
+                this.loading=false;
             },
             
            

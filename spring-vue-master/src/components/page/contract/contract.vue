@@ -29,7 +29,7 @@
                 <el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button>
                 <el-button type="primary" icon="el-icon-search" @click="rest">重置</el-button>
             </div>
-            <el-table  :data="tableData" border class="table" ref="multipleTable"  @selection-change="handleSelectionChange">
+            <el-table  :data="tableData"  v-loading="loading" border class="table" ref="multipleTable"  @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55" align="center" ></el-table-column>
                 <el-table-column type="index" label="序号" width="55" align="center" >
                    <template slot-scope="scope">
@@ -178,6 +178,7 @@
             };
             return {
                 editVisible: false,
+                loading:false,
                 page:1,
                 total:1000,
                 pageSize:10,
@@ -612,6 +613,7 @@
            
             // 获取 easy-mock 的模拟数据
             async getData() {
+                this.loading=true;
                 const user = await this.$http.get(baseURL_.lyjUrl+'/contract/list',{ 
                     params: {'page':this.page,'pageSize':this.pageSize,'contractName':this.contractName,
                     'projectName':this.projectName,'orgName':this.orgName,'leader':this.leader}
@@ -621,6 +623,7 @@
                   this.total=user.data.data.total;
                   this.page=user.data.data.page;
                 }
+                this.loading=false;
             },
             contractType(val){
 
